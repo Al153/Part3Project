@@ -120,6 +120,17 @@ $$ \epsilon \rightarrow \phi \mid \xi .. \mbox{ Effect variables or ground effec
 \end{array}\]
 
 
+\paragraph{Subtyping Rules}
+
+$A$ ranges over value types
+\[\begin{array}{c}
+
+\typeRule{(Reflexive)}{A \subtype A}
+\\
+\typeRule{(Transitive)}{A \subtype B\s B\subtype C}{A \subtype C}
+\\
+
+\end{array}\]
 
 
 
