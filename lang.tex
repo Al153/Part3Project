@@ -8,6 +8,7 @@
 \newcommand{\s}{\mbox{ }}
 
 \newcommand{\typeJudgement}[2]{\Gamma\vdash #1 \colon #2}
+\newcommand{\modVarTypeJudgement}[3]{\Gamma, #1 \vdash #2 \colon #3}
 \newcommand{\conditionalTypeRule}[4]{\typeRule{#1}{#2}{#3} #4}
 \newcommand{\typeRule}[3]{\displaystyle\mbox{#1}\frac{#2}{#3}}
 
@@ -90,9 +91,14 @@ $$ \epsilon \rightarrow \phi \mid \xi .. \mbox{ Effect variables or ground effec
 
 \typeRule{(Unit)}{\Gamma\s OK}{\typeJudgement{()}{unit}} \\[3ex]
 
+\conditionalTypeRule{(Weaken)}{\typeJudgement{x}{A}}{\modVarTypeJudgement{x' : A'}{x}{A}}{(x \neq x')} \\[3ex]
+
+\typeRule{(Var)}{\Gamma\s OK}{\modVarTypeJudgement{x: A}{x}{A}} \\[3ex]
+
 \conditionalTypeRule{(Eff-Gen)}{\typeJudgement{V}{A}}{\typeJudgement{\Lambda \phi. V}{\forall \phi. A}}{\phi \not\in fev(\Gamma)} \\[3ex]
 
-\typeRule{(Eff-Gen)}{\typeJudgement{V}{\forall \phi. A}}{\typeJudgement{V \epsilon}{A {\right[\epsilon \phi\left] }}} \\[3ex]
+\typeRule{(Eff-Spec)}{\typeJudgement{V}{\forall \phi. A}}{\typeJudgement{V \epsilon}{A {[\epsilon \phi] }}} \\[3ex]
+
 
 
 
