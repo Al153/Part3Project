@@ -2,6 +2,14 @@
 \newcommand\comment[1]{}
 \usepackage{a4wide,parskip,times}
 
+
+\newcommand{\deno}[1]{{\bf [\![}#1{\bf ]\!]}}
+
+\newcommand{\st}{$^{st}$}
+\renewcommand{\th}{$^{th}$}
+\newcommand{\nd}{$^{nd}$}
+\newcommand{\rd}{$^{rd}$}
+
 \begin{document}
 
 \centerline{\Large A Denotational Semantics for a polymorphic Effects Systems}
@@ -35,7 +43,7 @@ Denotational semantics allows "full program" analysis
 }
 
 \textsl{
-There already exist denotational semantics for non-polymorphic effects systems, but this may be improved by the use of polymorphism (c.f "Theorems for free" in polymorphic type systems)
+There already exist denotational semantics for non-polymorphic effects systems using graded monads, but this may be improved by the use of polymorphism (c.f "Theorems for free" in polymorphic type systems)
 }
 
 \textsl{
@@ -51,22 +59,24 @@ Although semantics for polymorphic types is hard (russell's paradox) it is likel
 What's the basic idea and approach? What are you thinking of  doing, and how is it going to solve the problem (or need) you've  identified. What are you going to ``produce''?  A project will typically produce one (or perhaps more) of the following: a piece of software, an evaluation of a published result, a proof, or the design (and perhaps the construction of) a new piece of hardware. An essay will typically either review and critique a particular area of the academic literature, or evaluate a published result or proof. Try to  name the specific things (and describe them) in this part of the  proposal -- this will allow you to refer to them in the next.} 
 
 \section{Workplan (500 words)}
-\comment{Project students have approximately 26 weeks between the approval of 
-the proposal by the Head of Department, and the submission of the dissertation. This section
-should account for what you intend to do during that time. You should divide the time into two-week chunks including dates, and 
-describe the work to be done (and, as relevant, milestones to be 
-achieved) in each chunk. You should leave two 
-chunks for writing a project dissertation. You should leave 1 chunk for contingencies.} 
 
-\begin{tabular}{|p{3cm}||p{12cm}|}
+\begin{tabular}{|p{6cm}||p{10cm}|}
 \hline
-	November & Plan + read\\ 
-	December & Construct a simple monadic lambda calculus based language with a type system and operational semantics, prove  simple properties of operational semantics \\
-	January &  Characterise an abstract model for the language \\
-	February & Add polymorphism over effects to this general model \\
-	March & Contingency \\
-	April &  Collate results\\
-	May & write dissertation \\ 
+	2\nd December - 15\th December & Construct a simple graded-monadic lambda calculus based language with a type system and operational semantics. This language shall be designed such that effect polymorphism can be appended onto the core in an easy and intuitive way. I expect that I shall take the route of having an explicit graded monad in the language, and polymorphism shall be added in a similar fashion to the polymorphic lambda calculus with explicit generalisation and specialisation terms.\\\hline
+	16\th December - 29\th December & Prove simple properties of operational semantics without effect polymorphism. These shall include Type Preservation, Progress, Type Safety.\\\hline
+	30\th December - 12\th January & Characterise an abstract model for the language in category theory using cartesian closed categories. This shall be performed in a similar fashion to Andrew Pitts' example for STLC and the original paper by E. Moggi.  \\\hline
+	13\th January - 26\th January &  Add effect polymorphism to the language and extend the proofs of simple operational properties to the new polymorphic language. \\\hline
+	27\th January - 9\th February &  Extend denotational model to polymorphic language. I shall attempt to add morphisms between terms and their generalised equivalents ($gen: \deno{T} \rightarrow \deno{\forall \phi. T} $) and between polymorphic terms and their specialised equivaluents 
+	($spec: \deno{\forall \phi. T} \rightarrow \deno{T[ \epsilon / \phi ]} $)
+	\\\cline{1-1}
+	10\th February - 23\rd February &  \\\hline
+	24\th February - 9\th March & Continue extension of denotations, aiming to formalise and prove the standard properties of a denotational semantics (Soundness, Adequacy, equal denotations $\Rightarrow$ contextual equivalence \\\hline
+	10\th March - 23\rd March & Extensions. \\\hline
+	24\th March - 6\th April & Collation of results. \\\hline
+	7\th April - 20\th April & Write dissertation. \\\cline{1-1}
+	21\st April - 4\th May &\\\hline
+	5\th May - 18\th May & Contingency and hand in.\\\cline{1-1}
+	19\th May - 31\st May & \\
 \hline
 \end{tabular}
 
