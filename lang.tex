@@ -7,6 +7,7 @@
 
 \newcommand{\s}{\mbox{ }}
 \newcommand{\subtype}{\leq}
+\newcommand{\subeffect}{\sqsubseteq}
 
 \newcommand{\typeJudgement}[2]{\Gamma\vdash #1 \colon #2}
 \newcommand{\modVarTypeJudgement}[3]{\Gamma, #1 \vdash #2 \colon #3}
@@ -18,6 +19,8 @@
 \newcommand{\deno}[1]{\db{#1}(v)}
 \newcommand{\setComp}[2]{\left\lbrace #1 \mid #2 \right\rbrace}
 \newcommand{\clos}[0]{closure(A, v)}
+
+
 
 
 
@@ -114,21 +117,29 @@ $$ \epsilon \rightarrow \phi \mid \xi .. \mbox{ Effect variables or ground effec
 \\
 \typeRule{(Constructor)}{\typeJudgement{V}{\tau_1}}{\typeJudgement{ Cons^{\tau_1 \rightarrow T_{\xi} \tau_2}(V)}{T_{\xi} \tau_2}}
 \\
-\typeRule{(Combinator)}{\typeJudgement{C}{{T_{\xi_1} \tau_1}}}{\typeJudgement{ Op^{T_{\xi} \tau_1 \rightarrow T_{\xi} \tau_2}(M)}{{T_{\xi_2} \tau_2}}}
-
-
+\typeRule{(Combinator)}{\typeJudgement{M}{{T_{\xi_1} \tau_1}}}{\typeJudgement{ Op^{T_{\xi} \tau_1 \rightarrow T_{\xi} \tau_2}(M)}{{T_{\xi_2} \tau_2}}}
+\\
+\conditionalTypeRule{(SubTypeC)}{\typeJudgement{M}{\Theta_1}}{\typeJudgement{M}{\Theta_2}}{\Theta_2 \subtype \Theta_1}
 \end{array}\]
-
 
 \paragraph{Subtyping Rules}
 
 $A$ ranges over value types
 \[\begin{array}{c}
 
-\typeRule{(Reflexive)}{A \subtype A}
+\typeRule{(Reflexive)}{}{A \subtype A}
+\\
 \\
 \typeRule{(Transitive)}{A \subtype B\s B\subtype C}{A \subtype C}
 \\
+\\
+\typeRule{(Function)}{A' \subtype A \s\s \Theta\subtype \Theta'}{A \rightarrow \Theta \subtype A' \rightarrow \Theta'}
+\\
+\\
+\typeRule{(Quantification)}{\tau_1 \subtype \tau_2}{\Lambda \phi. \tau_1 \subtype \Lambda \phi. \tau_2}
+\\
+\\
+\typeRule{(Computation)}{\epsilon_1 \subeffect \epsilon_2}{\Theta_{\epsilon_1} \subtype \Theta_{\epsilon_2}}
 
 \end{array}\]
 
