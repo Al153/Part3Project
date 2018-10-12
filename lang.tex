@@ -51,12 +51,14 @@ V  &\rightarrow C^{\gamma} \mbox{ Typed contants}\\
 \end{equation} 
 
 \paragraph{Computation expressions}
+todo: is the if rule necessary?
 \begin{equation}
 \label{PDefifinition}
 \begin{split}
 M & \rightarrow V \s V \mbox{Application}\\
 &\mid do \s x \s \leftarrow \s M \s in \s M \mbox{ Sequencing}\\
 &\mid return\s V \mbox{ Unit computation}\\
+&\mid if\s V\s then\s C \s else \s C \mbox{ Conditional}\\
 &\mid Cons^{\tau_1 \rightarrow T_{\xi} \tau_2}(V) \mbox{ Computation Constructors}\\
 &\mid Op^{T_{\xi} \tau_1 \rightarrow T_{\xi} \tau_2}(M) \mbox{ Computation Combinators}\\
 \end{split}
@@ -118,6 +120,8 @@ $$ \epsilon \rightarrow \phi \mid \xi .. \mbox{ Effect variables or ground effec
 \typeRule{(Constructor)}{\typeJudgement{V}{\tau_1}}{\typeJudgement{ Cons^{\tau_1 \rightarrow T_{\xi} \tau_2}(V)}{T_{\xi} \tau_2}}
 \\
 \typeRule{(Combinator)}{\typeJudgement{M}{{T_{\xi_1} \tau_1}}}{\typeJudgement{ Op^{T_{\xi} \tau_1 \rightarrow T_{\xi} \tau_2}(M)}{{T_{\xi_2} \tau_2}}}
+\\
+\typeRule{(if)}{\typeJudgement{V}{Bool}\s\typeJudgement{C_1}{\Theta}\s\typeJudgement{C_2}{\Theta}}{\typeJudgement{if\s V\s then\s C_1\s else \s C_2}{\Theta}}
 \\
 \conditionalTypeRule{(SubTypeC)}{\typeJudgement{M}{\Theta_1}}{\typeJudgement{M}{\Theta_2}}{\Theta_2 \subtype \Theta_1}
 \end{array}\]
