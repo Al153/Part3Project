@@ -14,6 +14,10 @@
 \newcommand{\conditionalrule}[4]{\syntaxRule{#1}{#2}{#3} #4}
 \newcommand{\syntaxRule}[3]{\displaystyle\mbox{#1}\frac{#2}{#3}}
 
+\newcommand{\doExpr}[3]{\texttt{do} \s #1\s \leftarrow \s #2 \s \texttt{in} \s #3}
+\newcommand{\ret}[1]{\texttt{return} \s (#1)}
+
+\newcommand{\ext}[1]{E(#1)}
 
 \newcommand{\sub}[2]{\left[^{#1}/_{#2}\right]}
 
@@ -51,8 +55,8 @@ todo: is the if rule necessary?
 \label{PDefifinition}
 \begin{split}
 M & \rightarrow V \s V \mbox{Application}\\
-&\mid do \s x \s \leftarrow \s M \s in \s M \mbox{ Sequencing}\\
-&\mid return\s V \mbox{ Unit computation}\\
+&\mid \doExpr{x}{M}{M} \mbox{ Sequencing}\\
+&\mid \ret{v}\mbox{ Unit computation}\\
 &\mid if\s V\s then\s C \s else \s C \mbox{ Conditional}\\
 &\mid Cons^{\tau_1 \rightarrow T_{\xi} \tau_2}(V) \mbox{ Computation Constructors}\\
 &\mid Op^{T_{\xi} \tau_1 \rightarrow T_{\xi} \tau_2}(M) \mbox{ Computation Combinators}\\
@@ -108,7 +112,7 @@ $$ \epsilon \rightarrow \phi \mid \xi .. \mbox{ Effect variables or ground effec
 \[\begin{array}{c}
 \syntaxRule{(Application)}{\typeJudgement{V_1}{A \rightarrow \Theta}\s\typeJudgement{V_2}{A}}{\typeJudgement{V_1 V_2}{\Theta}}
 \\
-\syntaxRule{(Sequencing)}{\typeJudgement{M_1}{T_{\epsilon_1} A}\s\modVarTypeJudgement{x: A}{M_2}{T_{\epsilon_2} B}}{\typeJudgement{do \s x \s \leftarrow \s M_1 \s in \s M_2}{T_{\epsilon_1 \circ \epsilon_2} B}}
+\syntaxRule{(Sequencing)}{\typeJudgement{M_1}{T_{\epsilon_1} A}\s\modVarTypeJudgement{x: A}{M_2}{T_{\epsilon_2} B}}{\typeJudgement{\doExpr{x}{M_1}{M_2}}{T_{\epsilon_1 \circ \epsilon_2} B}}
 \\
 \syntaxRule{(Unit Computation)}{\typeJudgement{V}{A}}{\typeJudgement{return(V)}{T_{1}A}}
 \\
@@ -166,12 +170,15 @@ $A$ ranges over value types
  
  
 \syntaxRule{(App)}
-{\goesTo{V_1}{\lambda x: \tau. C_1}{v}\s\s \goesTo{V_2 }{V'_2}{v}\s\s \goesTo{C_1 \sub{V_2}{x}}{C'_1}{$\epsilon$}}{\goesTo{V_1\s V_2}{C'_1}{$\epsilon$}}
+{\goesTo{V_1}{\lambda x: \tau. C_1}{v}\s\s \goesTo{V_2 }{V'_2}{v}\s\s \goesTo{C_1 \sub{V_2}{x}}{\ext{V}}{$\epsilon$}}{\goesTo{V_1\s V_2}{\ext{V}}{$\epsilon$}}
 \\
 \\
 
-\\syntaxRule{(Bind)}
+\syntaxRule{(Bind)}{\goesTo{C_1}{\ext{V_1}}{$\epsilon_1$}\s\s\goesTo{C_2\sub{V_1}{x}}{\ext{V_2}}{$\epsilon_2$}}{\goesTo{\doExpr{x}{C_1}{C_2}}{\ext{V_2}}{$\epsilon_1 \circ \epsilon_2$}}
 
+\\\\
+
+\syntaxRule{(Return)}{\goesTo{V}{V'}{todo}}{\goesTo{\ret{V}}{\ext{V}{unit?}}{todo}}
 \end{array}
 \end{equation}
 
