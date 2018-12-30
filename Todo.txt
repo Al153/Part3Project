@@ -1,6 +1,2 @@
 - prove substitution rule
-- Prove Dylan's idea on pushing up subtyping rules
-    - Transform any typing derivation by pushing up a subtyping rule in relation to each other rule
-    - Show that the push up does not change denotation
-    - Hence prove congruence on the pushed up typing derivation
 - Write up proofs

@@ -15,3 +15,46 @@
 \setstackgap{L}{\normalbaselineskip}
 
 \newcommand\todo[1]{\textbf{#1}}
+
+\newcommand{\s}{\indent}
+\newcommand{\doin}[3]{\texttt{do}\s #1 \leftarrow #2 \s\texttt{in}\s #3}
+\newcommand\apply[2]{#1\s#2}
+\newcommand\ifthenelse[5]{\texttt{if}_{#1, #2}\s#3\s \texttt{then}\s #4 \s\texttt{else} \s#5}
+\newcommand\const[1]{\texttt{C}^{#1}}
+\newcommand\return[1]{\texttt{return} #1}
+\newcommand\lam[3]{\lambda #1 : #2. #3}
+\renewcommand\u[0]{\texttt{()}}
+\newcommand{\U}[0]{\texttt{Unit}}
+\renewcommand\t[0]{\texttt{true}}
+\newcommand\f[0]{\texttt{false}}
+\newcommand{\B}[0]{\texttt{Bool}}
+\newcommand{\G}[0]{\Gamma}
+
+\newcommand{\typerelation}[3]{#1 \vdash #2 \colon #3}
+\newcommand{\treerule}[3]{(\text{#1}) \frac{#2}{#3}}
+\newcommand{\condtreerule}[4]{\treerule{#1}{#2}{#3}(\text{if } #4)}
+
+\newcommand{\subtype}[0]{\leq:}
+\newcommand\subeffect{\leq}
+
+\newcommand{\M}[2]{\texttt{M}_{#1}{#2}}
+
+\newcommand\lamtype[3]{#1 \rightarrow \M{#2}{#3}}
+\newcommand{\1}[0]{\texttt{1}}
+
+\newcommand\e[0]{\epsilon}
+
+\newcommand{\db}[1]{{\bf [\![}#1{\bf ]\!]}}
+\newcommand{\deno}[1]{\db{#1}_M}
+\newcommand\after\circ
+\newcommand\term[1]{\left\langle\right\rangle_{#1}}
+
+\newcommand\point[1]{\eta_{#1}}
+\newcommand\bind[3]{\mu_{#1, #2, #3}}
+
+\newcommand\T[2]{T_{#1}{#2}}
+\newcommand\cur[1]{\texttt{cur}(#1)}
+\newcommand\ifd[2]{\texttt{if}_{#1, #2}}
+\newcommand\pr[2]{\left\langle#1, #2\right\rangle}
+\newcommand\tstrength[3]{\texttt{t}_{#1, #2, #3}}
+\newcommand\Id[1]{\texttt{Id}_{#1}}
