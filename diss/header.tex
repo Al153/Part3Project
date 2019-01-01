@@ -9,7 +9,7 @@
 \usepackage[a4paper,includeheadfoot,margin=2.54cm]{geometry}
 \usepackage{breqn}
 \usepackage{array}   % for \newcolumntype macro
-
+\usepackage{tikz-cd}
 \usepackage{tabstackengine}
 \setstackEOL{\cr}
 \setstackgap{L}{\normalbaselineskip}
@@ -30,12 +30,17 @@
 \newcommand{\B}[0]{\texttt{Bool}}
 \newcommand{\G}[0]{\Gamma}
 
+
+% draw type relations
 \newcommand{\typerelation}[3]{#1 \vdash #2 \colon #3}
+\newcommand{\gtyperelation}[2]{\typerelation{\G}{#1}{#2}}
+
+%draw tree rules
 \newcommand{\treerule}[3]{(\text{#1}) \frac{#2}{#3}}
 \newcommand{\condtreerule}[4]{\treerule{#1}{#2}{#3}(\text{if } #4)}
 
 \newcommand{\subtype}[0]{\leq:}
-\newcommand\subeffect{\leq}
+\newcommand\subeffect[0]{\leq}
 
 \newcommand{\M}[2]{\texttt{M}_{#1}{#2}}
 
@@ -56,5 +61,26 @@
 \newcommand\cur[1]{\texttt{cur}(#1)}
 \newcommand\ifd[2]{\texttt{if}_{#1, #2}}
 \newcommand\pr[2]{\left\langle#1, #2\right\rangle}
+
+% tensor strength Nat-tran
 \newcommand\tstrength[3]{\texttt{t}_{#1, #2, #3}}
+
+% Id morphism
 \newcommand\Id[1]{\texttt{Id}_{#1}}
+% beta-eta equivalence
+\newcommand\beequiv[0]{=_{\beta\eta}}
+% Single substitution
+\newcommand{\ssub}[2]{\left[#2 / #1\right]}
+
+% beta-eta equivalence relation
+\newcommand{\berelation}[4]{\typerelation{#1}{#2 \beequiv #3}{#4}}
+\newcommand{\gberelation}[3]{\gtyperelation{#1 \beequiv #2}{#3}}
+
+
+% Shortcuts for denotational equality
+\newcommand{\denoequality}[4]{\deno{\typerelation{#1}{#2}{#4}} = \deno{\typerelation{#1}{#3}{#4}}}
+\newcommand{\gdenoequality}[3]{\denoequality{\G}{#1}{#2}{#3}}
+
+% Shorthand for monad types
+\newcommand\mea[0]{\M{\e}{A}}
+\newcommand\meb[0]{\M{\e}{B}}

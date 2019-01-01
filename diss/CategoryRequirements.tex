@@ -3,10 +3,74 @@
 
 \begin{document}
     \begin{itemize}
-        \item CCC
+        \item CCC with strong graded monad
         \item Strong Graded Monad Laws: \begin{itemize}
+            \item Unitor Law
+            \item \begin{tikzcd}
+                \1 \times \T{\e}{A} 
+                \arrow [r, "\tstrength{\e}{\1}{A}"]
+                \arrow [rd, "\lambda_{\T{\e}{A}}"]
+                & 
+                \T{\e}{(\1 \times A)}
+                \arrow [d, "\T{\e}{(\lambda_A)}"]
+                \\
+                &
+                \T{\e}{A}
+            \end{tikzcd}
             \item left-right unit
+            \item \begin{tikzcd}
+                \T{\e}{A} \arrow[rd, "\Id{\T{\e}{A}}"] \arrow[r, "\T{\e}{\point{A}}"] & \T{\e}{\T{\1}{A}} \arrow[d, "\bind{\e}{\1}{A}"] \\
+                & \T{\e}{A}
+                \end{tikzcd}
+            \item \begin{tikzcd}
+                \T{\e}{A} \arrow[rd, "\Id{\T{\e}{A}}"] \arrow[r, "\point{\T{\e}{A}}"] & \T{\1}{\T{\1}{A}} \arrow[d, "\bind{\1}{\e}{A}"] \\
+                & \T{\e}{A}
+                \end{tikzcd}
             \item mu
+            \item \begin{tikzcd}
+                \T{\e_1}{\T{\e_2}{\T{\e_3}{A}}} 
+                \arrow [r, "\bind{\e_1}{\e_2}{\T{\e_3}{A}}"]
+                \arrow [d, "\T{\e_1}{\bind{\e_2}{\e_3}{A}}"] & \T{\e_1 \cdot \e_2}{\T{\e_3} A} \arrow [d, "\bind{\e_1 \cdot \e_2}{\e_3}{A}"] \\
+                \T{\e_1}{\T{\e_2 \cdot \e_3}{A}} \arrow [r, "\bind{\e_1}{\e_2 \cdot \e_3}{A}"] & \T{\e_1 \cdot \e_2 \cdot \e_3}{A}    
+            \end{tikzcd}
+            \item t and mu
+            \item \begin{tikzcd}
+                A \times \T{\e_1}{\T{\e_2}{B}} 
+                \arrow [r, "\tstrength{\e_1}{A}{\T{\e_2}{B}}"]
+                \arrow [dr, "\Id{A} \times \bind{\e_1}{\e_2}{B}"]
+                & 
+                \T{\e_1}{(A \times \T{\e_2}{B})} 
+                \arrow [r, "\T{\e_1}{\tstrength{\e_2}{A}{B}}"]
+                & 
+                \T{\e_1}{\T{\e_2}{(A \times B)}} 
+                \arrow [d, "\bind{\e_1}{\e_2}{A \times B}"]
+                \\
+                &
+                A \times \T{\e_1 \cdot \e_2}{B}  
+                \arrow [r, "\tstrength{\e_1 \cdot \e_2}{A}{B}"] 
+                &
+                \T{\e_1 \cdot \e_2}({A \times B)}
+            \end{tikzcd}
+            \item t and sub-effecting
+            \item \begin{tikzcd}
+                A \times \T{\e_1}{B} \arrow [r, "\Id{A} \times \db{\e_1 \subeffect \e_2}_{\texttt{M}, B}"] \arrow [d, "\tstrength{\e_1}{A}{B}"] &
+                A \times \T{\e_2}{B} \arrow [d, "\tstrength{\e_2}{A}{B}"] \\
+                \T{\e_1}{(A \times B)} \arrow [r, "\db{\e_1 \subeffect \e_2}_{\texttt{M}, A \times B}"] &
+                \T{\e_2}{(A \times B)} 
+            \end{tikzcd}
+            \item t and id times f
+            \item \begin{tikzcd}
+                A \times \T{\e}{B} \arrow [r, "\Id{A} \times \T{\e}{f}"] \arrow [d, "\tstrength{\e}{A}{B}"]&
+                A \times \T{\e}{B'} \arrow [d, "\tstrength{\e}{A}{B'}"]\\
+                \T{\e}{(A \times B)} \arrow [r, "\T{e}{(\Id{A} \times f)}"] &
+                \T{\e}{(A \times B')}
+            \end{tikzcd}
+            \item \begin{tikzcd}
+                A \times \T{\e}{B}  \arrow [r, "f \times \Id{\T{\e}{B}}"] \arrow [d, "\tstrength{\e}{A}{B}"]  &
+                A' \times \T{\e}{B} \arrow [d, "\tstrength {\e} {A'}{B}"]\\
+                \T{\e}{(A \times B)} \arrow [r, "\T{\e}{(f \times \Id{B})}"]&
+                \T{\e}{(A' \times B)}
+            \end{tikzcd}
             
         \end{itemize}
     \end{itemize}
