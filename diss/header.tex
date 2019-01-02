@@ -14,7 +14,7 @@
 \setstackEOL{\cr}
 \setstackgap{L}{\normalbaselineskip}
 
-\newcommand\todo[1]{\textbf{#1}}
+\newcommand\todo[1]{\textbf{TODO: #1}}
 
 \newcommand{\s}{\indent}
 \newcommand{\doin}[3]{\texttt{do}\s #1 \leftarrow #2 \s\texttt{in}\s #3}
@@ -29,6 +29,7 @@
 \newcommand\f[0]{\texttt{false}}
 \newcommand{\B}[0]{\texttt{Bool}}
 \newcommand{\G}[0]{\Gamma}
+\newcommand\D{\Delta}
 
 
 % draw type relations
@@ -84,3 +85,24 @@
 % Shorthand for monad types
 \newcommand\mea[0]{\M{\e}{A}}
 \newcommand\meb[0]{\M{\e}{B}}
+
+% Shorthand for Gammas
+\newcommand{\gax}[0]{\G, x: A}
+\newcommand{\gby}[0]{\G, y: B}
+
+% reduction function
+\newcommand{\reduce}[0]{reduce}
+
+
+% Combinators to build tree proofs
+\newcommand{\truleconst}{\treerule{Const}{}{\gtyperelation{\const{A}}{A}}}
+\newcommand\truleunit{\treerule{Unit}{}{\typerelation{\G}{\u}{\U}}}
+\newcommand\truletrue{\treerule{True}{}{\typerelation{\G}{\t}{\B}}}
+\newcommand\trulefalse{\treerule{False}{}{\typerelation{\G}{\f}{\B}}}
+
+% Combinators for building delta-based tree proof terms
+\newcommand{\deltavrule}[4]{
+    \treerule{Subtype}{\treerule{}{\D}{\typerelation{#1}{#2}{#3}}\s\s #3 \subtype #4}{\typerelation{#1}{#2}{#4}}}
+
+\newcommand{\deltavruleprime}[4]{
+    \treerule{Subtype}{\treerule{}{\D'}{\typerelation{#1}{#2}{#3}}\s\s #3 \subtype #4}{\typerelation{#1}{#2}{#4}}}

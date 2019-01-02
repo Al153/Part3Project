@@ -4,6 +4,7 @@
 
 \begin{document}
 
+\todo{Explain that we implicitly carry around a derivation in the denotation}
 \begin{itemize}
     \item Denotation for each typing relation derivation
     \item \begin{itemize}
@@ -15,20 +16,20 @@
         
         \item $\treerule{False}{}{\deno{\typerelation{\G}{\f}{\B}} = \deno{\f} \after \term{\G} : \G \rightarrow \deno{\B}}$
         
-        \item $\treerule{Lambda}{f = \deno{\G, x: A}{C}{\M{\e}{B}} : \G \times A \rightarrow \T{\e}{B}}{\deno{\typerelation{\G}{\lam{x}{A}{C}}{A \rightarrow \M{\e}{B}}} = \cur{f} : \G \rightarrow (\T{\e}{B})^A}$
+        \item $\treerule{Lambda}{f = \deno{\gax}{C}{\meb} : \G \times A \rightarrow \T{\e}{B}}{\deno{\typerelation{\G}{\lam{x}{A}{C}}{A \rightarrow \meb}} = \cur{f} : \G \rightarrow (\T{\e}{B})^A}$
         
         \item $\treerule{Return}{f = \deno{\typerelation{\G}{v}{A}}}{\deno{\typerelation{\G}{\return{v}}{\M{\1}{A}}} = \point{A} \after f}$
         
         \item $\treerule{Subtype}{f = \deno{\typerelation{\G}{v}{A}} : \G \rightarrow A\s\s g = \deno{A \subtype B}}{\deno{\typerelation{\G}{v}{B}} = g \after f : \G \rightarrow B}$
         \item $\treerule{Subeffect}{f = \deno{\typerelation{\G}{c}{\M{\e_1}{A}}}: \G \rightarrow \T{\e_1}{A} \s\s g = \deno{A \subtype B}\s\s h = \deno{\e_1 \subeffect{ \e_2}}}{\deno{\typerelation{\G}{C}{\M{\e_2}{B}}} = h_B \after \T{\e_1}{g} \after f}$
         
-        \item $\treerule{If}{f = \deno{\typerelation{\G}{v}{\B}}\s\s g = \deno{\typerelation{\G}{C_1}{\M{\e}{A}}}\s\s h = \deno{\typerelation{\G}{C_2}{\M{\e}{A}}}}{\deno{{\typerelation{\G}{\ifthenelse{\e}{A}{v}{C_1}{C_2}}{\M{\e}{A}}}} = \ifd{\e}{A} \after \pr{f}{\pr{g}{h}} : \G \rightarrow \T{\e}{A}}$
+        \item $\treerule{If}{f = \deno{\typerelation{\G}{v}{\B}}\s\s g = \deno{\typerelation{\G}{C_1}{\mea}}\s\s h = \deno{\typerelation{\G}{C_2}{\mea}}}{\deno{{\typerelation{\G}{\ifthenelse{\e}{A}{v}{C_1}{C_2}}{\mea}}} = \ifd{\e}{A} \after \pr{f}{\pr{g}{h}} : \G \rightarrow \T{\e}{A}}$
         
-        \item $\treerule{Bind}{f = \deno{\typerelation{\G}{C_1}{\M{\e_1}{A}} : \G \rightarrow \T{\e_1}{A}\s\s g = \deno{\typerelation{\G, x: A}{C_2}{\M{\e_2}{B}}}}: \G \times A \rightarrow \T{\e_2}{B}}{\deno{\typerelation{\G}{\doin{x}{C_1}{C_2}}{\M{\e_1 \cdot \e_2}}} = \bind{\e_1}{\e_2}{B} \after \T{\e_1}{g} \after \tstrength{\G}{A}{\e_1} \after \pr{\Id{\G}}{f}: \G \rightarrow \T{\e_1 \cdot \e_2}{B}}$
+        \item $\treerule{Bind}{f = \deno{\typerelation{\G}{C_1}{\M{\e_1}{A}} : \G \rightarrow \T{\e_1}{A}\s\s g = \deno{\typerelation{\gax}{C_2}{\M{\e_2}{B}}}}: \G \times A \rightarrow \T{\e_2}{B}}{\deno{\typerelation{\G}{\doin{x}{C_1}{C_2}}{\M{\e_1 \cdot \e_2}}} = \bind{\e_1}{\e_2}{B} \after \T{\e_1}{g} \after \tstrength{\G}{A}{\e_1} \after \pr{\Id{\G}}{f}: \G \rightarrow \T{\e_1 \cdot \e_2}{B}}$
     \end{itemize}
     \item Denotations of Types
     \item \begin{itemize}
-        \item  \todo{Fill in from book}
+        \item  \todo{Fill in from notebook}
         \item For each ground type $g \in \gamma$
         \item morphism $\deno{A \subtype B} : \deno{A} \rightarrow \deno{B}$ for each $A \subtype B$
         \item Natural Transformation $\deno{\e_1 \subeffect \e_2}: \T{\e_1}{} \rightarrow \T{\e_2}{}$ for each $\e_1 \subeffect \e_2$
