@@ -62,8 +62,41 @@
         $$\treerule{Substitution}{\typerelation{\gax}{C}{\meb}\s\s\gtyperelation{v}{A}}{\gtyperelation{C\ssub{x}{v}}{\meb}}$$
     \paragraph{Case Left Unit}
     \todo{Use left unit commutivity diagram}
+
+    
+
     \paragraph{Case Right Unit}
     \todo{Use left unit commutivity diagram}
+    Let $f = \deno{\gtyperelation{C}{\mea}}$
+    \todo{Proof of $\T{\e}{\pp}$ distributing with tensor strength to give $\pp$} 
+    \paragraph{Tensor Strength and Projection}
+
+    $$\pi_{2, A, B} = \pr_{2, \1, B} \after (\term{A} \times \Id{B})$$
+
+    And $\pi_{2, \1}$ is the left unitor, so by tensorial strength:
+    
+    \begin{equation}
+        \begin{split}
+            \T{\e}{\pp} \after \tstrength{\e}{A}{B} & = \T{\e}{\pi_{2, \1, B}} \after \T{\e}{(\term{A} \times \Id{B})} \after \tstrength{\e}{A}{B} \\
+            & = \T{\e}{\pi_{2, 1, B}} \after \tstrength{\e}{\1}{B} \after (\term{A} \times \Id{B}) \\
+            & = \pi_{2,1,B} \after (\term{A} \times \Id{B}) \\
+            & = \pp
+        \end{split}
+    \end{equation}
+
+    
+
+    \begin{equation}
+        \begin{split}
+            \deno{\gtyperelation{\doin{x}{C}{\return{x}}}{\mea}}  & = \bind{\e}{\1}{A} \after \T{\e}{(\point{A} \after \pp)} \after \tstrength{\e}{\G}{A}\after \pr{\Id{\G}}{f} \\
+            & = \T{\e}{\pp} \after \tstrength{\e}{\G}{A} \after \pr {\Id{\G}}{f} \\
+            & = \pp \after \pr{\Id{\G}}{f}\\
+            & = f
+        \end{split}
+    \end{equation}
+    
+    
+
     \paragraph{Case Associative}
     \todo{Long proof from book. Maybe use a big diagram.}
 

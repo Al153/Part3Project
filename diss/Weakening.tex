@@ -1,0 +1,44 @@
+\documentclass{report}
+\input{header.tex}
+
+
+
+\begin{document}
+    \section{Weakening Definition}
+    \subsection{Relation}
+    We define the ternary weaking relation $\wrel{w}{\G'}{\G}$ using the following rules.
+
+    \begin{itemize}
+        \item $\treerule{Id}{\ok{\G}}{\wrel{\i}{\G}{\G}}$
+        \item $\treerule{Project}{\wrel{\w}{\G'}{\G}\s\s x \notin \dom{\G'}}{\wrel{\w \pi}{\G, x: A}{\G}}$
+        \item $\treerule{Extend}{\wrel{\w}{\G'}{\G}\s\s\x \notin \dom{\G'}\s\s A \subtype B}{\wrel{w \x}{\G', x: A}{\G, x: B}}$
+    \end{itemize}
+
+    \subsection{\texttt{Ok} definition}
+
+    \subsection{\texttt{Dom} definition}
+
+    \subsection{Weakening Denotations}
+    \section{Weakening Theorems}
+    \subsection{Theorem 1}
+    If $\wrel{\w}{\G'}{\G}$ and $\ok{\G}$ then $\ok{\G'}$
+    \paragraph{Proof}
+    \todo{this}
+    \subsection{Theorem 2}
+    If $\gtyperelation{t}{\tau}$ and $\wrel{\w}{\G'}{\G}$ then $\typerelation{\G'}{t}{\tau}$
+
+    \paragraph{Proof}
+    Proved in parallel with theorem 3 below
+    \subsection{Theorem 3}
+
+    If $\wrel{\w}{\G'}{\G}$ and $\D = \deno{\gtyperelation{t}{\tau}}$ and $\D' = \deno{\typerelation{\G'}{t}{\tau}}$ then 
+
+    $$
+        \D \after \deno{\w} = \D' : \G' \rightarrow \deno{\tau}
+    $$
+    \paragraph{Proof}
+    \todo{this, induct over typing relation/definition of Denotations}
+
+
+
+\end{document}
