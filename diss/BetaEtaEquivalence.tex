@@ -12,7 +12,7 @@
         
         \item $\treerule{Right Unit}{\gtyperelation{C}{\mea}}{\gberelation{\doin{x}{C}{\return{x}} }{C}{\mea}}$
         \item $\treerule{Associativity}{\gtyperelation{C_1}{\M{\e_1}{A}} \s\s \typerelation{\gax}{C_2}{\M{\e_2}{B}}\s\s \typerelation{\gby}{C_3}{\M{\e_3}{C}}}{
-            \gberelation{\doin{x}{C_1}{(\doin{y}{C_2}{C_3})}}{\doin{y}{(\doin{x}{C_1}{C_2})}{C_3}}{\M{\e_1 \cdot \e_2 \cdot \e_3}{C}}
+            \gberelation{\doin{x}{C_1}{(\doin{y}{C_2}{C_3})}}{\doin{y}{(\doin{x}{C_1}{C_2})}{C_3}}{\M{\e_1 \dot \e_2 \dot \e_3}{C}}
         }$
     \end{itemize}
     \subsection{Equivalence Relation}
@@ -29,7 +29,7 @@
         
         \item $\treerule{Apply}{\gberelation{v_1}{v_1'}{\lamtype{A}{\e}{B}}\s\s\gberelation{v_2}{v_2'}{A}}{\gberelation{\apply{v_1}{v_2}}{\apply{v_1'}{v_2'}}{\meb}}$
         
-        \item $\treerule{Bind}{\gberelation{C_1}{C_1'}{\M{\e_1}{A}} \s\s \berelation{\gax}{C_2}{C_2'}{\M{\e_2}{B}}}{\gberelation{\doin{x}{C_1}{C_2}}{\doin{c}{C_1'}{C_2'}}{\M{\e_1 \cdot \e_2}{B}}}$
+        \item $\treerule{Bind}{\gberelation{C_1}{C_1'}{\M{\e_1}{A}} \s\s \berelation{\gax}{C_2}{C_2'}{\M{\e_2}{B}}}{\gberelation{\doin{x}{C_1}{C_2}}{\doin{c}{C_1'}{C_2'}}{\M{\e_1 \dot \e_2}{B}}}$
         
         \item $\treerule{If}{\gberelation{v}{v'}{\B} \s\s \gberelation{C_1}{C_1'}{\mea}\s\s\gberelation{C_2}{C_2'}{\mea}}{\gberelation{\ifthenelse{\e}{A}{v}{C_1}{C_2}}{\ifthenelse{\e}{A}{v}{C_1'}{C_2'}}{\mea}}$
         \item $\treerule{Subtype}{\gberelation{v}{v'}{A} \s\s A \subtype B}{\gberelation{v}{v'}{B}}$

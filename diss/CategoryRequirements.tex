@@ -1,77 +1,141 @@
 \documentclass{report}
 \input{header.tex}
 
+
 \begin{document}
-    \begin{itemize}
-        \item CCC with strong graded monad
-        \item Strong Graded Monad Laws: \begin{itemize}
-            \item Unitor Law
-            \item \begin{tikzcd}
-                \1 \times \T{\e}{A} 
-                \arrow [r, "\tstrength{\e}{\1}{A}"]
-                \arrow [rd, "\lambda_{\T{\e}{A}}"]
-                & 
-                \T{\e}{(\1 \times A)}
-                \arrow [d, "\T{\e}{(\lambda_A)}"]
-                \\
-                &
-                \T{\e}{A}
-            \end{tikzcd}
-            \item left-right unit
-            \item \begin{tikzcd}
-                \T{\e}{A} \arrow[rd, "\Id{\T{\e}{A}}"] \arrow[r, "\T{\e}{\point{A}}"] & \T{\e}{\T{\1}{A}} \arrow[d, "\bind{\e}{\1}{A}"] \\
-                & \T{\e}{A}
-                \end{tikzcd}
-            \item \begin{tikzcd}
-                \T{\e}{A} \arrow[rd, "\Id{\T{\e}{A}}"] \arrow[r, "\point{\T{\e}{A}}"] & \T{\1}{\T{\1}{A}} \arrow[d, "\bind{\1}{\e}{A}"] \\
-                & \T{\e}{A}
-                \end{tikzcd}
-            \item mu
-            \item \begin{tikzcd}
-                \T{\e_1}{\T{\e_2}{\T{\e_3}{A}}} 
-                \arrow [r, "\bind{\e_1}{\e_2}{\T{\e_3}{A}}"]
-                \arrow [d, "\T{\e_1}{\bind{\e_2}{\e_3}{A}}"] & \T{\e_1 \cdot \e_2}{\T{\e_3} A} \arrow [d, "\bind{\e_1 \cdot \e_2}{\e_3}{A}"] \\
-                \T{\e_1}{\T{\e_2 \cdot \e_3}{A}} \arrow [r, "\bind{\e_1}{\e_2 \cdot \e_3}{A}"] & \T{\e_1 \cdot \e_2 \cdot \e_3}{A}    
-            \end{tikzcd}
-            \item t and mu
-            \item \begin{tikzcd}
-                A \times \T{\e_1}{\T{\e_2}{B}} 
-                \arrow [r, "\tstrength{\e_1}{A}{\T{\e_2}{B}}"]
-                \arrow [dr, "\Id{A} \times \bind{\e_1}{\e_2}{B}"]
-                & 
-                \T{\e_1}{(A \times \T{\e_2}{B})} 
-                \arrow [r, "\T{\e_1}{\tstrength{\e_2}{A}{B}}"]
-                & 
-                \T{\e_1}{\T{\e_2}{(A \times B)}} 
-                \arrow [d, "\bind{\e_1}{\e_2}{A \times B}"]
-                \\
-                &
-                A \times \T{\e_1 \cdot \e_2}{B}  
-                \arrow [r, "\tstrength{\e_1 \cdot \e_2}{A}{B}"] 
-                &
-                \T{\e_1 \cdot \e_2}({A \times B)}
-            \end{tikzcd}
-            \item t and sub-effecting
-            \item \begin{tikzcd}
-                A \times \T{\e_1}{B} \arrow [r, "\Id{A} \times \db{\e_1 \subeffect \e_2}_{\texttt{M}, B}"] \arrow [d, "\tstrength{\e_1}{A}{B}"] &
-                A \times \T{\e_2}{B} \arrow [d, "\tstrength{\e_2}{A}{B}"] \\
-                \T{\e_1}{(A \times B)} \arrow [r, "\db{\e_1 \subeffect \e_2}_{\texttt{M}, A \times B}"] &
-                \T{\e_2}{(A \times B)} 
-            \end{tikzcd}
-            \item t and id times f
-            \item \begin{tikzcd}
-                A \times \T{\e}{B} \arrow [r, "\Id{A} \times \T{\e}{f}"] \arrow [d, "\tstrength{\e}{A}{B}"]&
-                A \times \T{\e}{B'} \arrow [d, "\tstrength{\e}{A}{B'}"]\\
-                \T{\e}{(A \times B)} \arrow [r, "\T{e}{(\Id{A} \times f)}"] &
-                \T{\e}{(A \times B')}
-            \end{tikzcd}
-            \item \begin{tikzcd}
-                A \times \T{\e}{B}  \arrow [r, "f \times \Id{\T{\e}{B}}"] \arrow [d, "\tstrength{\e}{A}{B}"]  &
-                A' \times \T{\e}{B} \arrow [d, "\tstrength {\e} {A'}{B}"]\\
-                \T{\e}{(A \times B)} \arrow [r, "\T{\e}{(f \times \Id{B})}"]&
-                \T{\e}{(A' \times B)}
-            \end{tikzcd}
-            
-        \end{itemize}
-    \end{itemize}
+\section{CCC}
+The section should be a cartesian closed category.
+That is it should have:
+\begin{itemize}
+    \item A Terminal object $\terminal$
+    \item Binary products
+    \item Exponentials
+\end{itemize}
+\section{Graded Pre-Monad}
+The category should have a graded pre-monad. That is:
+
+\begin{itemize}
+    \item An endofunctor indexed by the pre-order on effects: $\T{}{}: (\E, \subeffect)  \rightarrow \Cat(\C, \C)$
+    \item A unit natural transformation: $\point{}: \Id{} \rightarrow \T{\1}{}$
+    \item A join natural transformation: $\bind{\e_1}{\e_2}{}: \T{\e_1}{\T{\e_2}{}} \rightarrow \T{\e_1 \dot \e_2}{}$
+\end{itemize}
+
+Subject to the following commutative diagrams:
+\subsection{Left Unit}
+    \begin{tikzcd}
+    \T{\e}{A} \arrow[rd, "\Id{\T{\e}{A}}"] \arrow[r, "\T{\e}{\point{A}}"] & \T{\e}{\T{\1}{A}} \arrow[d, "\bind{\e}{\1}{A}"] \\
+    & \T{\e}{A}
+    \end{tikzcd}
+
+\subsection{Right Unit}
+    \begin{tikzcd}
+    \T{\e}{A} \arrow[rd, "\Id{\T{\e}{A}}"] \arrow[r, "\point{\T{\e}{A}}"] & \T{\1}{\T{\1}{A}} \arrow[d, "\bind{\1}{\e}{A}"] \\
+    & \T{\e}{A}
+    \end{tikzcd}
+
+\subsection{Associativity}
+\begin{tikzcd}
+    \T{\e_1}{\T{\e_2}{\T{\e_3}{A}}} 
+    \arrow [r, "\bind{\e_1}{\e_2}{\T{\e_3}{A}}"]
+    \arrow [d, "\T{\e_1}{\bind{\e_2}{\e_3}{A}}"] & \T{\e_1 \dot \e_2}{\T{\e_3} A} \arrow [d, "\bind{\e_1 \dot \e_2}{\e_3}{A}"] \\
+    \T{\e_1}{\T{\e_2 \dot \e_3}{A}} \arrow [r, "\bind{\e_1}{\e_2 \dot \e_3}{A}"] & \T{\e_1 \dot \e_2 \dot \e_3}{A}    
+\end{tikzcd}
+
+
+\section{Tensor Strength}
+The category should also have tensorial strength over its products and monads.
+That is, it should have a natural transformation
+ $$\tstrength{\e}{A}{B}: A \times \T{\e}{B} \rightarrow \T{\e}{(A \times B)} $$
+
+Satisfying the following rules:
+\subsection{Left Naturality}
+\begin{tikzcd}
+    A \times \T{\e}{B} \arrow [r, "\Id{A} \times \T{\e}{f}"] \arrow [d, "\tstrength{\e}{A}{B}"]&
+    A \times \T{\e}{B'} \arrow [d, "\tstrength{\e}{A}{B'}"]\\
+    \T{\e}{(A \times B)} \arrow [r, "\T{e}{(\Id{A} \times f)}"] &
+    \T{\e}{(A \times B')}
+\end{tikzcd}
+
+\subsection{Right Naturality}
+
+\begin{tikzcd}
+    A \times \T{\e}{B}  \arrow [r, "f \times \Id{\T{\e}{B}}"] \arrow [d, "\tstrength{\e}{A}{B}"]  &
+    A' \times \T{\e}{B} \arrow [d, "\tstrength {\e} {A'}{B}"]\\
+    \T{\e}{(A \times B)} \arrow [r, "\T{\e}{(f \times \Id{B})}"]&
+    \T{\e}{(A' \times B)}
+\end{tikzcd}
+
+\subsection{Unitor Law}
+\begin{tikzcd}
+    \1 \times \T{\e}{A} 
+    \arrow [r, "\tstrength{\e}{\1}{A}"]
+    \arrow [rd, "\lambda_{\T{\e}{A}}"]
+    & 
+    \T{\e}{(\1 \times A)}
+    \arrow [d, "\T{\e}{(\lambda_A)}"]
+    \\
+    &
+    \T{\e}{A}
+\end{tikzcd}
+Where $\lambda: \terminal \times \Id{} \rightarrow \Id{}$ is the left-unitor.
+($\lambda = \pp$)
+
+
+\subsection{Commutativity with Join}
+\begin{tikzcd}
+    A \times \T{\e_1}{\T{\e_2}{B}} 
+    \arrow [r, "\tstrength{\e_1}{A}{\T{\e_2}{B}}"]
+    \arrow [dr, "\Id{A} \times \bind{\e_1}{\e_2}{B}"]
+    & 
+    \T{\e_1}{(A \times \T{\e_2}{B})} 
+    \arrow [r, "\T{\e_1}{\tstrength{\e_2}{A}{B}}"]
+    & 
+    \T{\e_1}{\T{\e_2}{(A \times B)}} 
+    \arrow [d, "\bind{\e_1}{\e_2}{A \times B}"]
+    \\
+    &
+    A \times \T{\e_1 \dot \e_2}{B}  
+    \arrow [r, "\tstrength{\e_1 \dot \e_2}{A}{B}"] 
+    &
+    \T{\e_1 \dot \e_2}({A \times B)}
+\end{tikzcd}
+
+\section{Subeffecting}
+For each instance of the pre-order $(\E, \subeffect)$, $\e_1 \subeffect \e_2$, there exists a natural transformation
+$\dse{\e_1}{\e_2}: \T{\e_1}{} \rightarrow \T{\e_2}{}$ that commutes with $\tstrength{}{}{}$:
+
+\subsection{Subeffecting and Tensor Strength}
+\begin{tikzcd}
+    A \times \T{\e_1}{B} \arrow [r, "\Id{A} \times \dse{\e_1}{\e_2}_B"] \arrow [d, "\tstrength{\e_1}{A}{B}"] &
+    A \times \T{\e_2}{B} \arrow [d, "\tstrength{\e_2}{A}{B}"] \\
+    \T{\e_1}{(A \times B)} \arrow [r, "\dse{\e_1}{\e_2}_{ A \times B}"] &
+    \T{\e_2}{(A \times B)} 
+\end{tikzcd}
+
+
+\section{Subtyping}
+
+The denotation of ground types $\deno{\_}$ is a functor from the pre-order category of ground types $(\ground, \subtype_{\ground})$
+to $\C$. This pre-ordered sub-category of $\C$ is extended with the rule for function subtyping to form a larger pre-ordered sub-category of $\C$.
+
+$$
+\treerule{Function Subtyping}{f = \deno{A' \subtype A} \s\s g = \deno{B \subtype B'} \s\s h=\dse{\e_1}{\e_2}}{rhs = \deno{\lamtype{A}{\e_1}{B} \subtype \lamtype{A'}{\e_2}{B'}}: (\T{\e_1}{B})^A \rightarrow (\T{\e_2}{B'})^{A'}}
+$$
+
+\begin{equation}
+    \begin{split}
+        rhs = & (h_{B'} \after \T{\e_1}{g})^A \after (\T{\e_1}{B})^f \\
+        = & \cur{h_{B'}  \after \T{\e_1}{g}\after \app} \after \cur{\app \after (\Id{} \times f)}\\
+    \end{split}
+\end{equation}
+
+
+
+\section{If natural transformation}
+There exists a natural transformation $\ifnt{A}: (\B \times (A \times A)) \rightarrow A$
+Satisfying the following:
+\begin{itemize}
+    \item $\ifnt{A}  \after \pr{\deno{\t}\after \term{\G}}{\pr{t}{f}} = t$
+    \item $\ifnt{A} \after \pr{\deno{\f}\after \term{\G}}{\pr{t}{f}} = f$
+\end{itemize}
 \end{document}

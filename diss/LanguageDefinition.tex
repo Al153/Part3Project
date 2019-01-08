@@ -1,11 +1,7 @@
 \documentclass{report}
 
 \input{header.tex}
-\newcommand{\E}[0]{\mathbb{E}}
-\renewcommand{\dot}{\cdot}
-\newcommand{\gens}[0]{::=}
-\newcommand{\nil}[0]{\diamond}
-\newcommand{\ground}[0]{\gamma}
+
 
 \begin{document}
 \section{Terms}
@@ -85,7 +81,7 @@
         \item $\treerule{Return}{\typerelation{\G}{v}{A}}{\typerelation{\G}{\return{v}}{\M{\1}{A}}}$
         \item $\treerule{Apply}{\typerelation{\G}{v_1}{\lamtype{A}{\e}{B}}\s\s\typerelation{\G}{v_2}{A}}{\typerelation{\G}{\apply{v_1}{v_2}}{\meb}}$
         \item $\treerule{if}{\typerelation{\G}{v}{\B} \s\s \typerelation{\G}{C_1}{\mea}\s\s\typerelation{\G}{C_2}{\mea}}{\typerelation{\G}{\ifthenelse{\e}{A}{V}{C_1}{C_2}}{\mea}}$
-        \item $\treerule{Do}{\typerelation{\G}{C_1}{\M{\e_1}{A}} \s\s \typerelation{\gax}{C_2}{\M{\e_2}{B}}}{\typerelation{\G}{\doin{x}{C_1}{C_2}}{\M{\e_1 \cdot \e_2}{B}}}$
+        \item $\treerule{Do}{\typerelation{\G}{C_1}{\M{\e_1}{A}} \s\s \typerelation{\gax}{C_2}{\M{\e_2}{B}}}{\typerelation{\G}{\doin{x}{C_1}{C_2}}{\M{\e_1 \dot \e_2}{B}}}$
         \item $\treerule{Subeffect}{\typerelation{\G}{C}{\M{\e_1}{A}}\s\s A \subtype B \s\s \e_1 \subeffect \e_2}{\typerelation{\G}{C}{\M{e_2}{B}}}$
     \end{itemize}
 \end{document}
