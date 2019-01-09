@@ -36,14 +36,14 @@
         \paragraph{Computation Types}
         Computation types are of the form $\mea$
 
-    \subsection{Subtyping}
-        There exists a subtyping preorder relation $\subtype_{\ground}$ over ground types that is:
+    \subsection{Sub-typing}
+        There exists a sub-typing pre-order relation $\subtype_{\ground}$ over ground types that is:
         \begin{itemize}
             \item $\treerule{Reflexive}{}{A \subtype_{\ground} A}$
             \item $\treerule{Transitive}{A \subtype_{\ground} B \s \s B \subtype_{\ground} C}{A \subtype_{\ground} C}$
         \end{itemize}
 
-        We extend this relation with the function subtyping rule to yield the full subtyping relation $\subtype$
+        We extend this relation with the function sub-typing rule to yield the full sub-typing relation $\subtype$
 
         \begin{itemize}
             \item $\treerule{ground}{A \subtype_{\ground} B}{A \subtype B}$
@@ -71,17 +71,25 @@
         \item $\truleunit$
         \item $\truletrue$
         \item $\trulefalse$
-        \item $\treerule{Var}{}{\typerelation{\gax}{X}{A}}$
+        \item $\treerule{Var}{\ok{\gax}}{\typerelation{\gax}{X}{A}}$
         \item $\condtreerule{Weaken}{\typerelation{\G}{x}{A}}{\typerelation{\gby}{X}{A}}{x \neq y}$
         \item $\treerule{Fn}{\typerelation{\gax}{C}{\meb}}{\typerelation{\G}{\lam{x}{A}{C}}{\lamtype{A}{\e}{B}}}$
         \item $\treerule{Sub}{\typerelation{\G}{v}{A}\s\s A \subtype B}{\typerelation{\G}{v}{B}}$
     \end{itemize}
     \paragraph{Computation typing rules}
     \begin{itemize}
-        \item $\treerule{Return}{\typerelation{\G}{v}{A}}{\typerelation{\G}{\return{v}}{\M{\1}{A}}}$
+        \item $\treerule{Return}{\typerelation{\G}{v}{A}}{\typerelation{\G}{\return{v}}{\moa}}$
         \item $\treerule{Apply}{\typerelation{\G}{v_1}{\lamtype{A}{\e}{B}}\s\s\typerelation{\G}{v_2}{A}}{\typerelation{\G}{\apply{v_1}{v_2}}{\meb}}$
         \item $\treerule{if}{\typerelation{\G}{v}{\B} \s\s \typerelation{\G}{C_1}{\mea}\s\s\typerelation{\G}{C_2}{\mea}}{\typerelation{\G}{\ifthenelse{\e}{A}{V}{C_1}{C_2}}{\mea}}$
         \item $\treerule{Do}{\typerelation{\G}{C_1}{\M{\e_1}{A}} \s\s \typerelation{\gax}{C_2}{\M{\e_2}{B}}}{\typerelation{\G}{\doin{x}{C_1}{C_2}}{\M{\e_1 \dot \e_2}{B}}}$
         \item $\treerule{Subeffect}{\typerelation{\G}{C}{\M{\e_1}{A}}\s\s A \subtype B \s\s \e_1 \subeffect \e_2}{\typerelation{\G}{C}{\M{e_2}{B}}}$
     \end{itemize}
+
+    \subsection{Ok Lemma}
+    If $\gtyperelation{t}{\tau}$ then $\ok{\G}$.
+    \paragraph{Proof}
+    If $\ok{\gax}$ then by inversion $\ok{\G}$
+    Only the type rule \texttt{Weaken} adds terms to the environment from its preconditions to its post-condition and it does so in an $\ok{}$ preserving way. Any type derivation tree has at least one leaf. All leaves are axioms which require $\ok{\G}$. And all non-axiom derivations preserve the $\ok{}$ property.
+
+
 \end{document}

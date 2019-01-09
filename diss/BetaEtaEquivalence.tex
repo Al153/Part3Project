@@ -14,6 +14,10 @@
         \item $\treerule{Associativity}{\gtyperelation{C_1}{\M{\e_1}{A}} \s\s \typerelation{\gax}{C_2}{\M{\e_2}{B}}\s\s \typerelation{\gby}{C_3}{\M{\e_3}{C}}}{
             \gberelation{\doin{x}{C_1}{(\doin{y}{C_2}{C_3})}}{\doin{y}{(\doin{x}{C_1}{C_2})}{C_3}}{\M{\e_1 \dot \e_2 \dot \e_3}{C}}
         }$
+
+        \item $\treerule{if-true}{\gtyperelation{C_1}{\mea}\s\s\gtyperelation{C_2}{\mea}}{\gberelation{\ifthenelse{\e}{A}{\t}{C_1}{C_2}}{C_1}{\mea}}$
+        \item $\treerule{if-false}{\gtyperelation{C_2}{\mea}\s\s\gtyperelation{C_1}{\mea}}{\gberelation{\ifthenelse{\e}{A}{\f}{C_1}{C_2}}{C_2}{\mea}}$
+        
     \end{itemize}
     \subsection{Equivalence Relation}
     \begin{itemize}
@@ -25,7 +29,7 @@
     \begin{itemize}
         \item $\treerule{Lambda}{\berelation{\gax}{C_1}{C_2}{\meb}}{\gberelation{\lam{x}{A}{C_1}}{\lam{x}{A}{C_2}}{\lamtype{A}{\e}{B}}}$
         
-        \item $\treerule{Return}{\gberelation{v_1}{v_2}{A}}{\gberelation{\return{v_1}}{\return{v_2}}{\M{\1}{A}}}$
+        \item $\treerule{Return}{\gberelation{v_1}{v_2}{A}}{\gberelation{\return{v_1}}{\return{v_2}}{\moa}}$
         
         \item $\treerule{Apply}{\gberelation{v_1}{v_1'}{\lamtype{A}{\e}{B}}\s\s\gberelation{v_2}{v_2'}{A}}{\gberelation{\apply{v_1}{v_2}}{\apply{v_1'}{v_2'}}{\meb}}$
         
@@ -35,7 +39,7 @@
         \item $\treerule{Subtype}{\gberelation{v}{v'}{A} \s\s A \subtype B}{\gberelation{v}{v'}{B}}$
         \item $\treerule{Subeffect}{\gberelation{C}{C'}{\M{\e_1}{A}}\s\s A \subtype B \s\s \e_1 \subeffect \e_2}{\gberelation{C}{C'}{\M{\e_2}{B}}}$
     \end{itemize}
-    \section{Beta-Eta equivalence implies both have same type}
+    \section{Beta-Eta Equivalence Implies Both Sides Have the Same Type}
     Each derivation of $\gberelation{t}{t'}{\tau}$ can be converted to a derivation of $\gtyperelation{t}{\tau}$ and $\gtyperelation{t'}{\tau}$ by induction over the beta-eta equivalence relation derivation.
 
     \subsection{Equivalence Relations}
@@ -60,6 +64,249 @@
 
         By the substitution rule \todo{which?}, we have 
         $$\treerule{Substitution}{\typerelation{\gax}{C}{\meb}\s\s\gtyperelation{v}{A}}{\gtyperelation{C\ssub{x}{v}}{\meb}}$$
+        \paragraph{Case Left Unit}
+        By inversion, we have $\gtyperelation{v}{A}$ and $\typerelation{\gax }{C}{\meb}$
+
+        Hence we have:
+
+
+        \begin{equation}
+            \treerule{Bind}{\treerule{Return}{\gtyperelation{v}{A}}{\gtyperelation{\return{v}}{\moa}}\s\s\typerelation{\gax}{C}{\meb}}{\gtyperelation{\doin{x}{\return{v}}{C}}{\M{\1\dot\e}{B} = \meb}}
+        \end{equation}
+
+        And by the substitution typing rule we have: \todo{Which Rule?}
+
+        \begin{equation}
+            \gtyperelation{C\ssub{x}{v}}{\meb}
+        \end{equation}
+        \paragraph{Case Right Unit}
+        By inversion, we have $\gtyperelation{C}{\mea}$.
+
+        Hence we have:
+
+        \begin{equation}
+            \treerule{Bind}{
+                \gtyperelation{C}{\mea}
+                \s\s
+                \treerule{Return}{\treerule{var}{}{\typerelation{\gax}{x}{A}}}{\typerelation{\gax}{\return{v}}{\moa}}
+            }{\gtyperelation{\doin{x}{C}{\return{x}}}{\M{\e\dot\1}{A} = \mea}}
+        \end{equation}
+        \paragraph{Case Associativity}
+        By inversion, we have $\gtyperelation{C_1}{\M{\e_1}{A}}$, $\typerelation{\gax}{C_2}{\M{\e_2}{B}}$, and $\typerelation{\gby}{C_3}{\M{\e_3}{C}}$.
+
+       
+        
+        $$\wrel{(\i\pi\times)}{(\gax, y: B)}{(\gby)}$$
+
+        So by the weakening property \todo{which?}, $\typerelation{\gax, y: B}{C_3}{\M{\e_3}{C}}$
+
+        Hence we can construct the type derivations:
+        \begin{equation} 
+            \treerule{Bind}{
+                \gtyperelation{C_1}{\M{\e_1}{A}}
+                \s\s
+                \treerule{Bind}{
+                    \typerelation{\gax}{C_2}{\M{\e_2}{B}}
+                    \s\s
+                    \typerelation{\gax, y: B}{C_3}{\M{\e_3}{C}}
+                }{
+                    \typerelation{\gax}{\do{x}{C_2}{C_3}}{\M{\e_2 \dot \e_3}{C}}
+                }
+            }{
+                \gtyperelation{
+                    \doin{x}{C_1}{
+                        (\doin{y}{C_2}{C_3})
+                    }
+                }{
+                    \M{\e_1\dot\e_2\dot\e_3}{C}
+                }
+            }
+        \end{equation}
+
+        and 
+
+        \begin{equation}
+            \treerule{Bind}{
+                \treerule{Bind}{
+                    \gtyperelation{C_1}{\M{\e_1}{A}}
+                    \s\s
+                    \typerelation{\gax}{C_2}{\M{\e_2}{B}}
+                } {
+                    \gtyperelation{\doin{x}{C_1}{C_2}}{\M{\e_1\dot\e_2}{B}}
+                }
+                \s\s
+                \typerelation{\gby}{C_3}{\M{\e_3}{C}}
+            }{
+                \gtyperelation{\doin{y}{(\doin{x}{C_1}{C_2})}{C_3}}{\M{\e_1\dot\e_2\dot\e_3}{C}}
+            }
+        \end{equation}
+
+        \paragraph{Case If True}
+            By inversion, we have $\gtyperelation{C_1}{\mea}$, $\gtyperelation{C_2}{\mea}$. Hence by the typing lemma \todo{Which?}, we have $\ok{\G}$ so $\gtyperelation{\t}{\B}$ by the axiom typing rule.
+
+            Hence 
+            \begin{equation}
+                    \treerule{If}{
+                        \gtyperelation{\t}{\B}
+                        \s\s
+                        \gtyperelation{C_1}{\mea}
+                        \s\s
+                        \gtyperelation{C_2}{\mea}
+                    }{
+                        \gtyperelation{\ifthenelse{\e}{A}{\t}{C_1}{C_2}}{\mea}
+                    }
+            \end{equation}
+        \paragraph{Case If False}
+        As above,
+
+        Hence 
+        \begin{equation}
+            \treerule{If}{
+                \gtyperelation{\f}{\B}
+                \s\s
+                \gtyperelation{C_1}{\mea}
+                \s\s
+                \gtyperelation{C_2}{\mea}
+            }{
+                \gtyperelation{\ifthenelse{\e}{A}{\f}{C_1}{C_2}}{\mea}
+            }
+    \end{equation}
+        \subsection{Congruences}
+    Each congruence rule corresponds exactly to a type derivation rule. To convert to a type derivation, convert all preconditions, then use the equivalent type derivation rule.
+    \todo{These can be proved simply by using the recursive case and substituting values}
+    \paragraph{Case Lambda}
+        By inversion, $\berelation{\gax}{C_1}{C_2}{\meb}$. Hence by induction $\typerelation{\gax}{C_1}{\meb}$, and $\typerelation{\gax}{C_2}{\meb}$.
+
+        So 
+        \begin{equation}
+            \gtyperelation{\lam{x}{A}{C_1}}{\lamtype{A}{\e}{B}}
+        \end{equation}
+
+        and
+        \begin{equation}
+            \gtyperelation{\lam{x}{A}{C_2}}{\lamtype{A}{\e}{B}}
+        \end{equation}
+
+        Hold.
+    \paragraph{Case Return}
+        By inversion, $\gberelation{v_1}{v_2}{A}$, so by induction $$\gtyperelation{v_1}{A}$$ and $$\gtyperelation{v_2}{A}$$
+
+        Hence we have $$\gtyperelation{\return{v_1}}{\moa}$$
+        and
+        $$\gtyperelation{\return{v_2}}{\moa}$$
+    \paragraph{Case Apply}
+
+        By inversion, we have $\gberelation{v_1}{v_1'}{\lamtype{A}{\e}{B}}$ and $\gberelation{v_2}{v_2'}{A}$. Hence we have by induction $\gtyperelation{v_1}{\lamtype{A}{\e}{B}}$, $\gtyperelation{v_2}{A}$, $\gtyperelation{v_1'}{\lamtype{A}{\e}{B}}$, and $\gtyperelation{v_2'}{A}$.
+
+        So we have:
+
+        \begin{equation}
+            \gtyperelation{\apply{v_1}{v_2}}{\meb}
+        \end{equation}
+
+        and
+
+        
+        \begin{equation}
+            \gtyperelation{\apply{v_1'}{v_2'}}{\meb}
+        \end{equation}
+
+    \paragraph{Case Bind}
+        By inversion, we have:
+        $\gberelation{C_1}{C_1'}{\M{\e_1}{A}}$ and
+        $\berelation{\gax}{C_2}{C_2'}{\M{\e_2}{B}}$.
+        Hence by induction, we have 
+        $\gtyperelation{C_1}{\M{\e_1}{A}}$,
+        $\gtyperelation{C_1'}{\M{\e_1}{A}}$,
+        $\typerelation{\gax}{C_2}{\M{\e_2}{B}}$, and 
+        $\typerelation{\gax}{C_2'}{\M{\e_2}{B}}$
+
+        Hence we have 
+        \begin{equation}
+            \gtyperelation{\doin{x}{C_1}{C_2}}{\M{\e_1\dot\e_2}{A}}
+        \end{equation}
+
+        
+        \begin{equation}
+            \gtyperelation{\doin{x}{C_1'}{C_2'}}{\M{\e_1\dot\e_2}{A}}
+        \end{equation}
+    \paragraph{Case If}
+    By inversion, we have:
+    $\gberelation{v}{v'}{\B}$,
+    $\gberelation{C_1}{C_1'}{\mea}$, and
+    $\gberelation{C_2}{C_2'}{\mea}$.
+
+    Hence by induction, we have:
+
+    $\gtyperelation{v}{\B}$,
+    $\gtyperelation{v'}{\B}$,
+
+    $\gtyperelation{C_1}{\mea}$,
+    $\gtyperelation{C_1'}{\mea}$,
+
+    
+    $\gtyperelation{C_2}{\mea}$, and
+    $\gtyperelation{C_2'}{\mea}$.
+
+    So 
+    \begin{equation}
+        \gtyperelation{\ifthenelse{\e}{A}{v}{C_1}{C_2}}{\mea}
+    \end{equation}
+    and
+    \begin{equation}
+        \gtyperelation{\ifthenelse{\e}{A}{v}{C_1'}{C_2'}}{\mea}
+    \end{equation}
+    Hold.
+    \paragraph{Case Subtype}
+
+    By inversion, we have $A \subtype B$ and $\gberelation{v}{v'}{A}$. By induction, we therefore have $\gtyperelation{v}{A}$ and $\gtyperelation{v'}{A}$.
+
+    Hence we have 
+    \begin{equation}
+        \gtyperelation{v}{B}
+    \end{equation}
+
+    
+    \begin{equation}
+        \gtyperelation{v'}{B}
+    \end{equation}
+    \paragraph{Case subeffect}
+
+    By inversion we have: $A \subtype B$, $\e_1 \subeffect \e_2$, and $\gberelation{C}{C'}{\M{\e_1}{A}}$.
+
+    Hence by inductive hypothesis, we have $\gtyperelation{C}{\M{\e_1}{A}}$ and $\gtyperelation{C'}{\M{\e_1}{A}}$.
+
+    Hence,
+
+    \begin{equation}
+        \gtyperelation{C}{\M{\e_2}{B}}
+    \end{equation}
+
+    and 
+    \begin{equation}
+        \gtyperelation{C'}{\M{\e_2}{B}}
+    \end{equation}
+    hold. 
+
+    
+    \section{Beta-Eta equivalent terms have equal denotations}
+    If $\berelation{t}{t'}{\tau}$ then $\gdenoequality{t}{t'}{\tau}$
+
+    By induction over Beta-eta equivalence relation.
+    \subsection{Equivalence Relation}
+    The cases over the equivalence relation laws hold by the uniqueness of denotations and the fact that equality over morphisms is an equivalence relation.
+    \paragraph{Case Reflexive}
+    Equality is reflexive, so if $\gtyperelation{t}{\tau}$ then $\deno{\gtyperelation{t}{\tau}}$ is equal to itself.
+    \paragraph{Case Symmetric}
+    By inversion, if $\gberelation{t}{t'}{\tau}$ then $\gberelation{t'}{t}{\tau}$, so by induction $\gdenoequality{t'}{t}{\tau}$ and hence $\gdenoequality{t}{t'}{\tau}$
+    \paragraph{Case Transitive}
+    There must exist $t_2$ such that $\gberelation{t_1}{t_2}{\tau}$ and $\gberelation{t_2}{t_3}{\tau}$, so by induction,
+    $\gdenoequality{t_1}{t_2}{\tau}$ and $\gdenoequality{t_2}{t_3}{\tau}$. Hence by transitivity of equality, $\gdenoequality{t_1}{t_3}{\tau}$
+
+    \subsection{Beta Conversions}
+    These cases are typically proved using the properties of a cartesian closed category with a strong graded monad.
+
+    \paragraph{Case Lambda}
     \paragraph{Case Left Unit}
     \todo{Use left unit commutivity diagram}
 
@@ -100,38 +347,7 @@
     \paragraph{Case Associative}
     \todo{Long proof from book. Maybe use a big diagram.}
 
-    \subsection{Congruences}
-    Each congruence rule corresponds exactly to a type derivation rule. To convert to a type derivation, convert all preconditions, then use the equivalent type derivation rule.
-    \todo{These can be proved simply by using the recursive case and substituting values}
-    \paragraph{Case Lambda}
-    \paragraph{Case Return}
-    \paragraph{Case Apply}
-    \paragraph{Case Bind}
-    \paragraph{Case If}
-    \paragraph{Case Subtype}
-    \paragraph{Case subeffect}
 
-    \section{Beta-Eta equivalent terms have equal denotations}
-    If $\berelation{t}{t'}{\tau}$ then $\gdenoequality{t}{t'}{\tau}$
-
-    By induction over Beta-eta equivalence relation.
-    \subsection{Equivalence Relation}
-    The cases over the equivalence relation laws hold by the uniqueness of denotations and the fact that equality over morphisms is an equivalence relation.
-    \paragraph{Case Reflexive}
-    Equality is reflexive, so if $\gtyperelation{t}{\tau}$ then $\deno{\gtyperelation{t}{\tau}}$ is equal to itself.
-    \paragraph{Case Symmetric}
-    By inversion, if $\gberelation{t}{t'}{\tau}$ then $\gberelation{t'}{t}{\tau}$, so by induction $\gdenoequality{t'}{t}{\tau}$ and hence $\gdenoequality{t}{t'}{\tau}$
-    \paragraph{Case Transitive}
-    There must exist $t_2$ such that $\gberelation{t_1}{t_2}{\tau}$ and $\gberelation{t_2}{t_3}{\tau}$, so by induction,
-    $\gdenoequality{t_1}{t_2}{\tau}$ and $\gdenoequality{t_2}{t_3}{\tau}$. Hence by transitivity of equality, $\gdenoequality{t_1}{t_3}{\tau}$
-
-    \subsection{Beta Conversions}
-    These cases are typically proved using the properties of a cartesian closed category with a strong graded monad.
-
-    \paragraph{Case Lambda}
-    \paragraph{Case Left Unit}
-    \paragraph{Case Right Unit}
-    \paragraph{Case Associative}
 
     \subsection{Congruences}
     These cases can be proved fairly mechanically by assuming the preconditions, using induction to prove that the matching pairs of subexpressions have equal denotations, then constructing the denotations of the expressions using the equal denotations which gives trivially equal denotations.
