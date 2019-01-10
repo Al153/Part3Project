@@ -2,6 +2,7 @@
 
 \input{header.tex}
 
+
 \begin{document}
     \section{Beta and Eta Equivalence}
     \subsection{Beta conversions}
@@ -288,7 +289,7 @@
     \end{equation}
     hold. 
 
-    
+
     \section{Beta-Eta equivalent terms have equal denotations}
     If $\berelation{t}{t'}{\tau}$ then $\gdenoequality{t}{t'}{\tau}$
 
@@ -307,37 +308,58 @@
     These cases are typically proved using the properties of a cartesian closed category with a strong graded monad.
 
     \paragraph{Case Lambda}
+        Let $f = \deno{\typerelation{\gax}{C}{\meb}}: (\G \times A) \rightarrow\teb$
+
+        Let $g = \deno{\gtyperelation{v}{A}}: \G \rightarrow A$
+
+        By the substitution denotation, $$\deno{\typerelation{\G}{\ssub{x}{v}}{\gax}}: \G \rightarrow (\G \times A) = \pr{\idg}{g}$$
+
+        We have $$\deno{\gtyperelation{C\ssub{x}{v}}{\meb}} = f \after \pr{\idg}{g}$$
+
+        and hence
+        \begin{equation}
+            \begin{split}
+                \deno{\gtyperelation{\apply{(\lam{x}{A}{C})}{v}}{\meb}} & = \app\after\pr{\cur{f}}{g} \\
+                & = \app\after(\cur{f}\times\Id{A})\after\pr{\idg}{g}\\
+                & = f \after \pr{\idg}{g} \\
+                & = \deno{\gtyperelation{C\ssub{x}{v}}{\meb}}  
+            \end{split}
+        \end{equation}
+       
+
     \paragraph{Case Left Unit}
-    \todo{Use left unit commutivity diagram}
+    Let $f = \deno{\typerelation{\gax}{C}{\meb}}$
+
+    Let $g = \deno{\gtyperelation{v}{A}}: \G \rightarrow A$
+
+    By the substitution denotation, $$\deno{\typerelation{\G}{\ssub{x}{v}}{\gax}}: \G \rightarrow (\G \times A) = \pr{\idg}{g}$$
+
+    We have $$\deno{\gtyperelation{C\ssub{x}{v}}{\meb}} = f \after \pr{\idg}{g}$$
+
+    And hence
+
+    \begin{equation}
+        \begin{split}
+            \deno{\gtyperelation{\doin{x}{\return{v}}{C}}{\meb}} = &  \bind{\1}{\e}{B} \after \T{\1}{f} \after \tstrength{1}{\G}{A} \after \pr{\idg}{\point{A}\after g} \\
+            = & \bind{\1}{\e}{B} \after \T{\1}{f} \after \tstrength{1}{\G}{A} \after (\idg\times \point{A}) \after \pr{\idg}{g} \\
+            = & \bind{\1}{\e}{B} \after \T{\1}{f} \after \point{(\G \times A)} \after \pr{\idg}{g} \quad\text{By Tensor strength + unit}\\
+            = & \bind{\1}{\e}{B}\after\point{\teb}\after f\after\pr{\idg}{g} \quad\text{By Naturality of $\point{}$}\\
+            = & f\after\pr{\idg}{g} \quad\text{By left unit law}\\
+            = & \deno{\gtyperelation{C\ssub{x}{v}}{\meb}}\\
+        \end{split}
+    \end{equation}
+
 
     
 
     \paragraph{Case Right Unit}
-    \todo{Use left unit commutivity diagram}
-    Let $f = \deno{\gtyperelation{C}{\mea}}$
-    \todo{Proof of $\T{\e}{\pp}$ distributing with tensor strength to give $\pp$} 
-    \paragraph{Tensor Strength and Projection}
-
-    $$\pi_{2, A, B} = \pr_{2, \1, B} \after (\term{A} \times \Id{B})$$
-
-    And $\pi_{2, \1}$ is the left unitor, so by tensorial strength:
     
-    \begin{equation}
+    Let $f = \deno{\gtyperelation{C}{\mea}}$ 
+        \begin{equation}
         \begin{split}
-            \T{\e}{\pp} \after \tstrength{\e}{A}{B} & = \T{\e}{\pi_{2, \1, B}} \after \T{\e}{(\term{A} \times \Id{B})} \after \tstrength{\e}{A}{B} \\
-            & = \T{\e}{\pi_{2, 1, B}} \after \tstrength{\e}{\1}{B} \after (\term{A} \times \Id{B}) \\
-            & = \pi_{2,1,B} \after (\term{A} \times \Id{B}) \\
-            & = \pp
-        \end{split}
-    \end{equation}
-
-    
-
-    \begin{equation}
-        \begin{split}
-            \deno{\gtyperelation{\doin{x}{C}{\return{x}}}{\mea}}  & = \bind{\e}{\1}{A} \after \T{\e}{(\point{A} \after \pp)} \after \tstrength{\e}{\G}{A}\after \pr{\Id{\G}}{f} \\
-            & = \T{\e}{\pp} \after \tstrength{\e}{\G}{A} \after \pr {\Id{\G}}{f} \\
-            & = \pp \after \pr{\Id{\G}}{f}\\
+            \deno{\gtyperelation{\doin{x}{C}{\return{x}}}{\mea}}  & = \bind{\e}{\1}{A} \after \T{\e}{(\point{A} \after \pp)} \after \tstrength{\e}{\G}{A}\after \pr{\idg}{f} \\
+            & = \T{\e}{\pp} \after \tstrength{\e}{\G}{A} \after \pr {\idg}{f} \\
+            & = \pp \after \pr{\idg}{f}\\
             & = f
         \end{split}
     \end{equation}
@@ -347,16 +369,292 @@
     \paragraph{Case Associative}
     \todo{Long proof from book. Maybe use a big diagram.}
 
+    Let
+    \begin{align}
+        f ={}& \deno{\gtyperelation{C_1}{\mea}}\\
+        g ={}& \deno{\typerelation{\gax}{C_2}{\meb}}\\
+        h ={}& \deno{\typerelation{\gby}{C_3}\mec}
+    \end{align}
+
+    We also have the weakening:
+    \begin{equation}
+        \wrel{\i\pi\times}{\gax, y: B}{\gby}
+    \end{equation}
+
+    With denotation:
+
+    \begin{equation}
+        \deno{\wrel{\i\pi\times}{\gax, y: B}{\gby}} = (\p \times \Id{B})
+    \end{equation}
+
+    We need to prove that the following are equal
+
+    \begin{align}
+        &lhs =  \deno{\gtyperelation{\doin{x}{C_1}{(\doin{y}{C_2}{C_3})}}{\M{\e_1\dot\e_2\dot\e_2}}} \\
+        & = \bind{\e_1}{\e_2\dot\e_3}{C}\after\T{
+            \e_1}{(\bind{\e_2}{\e_3}{C}\after\T{\e_2}{h\after(\p \times \Id{B})}\after\tstrength{\e_2}{(\G\times A)}{B}\after\pr{\Id{(\G\times A)}}{g}
+            )}\after\tstrength{\e_1}{\G}{A}\after\pr{\idg}{f}\\
+        & rhs = \deno{\gtyperelation{\doin{y}{(\doin{x}{C_1}{C_2})}{C_3}}{\M{\e_1\dot\e_2\dot\e_2}}}  \\
+        & = \bind{\e_1\dot\e_2}{\e_3}{C}\after\T{\e_1\dot\e_2}{(h)}\after\tstrength{\e_1\dot\e_2}{\G}{B}\after\pr{\idg}{(\bind{\e_1}{\e_2}{B}\after\T{\e_1}{g}\after\tstrength{\e_1}{\G}{A}\after\pr{\idg}{f})} \\
+    \end{align}
+    Let's look at fragment $F$ of $rhs$.
+    \begin{equation}
+        F = \tstrength{\e_1\dot\e_2}{\G}{B}\after\pr{\idg}{(\bind{\e_1}{\e_2}{B}\after\T{\e_1}{g}\after\tstrength{\e_1}{\G}{A}\after\pr{\idg}{f})}
+    \end{equation}
+
+    So 
+    \begin{equation}
+        rhs = \bind{\e_1\dot\e_2}{\e_3}{C}\after\T{\e_1\dot\e_2}{(h)}\after F
+    \end{equation}
+
+    \begin{equation}
+        \begin{split}
+            F & = \tstrength{\e_1\dot\e_2}{\G}{B}\after(\idg\times\bind{\e_1}{\e_2}{B})\after(\idg\times\T{\e_1}{g})\after\pr{\idg}{\tstrength{\e_1}{\G}{A}\after\pr{\idg}{f}}\\
+            &  = \bind{\e_1}{\e_2}{(\G\times B)} \after \T{\e_1}{\tstrength{\e_2}{\G}{B}} \after\tstrength{\e_1}{\G}{(\T{\e_2}{B})} \after (\idg \after\T{\e_1}{g})\after\pr{\idg}{\tstrength{\e_1}{\G}{A}\after\pr{\idg}{f}}\quad\text{By \todo{ref: mu+tstrength}}
+            \\ & = \bind{\e_1}{\e_2}{(\G \times B))} \after \T{\e_1}{(\tstrength{\e_2}{\G}{B} \after (\idg \times g))} \after \tstrength{\e_1}{\G}{(\G \times A)} \after \pr{\idg}{\tstrength{\e_1}{\G}{A}\after\pr{\idg}{f}}\quad\text{By naturality of t-strength}
+        \end{split}
+    \end{equation}
+    Since
+    $
+        rhs = \bind{\e_1\dot\e_2}{\e_3}{C}\after\T{\e_1\dot\e_2}{(h)}\after F
+    $, 
+
+    \begin{equation}
+        \begin{split}
+            rhs = &\bind{\e_1\dot\e_2}{\e_3}{C}\after\T{\e_1\dot\e_2}{(h)}\after\bind{\e_1}{\e_2}{(\G \times B))} \after \T{\e_1}{(\tstrength{\e_2}{\G}{B} \after (\idg \times g))} \after \tstrength{\e_1}{\G}{(\G \times A)} \after \pr{\idg}{\tstrength{\e_1}{\G}{A}\after\pr{\idg}{f}}\\
+            = &\bind{\e_1\dot\e_2}{\e_3}{C}\after\bind{\e_1}{\e_2}{(\T{\e_3}{C})}\after\T{\e_1}{(\T{\e_2}{(h)} \after \tstrength{\e_2}{\G}{B} \after (\idg \times g))} \after \tstrength{\e_1}{\G}{(\G \times A)} \after \pr{\idg}{\tstrength{\e_1}{\G}{A}\after\pr{\idg}{f}}\quad\text{Naturality of $\mu$}\\
+            = & \bind{\e_1}{\e_2\dot\e_3}{C}\after\T{\e_1}{(\bind{\e_2}{\e_3}{C}\after \T{\e_2}{(h)} \after \tstrength{\e_2}{\G}{B} \after (\idg \times g))} \after \tstrength{\e_1}{\G}{(\G \times A)} \after \pr{\idg}{\tstrength{\e_1}{\G}{A}\after\pr{\idg}{f}}
+        \end{split}
+    \end{equation}
+
+    Let's now look at the fragment $G$ of $rhs$
+    \begin{equation}
+        G = \T{\e_1}{(\idg\times g)}\after\tstrength{\e_1}{\G}{(\G\times A)}\after\pr{\idg}{\tstrength{\e_1}{\G}{A}\after\pr{\idg}{f}}
+    \end{equation}
+
+    So
+    \begin{equation}
+        rhs = \bind{\e_1}{\e_2\dot\e_3}{C}\after\T{\e_1}{(\bind{\e_2}{\e_3}{C}\after \T{\e_2}{(h)} \after \tstrength{\e_2}{\G}{B})}\after G
+    \end{equation}
+
+
+    By folding out the $\pr{...}{...}$, we have
+    \begin{equation}
+        G = \T{\e_1}{(\idg\times g)}\after\tstrength{\e_1}{\G}{\G \times A}\after(\idg\times\tstrength{\e_1}{\G}{A})\after\pr{\idg}{\pr{\idg}{f}}
+    \end{equation}
+
+    From the rule \todo{Ref} showing the commutivity of tensor strength with $\alpha$, the following commutes
+
+    \begin{tikzcd}
+        \G 
+        \arrow [r, "\pr{\idg}{\pr{\idg}{f}}"]
+        &
+        \G\times(\G \times \T{\e_1}{A}) 
+        \arrow [d, "\idg\times\tstrength{\e_1}{\G}{A}"]
+        &
+        (\G \times \G) \times\T{\e_1}{A} 
+        \arrow [l, "\alpha_{\G, \G, (\T{\e_1}{A})}"]
+        \arrow [d, "\tstrength{\e_1}{(\G \times \G)}{A}"]
+        \\
+        &
+        \G \times \T{\e_1}{(\G \times A)}
+        \arrow [d, "\tstrength{\e_1}{\G}{\G \times A}"]
+        & \T{\e_1}{((\G \times \G)\times A)} 
+        \arrow [ld, "\T{\e_1}{\alpha_{\G, \G, A}}"]
+        \\
+        & \T{\e_1}{(\G \times (\G \times A))}
+    \end{tikzcd}
+
+    Where $\alpha: ((\_ \times \_) \times \_) \rightarrow (\_ \times (\_ \times \_))$ is a natural isomorphism.
+
+    \begin{align}
+        \alpha & = \pr{\p\after\p}{\pr{\pp\after\p}{\pp}}\\
+        \alpha^{-1} &= \pr{\pr{\p}{\p\after\pp}}{\pp\after\pp}
+    \end{align}
+
+    So:
+
+    \begin{equation}
+        \begin{split}
+            G = & \T{\e_1}{((\idg\times g)\after \alpha_{\G, \G, A})} \after \tstrength{\e_1}{(\G\times\G)}{A}\after\alpha^{-1}_{\G, \G, (\T{\e_1}{A})}\after\pr{\idg}{\pr{\idg}{f}} \\
+            = & \T{\e_1}{((\idg\times g)\after \alpha_{\G, \G, A})} \after \tstrength{\e_1}{(\G\times\G)}{A}\after(\pr{\idg}{\idg}\times \Id{\T{\e_1}{A}})\after\pr{\idg}{f}\quad\text{By definition of $\alpha$ and products}\\
+            = & \T{\e_1}{((\idg\times g)\after \alpha_{\G, \G, A}\after(\pr{\idg}{\idg}\times \Id{A}))}\after\tstrength{\e_1}{\G}{A}\after\pr{\idg}{f}\quad\text{By tensor strength's left-naturality}\\
+            = & \T{\e_1}{((\p\times\Id{\T{\e_2}{B}})\after\pr{\Id{(\G\times A)}}{g})}\after\tstrength{\e_1}{\G}{A}\after\pr{\idg}{f}
+        \end{split}
+    \end{equation}
+Since 
+\begin{equation}
+    rhs = \bind{\e_1}{\e_2\dot\e_3}{C}\after\T{\e_1}{(\bind{\e_2}{\e_3}{C}\after \T{\e_2}{(h)} \after \tstrength{\e_2}{\G}{B})}\after G
+\end{equation}
+
+We Have
+\begin{equation}
+    \begin{split}
+        rhs ={} & \bind{\e_1}{\e_2\dot\e_3}{C}\after\T{\e_1}{(\bind{\e_2}{\e_3}{C}\after \T{\e_2}{(h)} \after \tstrength{\e_2}{\G}{B}\after(\p\times\Id{\T{\e_2}{B}})\after\pr{\Id{(\G\times A)}}{g})}\after\tstrength{\e_1}{\G}{A}\after\pr{\idg}{f}\\
+        ={} & \bind{\e_1}{\e_2\dot\e_3}{C}\after\T{\e_1}{(\bind{\e_2}{\e_3}{C}\after \T{\e_2}{(h \after (\p\times\Id{B}))}\after\tstrength{\e_2}{(\G\times A)}{B}\after\pr{\Id{(\G\times A)}}{g})}\after\tstrength{\e_1}{\G}{A}\after\pr{\idg}{f}\quad\text{By Left-Tensor Strength}\\
+        ={} & lhs \quad\text{Woohoo!}
+    \end{split}
+\end{equation}
+
+%%%%%% END CASE ASSOCIATIVE %%%%%%%
+
+
+
+    \paragraph{Case If-True}
+    Let
+    \begin{align}
+        f = &\deno{\gtyperelation{C_1}{\mea}}\\
+        g = &\deno{\gtyperelation{C_2}{\mea}}\\
+    \end{align}
+
+    Then
+    \begin{equation}
+        \begin{split}
+            \deno{\gtyperelation{\ifthenelse{\t}{A}{v}{C_1}{C_2}}{\mea}} & = \ifnt{\mea}\after \pr{\deno{\t}\after\term{\G}}{\pr{f}{g}} \\
+            & = f\\
+            & = \deno{\gtyperelation{C_1}{\mea}}\\
+        \end{split}
+    \end{equation}
+
+    \paragraph{Case If-False}
+    Let
+    \begin{align}
+        f = &\deno{\gtyperelation{C_1}{\mea}}\\
+        g = &\deno{\gtyperelation{C_2}{\mea}}\\
+    \end{align}
+
+    Then
+    \begin{equation}
+        \begin{split}
+            \deno{\gtyperelation{\ifthenelse{\f}{A}{v}{C_1}{C_2}}{\mea}} & = \ifnt{\mea}\after \pr{\deno{\f}\after\term{\G}}{\pr{f}{g}} \\
+            & = g\\
+            & = \deno{\gtyperelation{C_1}{\mea}}\\
+        \end{split}
+    \end{equation}
+
 
 
     \subsection{Congruences}
     These cases can be proved fairly mechanically by assuming the preconditions, using induction to prove that the matching pairs of subexpressions have equal denotations, then constructing the denotations of the expressions using the equal denotations which gives trivially equal denotations.
 
     \paragraph{Case Lambda}
+        By inversion, we have $\berelation{\gax}{C_1}{C_2}{\meb}$
+        By induction, we therefore have $\deno{\typerelation{\gax}{C_1}{\meb}} = \deno{\typerelation{\gax}{C_2}{\meb}}$
+
+        Then let
+        \begin{equation}
+            f = \deno{\typerelation{\gax}{C_1}{\meb}} = \deno{\typerelation{\gax}{C_2}{\meb}}
+        \end{equation}
+
+        And so
+        \begin{equation}
+            \deno{\gtyperelation{\lam{x}{A}{C_1}}{\lamtype{A}{\e}{B}}} = \cur{f} = \deno{\gtyperelation{\lam{x}{A}{C_2}}{\lamtype{A}{\e}{B}}}
+        \end{equation}
+
+
     \paragraph{Case Return}
+    By inversion, we have $\gberelation{v_1}{v_2}{A}$
+    By induction, we therefore have $\deno{\gtyperelation{v_1}{A}} = \deno{\gtyperelation{v_2}{A}}$
+
+    Then let
+    \begin{equation}
+        f = \deno{\gtyperelation{v_1}{A}} = \deno{\gtyperelation{v_2}{A}}
+    \end{equation}
+
+    And so
+    \begin{equation}
+        \deno{\gtyperelation{\return{v_1}}{\M{\1}{A}}} = \point{A}\after f = \deno{\gtyperelation{\return{v_2}}{\M{\1}{A}}}
+    \end{equation}
+
+
     \paragraph{Case Apply}
+    By inversion, we have $\gberelation{v_1}{v_1'}{\lamtype{A}{\e}{B}}$ and $\gberelation{v_2}{v_2'}{A}$
+    By induction, we therefore have $\deno{\gtyperelation{v_1}{\lamtype{A}{\e}{B}}}= \deno{\gtyperelation{v_1'}{\lamtype{A}{\e}{B}}}$ and $\deno{\gtyperelation{v_2}{A}} = \deno{\gtyperelation{v_2'}{A}}$
+
+    Then let
+    \begin{align}
+        f &{}= \deno{\gtyperelation{v_1}{\lamtype{A}{\e}{B}}} = \deno{\gtyperelation{v_1'}{\lamtype{A}{\e}{B}}}\\
+        g &{}= \deno{\gtyperelation{v_2}{A}} = \deno{\gtyperelation{v_2'}{A}}
+    \end{align}
+
+
+
+    And so
+    \begin{equation}
+        \deno{\gtyperelation{\apply{v_1}{v_2}}{\M{\e}{A}}} = \app\after\pr{f}{g} = \deno{\gtyperelation{\apply{v_1'}{v_2'}}{\M{\e}{A}}}
+    \end{equation}
+
+
     \paragraph{Case Bind}
+    By inversion, we have $\gberelation{C_1}{C_1'}{\mea}$ and $\berelation{\gax}{C_2}{C_2'}{\meb}$
+    By induction, we therefore have $\deno{\gtyperelation{C_1}{\mea}}= \deno{\gtyperelation{C_1'}{\mea}}$ and $\deno{\typerelation{\gax}{C_2}{\meb}} = \deno{\typerelation{\gax}{C_2'}{\meb}}$
+
+    Then let
+    \begin{align}
+        f &{}=\deno{\gtyperelation{C_1}{\M{\e_1}{A}}}= \deno{\gtyperelation{C_1'}{\M{\e_1}{A}}}\\
+        g &{}=\deno{\typerelation{\gax}{C_2}{\M{\e_2}{B}}} = \deno{\typerelation{\gax}{C_2'}{\M{\e_2}{B}}}
+    \end{align}
+
+
+
+    And so
+    \begin{equation}
+        \begin{split}
+            \deno{\gtyperelation{\doin{x}{C_1}{C_2}}{\M{\e_1\dot\e_2}{A}}} & = \bind{\e_1}{\e_2}{B} \after \T{\e_1}{g} \after \tstrength{\e_1}{\G}{A} \after \pr{\idg}{f}\\
+             & = \deno{\gtyperelation{\doin{x}{C_1}{C_2}}{\M{\e_1\dot\e_2}{A}}}
+        \end{split}
+    \end{equation}
     \paragraph{Case If}
+    By inversion, we have $\gberelation{v}{v'}{\B}$, $\gberelation{C_1}{C_1'}{\mea}$ and $\gberelation{C_2}{C_2'}{\mea}$
+    By induction, we therefore have $\deno{\gtyperelation{v}{\B}} = \deno{\gtyperelation{v'}{B}}$, $\deno{\gtyperelation{C_1}{\mea}}= \deno{\gtyperelation{C_1'}{\mea}}$ and $\deno{\typerelation{\gax}{C_2}{\meb}} = \deno{\typerelation{\gax}{C_2'}{\meb}}$
+
+    Then let
+    \begin{align}
+        f &{}=\deno{\gtyperelation{v}{\B}} = \deno{\gtyperelation{v'}{B}}\\
+        g &{}=\deno{\gtyperelation{C_1}{\M{\e_1}{A}}}= \deno{\gtyperelation{C_1'}{\M{\e_1}{A}}}\\
+        h &{}=\deno{\typerelation{\gax}{C_2}{\M{\e_2}{B}}} = \deno{\typerelation{\gax}{C_2'}{\M{\e_2}{B}}}
+    \end{align}
+
+
+
+    And so
+    \begin{equation}
+        \begin{split}
+            \deno{\gtyperelation{\ifthenelse{\e}{A}{v}{C_1}{C_2}}} & = \ifnt{\mea}\after \pr{f}{\pr{g}{h}}\\
+             & = \deno{\gtyperelation{\doin{x}{C_1}{C_2}}{\M{\e_1\dot\e_2}{A}}}
+        \end{split}
+    \end{equation}
     \paragraph{Case Subtype}
+    By inversion, we have $\gberelation{v_1}{v_2}{A}$, and $A \subtype B$ 
+    By induction, we therefore have $\deno{\gtyperelation{v_1}{A}} = \deno{\gtyperelation{v_2}{A}}$
+
+    Then let
+    \begin{align}
+        f &{}=\deno{\gtyperelation{v_1}{A}} = \deno{\gtyperelation{v_2}{B}}\\
+        g &{}=\deno{A \subtype B}
+    \end{align}
+
+
+
+    And so
+    \begin{equation}
+            \deno{\gtyperelation{v_1}{B}} = g \after f = \deno{\gtyperelation{v_1}{B}}
+    \end{equation}
     \paragraph{Case subeffect}
+    By inversion, we have $\gberelation{C_1}{C_2}{\M{\e_1}{A}}$, and $A \subtype B$ and $\e_1 \subeffect \e_2$
+    By induction, we therefore have $\deno{\gtyperelation{C_1}{\M{\e_1}{A}}} = \deno{\gtyperelation{C_2}{\M{\e_1}{A}}}$
+
+    Then let
+    \begin{align}
+        f &{}=\deno{\gtyperelation{v_1}{A}} = \deno{\gtyperelation{v_2}{B}}\\
+        g &{}=\deno{A \subtype B}\\
+        h &{}=\deno{\e_1\subeffect\e_2}
+    \end{align}
+
+    And so
+    \begin{equation}
+            \deno{\gtyperelation{C_1}{\M{\e_2}{B}}} = h_B \after \T{\e_1}{g} \after f = \deno{\gtyperelation{C_2{\M{\e_2}{B}}}}
+    \end{equation}
+
+    $$\square$$
 \end{document}

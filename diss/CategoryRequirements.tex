@@ -80,6 +80,36 @@ Satisfying the following rules:
 Where $\lambda: \terminal \times \Id{} \rightarrow \Id{}$ is the left-unitor.
 ($\lambda = \pp$)
 
+\paragraph{Tensor Strength and Projection}
+Due to the left-unitor law, we can develop a new law for the commutivity of $\pp$ with $\tstrength{}{}{}$
+
+    $$\pi_{2, A, B} = \pi_{2, \1, B} \after (\term{A} \times \Id{B})$$
+
+    And $\pi_{2, \1}$ is the left unitor, so by tensorial strength:
+    
+    \begin{equation}
+        \begin{split}
+            \T{\e}{\pp} \after \tstrength{\e}{A}{B} & = \T{\e}{\pi_{2, \1, B}} \after \T{\e}{(\term{A} \times \Id{B})} \after \tstrength{\e}{A}{B} \\
+            & = \T{\e}{\pi_{2, 1, B}} \after \tstrength{\e}{\1}{B} \after (\term{A} \times \Id{B}) \\
+            & = \pi_{2,1,B} \after (\term{A} \times \Id{B}) \\
+            & = \pp
+        \end{split}
+    \end{equation}
+
+So the following commutes:
+
+\begin{tikzcd}
+    A \times \teb 
+    \arrow [r, "\tstrength{\e}{A}{B}"]
+    \arrow [rd, "\pp"]
+    & 
+    \T{\e}{(A \times B)}
+    \arrow [d, "\T{\e}{\pp}"]
+    \\
+    &
+    \teb
+\end{tikzcd}
+
 
 \subsection{Commutativity with Join}
 \begin{tikzcd}
@@ -99,6 +129,41 @@ Where $\lambda: \terminal \times \Id{} \rightarrow \Id{}$ is the left-unitor.
     &
     \T{\e_1 \dot \e_2}({A \times B)}
 \end{tikzcd}
+
+\section{Commutivity with Unit}
+
+\begin{tikzcd}
+    A \times B
+    \arrow [r, "\Id{A} \times \point{B}"]
+    \arrow [rd, "\point{A \times B}"]
+    &
+    A \times \teb 
+    \arrow [d, "\tstrength{\e}{A}{B}"]
+    \\
+    &
+    \T{\e}{(A \times B)}
+\end{tikzcd}
+
+\section{Commutivity with $\alpha$}
+Let $\alpha_{A, B, C} = \pr{\p\after\p}{\pr{\pp\after\p}{\pp}}: ((A \times B) \times C) \rightarrow (A \times (B \times C))$
+
+
+\begin{tikzcd}
+    (A\times B)\times \T{\e}{C} 
+    \arrow [rr, "\tstrength{\e}{(A\times B)}{C}"]
+    \arrow [d, "\alpha_{A, B, \T{\e}{C}}"]
+    & & \T{\e}{((A \times B)\times C)}
+    \arrow [d, "\T{\e}{\alpha{A, B, C}}"]
+    \\
+    A \times (B \times \T{\e}{C}) 
+    \arrow [r, "\Id{A}\times\tstrength{\e}{B}{C}"]
+    &
+    A\times\T{\e}{(B \times C)} 
+    \arrow [r, "\tstrength{\e}{A}{(B \times C)}"]
+    & \T{\e}{(A \times (B \times C))}
+    \\
+\end{tikzcd}
+\todo{Needed?}
 
 \section{Subeffecting}
 For each instance of the pre-order $(\E, \subeffect)$, $\e_1 \subeffect \e_2$, there exists a natural transformation

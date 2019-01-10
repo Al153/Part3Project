@@ -61,7 +61,7 @@ Denotations are defined recursively over the typing derivation of a term. Hence,
  
     \item $\treerule{If}{f = \deno{\typerelation{\G}{v}{\B}}\s\s g = \deno{\typerelation{\G}{C_1}{\mea}}\s\s h = \deno{\typerelation{\G}{C_2}{\mea}}}{\deno{{\typerelation{\G}{\ifthenelse{\e}{A}{v}{C_1}{C_2}}{\mea}}} = \ifnt{\meb} \after \pr{f}{\pr{g}{h}} : \G \rightarrow \tea}$
         
-    \item $\treerule{Bind}{f = \deno{\typerelation{\G}{C_1}{\M{\e_1}{A}} : \G \rightarrow \T{\e_1}{A}\s\s g = \deno{\typerelation{\gax}{C_2}{\M{\e_2}{B}}}}: \G \times A \rightarrow \T{\e_2}{B}}{\deno{\typerelation{\G}{\doin{x}{C_1}{C_2}}{\M{\e_1 \dot \e_2}}} = \bind{\e_1}{\e_2}{B} \after \T{\e_1}{g} \after \tstrength{\G}{A}{\e_1} \after \pr{\Id{\G}}{f}: \G \rightarrow \T{\e_1 \dot \e_2}{B}}$ 
+    \item $\treerule{Bind}{f = \deno{\typerelation{\G}{C_1}{\M{\e_1}{A}} : \G \rightarrow \T{\e_1}{A}\s\s g = \deno{\typerelation{\gax}{C_2}{\M{\e_2}{B}}}}: \G \times A \rightarrow \T{\e_2}{B}}{\deno{\typerelation{\G}{\doin{x}{C_1}{C_2}}{\M{\e_1 \dot \e_2}}} = \bind{\e_1}{\e_2}{B} \after \T{\e_1}{g} \after \tstrength{\G}{A}{\e_1} \after \pr{\idg}{f}: \G \rightarrow \T{\e_1 \dot \e_2}{B}}$ 
     \item  $\treerule{Subeffect}{f = \deno{\typerelation{\G}{c}{\M{\e_1}{A}}}: \G \rightarrow \T{\e_1}{A} \s\s g = \deno{A \subtype B}\s\s h = \dse{\e_1}{\e_2}}{\deno{\typerelation{\G}{C}{\M{\e_2}{B}}} = h_B \after \T{\e_1}{g} \after f}$
     \item $\treerule{Apply}{f = \deno{\gtyperelation{v_1}{\lamtype{A}{\e}B}}: \G \rightarrow (\teb)^{A} \s\s g=\deno{\gtyperelation{v_2}{A}}: \G \rightarrow A}{\deno{\gtyperelation{\apply{v_1}{v_2}}{\meb}}: \G \rightarrow \teb}$
 \end{itemize}
