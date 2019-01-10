@@ -1,9 +1,5 @@
-\documentclass{report}
-\input{header.tex}
-
-
-\begin{document}
-\section{CCC}
+\newcommand\CategoryRequirements[0]{
+    \section{CCC}
 The section should be a cartesian closed category.
 That is it should have:
 \begin{itemize}
@@ -15,30 +11,30 @@ That is it should have:
 The category should have a graded pre-monad. That is:
 
 \begin{itemize}
-    \item An endofunctor indexed by the pre-order on effects: $\T{}{}: (\E, \subeffect)  \rightarrow \Cat(\C, \C)$
+    \item An endofunctor indexed by the po-monad on effects: $\T{}{}: (\E, \dot\, \1,\subeffect)  \rightarrow \Cat(\C, \C)$
     \item A unit natural transformation: $\point{}: \Id{} \rightarrow \T{\1}{}$
     \item A join natural transformation: $\bind{\e_1}{\e_2}{}: \T{\e_1}{\T{\e_2}{}} \rightarrow \T{\e_1 \dot \e_2}{}$
 \end{itemize}
 
 Subject to the following commutative diagrams:
 \subsection{Left Unit}
-    \begin{tikzcd}
-    \tea \arrow[rd, "\Id{\tea}"] \arrow[r, "\T{\e}{\point{A}}"] & \T{\e}{\T{\1}{A}} \arrow[d, "\bind{\e}{\1}{A}"] \\
-    & \tea
+    \begin{tikzcd}[ampersand replacement=\&]
+    \tea \arrow[rd, "\Id{\tea}"] \arrow[r, "\T{\e}{\point{A}}"] \& \T{\e}{\T{\1}{A}} \arrow[d, "\bind{\e}{\1}{A}"] \\
+    \& \tea
     \end{tikzcd}
 
 \subsection{Right Unit}
-    \begin{tikzcd}
-    \tea \arrow[rd, "\Id{\tea}"] \arrow[r, "\point{\tea}"] & \T{\1}{\T{\1}{A}} \arrow[d, "\bind{\1}{\e}{A}"] \\
-    & \tea
+    \begin{tikzcd}[ampersand replacement=\&]
+    \tea \arrow[rd, "\Id{\tea}"] \arrow[r, "\point{\tea}"] \& \T{\1}{\T{\1}{A}} \arrow[d, "\bind{\1}{\e}{A}"] \\
+    \& \tea
     \end{tikzcd}
 
 \subsection{Associativity}
-\begin{tikzcd}
+\begin{tikzcd}[ampersand replacement=\&]
     \T{\e_1}{\T{\e_2}{\T{\e_3}{A}}} 
     \arrow [r, "\bind{\e_1}{\e_2}{\T{\e_3}{A}}"]
-    \arrow [d, "\T{\e_1}{\bind{\e_2}{\e_3}{A}}"] & \T{\e_1 \dot \e_2}{\T{\e_3} A} \arrow [d, "\bind{\e_1 \dot \e_2}{\e_3}{A}"] \\
-    \T{\e_1}{\T{\e_2 \dot \e_3}{A}} \arrow [r, "\bind{\e_1}{\e_2 \dot \e_3}{A}"] & \T{\e_1 \dot \e_2 \dot \e_3}{A}    
+    \arrow [d, "\T{\e_1}{\bind{\e_2}{\e_3}{A}}"] \& \T{\e_1 \dot \e_2}{\T{\e_3} A} \arrow [d, "\bind{\e_1 \dot \e_2}{\e_3}{A}"] \\
+    \T{\e_1}{\T{\e_2 \dot \e_3}{A}} \arrow [r, "\bind{\e_1}{\e_2 \dot \e_3}{A}"] \& \T{\e_1 \dot \e_2 \dot \e_3}{A}    
 \end{tikzcd}
 
 
@@ -49,32 +45,32 @@ That is, it should have a natural transformation
 
 Satisfying the following rules:
 \subsection{Left Naturality}
-\begin{tikzcd}
-    A \times \teb \arrow [r, "\Id{A} \times \T{\e}{f}"] \arrow [d, "\tstrength{\e}{A}{B}"]&
+\begin{tikzcd}[ampersand replacement=\&]
+    A \times \teb \arrow [r, "\Id{A} \times \T{\e}{f}"] \arrow [d, "\tstrength{\e}{A}{B}"]\&
     A \times \T{\e}{B'} \arrow [d, "\tstrength{\e}{A}{B'}"]\\
-    \T{\e}{(A \times B)} \arrow [r, "\T{e}{(\Id{A} \times f)}"] &
+    \T{\e}{(A \times B)} \arrow [r, "\T{e}{(\Id{A} \times f)}"] \&
     \T{\e}{(A \times B')}
 \end{tikzcd}
 
 \subsection{Right Naturality}
 
-\begin{tikzcd}
-    A \times \teb  \arrow [r, "f \times \Id{\teb}"] \arrow [d, "\tstrength{\e}{A}{B}"]  &
+\begin{tikzcd}[ampersand replacement=\&]
+    A \times \teb  \arrow [r, "f \times \Id{\teb}"] \arrow [d, "\tstrength{\e}{A}{B}"]  \&
     A' \times \teb \arrow [d, "\tstrength {\e} {A'}{B}"]\\
-    \T{\e}{(A \times B)} \arrow [r, "\T{\e}{(f \times \Id{B})}"]&
+    \T{\e}{(A \times B)} \arrow [r, "\T{\e}{(f \times \Id{B})}"]\&
     \T{\e}{(A' \times B)}
 \end{tikzcd}
 
 \subsection{Unitor Law}
-\begin{tikzcd}
+\begin{tikzcd}[ampersand replacement=\&]
     \1 \times \tea 
     \arrow [r, "\tstrength{\e}{\1}{A}"]
     \arrow [rd, "\lambda_{\tea}"]
-    & 
+    \& 
     \T{\e}{(\1 \times A)}
     \arrow [d, "\T{\e}{(\lambda_A)}"]
     \\
-    &
+    \&
     \tea
 \end{tikzcd}
 Where $\lambda: \terminal \times \Id{} \rightarrow \Id{}$ is the left-unitor.
@@ -89,58 +85,58 @@ Due to the left-unitor law, we can develop a new law for the commutivity of $\pp
     
     \begin{equation}
         \begin{split}
-            \T{\e}{\pp} \after \tstrength{\e}{A}{B} & = \T{\e}{\pi_{2, \1, B}} \after \T{\e}{(\term{A} \times \Id{B})} \after \tstrength{\e}{A}{B} \\
-            & = \T{\e}{\pi_{2, 1, B}} \after \tstrength{\e}{\1}{B} \after (\term{A} \times \Id{B}) \\
-            & = \pi_{2,1,B} \after (\term{A} \times \Id{B}) \\
-            & = \pp
+            \T{\e}{\pp} \after \tstrength{\e}{A}{B} \& = \T{\e}{\pi_{2, \1, B}} \after \T{\e}{(\term{A} \times \Id{B})} \after \tstrength{\e}{A}{B} \\
+            \& = \T{\e}{\pi_{2, 1, B}} \after \tstrength{\e}{\1}{B} \after (\term{A} \times \Id{B}) \\
+            \& = \pi_{2,1,B} \after (\term{A} \times \Id{B}) \\
+            \& = \pp
         \end{split}
     \end{equation}
 
 So the following commutes:
 
-\begin{tikzcd}
+\begin{tikzcd}[ampersand replacement=\&]
     A \times \teb 
     \arrow [r, "\tstrength{\e}{A}{B}"]
     \arrow [rd, "\pp"]
-    & 
+    \& 
     \T{\e}{(A \times B)}
     \arrow [d, "\T{\e}{\pp}"]
     \\
-    &
+    \&
     \teb
 \end{tikzcd}
 
 
 \subsection{Commutativity with Join}
-\begin{tikzcd}
+\begin{tikzcd}[ampersand replacement=\&]
     A \times \T{\e_1}{\T{\e_2}{B}} 
     \arrow [r, "\tstrength{\e_1}{A}{\T{\e_2}{B}}"]
     \arrow [dr, "\Id{A} \times \bind{\e_1}{\e_2}{B}"]
-    & 
+    \& 
     \T{\e_1}{(A \times \T{\e_2}{B})} 
     \arrow [r, "\T{\e_1}{\tstrength{\e_2}{A}{B}}"]
-    & 
+    \& 
     \T{\e_1}{\T{\e_2}{(A \times B)}} 
     \arrow [d, "\bind{\e_1}{\e_2}{A \times B}"]
     \\
-    &
+    \&
     A \times \T{\e_1 \dot \e_2}{B}  
     \arrow [r, "\tstrength{\e_1 \dot \e_2}{A}{B}"] 
-    &
+    \&
     \T{\e_1 \dot \e_2}({A \times B)}
 \end{tikzcd}
 
 \section{Commutivity with Unit}
 
-\begin{tikzcd}
+\begin{tikzcd}[ampersand replacement=\&]
     A \times B
     \arrow [r, "\Id{A} \times \point{B}"]
     \arrow [rd, "\point{A \times B}"]
-    &
+    \&
     A \times \teb 
     \arrow [d, "\tstrength{\e}{A}{B}"]
     \\
-    &
+    \&
     \T{\e}{(A \times B)}
 \end{tikzcd}
 
@@ -148,19 +144,19 @@ So the following commutes:
 Let $\alpha_{A, B, C} = \pr{\p\after\p}{\pr{\pp\after\p}{\pp}}: ((A \times B) \times C) \rightarrow (A \times (B \times C))$
 
 
-\begin{tikzcd}
+\begin{tikzcd}[ampersand replacement=\&]
     (A\times B)\times \T{\e}{C} 
     \arrow [rr, "\tstrength{\e}{(A\times B)}{C}"]
     \arrow [d, "\alpha_{A, B, \T{\e}{C}}"]
-    & & \T{\e}{((A \times B)\times C)}
-    \arrow [d, "\T{\e}{\alpha{A, B, C}}"]
+    \& \& \T{\e}{((A \times B)\times C)}
+    \arrow [d, "\T{\e}{\alpha_{A, B, C}}"]
     \\
     A \times (B \times \T{\e}{C}) 
     \arrow [r, "\Id{A}\times\tstrength{\e}{B}{C}"]
-    &
+    \&
     A\times\T{\e}{(B \times C)} 
     \arrow [r, "\tstrength{\e}{A}{(B \times C)}"]
-    & \T{\e}{(A \times (B \times C))}
+    \& \T{\e}{(A \times (B \times C))}
     \\
 \end{tikzcd}
 \todo{Needed?}
@@ -170,10 +166,10 @@ For each instance of the pre-order $(\E, \subeffect)$, $\e_1 \subeffect \e_2$, t
 $\dse{\e_1}{\e_2}: \T{\e_1}{} \rightarrow \T{\e_2}{}$ that commutes with $\tstrength{}{}{}$:
 
 \subsection{Subeffecting and Tensor Strength}
-\begin{tikzcd}
-    A \times \T{\e_1}{B} \arrow [r, "\Id{A} \times \dse{\e_1}{\e_2}_B"] \arrow [d, "\tstrength{\e_1}{A}{B}"] &
+\begin{tikzcd}[ampersand replacement=\&]
+    A \times \T{\e_1}{B} \arrow [r, "\Id{A} \times \dse{\e_1}{\e_2}_B"] \arrow [d, "\tstrength{\e_1}{A}{B}"] \&
     A \times \T{\e_2}{B} \arrow [d, "\tstrength{\e_2}{A}{B}"] \\
-    \T{\e_1}{(A \times B)} \arrow [r, "\dse{\e_1}{\e_2}_{ A \times B}"] &
+    \T{\e_1}{(A \times B)} \arrow [r, "\dse{\e_1}{\e_2}_{ A \times B}"] \&
     \T{\e_2}{(A \times B)} 
 \end{tikzcd}
 
@@ -189,8 +185,8 @@ $$
 
 \begin{equation}
     \begin{split}
-        rhs = & (h_{B'} \after \T{\e_1}{g})^A \after (\T{\e_1}{B})^f \\
-        = & \cur{h_{B'}  \after \T{\e_1}{g}\after \app} \after \cur{\app \after (\Id{} \times f)}\\
+        rhs = \& (h_{B'} \after \T{\e_1}{g})^A \after (\T{\e_1}{B})^f \\
+        = \& \cur{h_{B'}  \after \T{\e_1}{g}\after \app} \after \cur{\app \after (\Id{} \times f)}\\
     \end{split}
 \end{equation}
 
@@ -203,4 +199,13 @@ Satisfying the following:
     \item $\ifnt{A}  \after \pr{\deno{\t}\after \term{\G}}{\pr{t}{f}} = t$
     \item $\ifnt{A} \after \pr{\deno{\f}\after \term{\G}}{\pr{t}{f}} = f$
 \end{itemize}
+}
+
+\ifdefined\NoDocument
+\else
+\documentclass{report}
+\input{header.tex}
+\begin{document}
+    \CategoryRequirements{}
 \end{document}
+\fi

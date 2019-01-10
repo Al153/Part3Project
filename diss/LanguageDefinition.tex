@@ -1,10 +1,5 @@
-\documentclass{report}
-
-\input{header.tex}
-
-
-\begin{document}
-\section{Terms}
+\newcommand\LanguageDefinition[0]{
+    \section{Terms}
     \subsection{Value Terms}
 
     \begin{equation}
@@ -92,4 +87,13 @@
     Only the type rule \texttt{Weaken} adds terms to the environment from its preconditions to its post-condition and it does so in an $\ok{}$ preserving way. Any type derivation tree has at least one leaf. All leaves are axioms which require $\ok{\G}$. And all non-axiom derivations preserve the $\ok{}$ property.
 
 
+}
+
+\ifdefined\NoDocument
+\else
+\documentclass{report}
+\input{header.tex}
+\begin{document}
+    \LanguageDefinition
 \end{document}
+\fi

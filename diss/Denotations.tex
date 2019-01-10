@@ -1,9 +1,5 @@
-\documentclass{report}
-
-\input{header.tex}
-
-\begin{document}
-\section{Denotations of Types}
+\newcommand\Denotations[0]{
+    \section{Denotations of Types}
 \subsection{Denotation of Type Environments}
 Given a function $\deno{\_}$ mapping types to objects in the category $\C$, we can define the denotation of an $\ok{}$ type environment $\G$.
 $$\deno{\nil} = \1$$
@@ -65,4 +61,12 @@ Denotations are defined recursively over the typing derivation of a term. Hence,
     \item  $\treerule{Subeffect}{f = \deno{\typerelation{\G}{c}{\M{\e_1}{A}}}: \G \rightarrow \T{\e_1}{A} \s\s g = \deno{A \subtype B}\s\s h = \dse{\e_1}{\e_2}}{\deno{\typerelation{\G}{C}{\M{\e_2}{B}}} = h_B \after \T{\e_1}{g} \after f}$
     \item $\treerule{Apply}{f = \deno{\gtyperelation{v_1}{\lamtype{A}{\e}B}}: \G \rightarrow (\teb)^{A} \s\s g=\deno{\gtyperelation{v_2}{A}}: \G \rightarrow A}{\deno{\gtyperelation{\apply{v_1}{v_2}}{\meb}}: \G \rightarrow \teb}$
 \end{itemize}
+}
+\ifdefined\NoDocument
+\else
+\documentclass{report}
+\input{header.tex}
+\begin{document}
+    \Denotations
 \end{document}
+\fi

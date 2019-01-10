@@ -1,9 +1,4 @@
-\documentclass{report}
-\input{header.tex}
-
-
-
-\begin{document}
+\newcommand{\Weakening}[0]{
     \section{Weakening Definition}
     \subsection{Relation}
     We define the ternary weaking relation $\wrel{w}{\G'}{\G}$ using the following rules.
@@ -40,6 +35,13 @@
     \paragraph{Proof}
     \todo{this, induct over typing relation/definition of Denotations}
 
+}
 
-
+\ifdefined\NoDocument
+\else
+\documentclass{report}
+\input{header.tex}
+\begin{document}
+   \Weakening
 \end{document}
+\fi

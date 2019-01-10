@@ -1,3 +1,9 @@
+
+%% Don't import the header multiple times
+
+\ifdefined\HEADERIMPORTED
+\else
+\newcommand\HEADERIMPORTED[0]{This file is HEADERIMPORTED}
 \usepackage{amssymb}
 
 \usepackage{amsmath}
@@ -156,3 +162,12 @@
 \newcommand\app[0]{\texttt{app}}
 \newcommand\cur[1]{\texttt{cur}(#1)}
 \newcommand{\ifnt}[1]{\texttt{If}_{#1}}
+
+\renewcommand\s{\sigma}
+\newcommand{\setto}{:=}
+\newcommand{\fv}[1]{\texttt{fv}(#1)}
+\newcommand{\sub}[1]{\left\[#1\right\]}
+
+
+
+\fi

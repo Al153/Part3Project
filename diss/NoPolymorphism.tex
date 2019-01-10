@@ -1,0 +1,39 @@
+\documentclass{report}
+
+\newcommand\NoDocument[0]{Dummy Command to tell subfiles not to instantiate a document}
+
+\input{header.tex}
+\input{LanguageDefinition.tex}
+\input{CategoryRequirements.tex}
+\input{Denotations.tex}
+\input{UniqueDenotations.tex}
+\input{Weakening.tex}
+\input{Substitution.tex}
+\input{BetaEtaEquivalence.tex}
+
+
+
+\begin{document}
+\tableofcontents
+\chapter{Language Definition}
+\LanguageDefinition
+
+\chapter{Category Requirements}
+\CategoryRequirements
+
+\chapter{Denotations}
+\Denotations
+
+\chapter{Unique Denotations}
+\UniqueDenotations
+
+\chapter{Weakening}
+\Weakening
+
+\chapter{Substitution}
+\Substitution
+
+\chapter{Beta Eta Equivalence (Soundness)}
+\BetaEtaEquivalence
+    
+\end{document} 

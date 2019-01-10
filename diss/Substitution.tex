@@ -1,11 +1,4 @@
-\documentclass{report}
-\input{header.tex}
-\renewcommand\s{\sigma}
-\newcommand{\setto}{:=}
-\newcommand{\fv}[1]{\texttt{fv}(#1)}
-\newcommand{\sub}[1]{\left\[#1\right\]}
-
-\begin{document}
+\newcommand\Substitution[0]{
     \section{Introduce Substitutions}
     \subsection{Substitutions as SNOC lists}
     \paragraph{Definition of $\s$}
@@ -34,15 +27,28 @@
     \subsection{Lemma}
     \todo{Fill in from p98}
     \subsection{Substitution Theorem}
+
+    \todo{There is Tikz code here to draw the Substitution Theorem diagram, but it compiles v slowly}
     If $\gtyperelation{t}{\tau}$ and $\typerelation{\G'}{\s}{\G}$ then
-    \begin{tikzcd}
-        \G' 
-            \arrow [r, "\deno{\typerelation{\G'}{\s}{\G}}"] 
-            \arrow [rd, "\deno{\typerelation{\G'}{t\sub{\s}}{\tau}} "] &
-        \G 
-            \arrow [d, "\deno{\gtyperelation{t}{\tau}}"]
-        \\
-        & \deno{T}
-    \end{tikzcd}
+    %\begin{tikzcd}[ampersand replacement=\&]
+    %    \G' 
+    %        \arrow [r, "\deno{\typerelation{\G'}{\s}{\G}}"] 
+    %        \arrow [rd, "\deno{\typerelation{\G'}{t\sub{\s}}{\tau}} "] \&
+    %    \G 
+    %        \arrow [d, "\deno{\gtyperelation{t}{\tau}}"]
+    %    \\
+    %    \& \deno{T}
+    %\end{tikzcd}
     \section{Single Substitution}
+}
+
+
+
+\ifdefined\NoDocument
+\else
+\documentclass{report}
+\input{header.tex}
+\begin{document}
+    \Substitution
 \end{document}
+\fi

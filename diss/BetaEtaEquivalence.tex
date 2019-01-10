@@ -1,9 +1,4 @@
-\documentclass{report}
-
-\input{header.tex}
-
-
-\begin{document}
+\newcommand\BetaEtaEquivalence[0]{
     \section{Beta and Eta Equivalence}
     \subsection{Beta conversions}
     \begin{itemize}
@@ -443,24 +438,24 @@
 
     From the rule \todo{Ref} showing the commutivity of tensor strength with $\alpha$, the following commutes
 
-    \begin{tikzcd}
+    \begin{tikzcd}[ampersand replacement=\&]
         \G 
         \arrow [r, "\pr{\idg}{\pr{\idg}{f}}"]
-        &
+        \&
         \G\times(\G \times \T{\e_1}{A}) 
         \arrow [d, "\idg\times\tstrength{\e_1}{\G}{A}"]
-        &
+        \&
         (\G \times \G) \times\T{\e_1}{A} 
         \arrow [l, "\alpha_{\G, \G, (\T{\e_1}{A})}"]
         \arrow [d, "\tstrength{\e_1}{(\G \times \G)}{A}"]
         \\
-        &
+        \&
         \G \times \T{\e_1}{(\G \times A)}
         \arrow [d, "\tstrength{\e_1}{\G}{\G \times A}"]
-        & \T{\e_1}{((\G \times \G)\times A)} 
+        \& \T{\e_1}{((\G \times \G)\times A)} 
         \arrow [ld, "\T{\e_1}{\alpha_{\G, \G, A}}"]
         \\
-        & \T{\e_1}{(\G \times (\G \times A))}
+        \& \T{\e_1}{(\G \times (\G \times A))}
     \end{tikzcd}
 
     Where $\alpha: ((\_ \times \_) \times \_) \rightarrow (\_ \times (\_ \times \_))$ is a natural isomorphism.
@@ -655,4 +650,16 @@ We Have
     \end{equation}
 
     $$\square$$
+}
+
+\ifdefined\NoDocument
+\else
+\documentclass{report}
+
+\input{header.tex}
+
+
+\begin{document}
+   \BetaEtaEquivalence
 \end{document}
+\fi

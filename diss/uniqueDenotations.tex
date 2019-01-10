@@ -1,7 +1,4 @@
-\documentclass{report}
-\input{header.tex}
-
-\begin{document}
+\newcommand\UniqueDenotations[0]{
     \section{Reduced Type Derivation}
     A reduced type derivation is one where subtype and subeffect rules must, and may only, occur at the root or directly above an \textbf{if}, \textbf{lambda} or \textbf{apply} rule.
 
@@ -130,4 +127,14 @@
     
     \section{Denotations are Equivalent}
     For each type relation instance $\gtyperelation{t}{\tau}$ there exists a unique reduced derivation of the relation instance. For all derivations $\D$, $\D'$ of the type relation instance, $\deno{\D} = \deno{\reduce{\D}} = \deno{\reduce{\D'}} = \deno{\D'} $, hence the denotation $\deno{\gtyperelation{t}{\tau}}$ is unique.
+    
+}
+
+\ifdefined\NoDocument
+\else
+\documentclass{report}
+\input{header.tex}
+\begin{document}
+    \UniqueDenotations
 \end{document}
+\fi
