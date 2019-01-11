@@ -1,22 +1,23 @@
 \newcommand\Substitution[0]{
     \section{Introduce Substitutions}
     \subsection{Substitutions as SNOC lists}
-    \paragraph{Definition of $\s$}
+    \paragraph{Definition of $\si$}
     \subsection{Trivial Properties of substitutions}
-    \paragraph{$\fv{\s}$}
-    \paragraph{$\dom{\s}$}
-    \paragraph{$x \# \s$}
+    \paragraph{$\fv{\si}$}
+    \paragraph{$\dom{\si}$}
+    \paragraph{$x \# \si$}
 
     \subsection{Effect of substitutions}]
     \subsection{Well Formedness}
     \subsection{Simple Properties Of Substitution}
-    If $\typerelation{\G'}{\s}{\G}$ then:
+    If $\typerelation{\G'}{\si}{\G}$ then:
     \todo{Number these}
     \begin{itemize}
         \item $\ok{\G}$ and $\ok{\G'}$
-        \item $\wrel{\w}{\G''}{\G'}$ implies $\typerelation{\G''}{\s}{\G}$
- %       \item $\x \notin (\dom{\G} \union \dom{\G''})$ implies $\typerelation{(\G', x: A)}{(\s, x \setto x)}{(\gax)}$
+        \item $\wrel{\w}{\G''}{\G'}$ implies $\typerelation{\G''}{\si}{\G}$
+ %       \item $\x \notin (\dom{\G} \union \dom{\G''})$ implies $\typerelation{(\G', x: A)}{(\si, x \setto x)}{(\gax)}$
     \end{itemize}
+
 
     \section{Substitution Preserves Typing}
     \todo{State property}
@@ -29,16 +30,16 @@
     \subsection{Substitution Theorem}
 
     \todo{There is Tikz code here to draw the Substitution Theorem diagram, but it compiles v slowly}
-    If $\gtyperelation{t}{\tau}$ and $\typerelation{\G'}{\s}{\G}$ then
-    %\begin{tikzcd}[ampersand replacement=\&]
-    %    \G' 
-    %        \arrow [r, "\deno{\typerelation{\G'}{\s}{\G}}"] 
-    %        \arrow [rd, "\deno{\typerelation{\G'}{t\sub{\s}}{\tau}} "] \&
-    %    \G 
-    %        \arrow [d, "\deno{\gtyperelation{t}{\tau}}"]
-    %    \\
-    %    \& \deno{T}
-    %\end{tikzcd}
+    If $\gtyperelation{t}{\tau}$ and $\typerelation{\G'}{\si}{\G}$ then
+    \begin{tikzcd}[ampersand replacement=\&]
+        \G' 
+            \arrow [rr, "\deno{\typerelation{\G'}{\si}{\G}}"] 
+            \arrow [rrd, "\deno{\typerelation{\G'}{t\sub{\si}}{\tau}} "] \&\&
+        \G 
+            \arrow [d, "\deno{\gtyperelation{t}{\tau}}"]
+        \\
+        \& \&\deno{T}
+    \end{tikzcd}
     \section{Single Substitution}
 }
 
