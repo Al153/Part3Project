@@ -1,13 +1,30 @@
 \newcommand\Substitution[0]{
     \section{Introduce Substitutions}
     \subsection{Substitutions as SNOC lists}
+
+    %\begin{equation}
+    %    \si \gens \nil \mid \si, x \setto v
+    %\end{equation}
+
     \paragraph{Definition of $\si$}
     \subsection{Trivial Properties of substitutions}
     \paragraph{$\fv{\si}$}
+    \begin{align}
+        \fv{\nil} &= \emptyset\\
+        \fv{\si, x\setto v} &= \fv{\si}\cup\fv{v}
+    \end{align}
     \paragraph{$\dom{\si}$}
-    \paragraph{$x \# \si$}
+    \begin{align}
+        \dom{\nil} & = \emptyset\\
+        \dom{\si, x\setto v} & = \dom{\si}\cup\left\{x\right\}
+    \end{align}
 
-    \subsection{Effect of substitutions}]
+    \paragraph{$x \# \si$}
+    \begin{equation}
+        x \# \si \Leftrightarrow x\notin(\fv{\si}\union\dom{\si`})
+    \end{equation}
+
+    \subsection{Effect of substitutions}
     \subsection{Well Formedness}
     \subsection{Simple Properties Of Substitution}
     If $\typerelation{\G'}{\si}{\G}$ then:
@@ -30,15 +47,15 @@
 
     \todo{There is Tikz code here to draw the Substitution Theorem diagram, but it compiles v slowly}
     If $\gtyperelation{t}{\tau}$ and $\typerelation{\G'}{\si}{\G}$ then
-    \begin{tikzcd}[ampersand replacement=\&]
-        \G' 
-            \arrow [rr, "\deno{\typerelation{\G'}{\si}{\G}}"] 
-            \arrow [rrd, "\deno{\typerelation{\G'}{t\sub{\si}}{\tau}} "] \&\&
-        \G 
-            \arrow [d, "\deno{\gtyperelation{t}{\tau}}"]
-        \\
-        \& \&\deno{T}
-    \end{tikzcd}
+    %\begin{tikzcd}[ampersand replacement=\&]
+    %    \G' 
+    %        \arrow [rr, "\deno{\typerelation{\G'}{\si}{\G}}"] 
+    %        \arrow [rrd, "\deno{\typerelation{\G'}{t\sub{\si}}{\tau}} "] \&\&
+    %    \G 
+    %        \arrow [d, "\deno{\gtyperelation{t}{\tau}}"]
+    %    \\
+    %    \& \&\deno{T}
+    %\end{tikzcd}
     \section{Single Substitution}
 }
 
