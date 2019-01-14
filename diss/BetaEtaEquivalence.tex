@@ -11,6 +11,7 @@
             \gberelation{\doin{x}{C_1}{(\doin{y}{C_2}{C_3})}}{\doin{y}{(\doin{x}{C_1}{C_2})}{C_3}}{\M{\e_1 \dot \e_2 \dot \e_3}{C}}
         }$
 
+        \item $\treerule{Eta}{\gtyperelation{v}{\aeb}}{\gberelation{\lam{x}{A}{(\apply{v}{x}})}{v}{\aeb}}$
         \item $\treerule{if-true}{\gtyperelation{C_1}{\mea}\s\s\gtyperelation{C_2}{\mea}}{\gberelation{\ifthenelse{\e}{A}{\t}{C_1}{C_2}}{C_1}{\mea}}$
         \item $\treerule{if-false}{\gtyperelation{C_2}{\mea}\s\s\gtyperelation{C_1}{\mea}}{\gberelation{\ifthenelse{\e}{A}{\f}{C_1}{C_2}}{C_2}{\mea}}$
         
@@ -23,11 +24,11 @@
     \end{itemize}
     \subsection{Congruences}
     \begin{itemize}
-        \item $\treerule{Lambda}{\berelation{\gax}{C_1}{C_2}{\meb}}{\gberelation{\lam{x}{A}{C_1}}{\lam{x}{A}{C_2}}{\lamtype{A}{\e}{B}}}$
+        \item $\treerule{Lambda}{\berelation{\gax}{C_1}{C_2}{\meb}}{\gberelation{\lam{x}{A}{C_1}}{\lam{x}{A}{C_2}}{\aeb}}$
         
         \item $\treerule{Return}{\gberelation{v_1}{v_2}{A}}{\gberelation{\return{v_1}}{\return{v_2}}{\moa}}$
         
-        \item $\treerule{Apply}{\gberelation{v_1}{v_1'}{\lamtype{A}{\e}{B}}\s\s\gberelation{v_2}{v_2'}{A}}{\gberelation{\apply{v_1}{v_2}}{\apply{v_1'}{v_2'}}{\meb}}$
+        \item $\treerule{Apply}{\gberelation{v_1}{v_1'}{\aeb}\s\s\gberelation{v_2}{v_2'}{A}}{\gberelation{\apply{v_1}{v_2}}{\apply{v_1'}{v_2'}}{\meb}}$
         
         \item $\treerule{Bind}{\gberelation{C_1}{C_1'}{\M{\e_1}{A}} \s\s \berelation{\gax}{C_2}{C_2'}{\M{\e_2}{B}}}{\gberelation{\doin{x}{C_1}{C_2}}{\doin{c}{C_1'}{C_2'}}{\M{\e_1 \dot \e_2}{B}}}$
         
@@ -53,7 +54,7 @@
     \paragraph{Case Lambda}
         By inversion, we have $\typerelation{\gax}{C}{\meb}$ and $\gtyperelation{v}{A}$. Hence by the typing rules, we have:
         $$\treerule{Apply}{
-            \treerule{Lambda}{\typerelation{\gax }{C}{\meb}}{\gtyperelation{\lam{x}{A}{C}}{\lamtype{A}{\e}{B}}}
+            \treerule{Lambda}{\typerelation{\gax }{C}{\meb}}{\gtyperelation{\lam{x}{A}{C}}{\aeb}}
             \s\s
             \gtyperelation{v}{A}
         }{\gtyperelation{\apply{(\lam{x}{A}{C})}{v}}{\mea}}$$
@@ -137,6 +138,30 @@
             }
         \end{equation}
 
+        \paragraph{Case Eta}
+        By inversion, we have $\gtyperelation{v}{\aeb}$
+
+        By weakening, we have $\wrel{\i\pi}{(\gax)}{\G}$
+        Hence, we have
+
+        \begin{equation}
+            \treerule{Fn}{
+                \treerule{App}{
+                    \typerelation{(\gax)}{x}{A}
+                    \s\s
+                    \treerule{weakening}{
+                        \gtyperelation{v}{\aeb}
+                        \s\s
+                        \wrel{\i\pi}{\gax}{\G}
+                    }{
+                        \typerelation{\gax}{v}{\aeb}
+                    }
+                } {
+                    \typerelation{\gax}{\apply{v}{x}}{\meb}
+                }
+            }{\gtyperelation{\lam{x}{A}{(\apply{v}{x})}}{\aeb}}
+        \end{equation}
+
         \paragraph{Case If True}
             By inversion, we have $\gtyperelation{C_1}{\mea}$, $\gtyperelation{C_2}{\mea}$. Hence by the typing lemma \todo{Which?}, we have $\ok{\G}$ so $\gtyperelation{\t}{\B}$ by the axiom typing rule.
 
@@ -175,12 +200,12 @@
 
         So 
         \begin{equation}
-            \gtyperelation{\lam{x}{A}{C_1}}{\lamtype{A}{\e}{B}}
+            \gtyperelation{\lam{x}{A}{C_1}}{\aeb}
         \end{equation}
 
         and
         \begin{equation}
-            \gtyperelation{\lam{x}{A}{C_2}}{\lamtype{A}{\e}{B}}
+            \gtyperelation{\lam{x}{A}{C_2}}{\aeb}
         \end{equation}
 
         Hold.
@@ -192,7 +217,7 @@
         $$\gtyperelation{\return{v_2}}{\moa}$$
     \paragraph{Case Apply}
 
-        By inversion, we have $\gberelation{v_1}{v_1'}{\lamtype{A}{\e}{B}}$ and $\gberelation{v_2}{v_2'}{A}$. Hence we have by induction $\gtyperelation{v_1}{\lamtype{A}{\e}{B}}$, $\gtyperelation{v_2}{A}$, $\gtyperelation{v_1'}{\lamtype{A}{\e}{B}}$, and $\gtyperelation{v_2'}{A}$.
+        By inversion, we have $\gberelation{v_1}{v_1'}{\aeb}$ and $\gberelation{v_2}{v_2'}{A}$. Hence we have by induction $\gtyperelation{v_1}{\aeb}$, $\gtyperelation{v_2}{A}$, $\gtyperelation{v_1'}{\aeb}$, and $\gtyperelation{v_2'}{A}$.
 
         So we have:
 
@@ -491,7 +516,34 @@ We Have
 
 %%%%%% END CASE ASSOCIATIVE %%%%%%%
 
+    \paragraph{Case Eta}
+    Let 
+    \begin{equation}
+        f = \deno{\gtyperelation{v}{\aeb}} : \G \rightarrow (\teb)^{A}
+    \end{equation}
 
+    By weakening, we have
+
+    \begin{align}
+        \deno{\typerelation{\gax}{v}{\aeb}} & = f \after \p : \G \times A \rightarrow (\teb)^A \\
+        \deno{\typerelation{\gax}{\apply{v}{x}}{\meb}} & = \app\after\pr{f \after \p}{\pp} \\
+    \end{align}
+
+    Hence, we have 
+    \begin{equation}
+        \begin{split}
+            \deno{\gtyperelation{\lam{x}{A}{(\apply{v}{x})}}{\aeb}} & = \cur{\app\after\pr{f \after \p}{\pp}}\\
+            \app\after(\deno{\gtyperelation{\lam{x}{A}{(\apply{v}{x})}}{\aeb}} \times \Id{A}) & = \app \after(\cur{\app\after\pr{f \after \p}{\pp}}\times \Id{A})\\
+            & = \app \after\pr{f\after\p}{\pp}\\
+            & = \app\after(f\times\Id{A})
+        \end{split}
+    \end{equation}
+
+    Hence, by the fact that $\cur{f}$ is unique in a cartesian closed category, 
+
+    \begin{equation}
+        \deno{\gtyperelation{\lam{x}{A}{(\apply{v}{x})}}{\aeb}} = f =\deno{\gtyperelation{v}{\aeb}}
+    \end{equation}
 
     \paragraph{Case If-True}
     Let
@@ -541,7 +593,7 @@ We Have
 
         And so
         \begin{equation}
-            \deno{\gtyperelation{\lam{x}{A}{C_1}}{\lamtype{A}{\e}{B}}} = \cur{f} = \deno{\gtyperelation{\lam{x}{A}{C_2}}{\lamtype{A}{\e}{B}}}
+            \deno{\gtyperelation{\lam{x}{A}{C_1}}{\aeb}} = \cur{f} = \deno{\gtyperelation{\lam{x}{A}{C_2}}{\aeb}}
         \end{equation}
 
 
@@ -561,12 +613,12 @@ We Have
 
 
     \paragraph{Case Apply}
-    By inversion, we have $\gberelation{v_1}{v_1'}{\lamtype{A}{\e}{B}}$ and $\gberelation{v_2}{v_2'}{A}$
-    By induction, we therefore have $\deno{\gtyperelation{v_1}{\lamtype{A}{\e}{B}}}= \deno{\gtyperelation{v_1'}{\lamtype{A}{\e}{B}}}$ and $\deno{\gtyperelation{v_2}{A}} = \deno{\gtyperelation{v_2'}{A}}$
+    By inversion, we have $\gberelation{v_1}{v_1'}{\aeb}$ and $\gberelation{v_2}{v_2'}{A}$
+    By induction, we therefore have $\deno{\gtyperelation{v_1}{\aeb}}= \deno{\gtyperelation{v_1'}{\aeb}}$ and $\deno{\gtyperelation{v_2}{A}} = \deno{\gtyperelation{v_2'}{A}}$
 
     Then let
     \begin{align}
-        f &{}= \deno{\gtyperelation{v_1}{\lamtype{A}{\e}{B}}} = \deno{\gtyperelation{v_1'}{\lamtype{A}{\e}{B}}}\\
+        f &{}= \deno{\gtyperelation{v_1}{\aeb}} = \deno{\gtyperelation{v_1'}{\aeb}}\\
         g &{}= \deno{\gtyperelation{v_2}{A}} = \deno{\gtyperelation{v_2'}{A}}
     \end{align}
 

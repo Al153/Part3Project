@@ -24,9 +24,9 @@
     \treerule{Subtype}
     {\treerule{Lambda}{\treerule{}{\D}{\typerelation{\gax}{C}{\meb}}}
     {
-        \gtyperelation{\lam{x}{A}{B}}{\lamtype{A}{\e}{B}}}
+        \gtyperelation{\lam{x}{A}{B}}{\aeb}}
         \s\s
-        \lamtype{A}{\e}{B} \subtype \lamtype{A'}{\e'}{B'}
+        \aeb \subtype \lamtype{A'}{\e'}{B'}
     }{
        \gtyperelation{\lam{x}{A}{C}}{\lamtype{A'}{\e'}{B'}} 
     }
@@ -75,7 +75,7 @@
         \treerule{Subeffect}{
             \treerule{Apply}{
                 \treerule{}{\D}{
-                    \gtyperelation{v_1}{\lamtype{A}{\e}{B}}
+                    \gtyperelation{v_1}{\aeb}
                 }
                 \s\s
                 \treerule{Subtype}{

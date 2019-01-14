@@ -17,12 +17,12 @@ Since we can infer the denotation function, we can include it implicitly an drop
 $$\deno{\mea} = \tea$$
 
 \subsection{Denotation of Function Types}
-Given a function $\deno{\_}$ mapping types to objects in the category $\C$, we write the denotation of a function type $\lamtype{A}{\e}{B}$ as so:
-$$\deno{\lamtype{A}{\e}{B}} = (\T{\e}{\deno{B}})^{\deno{A}}$$
+Given a function $\deno{\_}$ mapping types to objects in the category $\C$, we write the denotation of a function type $\aeb$ as so:
+$$\deno{\aeb} = (\T{\e}{\deno{B}})^{\deno{A}}$$
 
 Again, since we can infer the denotation function, Let us drop the notation.
 
-$$\deno{\lamtype{A}{\e}{B}} = (\teb)^A$$
+$$\deno{\aeb} = (\teb)^A$$
 
 
 
@@ -59,7 +59,7 @@ Denotations are defined recursively over the typing derivation of a term. Hence,
         
     \item $\treerule{Bind}{f = \deno{\typerelation{\G}{C_1}{\M{\e_1}{A}} : \G \rightarrow \T{\e_1}{A}\s\s g = \deno{\typerelation{\gax}{C_2}{\M{\e_2}{B}}}}: \G \times A \rightarrow \T{\e_2}{B}}{\deno{\typerelation{\G}{\doin{x}{C_1}{C_2}}{\M{\e_1 \dot \e_2}}} = \bind{\e_1}{\e_2}{B} \after \T{\e_1}{g} \after \tstrength{\G}{A}{\e_1} \after \pr{\idg}{f}: \G \rightarrow \T{\e_1 \dot \e_2}{B}}$ 
     \item  $\treerule{Subeffect}{f = \deno{\typerelation{\G}{c}{\M{\e_1}{A}}}: \G \rightarrow \T{\e_1}{A} \s\s g = \deno{A \subtype B}\s\s h = \dse{\e_1}{\e_2}}{\deno{\typerelation{\G}{C}{\M{\e_2}{B}}} = h_B \after \T{\e_1}{g} \after f}$
-    \item $\treerule{Apply}{f = \deno{\gtyperelation{v_1}{\lamtype{A}{\e}B}}: \G \rightarrow (\teb)^{A} \s\s g=\deno{\gtyperelation{v_2}{A}}: \G \rightarrow A}{\deno{\gtyperelation{\apply{v_1}{v_2}}{\meb}}: \G \rightarrow \teb}$
+    \item $\treerule{Apply}{f = \deno{\gtyperelation{v_1}{\lamtype{A}{\e}B}}: \G \rightarrow (\teb)^{A} \s\s g=\deno{\gtyperelation{v_2}{A}}: \G \rightarrow A}{\deno{\gtyperelation{\apply{v_1}{v_2}}{\meb}}= \app\after\pr{f}{g}: \G \rightarrow \teb }$
 \end{itemize}
 }
 \ifdefined\NoDocument
