@@ -1,6 +1,6 @@
 \documentclass{report}
 \input{header.tex}
-
+\begin{document}
 \section{Introduce Substitutions}
 \subsection{Substitutions as SNOC lists}
 
@@ -23,7 +23,7 @@
 
 \paragraph{$x \# \si$}
 \begin{equation}
-    x \# \si \Leftrightarrow x\notin(\fv{\si}\union\dom{\si`})
+    x \# \si \Leftrightarrow x\notin(\fv{\si}\cup\dom{\si`})
 \end{equation}
 
 \subsection{Effect of substitutions}
@@ -58,4 +58,5 @@ If $\gtyperelation{t}{\tau}$ and $\typerelation{\G'}{\si}{\G}$ then
 %    \\
 %    \& \&\deno{T}
 %\end{tikzcd}
-\section{Single Substitution}
+\section{Single Substitution}    
+\end{document}

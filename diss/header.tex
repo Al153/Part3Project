@@ -77,8 +77,12 @@
 \newcommand\idg[0]{\Id{\G}}
 % beta-eta equivalence
 \newcommand\beequiv[0]{=_{\beta\eta}}
-% Single substitution
+% Substitutions
+\newcommand\si{\sigma}
+
+\newcommand{\sub}[1]{\left[#1\right]}
 \newcommand{\ssub}[2]{\left[#2 / #1\right]}
+\newcommand{\ssi}[0]{\sub{\si}}
 
 % beta-eta equivalence relation
 \newcommand{\berelation}[4]{\typerelation{#1}{#2 \beequiv #3}{#4}}
@@ -165,10 +169,9 @@
 \newcommand\cur[1]{\texttt{cur}(#1)}
 \newcommand{\ifnt}[1]{\texttt{If}_{#1}}
 
-\newcommand\si{\sigma}
+
 \newcommand{\setto}{:=}
 \newcommand{\fv}[1]{\texttt{fv}(#1)}
-\newcommand{\sub}[1]{\left\[#1\right\]}
 
 
 

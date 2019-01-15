@@ -2,11 +2,10 @@
     \section{Introduce Substitutions}
     \subsection{Substitutions as SNOC lists}
 
-    %\begin{equation}
-    %    \si \gens \nil \mid \si, x \setto v
-    %\end{equation}
+    \begin{equation}
+       \si \gens \nil \mid \si, x \setto v
+    \end{equation}
 
-    \paragraph{Definition of $\si$}
     \subsection{Trivial Properties of substitutions}
     \paragraph{$\fv{\si}$}
     \begin{align}
@@ -21,26 +20,105 @@
 
     \paragraph{$x \# \si$}
     \begin{equation}
-        x \# \si \Leftrightarrow x\notin(\fv{\si}\union\dom{\si`})
+        x \# \si \Leftrightarrow x\notin(\fv{\si}\cup\dom{\si`})
     \end{equation}
 
     \subsection{Effect of substitutions}
+        We define the effect of applying a substitution $\si$ as 
+        $$t\ssi$$
+
+        
+        \begin{align}
+            x\sub{\nil} & = x \\
+            x\sub{\si,x\setto v} & = v \\
+            x\sub{\si,x'\setto v'} & = x\ssi\quad\text{If }x \neq x'\\
+            \const{A}\ssi & = \const{A} \\
+            (\lam{x}{A}{C})\ssi &= \lam{x}{A}{(C\ssi)}\quad\text{If }x\#\si\\
+            (\ifthenelse{\e}{A}{v}{C_1}{C_2})\ssi &= \ifthenelse{\e}{A}{v\ssi}{C_1\ssi}{C_2\ssi}\\
+            (\apply{v_1}{v_2})\ssi&= \apply{(v_1\ssi)}{v_2\ssi}\\
+            (\doin{x}{C_1}{C_2})&= \doin{x}{(C_1\ssi)}{(C_2\ssi)}\quad\text{If } x\#\si\\
+        \end{align}
     \subsection{Well Formedness}
+    Define the relation $$\typerelation{\G'}{\si}{\G}$$ by:
+
+    \begin{itemize}
+        \item $\treerule{Nil}{\ok{\G'}}{\typerelation{\G'}{\nil}{\nil}}$
+        \item $\treerule{Extend}{
+            \typerelation{\G'}{\si}{\G}
+            \s\s
+            x\notin\dom{\G}
+            \s\s
+            \typerelation{\G'}{v}{A}
+        }{
+            \typerelation{\G'}{(\si, x \setto v)}{(\gax)}
+        }$
+    \end{itemize}
     \subsection{Simple Properties Of Substitution}
     If $\typerelation{\G'}{\si}{\G}$ then:
     \todo{Number these}
-    \begin{itemize}
-        \item $\ok{\G}$ and $\ok{\G'}$
-        \item $\wrel{\w}{\G''}{\G'}$ implies $\typerelation{\G''}{\si}{\G}$
- %       \item $\x \notin (\dom{\G} \union \dom{\G''})$ implies $\typerelation{(\G', x: A)}{(\si, x \setto x)}{(\gax)}$
-    \end{itemize}
+    
+        \paragraph{$\ok{\G}$ and $\ok{\G'}$}
+         Since $\ok{\G'}$ holds by the Nil-axiom. $\ok{\G}$ holds by induction on the well-formed-ness relation.
+        \paragraph{$\wrel{\w}{\G''}{\G'}$ implies $\typerelation{\G''}{\si}{\G}$}. 
+        By induction over well-formed-ness relation. For each $x\setto v$ in $\si$, $\typerelation{\G''}{v}{A}$ holds if $\typerelation{\G'}{v}{A}$ holds.
+        \paragraph{$x \notin (\dom{\G} \cup \dom{\G''})$ implies $\typerelation{(\G', x: A)}{(\si, x \setto x)}{(\gax)}$} 
+        Since $\wrel{\i\pi}{\G',x: A}{\G'}$, so by (2) \todo{Better referencing here}, 
+        $$\typerelation{\G', x: A}{\si}{\G}$$
+        In addition, $\typerelation{\G', x: A}{x}{A}$ trivially, so by the rule \textbf{Extend}, well-formed-ness holds for
+        \begin{equation}
+            \typerelation{(\G', x:A)}{(\si, x\setto v)}{(\gax)}
+        \end{equation}
+    
 
     \section{Substitution Preserves Typing}
-    \todo{State property}
-    \todo{Proof by induction overtype relation}
+    We have the following non-trivial property of substitution:
+
+    \begin{equation}
+        \typerelation{\G}{g}{\tau}\wedge\typerelation{\G'}{\si}{\G}\Rightarrow\typerelation{\G'}{t\ssi}{\tau}
+    \end{equation}
+    \todo{Proof by induction over type relation}
+    Assuming $\typerelation{\G'}{\si}{\G}$, we induct over the typing relation, proving $\gtyperelation{t}{\tau}\rightarrow\typerelation{\G'}{t}{\tau}$
+
+    \subsection{Variables}  
+        \paragraph{Case Var}
+            \todo{The more difficult case. case split on the structure of $\si$}
+        \paragraph{Case Weaken}
+            \todo{}
+    \subsection{Other Value Terms}
+    \paragraph{Case Lambda}
+        \todo{}
+    \paragraph{Case Constants}
+        \todo{}
+    \paragraph{Case Unit}
+        \todo{}
+    \paragraph{Case True}
+        \todo{}
+    \paragraph{False}
+        \todo{}
+    \subsection{Computation Terms}
+    \paragraph{Case Return}  
+        \todo{Induct using preconditions, then construct new tree}
+    \paragraph{Case Apply}
+        \todo{}
+    \paragraph{Case If}
+        \todo{}
+    \paragraph{Case Bind}
+        \todo{}
+    \subsection{Sub-typing and Sub-effecting}
+    \paragraph{Case Sub-type}
+        \todo{}
+    \paragraph{Case Sub-effect}
+        \todo{}
     \section{Semantics of Substitution}
     \subsection{Denotation of Substitutions}
-    \todo{Fill in from p98}
+    We define the denotation of a well-formed-substitution as so:
+    \begin{equation}
+        \deno{\typerelation{\G'}{\si}{\G}}: \G' \rightarrow \G
+    \end{equation}
+    \begin{itemize}
+        \item $\treerule{Nil}{\ok{\G'}}{\deno{\typerelation{\G'}{\nil}{\nil}} = \term{\G'}}$
+        \item $\treerule{Extend}{f = \deno{\typerelation{\G'}{\si}{\G}}\s\s g= \deno{\typerelation{\G'}{v}{A}}}{\deno{\typerelation{\G'}{(\si, x\setto v}{(\gax)}} = \pr{f}{g}:\G' \rightarrow (\G\times A)}$
+    \end{itemize}
     \subsection{Lemma}
     \todo{Fill in from p98}
     \subsection{Substitution Theorem}
@@ -50,7 +128,7 @@
     %\begin{tikzcd}[ampersand replacement=\&]
     %    \G' 
     %        \arrow [rr, "\deno{\typerelation{\G'}{\si}{\G}}"] 
-    %        \arrow [rrd, "\deno{\typerelation{\G'}{t\sub{\si}}{\tau}} "] \&\&
+    %        \arrow [rrd, "\deno{\typerelation{\G'}{t\ssi}{\tau}} "] \&\&
     %    \G 
     %        \arrow [d, "\deno{\gtyperelation{t}{\tau}}"]
     %    \\
