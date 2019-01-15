@@ -129,6 +129,17 @@
 \newcommand{\deltavruleprime}[4]{
     \treerule{Subtype}{\treerule{}{\D'}{\typerelation{#1}{#2}{#3}}\s\s #3 \subtype #4}{\typerelation{#1}{#2}{#4}}}
 
+\newcommand{\deltavruleprimeprime}[4]{
+        \treerule{Subtype}{\treerule{}{\D'}{\typerelation{#1}{#2}{#3}}\s\s #3 \subtype #4}{\typerelation{#1}{#2}{#4}}}
+    
+\newcommand{\deltacrule}[6]{
+            \treerule{Subeffect}{\treerule{}{\D}{\typerelation{#1}{#2}{\M{#3}{#4}}}\s\s #4 \subtype #6\s\s #3 \subeffect #5}{\typerelation{#1}{#2}{\M{#5}{#6}}}}
+\newcommand{\deltacruleprime}[6]{
+    \treerule{Subeffect}{\treerule{}{\D'}{\typerelation{#1}{#2}{\M{#3}{#4}}}\s\s #4 \subtype #6\s\s #3 \subeffect #5}{\typerelation{#1}{#2}{\M{#5}{#6}}}}
+\newcommand{\deltacruleprimeprime}[6]{
+    \treerule{Subeffect}{\treerule{}{\D''}{\typerelation{#1}{#2}{\M{#3}{#4}}}\s\s #4 \subtype #6\s\s #3 \subeffect #5}{\typerelation{#1}{#2}{\M{#5}{#6}}}}
+                            
+
 \newcommand{\p}[0]{\pi_1}
 \newcommand{\pp}[0]{\pi_2}
 
