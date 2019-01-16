@@ -362,9 +362,9 @@
         \begin{split}
             \deno{\gtyperelation{\doin{x}{\return{v}}{C}}{\meb}} = &  \bind{\1}{\e}{B} \after \T{\1}{f} \after \tstrength{1}{\G}{A} \after \pr{\idg}{\point{A}\after g} \\
             = & \bind{\1}{\e}{B} \after \T{\1}{f} \after \tstrength{1}{\G}{A} \after (\idg\times \point{A}) \after \pr{\idg}{g} \\
-            = & \bind{\1}{\e}{B} \after \T{\1}{f} \after \point{(\G \times A)} \after \pr{\idg}{g} \quad\text{By Tensor strength + unit}\\
-            = & \bind{\1}{\e}{B}\after\point{\teb}\after f\after\pr{\idg}{g} \quad\text{By Naturality of $\point{}$}\\
-            = & f\after\pr{\idg}{g} \quad\text{By left unit law}\\
+            = & \bind{\1}{\e}{B} \after \T{\1}{f} \after \point{(\G \times A)} \after \pr{\idg}{g} \qt{By Tensor strength + unit}\\
+            = & \bind{\1}{\e}{B}\after\point{\teb}\after f\after\pr{\idg}{g} \qt{By Naturality of $\point{}$}\\
+            = & f\after\pr{\idg}{g} \qt{By left unit law}\\
             = & \deno{\gtyperelation{C\ssub{x}{v}}{\meb}}\\
         \end{split}
     \end{equation}
@@ -428,8 +428,8 @@
     \begin{equation}
         \begin{split}
             F & = \tstrength{\e_1\dot\e_2}{\G}{B}\after(\idg\times\bind{\e_1}{\e_2}{B})\after(\idg\times\T{\e_1}{g})\after\pr{\idg}{\tstrength{\e_1}{\G}{A}\after\pr{\idg}{f}}\\
-            &  = \bind{\e_1}{\e_2}{(\G\times B)} \after \T{\e_1}{\tstrength{\e_2}{\G}{B}} \after\tstrength{\e_1}{\G}{(\T{\e_2}{B})} \after (\idg \after\T{\e_1}{g})\after\pr{\idg}{\tstrength{\e_1}{\G}{A}\after\pr{\idg}{f}}\quad\text{By \todo{ref: mu+tstrength}}
-            \\ & = \bind{\e_1}{\e_2}{(\G \times B))} \after \T{\e_1}{(\tstrength{\e_2}{\G}{B} \after (\idg \times g))} \after \tstrength{\e_1}{\G}{(\G \times A)} \after \pr{\idg}{\tstrength{\e_1}{\G}{A}\after\pr{\idg}{f}}\quad\text{By naturality of t-strength}
+            &  = \bind{\e_1}{\e_2}{(\G\times B)} \after \T{\e_1}{\tstrength{\e_2}{\G}{B}} \after\tstrength{\e_1}{\G}{(\T{\e_2}{B})} \after (\idg \after\T{\e_1}{g})\after\pr{\idg}{\tstrength{\e_1}{\G}{A}\after\pr{\idg}{f}}\qt{By \todo{ref: mu+tstrength}}
+            \\ & = \bind{\e_1}{\e_2}{(\G \times B))} \after \T{\e_1}{(\tstrength{\e_2}{\G}{B} \after (\idg \times g))} \after \tstrength{\e_1}{\G}{(\G \times A)} \after \pr{\idg}{\tstrength{\e_1}{\G}{A}\after\pr{\idg}{f}}\qt{By naturality of t-strength}
         \end{split}
     \end{equation}
     Since
@@ -440,7 +440,7 @@
     \begin{equation}
         \begin{split}
             rhs = &\bind{\e_1\dot\e_2}{\e_3}{C}\after\T{\e_1\dot\e_2}{(h)}\after\bind{\e_1}{\e_2}{(\G \times B))} \after \T{\e_1}{(\tstrength{\e_2}{\G}{B} \after (\idg \times g))} \after \tstrength{\e_1}{\G}{(\G \times A)} \after \pr{\idg}{\tstrength{\e_1}{\G}{A}\after\pr{\idg}{f}}\\
-            = &\bind{\e_1\dot\e_2}{\e_3}{C}\after\bind{\e_1}{\e_2}{(\T{\e_3}{C})}\after\T{\e_1}{(\T{\e_2}{(h)} \after \tstrength{\e_2}{\G}{B} \after (\idg \times g))} \after \tstrength{\e_1}{\G}{(\G \times A)} \after \pr{\idg}{\tstrength{\e_1}{\G}{A}\after\pr{\idg}{f}}\quad\text{Naturality of $\mu$}\\
+            = &\bind{\e_1\dot\e_2}{\e_3}{C}\after\bind{\e_1}{\e_2}{(\T{\e_3}{C})}\after\T{\e_1}{(\T{\e_2}{(h)} \after \tstrength{\e_2}{\G}{B} \after (\idg \times g))} \after \tstrength{\e_1}{\G}{(\G \times A)} \after \pr{\idg}{\tstrength{\e_1}{\G}{A}\after\pr{\idg}{f}}\qt{Naturality of $\mu$}\\
             = & \bind{\e_1}{\e_2\dot\e_3}{C}\after\T{\e_1}{(\bind{\e_2}{\e_3}{C}\after \T{\e_2}{(h)} \after \tstrength{\e_2}{\G}{B} \after (\idg \times g))} \after \tstrength{\e_1}{\G}{(\G \times A)} \after \pr{\idg}{\tstrength{\e_1}{\G}{A}\after\pr{\idg}{f}}
         \end{split}
     \end{equation}
@@ -495,8 +495,8 @@
     \begin{equation}
         \begin{split}
             G = & \T{\e_1}{((\idg\times g)\after \alpha_{\G, \G, A})} \after \tstrength{\e_1}{(\G\times\G)}{A}\after\alpha^{-1}_{\G, \G, (\T{\e_1}{A})}\after\pr{\idg}{\pr{\idg}{f}} \\
-            = & \T{\e_1}{((\idg\times g)\after \alpha_{\G, \G, A})} \after \tstrength{\e_1}{(\G\times\G)}{A}\after(\pr{\idg}{\idg}\times \Id{\T{\e_1}{A}})\after\pr{\idg}{f}\quad\text{By definition of $\alpha$ and products}\\
-            = & \T{\e_1}{((\idg\times g)\after \alpha_{\G, \G, A}\after(\pr{\idg}{\idg}\times \Id{A}))}\after\tstrength{\e_1}{\G}{A}\after\pr{\idg}{f}\quad\text{By tensor strength's left-naturality}\\
+            = & \T{\e_1}{((\idg\times g)\after \alpha_{\G, \G, A})} \after \tstrength{\e_1}{(\G\times\G)}{A}\after(\pr{\idg}{\idg}\times \Id{\T{\e_1}{A}})\after\pr{\idg}{f}\qt{By definition of $\alpha$ and products}\\
+            = & \T{\e_1}{((\idg\times g)\after \alpha_{\G, \G, A}\after(\pr{\idg}{\idg}\times \Id{A}))}\after\tstrength{\e_1}{\G}{A}\after\pr{\idg}{f}\qt{By tensor strength's left-naturality}\\
             = & \T{\e_1}{((\p\times\Id{\T{\e_2}{B}})\after\pr{\Id{(\G\times A)}}{g})}\after\tstrength{\e_1}{\G}{A}\after\pr{\idg}{f}
         \end{split}
     \end{equation}
@@ -509,8 +509,8 @@ We Have
 \begin{equation}
     \begin{split}
         rhs ={} & \bind{\e_1}{\e_2\dot\e_3}{C}\after\T{\e_1}{(\bind{\e_2}{\e_3}{C}\after \T{\e_2}{(h)} \after \tstrength{\e_2}{\G}{B}\after(\p\times\Id{\T{\e_2}{B}})\after\pr{\Id{(\G\times A)}}{g})}\after\tstrength{\e_1}{\G}{A}\after\pr{\idg}{f}\\
-        ={} & \bind{\e_1}{\e_2\dot\e_3}{C}\after\T{\e_1}{(\bind{\e_2}{\e_3}{C}\after \T{\e_2}{(h \after (\p\times\Id{B}))}\after\tstrength{\e_2}{(\G\times A)}{B}\after\pr{\Id{(\G\times A)}}{g})}\after\tstrength{\e_1}{\G}{A}\after\pr{\idg}{f}\quad\text{By Left-Tensor Strength}\\
-        ={} & lhs \quad\text{Woohoo!}
+        ={} & \bind{\e_1}{\e_2\dot\e_3}{C}\after\T{\e_1}{(\bind{\e_2}{\e_3}{C}\after \T{\e_2}{(h \after (\p\times\Id{B}))}\after\tstrength{\e_2}{(\G\times A)}{B}\after\pr{\Id{(\G\times A)}}{g})}\after\tstrength{\e_1}{\G}{A}\after\pr{\idg}{f}\qt{By Left-Tensor Strength}\\
+        ={} & lhs \qt{Woohoo!}
     \end{split}
 \end{equation}
 

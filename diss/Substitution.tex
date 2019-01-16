@@ -31,12 +31,12 @@
         \begin{align}
             x\sub{\nil} & = x \\
             x\sub{\si,x\setto v} & = v \\
-            x\sub{\si,x'\setto v'} & = x\ssi\quad\text{If }x \neq x'\\
+            x\sub{\si,x'\setto v'} & = x\ssi\qt{If }x \neq x'\\
             \const{A}\ssi & = \const{A} \\
-            (\lam{x}{A}{C})\ssi &= \lam{x}{A}{(C\ssi)}\quad\text{If }x\#\si\\
+            (\lam{x}{A}{C})\ssi &= \lam{x}{A}{(C\ssi)}\qt{If }x\#\si\\
             (\ifthenelse{\e}{A}{v}{C_1}{C_2})\ssi &= \ifthenelse{\e}{A}{v\ssi}{C_1\ssi}{C_2\ssi}\\
             (\apply{v_1}{v_2})\ssi&= \apply{(v_1\ssi)}{v_2\ssi}\\
-            (\doin{x}{C_1}{C_2})&= \doin{x}{(C_1\ssi)}{(C_2\ssi)}\quad\text{If } x\#\si\\
+            (\doin{x}{C_1}{C_2})&= \doin{x}{(C_1\ssi)}{(C_2\ssi)}\qt{If } x\#\si\\
         \end{align}
     \subsection{Well Formedness}
     Define the relation $$\typerelation{\G'}{\si}{\G}$$ by:
