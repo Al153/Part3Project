@@ -1,6 +1,6 @@
 \newcommand\UniqueDenotations[0]{
     \section{Reduced Type Derivation}
-    A reduced type derivation is one where subtype and subeffect rules must, and may only, occur at the root or directly above an \textbf{if}, or \textbf{apply} rule. \todo{No-lambda?}
+    A reduced type derivation is one where subtype and subeffect rules must, and may only, occur at the root or directly above an \textbf{if}, or \textbf{apply} rule.
 
     In this section, I shall prove that there is at most one reduced derivation of $\gtyperelation{t}{\tau}$. Secondly, I shall present a function for generating reduced derivations from arbitrary typing derivations, in a way that does not change the denotations. These imply that all typing derivations of a type-relation have the same denotation.
 
@@ -184,7 +184,7 @@
 
     Hence the reduced type derivation of $\gtyperelation{\doin{x}{C_1}{C-2}}{\M{\e_1'\dot\e_2'}{B'}}$ is the following:
 
-    \todo{Makle this and the other smaller}
+    \todo{Make this and the other smaller}
     \begin{equation}
         \treerule{Subeffect} {
             \treerule{Bind}{
@@ -203,11 +203,8 @@
         }
     \end{equation}
 
-    \paragraph{Case Subeffect}
-    \todo{Do I want to talk about this?}
-
     \section{Each type derivation has a reduced equivalent with the same denotation.}
-    We introduce a function, $\reduce$ that maps each valid type derivation of $\gtyperelation{t}{\tau}$ to a reduced equivalent with the same denotation. To do this, we do case analysis over the root type rule of a derivation and prove that the denotation is not changed. \todo{Fill in these cases with actual maths}
+    We introduce a function, $\reduce$ that maps each valid type derivation of $\gtyperelation{t}{\tau}$ to a reduced equivalent with the same denotation. To do this, we do case analysis over the root type rule of a derivation and prove that the denotation is not changed.
 
         \subsection{Constants}
             For the constants $\t, \f, \const{A}$, etc, $\reduce$ simply returns the derivation, as it is already reduced. This trivially preserves the denotation.
@@ -609,10 +606,6 @@
                     }
                 \end{equation}
                 \subparagraph{Preserves Denotation}
-                \todo{
-                    Recursively call reduce, then leave tree otherwise unchanged.
-                }
-                
 
                 Let \begin{align}
                     f & = \deno{A' \subtype A}: A' \rightarrow A\\
