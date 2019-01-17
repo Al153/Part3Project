@@ -56,13 +56,13 @@
     \subsection{Simple Properties Of Substitution}
     If $\typerelation{\G'}{\si}{\G}$ then:
     \todo{Number these}
-    
-        \paragraph{$\ok{\G}$ and $\ok{\G'}$}
+
+        \paragraph{Property 1: $\ok{\G}$ and $\ok{\G'}$}
          Since $\ok{\G'}$ holds by the Nil-axiom. $\ok{\G}$ holds by induction on the well-formed-ness relation.
-        \paragraph{$\wrel{\w}{\G''}{\G'}$ implies $\typerelation{\G''}{\si}{\G}$}. 
+        \paragraph{Property 2: $\wrel{\w}{\G''}{\G'}$ implies $\typerelation{\G''}{\si}{\G}$}. 
         By induction over well-formed-ness relation. For each $x\setto v$ in $\si$, $\typerelation{\G''}{v}{A}$ holds if $\typerelation{\G'}{v}{A}$ holds.
-        \paragraph{$x \notin (\dom{\G} \cup \dom{\G''})$ implies $\typerelation{(\G', x: A)}{(\si, x \setto x)}{(\gax)}$} 
-        Since $\wrel{\i\pi}{\G',x: A}{\G'}$, so by (2) \todo{Better referencing here}, 
+        \paragraph{Property 3: $x \notin (\dom{\G} \cup \dom{\G''})$ implies $\typerelation{(\G', x: A)}{(\si, x \setto x)}{(\gax)}$} 
+        Since $\wrel{\i\pi}{\G',x: A}{\G'}$, so by (Property 2) \todo{Better referencing here}, 
         $$\typerelation{\G', x: A}{\si}{\G}$$
         In addition, $\typerelation{\G', x: A}{x}{A}$ trivially, so by the rule \textbf{Extend}, well-formed-ness holds for
         \begin{equation}
@@ -81,34 +81,200 @@
 
     \subsection{Variables}  
         \paragraph{Case Var}
-            \todo{The more difficult case. case split on the structure of $\si$}
+            By inversion $\G = (\G'', x:A)$
+            So \begin{equation}
+                \typerelation{\G'',x:A}{x}{A}
+            \end{equation}
+
+            So by inversion, since $\typerelation{\G'}{\si}{\G'', x:A}$, 
+
+            \begin{equation}
+                \si = \si', x\setto v \wedge \typerelation{\G'}{v}{A}
+            \end{equation}
+
+            By the defintion of the effect of substitutions, $x\ssi = v$, So
+            \begin{equation}
+                \typerelation{\G'}{x\ssi}{A}
+            \end{equation}
+
+            holds.
+            
         \paragraph{Case Weaken}
-            \todo{}
+            By inversion, $\G = \G'', y: B, x \neq y$, and there exists $\D$ such that
+ 
+            \begin{equation}
+                \treerule{Weaken}{\treerule{}{\D}{\typerelation{\G''}{x}{A}}}{\typerelation{\G'', y: B}{x}{A}}
+            \end{equation}
+
+            By inversion, $\si = \si', y\setto v$
+            and:
+
+            \begin{equation}
+                \typerelation{\G'}{\si'}{\G''}
+            \end{equation}
+
+            So by induction,
+
+            \begin{equation}
+                \typerelation{\G'}{x\sub{\si'}}{A}
+            \end{equation}
+
+            And so by definition of the effect of $\si$, $x\ssi = x\sub{\si'}$
+
+            \begin{equation}
+                \typerelation{\G'}{x\sub{\si}}{A}
+            \end{equation}
     \subsection{Other Value Terms}
     \paragraph{Case Lambda}
-        \todo{}
+        By inversion, there exists $\D$ such that:
+
+        \begin{equation}
+            \treerule{Fn}{
+                \treerule{}{\D}{\typerelation{\G, x:A }{C}{\meb}}
+            }{\typerelation{\G}{\lam{x}{A}{C}}{\aeb}}
+        \end{equation}
+        Using alpha equivalence, we pick $x\notin(\dom{\G}\cup\dom{\G'})$
+        Hence, by property 3, we have
+
+        \begin{equation}
+            \typerelation{(\G', x:A )}{(\si, x\setto x)}{\gax}
+        \end{equation}
+
+        So by induction using $\si,x\setto x$, we have $\D'$ such that:
+
+        \begin{equation}
+            \treerule{Fn}{
+                \treerule{}{\D'}{\typerelation{\G', x:A }{C\sub{\si, x\setto v}}{\meb}}
+            }{\typerelation{\G}{\lam{x}{A}{C\sub{\si, x\setto{x}}}}{\aeb}}
+        \end{equation} 
+        Since $\lam{x}{A}{(C\sub{\si, x\setto{x}})} = {\lam{x}{A}({C\ssi})} = (\lam{x}{A}{C})\ssi$, we have a typing derivation for $\typerelation{\G'}{(\lam{x}{A}{C})\ssi}{\aeb}$.
+
     \paragraph{Case Constants}
-        \todo{}
-    \paragraph{Case Unit}
-        \todo{}
-    \paragraph{Case True}
-        \todo{}
-    \paragraph{False}
-        \todo{}
+        We use the same logic for all constants, $\u,\t,\f,\const{A}$:
+
+        $\typerelation{\G}{\si}{\G} \Rightarrow \ok{\G'}$ and:
+
+        \begin{equation}
+            \const{A}\ssi =\const{A}
+        \end{equation}
+
+        So \begin{equation}
+            \treerule{Const}{\ok{\G'}}{\typerelation{\G'}{\const{A}}{A}}
+        \end{equation}
     \subsection{Computation Terms}
-    \paragraph{Case Return}  
-        \todo{Induct using preconditions, then construct new tree}
+    \paragraph{Case Return}
+        By inversion, we have $\D_1$ such that:
+
+        \begin{equation}
+            \treerule{Return}{\treerule{}{\D_1}{\typerelation{\G}{v}{A}}}{\typerelation{\G}{\return{v}}{\moa}}
+        \end{equation}
+
+        By induction, we have $\D_1'$ such that
+
+        \begin{equation}
+            \treerule{Return}{\treerule{}{\D'_1}{\typerelation{\G'}{v\ssi}{A}}}{\typerelation{\G'}{\return{(v\ssi)}}{\moa}}
+        \end{equation}
+
+        Since $(\return{v})\ssi = \return{(v\ssi)}$, the type derivation above holds for $\typerelation{\G'}{(\return{v})\ssi}{\moa}$.
+
     \paragraph{Case Apply}
-        \todo{}
+        By inversion, we have $\D_1$, $\D_2$ such that:
+
+        \begin{equation}
+            \treerule{Apply}{
+                \treerule{}{\D_1}{\typerelation{\G}{v_1}{\aeb}}
+                \s\s
+                \treerule{}{\D_2}{\typerelation{\G}{v_2}{A}}
+            }{\typerelation{\G}{\apply{v_1}{v_2}}{\meb}}
+        \end{equation}
+
+        By induction on $\D_1, \D_2$, we have $\D_1',\D_2'$ such that
+
+        \begin{equation}
+            \treerule{Apply}{
+                \treerule{}{\D'_1}{\typerelation{\G'}{v_1\ssi}{\aeb}}
+                \s\s
+                \treerule{}{\D_2'}{\typerelation{\G'}{v_2\ssi}{A}}
+            }{\typerelation{\G'}{\apply{(v_1\ssi)}{(v_2\ssi)}}{\meb}}
+        \end{equation}
+
+        Since $(\apply{v_1}{v_2})\ssi = \apply{(v_1\ssi)}{(v_2\ssi)}$, we the above derivation holds for $\typerelation{\G'}{(\apply{v_1}{v_2})\ssi}{\meb}$
     \paragraph{Case If}
-        \todo{}
+        By inversion, we have $\D_1,\D_2,\D_3$ such that:
+
+        \begin{equation}
+            \treerule{If}{
+                \treerule{}{\D_1}{\typerelation{\G}{v}{\B}}
+                \s\s
+                \treerule{}{\D_2}{\typerelation{\G}{C_1}{\mea}}
+                \s\s
+                \treerule{}{\D_3}{\typerelation{\G}{C_2}{\mea}}
+            }{
+                \typerelation{\G}{\ifthenelse{\e}{A}{v}{C_1}{C_2}}{\mea}
+            }
+        \end{equation}
+
+        By induction on $\D_1,\D_2, \D_3$, we derive 
+        $\D_1', \D_2',\D_3'$ such that:
+        
+        \begin{equation}
+            \treerule{If}{
+                \treerule{}{\D_1'}{\typerelation{\G'}{v\ssi}{\B}}
+                \s\s
+                \treerule{}{\D_2'}{\typerelation{\G'}{C_1\ssi}{\mea}}
+                \s\s
+                \treerule{}{\D_3'}{\typerelation{\G'}{C_2\ssi}{\mea}}
+            }{
+                \typerelation{\G'}{\ifthenelse{\e}{A}{(v\ssi)}{(C_1\ssi)}{(C_2\ssi)}}{\mea}
+            }
+        \end{equation}
+
+        Since $(\ifthenelse{\e}{A}{v}{C_1}{C_2})\ssi = \ifthenelse{\e}{A}{(v\ssi)}{(C_1\ssi)}{(C_2\ssi)}$ The derivation above holds for $\typerelation{\G'}{(\ifthenelse{\e}{A}{v}{C_1}{C_2})\ssi}{\mea}$
+
     \paragraph{Case Bind}
-        \todo{}
+        By inversion, there exist $\D_1, \D_2$ such that:
+        \begin{equation}
+            \treerule{Bind}{
+                \treerule{}{\D_1}{\typerelation{\G}{C_1}{\M{\e_1}{A}}}
+                \s\s
+                \treerule{}{\D_2}{\typerelation{\G, x:A}{C_2}{\M{\e_2}{B}}}
+            }{\typerelation{\G}{\doin{x}{C_1}{C_2}}{\M{\e_1\dot\e_2}{B}}}
+        \end{equation}
+
+        Using alpha-equivalence, we pick $x\notin(\dom{\G}\cup\dom{\G'})$. Hence by property 3, $$\typerelation{(\G, x: A)}{(\si, x\setto x)}{(\gax)}$$
+        By induction on $\D_1, \D_2$, we have $\D_1', \D_2'$ such that:
+        \begin{equation}
+            \treerule{Bind}{
+                \treerule{}{\D_1'}{\typerelation{\G'}{C_1\ssi}{\M{\e_1}{A}}}
+                \s\s
+                \treerule{}{\D_2}{\typerelation{\G', x:A}{C_2\sub{\si, x\setto x}}{\M{\e_2}{B}}}
+            }{\typerelation{\G'}{\doin{x}{(C_1\ssi)}{(C_2\sub{\si, x\setto x})}}{\M{\e_1\dot\e_2}{B}}}
+        \end{equation}
+
+        Since $(\doin{x}{C_1}{C_2})\ssi = \doin{x}{(C_1\ssi)}{(C_2\ssi)} = \doin{x}{(C_1\ssi)}{(C_2\sub{\si, x\setto x})}$, the above derivation holds for $\typerelation{\G'}{(\doin{x}{C_1}{C_2})\ssi}{\M{\e_1\dot\e_2}{B}}$
     \subsection{Sub-typing and Sub-effecting}
     \paragraph{Case Sub-type}
-        \todo{}
+        By inversion, there exists $\D$ such that
+        \begin{equation}
+            \treerule{sub-type}{\treerule{}{\D}{\typerelation{\G}{v}{A}}\s\s A\subtype B}{\typerelation{\G}{v}{B}}
+        \end{equation}
+
+        By induction on $\D$ we derive $\D'$ such that:
+
+        \begin{equation}
+            \treerule{sub-type}{\treerule{}{\D'}{\typerelation{\G'}{v\ssi}{A}}\s\s A\subtype B}{\typerelation{\G}{v\ssi}{B}}
+        \end{equation}
     \paragraph{Case Sub-effect}
-        \todo{}
+    By inversion, there exists $\D$ such that
+    \begin{equation}
+        \treerule{sub-effect}{\treerule{}{\D}{\typerelation{\G}{C}{\M{\e_1}{A}}}\s\s A\subtype B\s\s\e_1\subtype\e_2}{\typerelation{\G}{C}{\M{\e_2}{B}}}
+    \end{equation}
+
+    By induction on $\D$ we derive $\D'$ such that:
+
+    \begin{equation}
+        \treerule{sub-effect}{\treerule{}{\D'}{\typerelation{\G'}{C\ssi}{\M{\e_1}{A}}}\s\s A\subtype B\s\s\e_1\subtype\e_2}{\typerelation{\G'}{C\ssi}{\M{\e_2}{B}}}
+    \end{equation}
     \section{Semantics of Substitution}
     \subsection{Denotation of Substitutions}
     We define the denotation of a well-formed-substitution as so:
