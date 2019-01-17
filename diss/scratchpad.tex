@@ -1,62 +1,298 @@
 \documentclass{report}
 \input{header.tex}
 \begin{document}
-\section{Introduce Substitutions}
-\subsection{Substitutions as SNOC lists}
+\section{Weakening Definition}
+\subsection{Relation}
+We define the ternary weaking relation $\wrel{w}{\G'}{\G}$ using the following rules.
 
-\begin{equation}
-    \si \gens \nil \mid \si, x \setto v
-\end{equation}
 
-\paragraph{Definition of $\si$}
-\subsection{Trivial Properties of substitutions}
-\paragraph{$\fv{\si}$}
-\begin{align}
-    \fv{\nil} &= \emptyset\\
-    \fv{\si, x\setto v} &= \fv{\si}\cup\fv{v}
-\end{align}
-\paragraph{$\dom{\si}$}
-\begin{align}
-    \dom{\nil} & = \emptyset\\
-    \dom{\si, x\setto v} & = \dom{\si}\cup\left\{x\right\}
-\end{align}
-
-\paragraph{$x \# \si$}
-\begin{equation}
-    x \# \si \Leftrightarrow x\notin(\fv{\si}\cup\dom{\si`})
-\end{equation}
-
-\subsection{Effect of substitutions}
-\subsection{Well Formedness}
-\subsection{Simple Properties Of Substitution}
-If $\typerelation{\G'}{\si}{\G}$ then:
-\todo{Number these}
 \begin{itemize}
-    \item $\ok{\G}$ and $\ok{\G'}$
-    \item $\wrel{\w}{\G''}{\G'}$ implies $\typerelation{\G''}{\si}{\G}$
-%       \item $\x \notin (\dom{\G} \union \dom{\G''})$ implies $\typerelation{(\G', x: A)}{(\si, x \setto x)}{(\gax)}$
+    \item $\treerule{Id}{\ok{\G}}{\wrel{\i}{\G}{\G}}$
+    \item $\treerule{Project}{\wrel{\w}{\G'}{\G}\s\s x \notin \dom{\G'}}{\wrel{\w \pi}{\G, x: A}{\G}}$
+    \item $\treerule{Extend}{\wrel{\w}{\G'}{\G}\s\s x \notin \dom{\G'}\s\s A \subtype B}{\wrel{w \x}{\G', x: A}{\G, x: B}}$
 \end{itemize}
 
-\section{Substitution Preserves Typing}
-\todo{State property}
-\todo{Proof by induction overtype relation}
-\section{Semantics of Substitution}
-\subsection{Denotation of Substitutions}
-\todo{Fill in from p98}
-\subsection{Lemma}
-\todo{Fill in from p98}
-\subsection{Substitution Theorem}
+\subsection{Weakening Denotations}
+The denotation of a weakening relation is defined as follows:
 
-\todo{There is Tikz code here to draw the Substitution Theorem diagram, but it compiles v slowly}
-If $\gtyperelation{t}{\tau}$ and $\typerelation{\G'}{\si}{\G}$ then
-%\begin{tikzcd}[ampersand replacement=\&]
-%    \G' 
-%        \arrow [rr, "\deno{\typerelation{\G'}{\si}{\G}}"] 
-%        \arrow [rrd, "\deno{\typerelation{\G'}{t\sub{\si}}{\tau}} "] \&\&
-%    \G 
-%        \arrow [d, "\deno{\gtyperelation{t}{\tau}}"]
-%    \\
-%    \& \&\deno{T}
-%\end{tikzcd}
-\section{Single Substitution}    
+\begin{equation}
+    \deno{\wrel{\w}{\G'}{\G}}: \G' \rightarrow \G
+\end{equation}
+
+\begin{itemize}
+    \item $\deno{\wrel{\i}{\G}{\G}} = \idg: \G \rightarrow \G$
+    \item $\treerule{Project}{f = \deno{\wrel{\w}{\G'}{\G}}: \G' \rightarrow \G}{\deno{\wrel{\w \pi}{\G, x: A}{\G}} = f\after \p: \G'\times A \rightarrow \G}$
+    \item $\treerule{Extend}{f = \deno{\wrel{\w}{\G'}{\G}}: \G' \rightarrow \G \s\s g = \deno{A \subtype B}: A \rightarrow B}{\deno{\wrel{w \x}{\G', x: A}{\G, x: B}} = (f\times g): (\G\times A)\rightarrow(\G\times B)}$
+\end{itemize}
+
+\section{Weakening Theorems}
+\subsection{Domain Lemma}
+If $\wrel{\w}{\G'}{\G}$, then $\dom{\G}\subseteq \dom{\G'}$.
+
+\paragraph{Proof}
+\subparagraph{Case Id}
+Then $\G' = \G$ and so $\dom{\G'} = \dom{\G}$.
+\subparagraph{Case Project}
+By inversion and induction, $\dom{\G}\subseteq\dom{\G'}\subseteq\dom{\G'\cup\left\{x\right\}}$
+\subparagraph{Case Extend}
+By inversion and induction, $\dom{\G}\subseteq\dom{\G'}$ so 
+$$\dom{\gax} = \dom{\G}\cup\left\{x\right\} \subseteq\dom{\G'}\cup\left\{x\right\} = \dom{\G',x:A}$$
+\subsection{Theorem 1}
+If $\wrel{\w}{\G'}{\G}$ and $\ok{\G}$ then $\ok{\G'}$
+\paragraph{Proof}
+\subparagraph{Case Id}
+$$\treerule{Id}{\ok{\G}}{\wrel{\i}{\G}{\G}}$$
+
+By inversion, $\ok{\G}$.
+
+\subparagraph{Case Project}
+$$\treerule{Project}{\wrel{\w}{\G'}{\G}\s\s x \notin \dom{\G'}}{\wrel{\w \pi}{\G, x: A}{\G}}$$
+
+By inversion, $\wrel{\w}{\G'}{\G}$ and $x\notin \dom{\G'}$.
+
+Hence by induction $\ok{\G'}$, $\ok{\G}$. Since $x\notin\dom{\G'}$, we have $\ok{\G', x:A}$.
+
+\subparagraph{Case Extend}
+$\treerule{Extend}{\wrel{\w}{\G'}{\G}\s\s x \notin \dom{\G'}\s\s A \subtype B}{\wrel{w \x}{\G', x: A}{\G, x: B}}$, 
+
+By inversion, we have 
+
+$\wrel{\w}{\G'}{\G}$, $x\notin\dom{\G'}$.
+
+Hence we have $\ok{\G}$, $\ok{\G'}$, and by the domain Lemma, $\dom{\G}\subseteq\dom{\G'}$, hence $x\notin\dom{\G}$. Hence, we have $\ok{\gax}$ and $\ok{\G',x:A}$
+
+
+\subsection{Theorem 2}
+If $\gtyperelation{t}{\tau}$ and $\wrel{\w}{\G'}{\G}$ then there is a derivation of $\typerelation{\G'}{t}{\tau}$
+
+\paragraph{Proof}
+Proved in parallel with theorem 3 below
+\subsection{Theorem 3}
+
+If $\wrel{\w}{\G'}{\G}$ and $\D = \deno{\gtyperelation{t}{\tau}}$ and $\D' = \deno{\typerelation{\G'}{t}{\tau}}$, derived using Theorem 2, then 
+
+$$
+    \D \after \deno{\w} = \D' : \G' \rightarrow \deno{\tau}
+$$
+\paragraph{Proof} Below
+
+\section{Proof of Theorems 2 and 3}
+We induct over the structure of typing derivations of $\gtyperelation{t}{\tau}$, assuming $\wrel{\w}{\G'}{\G}$ holds. In each case, we construct the new derivation $\D'$ from the derivation $\D$ giving $\gtyperelation{t}{\tau}$ and show that $\D\after\deno{\wrel{\w}{\G'}{\G}} = \D'$
+
+\subsection{Variable Terms}
+\paragraph{Case Var and Weaken}
+    We case split on the weakening $\w$.
+    \subparagraph{If $\w = \i$}
+    Then $\G' = \G$, and so $\typerelation{\G'}{x}{A}$ holds and the derivation $\D'$ is the same as $\D$
+
+    \begin{equation}
+        \D' = \D = \D\after\idg = \D\after\deno{\wrel{\i}{\G}{\G}} 
+    \end{equation}
+    \subparagraph{If $\w = \w'\pi$}
+    Then  $\G' = (\G'',x': A')$ and $\wrel{\w'}{\G''}{\G}$. So by induction, there is a tree, $\D''$ deriving $\typerelation{\G''}{x}{A}$,  such that 
+    \begin{equation}
+        \D'' = \D\after\deno{\wrel{\w'}{\G''}{\G}} \qt{By Induction}
+    \end{equation}
+    
+    , and hence by the weaken rule, we have 
+    \begin{equation}
+        \treerule{Weaken}{\typerelation{\G''}{x}{A}}{\typerelation{\G'', x':A' }{x}{A}}
+    \end{equation}
+
+    This preserves denotations:
+    \begin{align}
+        \D' & = \D''\after\p\qt{By Definition} \\
+        & = \D\after\deno{\wrel{\w'}{\G''}{\G}}\after\p\qt{By induction}\\
+        & = \D\after\deno{\wrel{\w'\p}{\G'}{\G}}\qt{By denotation of weakening}
+    \end{align}
+
+    \subparagraph{If $\w = \w'\x$} 
+    Then 
+    \begin{align}
+        \G' & = \G''', x': B\\
+        \G &= \G'', x': A'\\
+        B & \subtype A
+    \end{align}
+
+    \subparagraph{If $x = x'$}
+
+    Then $A = A'$.
+
+    Then we derive the new deriviation, $\D'$ as so:
+
+    \begin{equation}
+        \treerule{Sub-type}{
+            \treerule{var}{}{\typerelation{\G''', x: B}{x}{B}}
+            \s\s
+            B \subtype A
+        }{
+            \typerelation{\G'}{x}{A}
+        }
+    \end{equation}
+
+    This preserves denotations
+
+    \begin{align}
+        \D' & = \deno{B\subtype A}\after\pp\qt{By Definition} \\
+         & = \pp\after (\deno{\wrel{\w'}{\G'''}{\G''}}\times \deno{B\subtype A}) \qt{By the properties of binary products}\\
+         & = \D\after\deno{\wrel{\w}{\G'}{\G}}\qt{By Definition}
+    \end{align}
+
+    \subparagraph{Case $x \neq x'$}
+    Then 
+    \begin{equation}
+        \D = \treerule{Weaken}{\treerule{}{\D''}{\typerelation{\G''}{x}{A}}}{\gtyperelation{x}{A}}
+    \end{equation}
+
+    By induction with $\wrel{\w}{\G'''}{\G''}$,
+     we have a derivation $\D''$ of $\typerelation{\G'''}{x}{A}$
+
+    We have the weakened derivation:
+
+    \begin{equation}
+        \D' = \treerule{Weaken}{\treerule{}{\D'''}{\typerelation{\G'''}{x}{A}}}{\typerelation{\G'}{x}{A}}
+    \end{equation}
+
+    This preserves denotations:
+
+    By induction, we have
+    \begin{equation}
+        \D''' = \D'' \after \deno{\wrel{\w}{\G'''}{\G''}}
+    \end{equation}
+    So we have:
+    \begin{align}
+        \D' &= \D''' \after \p\qt{By denotation definition}\\
+        & = \D''\after\deno{\wrel{\w'}{\G'''}{\G''}}\qt{By induction}\after\p \\
+        & = \D''\after\p\after(\deno{\wrel{\w'}{\G'''}{\G''}}\times\deno{A' \subtype B})\qt{By product properties}\\
+        & = \D\after\deno{\wrel{\w}{\G'}{\G}}\qt{By definition}
+    \end{align}
+
+\subsection{Value Terms}
+From this point onwards, since we no-longer case split over the weakening relations, we write the denotation $\deno{\wrel{\w}{\G'}{\G'}}$, simply as $\w$.
+
+
+\paragraph{Case Constant}
+The constant typing rules, $\u$, $\t$, $\f$, $\const{A}$, all proceed by the same logic. Hence I shall only prove the theorems for the case $\const{A}$.
+
+\begin{equation}
+    \truleconst
+\end{equation}
+
+By inversion, we have $\ok{\G}$, so we have $\ok{\G'}$.
+
+Hence
+
+\begin{equation}
+    \treerule{Const}{\ok{\G'}}{\typerelation{\G'}{\const{A}}{A}}
+\end{equation}
+Holds.
+
+This preserves denotations:
+
+
+\begin{align}
+    \D' & = \deno{\const{A}} \after \term{\G'}\qt{By definition}\\
+    & = \deno{\const{A}} \after \term{\G}\after \w \qt{By the terminal property}\\
+    & = \D\qt{By Definition}\\
+\end{align}
+
+
+\paragraph{Case Lambda}
+By inversion, we have a derivation $\D''$ giving
+
+\begin{equation}
+    \D = \treerule{Fn}{
+        \treerule{}{\D''}{\typerelation{\gax}{C}{\meb}}
+    }{\gtyperelation{\lam{x}{A}{C}}{\aeb}}
+\end{equation}
+
+Since $\wrel{\w}{\G'}{\G}$, we have:
+
+\begin{equation}
+    \wrel{\w\x}{(\G,x:  A)}{(\gax)}
+\end{equation}
+
+Hence, by induction, using $\wrel{\w\x}{(\G,x:  A)}{(\gax)}$, we derive $\D'''$:
+
+\begin{equation}
+    \D' = \treerule{Fn}{
+        \treerule{}{\D'''}{\typerelation{\gax}{C}{\meb}}
+    }{\gtyperelation{\lam{x}{A}{C}}{\aeb}}
+\end{equation}
+
+This preserves denotations:
+
+
+\begin{align}
+\D' & = \cur{\D'''} \qt{By Definition}\\
+& = \cur{\D''\after(\w\times \idg)}\qt{By the denotation of $\w\x$} \\
+&= \cur{\D''}\after\w\qt{By the exponential property}\\
+&= \D\after \w \qt{By Definition}
+\end{align}
+
+
+\paragraph{Case Sub-typing}
+
+\begin{equation}
+    \treerule{Sub-type}{\gtyperelation{v}{A}\s\s A\subtype B}{\gtyperelation{v}{B}}
+\end{equation}
+
+by inversion, we have a derivation $\D''$
+\begin{equation}
+    \treerule{}{\D''}{\gtyperelation{v}{A}}
+\end{equation}
+
+So by induction, we have a derivation $\D'''$ such that:
+\begin{equation}
+    \treerule{Sub-type}{\treerule{}{\D'''}{\typerelation{\G'}{v}{a}}\s\s A \subtype B}{\typerelation{\G'}{v}{B}}
+\end{equation}
+
+This preserves denotations:
+
+\begin{align}
+    \D' & = \deno{A\subtype B}\after \D''' \qt{By Definition} \\
+    & = \deno{A\subtype B}\after \D''\after\w \qt{By induction}\\
+    & = \D\after\w \qt{By Definition}\\
+\end{align}
+
+\subsection{Computation Terms}
+\paragraph{Case Return}
+We have the sub-derivation $\D'$ such that
+\begin{equation}
+    \D = \treerule{Return}{\treerule{}{\D'}{\gtyperelation{v}{A}}}{\gtyperelation{\return{v}}{\moa}}
+\end{equation}
+\paragraph{Case Apply}
+\paragraph{Case If}
+\paragraph{Case Bind}
+\paragraph{Case Sub-effect}
+
+
+\begin{equation}
+    \treerule{Sub-effect}{\gtyperelation{C}{\M{\e_1}{A}}\s\s A\subtype B\s\s \e_1\subeffect\e_2}{\gtyperelation{C}{\M{\e_2}{B}}}
+\end{equation}
+
+by inversion, we have a derivation $\D''$
+\begin{equation}
+    \treerule{}{\D''}{\gtyperelation{C}{\M{\e_1}{A}}}
+\end{equation}
+
+So by induction, we have a derivation $\D'''$ such that:
+\begin{equation}
+    \treerule{Sub-effect}{\treerule{}{\D'''}{\typerelation{\G'}{C}{\M{\e_1}{A}}}\s\s A \subtype B\s\s \e_1\subeffect\e_2}{\typerelation{\G'}{C}{\M{\e_2}{B}}}
+\end{equation}
+
+This preserves denotations:
+
+Let
+\begin{align}
+    g &= \deno{A \subtype B}: A \rightarrow B\\
+    h &= \deno{\e_1\subeffect\e_2}: \T{\e_1}{}\rightarrow\T{\e_2}{}
+\end{align}
+Then
+\begin{align}
+    \D' & = h_B\after\T{\e_1}{g}\after \D''' \qt{By Definition}\\
+    & = h_B\after\T{\e_1}{g}\after \D''\after\w\qt{By Induction}\\
+    & = \D\after\w\qt{By Definition}
+\end{align}
+
 \end{document}
