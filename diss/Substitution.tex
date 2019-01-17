@@ -326,7 +326,7 @@
         \D' = \D \after\deno{\typerelation{\G'}{\si}{\G}}
     \end{equation}
 
-    %\begin{tikzcd}[ampersand replacement=\&]
+    %\begin{tikzcd}[ampersand replacement = \&]
     %    \G' 
     %        \arrow [rr, "\deno{\typerelation{\G'}{\si}{\G}}"] 
     %        \arrow [rrd, "\deno{\typerelation{\G'}{t\ssi}{\tau}} "] \&\&
@@ -603,9 +603,50 @@
             &= \D\after\si\qt{By definition}\\
     \end{align}
     
-    \section{Single Substitution}
-}
+    \section{The Identity Substitution}
+    For each type environment $\G$, define the identity substitution $I_{\G}$ as so:
 
+    \begin{itemize}
+        \item $I_{\nil} = \nil$
+        \item $I_{(\gax} = (I_{\G}, x\setto x)$
+    \end{itemize}
+
+    \subsection{Properties of the Identity Substitution}
+    \paragraph{Property 1}
+    If $\ok{\G}$ then $\typerelation{\G}{I_{\G}}{\G}$, proved trivially by induction over the well formedness relation.
+
+    \paragraph{Property 2}
+    $\deno{\typerelation{\G}{I_{\G}}{\G}} = \idg$, proved trivially by induction over the definition of $I_{\G}$
+    \section{Single Substitution}
+
+    If $\typerelation{\G}{v}{A}$, let the single substitution $\typerelation{\G}{\ssub{x}{v}}{\gax}$, be defined as:
+    \begin{equation}
+        \ssub{x}{v} = (I_{\G}, x\setto v)
+    \end{equation}
+
+    Then by properties 1, 2 of the identity substitution, we have:
+
+    \begin{equation}
+        \deno{\gtyperelation{\ssub{x}{v}}{\gax}} = \pr{\idg}{\deno{\gtyperelation{v}{A}}}: \G\rightarrow(\G\times A)
+    \end{equation}
+    \subsection{The Semantics of Single Substitution}
+
+    The following diagram commutes:
+
+    \begin{tikzcd}[ampersand replacement = \&]
+        G \arrow [r, "\pr{\idg}{\deno{\gtyperelation{v}{A}}}"]
+        \arrow [rd, "\deno{\gtyperelation{t\ssub{x}{v}}{\tau}}"]
+        \&
+        G\times A 
+        \arrow [d, "\deno{\typerelation{\gax}{t}{\tau}}"]
+        \\
+        \& 
+        A 
+        \\
+    \end{tikzcd}
+    Since $\deno{\gtyperelation{(I_{\G}, x\setto v)}{(\gax)}} = \pr{\idg}{\deno{\gtyperelation{v}{A}}}$
+    And $\t\ssub{x}{v} = \t\sub{I_{\G}, x\setto{v}}$
+    }
 
 
 \ifdefined\NoDocument
