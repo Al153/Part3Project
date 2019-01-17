@@ -632,18 +632,21 @@
     \subsection{The Semantics of Single Substitution}
 
     The following diagram commutes:
-
-    \begin{tikzcd}[ampersand replacement = \&]
-        G \arrow [r, "\pr{\idg}{\deno{\gtyperelation{v}{A}}}"]
-        \arrow [rd, "\deno{\gtyperelation{t\ssub{x}{v}}{\tau}}"]
-        \&
-        G\times A 
-        \arrow [d, "\deno{\typerelation{\gax}{t}{\tau}}"]
-        \\
-        \& 
-        A 
-        \\
-    \end{tikzcd}
+    \begin{align}
+        \deno{\gtyperelation{t\ssub{x}{v}}{\tau}} &= \deno{\typerelation{\gax}{t}{\tau}}\after\pr{\idg}{\deno{\gtyperelation{v}{A}}}
+    \end{align}
+    \todo{Again, there is code here to draw a Commutative diagram, but for some reason pdflatex hangs when compiling it}
+    %\begin{tikzcd}[ampersand replacement = \&]
+    %    G \arrow [r, "\pr{\idg}{\deno{\gtyperelation{v}{A}}}"]
+    %    \arrow [rd, "\deno{\gtyperelation{t\ssub{x}{v}}{\tau}}"]
+    %    \&
+    %    G\times A 
+    %    \arrow [d, "\deno{\typerelation{\gax}{t}{\tau}}"]
+    %    \\
+    %    \& 
+    %    A 
+    %    \\
+    %\end{tikzcd}
     Since $\deno{\gtyperelation{(I_{\G}, x\setto v)}{(\gax)}} = \pr{\idg}{\deno{\gtyperelation{v}{A}}}$
     And $\t\ssub{x}{v} = \t\sub{I_{\G}, x\setto{v}}$
     }
