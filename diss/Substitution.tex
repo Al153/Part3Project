@@ -285,12 +285,47 @@
         \item $\treerule{Nil}{\ok{\G'}}{\deno{\typerelation{\G'}{\nil}{\nil}} = \term{\G'}}$
         \item $\treerule{Extend}{f = \deno{\typerelation{\G'}{\si}{\G}}\s\s g= \deno{\typerelation{\G'}{v}{A}}}{\deno{\typerelation{\G'}{(\si, x\setto v}{(\gax)}} = \pr{f}{g}:\G' \rightarrow (\G\times A)}$
     \end{itemize}
-    \subsection{Lemma}
-    \todo{Fill in from p98}
+    \subsection{Extension Lemma}
+    If $\typerelation{\G'}{\si}{\G}$ and $x\notin(\dom{\G'}\cup\dom{\G})$ then the substitution in property 3 has denotation:
+
+    \begin{equation}
+        \deno{\typerelation{(\G', x:A)}{(\si, x\setto x)}{(\gax})} = (\deno{\typerelation{\G'}{\si}{\G}}\times \Id{A})
+    \end{equation}
+
+    This holds since 
+    \begin{equation}
+        \deno{\typerelation{\G', x:A}{x}{A}} = \pp
+    \end{equation}
+
+    And $\wrel{\i\pi}{(\G',x:A)}{\G'}$
+    \begin{equation}
+        \deno{\wrel{\i\pi}{(\G',x:A)}{\G'}} = \p
+    \end{equation}
+
+    So for each denotation $\deno{\typerelation{\G'}{v}{B}}$ of each $y\setto v$ in $\si$, we can prepend the denotation with the weakening denotation to yield: 
+    \begin{equation}
+        \deno{\typerelation{\G',x:A}{v}{B}} = \deno{\typerelation{\G'}{v}{B}}\after\p
+    \end{equation}
+    Since $\p$ appears in every branch of $\deno{\typerelation{\G', x:A}{\si}{\G}}$, it can be factored out to yield:
+
+    \begin{equation}
+        \deno{\typerelation{\G', x:A}{\si}{\G}} = \deno{\typerelation{\G'}{\si}{\G}}\after\p
+    \end{equation}
+
+    Hence,
+
+    \begin{equation}
+        \deno{\typerelation{(\G', x:A)}{(\si, x\setto x)}{\gax}} = \pr{\deno{\typerelation{\G'}{\si}{\G}}\after\p}{\pp} = (\deno{\typerelation{\G'}{\si}{\G}}\times \Id{A})
+    \end{equation}
     \subsection{Substitution Theorem}
 
     \todo{There is Tikz code here to draw the Substitution Theorem diagram, but it compiles v slowly}
-    If $\gtyperelation{t}{\tau}$ and $\typerelation{\G'}{\si}{\G}$ then
+    If $\D$ derives $\gtyperelation{t}{\tau}$ and $\typerelation{\G'}{\si}{\G}$ then the derivation $\D'$ deriving $\typerelation{\G'}{t\ssi}{\tau}$ satisfies:
+
+    \begin{equation}
+        \D' = \D \after\deno{\typerelation{\G'}{\si}{\G}}
+    \end{equation}
+
     %\begin{tikzcd}[ampersand replacement=\&]
     %    \G' 
     %        \arrow [rr, "\deno{\typerelation{\G'}{\si}{\G}}"] 
@@ -300,6 +335,274 @@
     %    \\
     %    \& \&\deno{T}
     %\end{tikzcd}
+    This is proved by induction over the derivation of $\typerelation{\G}{t}{\tau}$.
+    We shall use $\si$ to denote $\deno{\typerelation{\G'}{\si}{\G}}$ where it is clear from the context.
+    \subsection{Proof For Value Terms}
+    \paragraph{Case Var}
+    By inversion $\G = \G'', x:A$
+    \begin{equation}
+        \treerule{Var}{\ok{\G}}{\typerelation{\G'', x:A}{x}{A}}
+    \end{equation}
+    By inversion, $\si = \si', x\setto v$ and $\typerelation{\G'}{v}{A}$.
+
+    Let 
+    \begin{align}
+        \si &=\deno{\typerelation{\G'}{\si}{\G}} = \pr{\si'}{\D'}\\
+        \D &=\deno{\typerelation{\G'', x:A}{x}{A}} = \pp\\
+    \end{align}
+
+    \begin{align}
+        \D\after\si &= \pp\after\pr{\si'}{\D'}\qt{By definition}\\
+        &= \D'\qt{By product property}
+    \end{align}
+    \paragraph{Case Weaken}
+    By inversion, $\G = \G', y:B$ and $\si = \si', y\setto v$
+    and we have $\D_1$ deriving:
+
+    \begin{equation}
+        \treerule{Weaken}{\treerule{}{\D_1}{\typerelation{\G''}{x}{A}}}{\typerelation{\G'',y: B}{x}{A}}
+    \end{equation}
+
+    Also by inversion of the well-formedness of $\typerelation{\G'}{\si}{\G}$, we have $\typerelation{\G'}{\si'}{\G''}$ and 
+    
+    \begin{equation}
+        \deno{\typerelation{\G'}{\si}{\G}} = \pr{\deno{\typerelation{\G'}{\si}{\G''}}}{\deno{\typerelation{\G'}{v}{B}}}
+    \end{equation}
+
+    Hence by induction on $\D_1$ we have $\D_1'$ such that
+
+    \begin{equation}
+        \treerule{}{\D_1'}{\typerelation{\G'}{x\ssi}{A}}
+    \end{equation}
+
+
+
+    Hence
+    \begin{align}
+        \D' & = \D_1' \qt{By definition}\\
+            & = \D_1\after\si'\qt{By induction}\\
+            & = \D_1\after\p\after\pr{\si'}{\deno{\typerelation{\G'}{v}{B}}}\qt{By product property}\\
+            & = \D_1\after\p\after\si\qt{By defintion of the denotation of $\si$}
+            & = \D\after\si\qt{By defintion.}
+    \end{align}
+
+    \paragraph{Case Constants}
+    The logic for all constant terms ($\t,\f,\u\const{A}$) is the same.
+    Let
+    \begin{equation}
+        c = \deno{\const{A}}
+    \end{equation}
+    \begin{align}
+        \D' & = c\after\term{\G'}\qt{By Definition}\\
+            & = c\after\term{G}\after\si\qt{Terminal property}\\
+            & = \D\after\si\qt{By definition}
+    \end{align}
+    \paragraph{Case Lambda}
+
+    By inversion, we have $\D_1$ such that
+    \begin{equation}
+        \D = \treerule{Fn}{
+            \treerule{}{\D_1}{\typerelation{\G, x:A}{C}{\meb}}
+        }{\typerelation{\G}{\lam{x}{A}{C}}{\aeb}}
+    \end{equation}
+
+    By induction of $\D_1$ we have $\D_1'$ such that
+    \begin{equation}
+        \D' = \treerule{Fn}{
+            \treerule{}{\D_1'}{\typerelation{\G', x:A}{(C\ssi)}{\meb}}
+        }{\typerelation{\G}{(\lam{x}{A}{C})\ssi}{\aeb}}
+    \end{equation}
+    By induction and the extension lemma, we have:
+    \begin{equation}
+        \D_1' = \D_1\after(\si\times\Id{A})
+    \end{equation}
+
+    Hence:
+
+    \begin{align}
+        \D' &= \cur{\D_1'}\qt{By definition}\\
+            &= \cur{\D_1\after(\si\times\Id{A})}\qt{By induction and extension lemma.}\\
+            & = \cur{\D_1}\after\si\qt{By the exponential property (Uniqueness)}\\
+            &= \D\after\si\qt{By Definition}\\
+    \end{align}
+    \paragraph{Case Sub-type}
+    By inversion, there exists derivation $\D_1$ such that:
+
+    \begin{equation}
+        \D = \treerule{Sub-type}{\treerule{}{\D_1}{\typerelation{\G}{v}{A}}\s\s A\subtype B}{\typerelation{\G}{v}{B}}
+    \end{equation}
+
+    By induction on $\D_1$, we find $\D_1'$ such that $\D_1' = \D_1\after\si$ and:
+
+    \begin{equation}
+        \D' = \treerule{Sub-type}{\treerule{}{\D_1'}{\typerelation{\G'}{v\ssi}{A}}\s\s A\subtype B}{\typerelation{\G'}{v\ssi}{B}}
+    \end{equation}
+
+    Hence,
+
+    \begin{align}
+        \D' &= \deno{A\subtype B}\after\D_1'\qt{By definition}\\
+            &= \deno{A\subtype B}\after\D_1\after\si\qt{By induction}\\
+            &= \D\after\si\qt{By definition}\\
+    \end{align}
+    \subsection{Proof For Computation Terms}
+    \paragraph{Case Return}
+
+    By inversion, we have $\D_1$ such that:
+    \begin{equation}
+        \D = \treerule{Return}{\treerule{}{\D_1}{\typerelation{\G}{v}{A}}}{\typerelation{\G}{\return{v}}{\moa}}
+    \end{equation}
+
+    By induction on $\D_1$, we find $\D_1'$ such that $\D_1' = \D_1\after\si$ and:
+
+    \begin{equation}
+        \D' = \treerule{Return}{\treerule{}{\D_1'}{\typerelation{\G'}{v\ssi}{A}}}{\typerelation{\G'}{(\return{v})\ssi}{\moa}}
+    \end{equation}
+
+    Hence,
+
+    \begin{align}
+        \D' & = \point{A}\after\D_1'\qt{By Definition}\\
+        & = \point{A}\after\D_1\after\si\qt{By induction}\\
+        & = \D\after\si\qt{By Definition}\\
+    \end{align}
+    \paragraph{Case Apply}
+    By inversion, we find $\D_1, \D_2$ such that
+    \begin{equation}
+        \D = \treerule{Apply}{\treerule{}{\D_1}{\typerelation{\G}{v_1}{\aeb}}\s\s\treerule{}{\D_2}{\typerelation{\G}{v_2}{A}}}{\typerelation{\G}{\apply{v_1}{v_2}}{\meb}}
+    \end{equation}
+
+    By induction we find $\D_1', \D_2'$ such that 
+    \begin{align}
+        \D_1' &= \D_1\after\si\\
+        \D_2' &= \D_2\after\si\\
+    \end{align}
+
+    And
+    \begin{equation}
+        \D' = \treerule{Apply}{\treerule{}{\D_1'}{\typerelation{\G'}{v_1\ssi}{\aeb}}\s\s\treerule{}{\D_2'}{\typerelation{\G'}{v_2\ssi}{A}}}{\typerelation{\G'}{(\apply{v_1}{v_2})\ssi}{\meb}}
+    \end{equation}
+
+    Hence
+    \begin{align}
+        \D' &= \app\after\pr{\D_1'}{\D_2'}\qt{By Definition}\\
+            &= \app\after\pr{\D_1\after\si}{\D_2\after\si}\qt{By induction}\\
+            &= \app\after\pr{\D_1}{\D_2}\after\si\qt{By Product Property}\\
+            & = \D\after\si\qt{By Definition}\\
+    \end{align}
+
+    \paragraph{Case If}
+
+
+    By inversion, we find $\D_1, \D_2, D_3$ such that
+    \begin{equation}
+        \D = \treerule{If}{\treerule{}{\D_1}{\typerelation{\G}{v}{\B}}\s\s\treerule{}{\D_2}{\typerelation{\G}{C_1}{\mea}}\s\s\treerule{}{\D_3}{\typerelation{\G}{C_2}{\mea}}}{\typerelation{\G}{\ifthenelse{\e}{A}{v}{C_1}{C_2}}{\mea}}
+    \end{equation}
+
+    By induction we find $\D_1', \D_2', \D_3'$ such that 
+    \begin{align}
+        \D_1' &= \D_1\after\si\\
+        \D_2' &= \D_2\after\si\\
+        \D_3' &= \D_3\after\si\\
+    \end{align}
+
+    And
+    \begin{equation}
+        \D' = \treerule{If}{\treerule{}{\D_1'}{\typerelation{\G'}{v\ssi}{\B}}\s\s\treerule{}{\D_2'}{\typerelation{\G'}{C_1\ssi}{\mea}}\s\s\treerule{}{\D_3'}{\typerelation{\G'}{C_2\ssi}{\mea}}}{\typerelation{\G'}{(\ifthenelse{\e}{A}{v}{C_1}{C_2})\ssi}{\mea}}
+    \end{equation}
+
+    Hence
+    \begin{align}
+        \D' &= \ifnt{\mea}\after\pr{\D_1'}{\pr{\D_2'}{\D_3'}}\qt{By Definition}\\
+            &= \ifnt{\mea}\after\pr{\D_1\after\si}{\pr{\D_2\after\si}{\D_3\after\si}}\qt{By induction}\\
+            &= \ifnt{\mea}\after\pr{\D_1}{\pr{\D_2}{\D_3}}\after\si\qt{By Product Property}\\
+            & = \D\after\si\qt{By Definition}\\
+    \end{align}
+
+    \paragraph{Case Bind}
+
+    By inversion, we have $\D_1, \D_2$ such that:
+    
+    \begin{equation}
+        \D = \treerule{Bind}{
+            \treerule{}{\D_1}{\typerelation{\G}{C_1}{\mea}}
+            \s\s
+            \treerule{}{\D_2}{\typerelation{\G, x:A }{C_1}{\meb}}
+        }{
+            \typerelation{\G}{\doin{x}{C_1}{C_2}}{\M{\e_1\dot\e_2}{B}}
+        }
+    \end{equation}
+
+    By property 3,
+
+    \begin{equation}
+        \typerelation{(\G', x:A)}{(\si, x\setto x}{(\gax)}
+    \end{equation}
+
+    With denotation (extension lemma)
+
+    \begin{equation}
+        \deno{\typerelation{(\G', x:A)}{(\si, x\setto x}{(\gax)}} = \si\times\Id{A}
+    \end{equation}
+
+    By induction, we derive $\D_1', \D_2'$ such that:
+
+    \begin{align}
+        \D_1' & = \D_1\after \si\\
+        \D_2' & = \D_2\after (\si\times\Id{A})\qt{By Extension Lemma}
+    \end{align}
+
+    And:
+
+    \begin{equation}
+        \D' = \treerule{Bind}{
+            \treerule{}{\D_1'}{\typerelation{\G'}{C_1\ssi}{\mea}}
+            \s\s
+            \treerule{}{\D_2'}{\typerelation{\G', x:A }{C_1\ssi}{\meb}}
+        }{
+            \typerelation{\G'}{(\doin{x}{C_1}{C_2})\ssi}{\M{\e_1\dot\e_2}{B}}
+        }
+    \end{equation}
+
+    Hence:
+
+    \begin{align}
+        \D' & = \bind{\e_1}{\e_2}{B}\after\T{\e_1}{\D_2'}\after\tstrength{\e_1}{\G'}{A}\after\pr{\Id{\G'}}{\D_1'}\qt{By Definition}\\
+        & = \bind{\e_1}{\e_2}{B}\after\T{\e_1}{(\D_2\after(\si\times\Id{A}))}\after\tstrength{\e_1}{\G'}{A}\after\pr{\Id{\G'}}{\D_1\after\si}\qt{By Induction using ht e extension lemma}\\
+        & = \bind{\e_1}{\e_2}{B}\after\T{\e_1}{(\D_2)}\after\tstrength{\e_1}{\G}{A}\after(\si\times\Id{\T{\e_1}{A}})\after\pr{\Id{\G'}}{\D_1\after\si}\qt{By Tensor Strength}\\
+        & = \bind{\e_1}{\e_2}{B}\after\T{\e_1}{(\D_2)}\after\tstrength{\e_1}{\G}{A}\after\pr{\si}{\D_1\after\si}\qt{By Product rule}\\
+        & = \bind{\e_1}{\e_2}{B}\after\T{\e_1}{(\D_2)}\after\tstrength{\e_1}{\G}{A}\after\pr{\idg}{\D_1}\after\si\qt{By Product rule}\\
+        &= \D\after\si\qt{By Defintion}\\
+    \end{align}
+
+
+    \paragraph{Case Subeffect}
+
+    By inversion, there exists derivation $\D_1$ such that:
+
+    \begin{equation}
+        \D = \treerule{Sub-effect}{\treerule{}{\D_1}{\typerelation{\G}{C}{\M{\e_1}{A}}}\s\s A\subtype B\s\s \e_1\subeffect\e_2}{\typerelation{\G}{C}{\M{\e_2}{B}}}
+    \end{equation}
+
+    By induction on $\D_1$, we find $\D_1'$ such that $\D_1' = \D_1\after\si$ and:
+
+    \begin{equation}
+        \D' = \treerule{Sub-effect}{\treerule{}{\D_1'}{\typerelation{\G'}{C\ssi}{\M{\e_1}{A}}}\s\s A\subtype B\s\s \e_1\subeffect\e_2}{\typerelation{\G'}{C\ssi}{\M{\e_2}{B}}}
+    \end{equation}
+
+    Hence,
+    Let
+    \begin{align}
+        h &= \deno{\e_1\subeffect\e_2}\\
+        g &= \deno{A\subtype B}
+    \end{align}
+
+    \begin{align}
+        \D' &= h_B\after\T{\e_1}{g}\after\D_1'\qt{By definition}\\
+            &= h_B\after\T{\e_1}{g}\after\D_1\after\si\qt{By induction}\\
+            &= \D\after\si\qt{By definition}\\
+    \end{align}
+    
     \section{Single Substitution}
 }
 
