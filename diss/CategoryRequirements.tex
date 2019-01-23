@@ -8,11 +8,32 @@ That is it should have:
     \item Binary products
     \item Exponentials
 \end{itemize}
+
+Further more, it should have a co-product of the terminal object $\1$. This is required for the beta-eta equivalence of $\texttt{if-then-else}$ terms.
+
+\begin{tikzcd}[ampersand replacement =\&]
+    \1 \arrow [r, "inl"]  \& A \& \1 \arrow {l}[swap]{inr}
+\end{tikzcd}
+
+For each: 
+
+\begin{tikzcd}[ampersand replacement =\&]
+    \1 \arrow [r, "f"]  \& A \& \1 \arrow {l}[swap]{g}
+\end{tikzcd}
+
+There exists unique $[f, g]: \1+\1 \rightarrow A$ such that:
+
+
+\begin{tikzcd}[ampersand replacement =\&]
+  \& A \&\\
+  \1 \arrow [ru, "f"] \arrow {r}[swap]{\inl} \& \1+\1 \arrow {u} {\left[f, g\right]} \& \1 \arrow {lu}[swap]{g}  \arrow {l}{\inr}
+\end{tikzcd}
+
 \section{Graded Pre-Monad}
 The category should have a graded pre-monad. That is:
 
 \begin{itemize}
-    \item An endofunctor indexed by the po-monad on effects: $\T{}{}: (\E, \dot\, \1,\subeffect)  \rightarrow \Cat(\C, \C)$
+    \item An endo-functor indexed by the po-monad on effects: $\T{}{}: (\E, \dot\, \1,\subeffect)  \rightarrow \Cat(\C, \C)$
     \item A unit natural transformation: $\point{}: \Id{} \rightarrow \T{\1}{}$
     \item A join natural transformation: $\bind{\e_1}{\e_2}{}: \T{\e_1}{\T{\e_2}{}} \rightarrow \T{\e_1 \dot \e_2}{}$
 \end{itemize}
@@ -214,16 +235,6 @@ $$
         = & \cur{h_{B'}  \after \T{\e_1}{g}\after \app} \after \cur{\app \after (\Id{\T{\e_1}{B}^{A'}} \times f)}\\
     \end{split}
 \end{equation}
-
-
-
-\section{If natural transformation}
-There exists a natural transformation $\ifnt{A}: (\B \times (A \times A)) \rightarrow A$
-Satisfying the following:
-\begin{itemize}
-    \item $\ifnt{A}  \after \pr{\deno{\t}\after \term{\G}}{\pr{t}{f}} = t$
-    \item $\ifnt{A} \after \pr{\deno{\f}\after \term{\G}}{\pr{t}{f}} = f$
-\end{itemize}
 }
 
 \ifdefined\NoDocument

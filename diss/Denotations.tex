@@ -1,11 +1,26 @@
 \newcommand\Denotations[0]{
-    \section{Denotations of Types}
-\subsection{Denotation of Type Environments}
-Given a function $\deno{\_}$ mapping types to objects in the category $\C$, we can define the denotation of an $\ok{}$ type environment $\G$.
-$$\deno{\nil} = \1$$
-$$\deno{\gax} = (\deno{\G}\times\deno{A}) $$
+\section{Helper Morphisms}
+\subsection{Diagonal and Twist Morphisms}
 
-For ease of notation, and since we normally only talk about one denotation function at a time, I shall typically drop the denotation notation when talking about the denotation of value types and type environments. Hence, $$\deno{\gax} = \G \times A$$
+In the definition and proofs (Especially of the the If cases), I make use of the morphisms twist and diagonal.
+
+\begin{align}
+    \twist{A}{B}: (A\times B) \rightarrow (B\times A) = \pr{\pp}{\p}\\
+    \diag{A}: A \rightarrow (A\times A)  = \pr{\Id{A}}{\Id{A}}
+\end{align}
+\section{Denotations of Types}
+\subsection{Denotation of Ground Types}
+The denotations of the default ground types, $\U, \B$ should be as follows:
+\begin{equation}
+    \deno{\U} = \1
+\end{equation}
+\begin{equation}
+    \deno{\B} = \1 + \1
+\end{equation}
+
+The mapping $\deno{\_}$ should then map each other ground type $\gamma$ to an object in $\C$.
+
+
 
 \subsection{Denotation of Computation Type}
 Given a function $\deno{\_}$ mapping value types to objects in the category $\C$, we write the denotation of Computation types $\mea$ as so:
@@ -24,6 +39,12 @@ Again, since we can infer the denotation function, Let us drop the notation.
 
 $$\deno{\aeb} = (\teb)^A$$
 
+\subsection{Denotation of Type Environments}
+Given a function $\deno{\_}$ mapping types to objects in the category $\C$, we can define the denotation of an $\ok{}$ type environment $\G$.
+$$\deno{\nil} = \1$$
+$$\deno{\gax} = (\deno{\G}\times\deno{A}) $$
+
+For ease of notation, and since we normally only talk about one denotation function at a time, I shall typically drop the denotation notation when talking about the denotation of value types and type environments. Hence, $$\deno{\gax} = \G \times A$$
 
 
 \section{Denotation of Terms}
@@ -35,17 +56,17 @@ Denotations are defined recursively over the typing derivation of a term. Hence,
 
 \subsection{Denotation of Value Terms}
 \begin{itemize}
-    \item $\treerule{Unit}{\ok{\G}}{\deno{\typerelation{\G}{\u}{\U}} = \deno{\u} \after \term{\G} : \G \rightarrow \deno{\U}}$
+    \item $\treerule{Unit}{\ok{\G}}{\deno{\typerelation{\G}{\u}{\U}} = \term{\G} : \G \rightarrow \1}$
         
     \item $\treerule{Const}{\ok{\G}}{\deno{\typerelation{\G}{\const{A}}{A}} = \deno{\const{A}} \after \term{\G} : \G \rightarrow \deno{A}}$
          
-    \item $\treerule{True}{\ok{\G}}{\deno{\typerelation{\G}{\t}{\B}} = \deno{\t} \after \term{\G} : \G \rightarrow \deno{\B}}$
+    \item $\treerule{True}{\ok{\G}}{\deno{\typerelation{\G}{\t}{\B}} = \inl \after \term{\G} : \G \rightarrow \deno{\B} = \1+\1}$
         
-    \item $\treerule{False}{\ok{\G}}{\deno{\typerelation{\G}{\f}{\B}} = \deno{\f} \after \term{\G} : \G \rightarrow \deno{\B}}$
+    \item $\treerule{False}{\ok{\G}}{\deno{\typerelation{\G}{\f}{\B}} = \inr \after \term{\G} : \G \rightarrow \deno{\B} = \1+\1}$
         
     \item $\treerule{Var}{\ok{\G}}{\deno{\typerelation{\gax}{x}{A}} = \pp: \G \times A \rightarrow A}$
     \item $\treerule{Weaken}{f = \deno{\gtyperelation{x}{A}}: \G \rightarrow A}{\deno{\typerelation{\gby}{x}{A}} = f \after \p: \G \times B \rightarrow A}$
-    \item $\treerule{Lambda}{f = \deno{\gax}{C}{\meb} : \G \times A \rightarrow \teb}{\deno{\typerelation{\G}{\lam{x}{A}{C}}{A \rightarrow \meb}} = \cur{f} : \G \rightarrow (\teb)^A}$
+    \item $\treerule{Lambda}{f = \deno{\typerelation{\gax}{C}{\meb}} : \G \times A \rightarrow \teb}{\deno{\typerelation{\G}{\lam{x}{A}{C}}{A \rightarrow \meb}} = \cur{f} : \G \rightarrow (\teb)^A}$
     
     \item $\treerule{Subtype}{f = \deno{\typerelation{\G}{v}{A}} : \G \rightarrow A\s\s g = \deno{A \subtype B}}{\deno{\typerelation{\G}{v}{B}} = g \after f : \G \rightarrow B}$
   
@@ -55,7 +76,7 @@ Denotations are defined recursively over the typing derivation of a term. Hence,
     \item $\treerule{Return}{f = \deno{\typerelation{\G}{v}{A}}}{\deno{\typerelation{\G}{\return{v}}{\moa}} = \point{A} \after f}$
         
  
-    \item $\treerule{If}{f = \deno{\typerelation{\G}{v}{\B}}\s\s g = \deno{\typerelation{\G}{C_1}{\mea}}\s\s h = \deno{\typerelation{\G}{C_2}{\mea}}}{\deno{{\typerelation{\G}{\ifthenelse{\e}{A}{v}{C_1}{C_2}}{\mea}}} = \ifnt{\meb} \after \pr{f}{\pr{g}{h}} : \G \rightarrow \tea}$
+    \item $\treerule{If}{f = \deno{\typerelation{\G}{v}{\B}}: \G\rightarrow\1+\1 \s\s g = \deno{\typerelation{\G}{C_1}{\mea}}\s\s h = \deno{\typerelation{\G}{C_2}{\mea}}}{\deno{{\typerelation{\G}{\ifthenelse{\e}{A}{v}{C_1}{C_2}}{\mea}}} = \app\after((\fld{\cur{g\after\pp}}{\cur{g\after\pp}}\after f)\times \idg)\after \diag{\G} : \G \rightarrow \tea}$
         
     \item $\treerule{Bind}{f = \deno{\typerelation{\G}{C_1}{\M{\e_1}{A}} : \G \rightarrow \T{\e_1}{A}\s\s g = \deno{\typerelation{\gax}{C_2}{\M{\e_2}{B}}}}: \G \times A \rightarrow \T{\e_2}{B}}{\deno{\typerelation{\G}{\doin{x}{C_1}{C_2}}{\M{\e_1 \dot \e_2}}} = \bind{\e_1}{\e_2}{B} \after \T{\e_1}{g} \after \tstrength{\G}{A}{\e_1} \after \pr{\idg}{f}: \G \rightarrow \T{\e_1 \dot \e_2}{B}}$ 
     \item  $\treerule{Subeffect}{f = \deno{\typerelation{\G}{c}{\M{\e_1}{A}}}: \G \rightarrow \T{\e_1}{A} \s\s g = \deno{A \subtype B}\s\s h = \dse{\e_1}{\e_2}}{\deno{\typerelation{\G}{C}{\M{\e_2}{B}}} = h_B \after \T{\e_1}{g} \after f}$

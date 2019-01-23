@@ -187,5 +187,14 @@
 % shorthand for inserting text to equations
 \newcommand\qt[1]{\quad\text{#1}}
 
+% Coproduct shorthands
+\newcommand\inr[0]{\texttt{inr}}
+\newcommand\inl[0]{\texttt{inl}}
+    
+\newcommand\fld[2]{\left[#1,#2\right]}
+\newcommand{\diag}[1]{\delta_{#1}}
+\newcommand{\twist}[2]{\tau_{#1, #2}}
+
+\newcommand\ifMorph[3]{\app\after((\fld{\cur{#2\after\pp}}{\cur{#3\after\pp}}\after #1)\times \idg)\after \diag{\G}}
 
 \fi

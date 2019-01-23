@@ -1,447 +1,88 @@
 \documentclass{report}
 \input{header.tex}
-\begin{document}
-\section{Introduce Substitutions}
-\subsection{Substitutions as SNOC lists}
-
+\begin{document}  \section{Denotations of Types}
+\subsection{Denotation of Ground Types}
+The denotations of the default ground types, $\U, \B$ should be as follows:
 \begin{equation}
-   \si \gens \nil \mid \si, x \setto v
+    \deno{\U} = \1
+\end{equation}
+\begin{equation}
+    \deno{\B} = \1 + \1
 \end{equation}
 
-\subsection{Trivial Properties of substitutions}
-\paragraph{$\fv{\si}$}
-\begin{align}
-    \fv{\nil} &= \emptyset\\
-    \fv{\si, x\setto v} &= \fv{\si}\cup\fv{v}
-\end{align}
-\paragraph{$\dom{\si}$}
-\begin{align}
-    \dom{\nil} & = \emptyset\\
-    \dom{\si, x\setto v} & = \dom{\si}\cup\left\{x\right\}
-\end{align}
+The mapping $\deno{\_}$ should then map each other ground type $\gamma$ to an object in $\C$.
 
-\paragraph{$x \# \si$}
-\begin{equation}
-    x \# \si \Leftrightarrow x\notin(\fv{\si}\cup\dom{\si`})
-\end{equation}
 
-\subsection{Effect of substitutions}
-    We define the effect of applying a substitution $\si$ as 
-    $$t\ssi$$
 
-    
-    \begin{align}
-        x\sub{\nil} & = x \\
-        x\sub{\si,x\setto v} & = v \\
-        x\sub{\si,x'\setto v'} & = x\ssi\qt{If }x \neq x'\\
-        \const{A}\ssi & = \const{A} \\
-        (\lam{x}{A}{C})\ssi &= \lam{x}{A}{(C\ssi)}\qt{If }x\#\si\\
-        (\ifthenelse{\e}{A}{v}{C_1}{C_2})\ssi &= \ifthenelse{\e}{A}{v\ssi}{C_1\ssi}{C_2\ssi}\\
-        (\apply{v_1}{v_2})\ssi&= \apply{(v_1\ssi)}{v_2\ssi}\\
-        (\doin{x}{C_1}{C_2})&= \doin{x}{(C_1\ssi)}{(C_2\ssi)}\qt{If } x\#\si\\
-    \end{align}
-\subsection{Well Formedness}
-Define the relation $$\typerelation{\G'}{\si}{\G}$$ by:
+\subsection{Denotation of Computation Type}
+Given a function $\deno{\_}$ mapping value types to objects in the category $\C$, we write the denotation of Computation types $\mea$ as so:
 
+$$\deno{\mea} = \T{\e}{\deno{A}}$$
+
+Since we can infer the denotation function, we can include it implicitly an drop the denotation sign.
+
+$$\deno{\mea} = \tea$$
+
+\subsection{Denotation of Function Types}
+Given a function $\deno{\_}$ mapping types to objects in the category $\C$, we write the denotation of a function type $\aeb$ as so:
+$$\deno{\aeb} = (\T{\e}{\deno{B}})^{\deno{A}}$$
+
+Again, since we can infer the denotation function, Let us drop the notation.
+
+$$\deno{\aeb} = (\teb)^A$$
+
+\subsection{Denotation of Type Environments}
+Given a function $\deno{\_}$ mapping types to objects in the category $\C$, we can define the denotation of an $\ok{}$ type environment $\G$.
+$$\deno{\nil} = \1$$
+$$\deno{\gax} = (\deno{\G}\times\deno{A}) $$
+
+For ease of notation, and since we normally only talk about one denotation function at a time, I shall typically drop the denotation notation when talking about the denotation of value types and type environments. Hence, $$\deno{\gax} = \G \times A$$
+
+
+\section{Denotation of Terms}
+Given the denotation of types and typing environments, we can now define denotations of well typed terms.
+
+$$\deno{\gtyperelation{t}{\tau}}: \G \rightarrow \deno{\tau}$$
+
+Denotations are defined recursively over the typing derivation of a term. Hence, they implicitly depend on the exact derivation used. Since, as proven in the chapter on the uniqueness of derivations, the denotations of all type derivations yielding the same type relation $\gtyperelation{t}{\tau}$ are equal, we need not refer to the derivation that yielded each denotation.
+
+\subsection{Denotation of Value Terms}
 \begin{itemize}
-    \item $\treerule{Nil}{\ok{\G'}}{\typerelation{\G'}{\nil}{\nil}}$
-    \item $\treerule{Extend}{
-        \typerelation{\G'}{\si}{\G}
-        \s\s
-        x\notin\dom{\G}
-        \s\s
-        \typerelation{\G'}{v}{A}
-    }{
-        \typerelation{\G'}{(\si, x \setto v)}{(\gax)}
-    }$
-\end{itemize}
-\subsection{Simple Properties Of Substitution}
-If $\typerelation{\G'}{\si}{\G}$ then:
-
-    \paragraph{Property 1: $\ok{\G}$ and $\ok{\G'}$}
-     Since $\ok{\G'}$ holds by the Nil-axiom. $\ok{\G}$ holds by induction on the well-formed-ness relation.
-    \paragraph{Property 2: $\wrel{\w}{\G''}{\G'}$ implies $\typerelation{\G''}{\si}{\G}$}. 
-    By induction over well-formed-ness relation. For each $x\setto v$ in $\si$, $\typerelation{\G''}{v}{A}$ holds if $\typerelation{\G'}{v}{A}$ holds.
-    \paragraph{Property 3: $x \notin (\dom{\G} \cup \dom{\G''})$ implies $\typerelation{(\G', x: A)}{(\si, x \setto x)}{(\gax)}$} 
-    Since $\wrel{\i\pi}{\G',x: A}{\G'}$, so by (Property 2) \todo{Better referencing here}, 
-    $$\typerelation{\G', x: A}{\si}{\G}$$
-    In addition, $\typerelation{\G', x: A}{x}{A}$ trivially, so by the rule \textbf{Extend}, well-formed-ness holds for
-    \begin{equation}
-        \typerelation{(\G', x:A)}{(\si, x\setto v)}{(\gax)}
-    \end{equation}
-
-
-\section{Substitution Preserves Typing}
-We have the following non-trivial property of substitution:
-
-\begin{equation}
-    \typerelation{\G}{g}{\tau}\wedge\typerelation{\G'}{\si}{\G}\Rightarrow\typerelation{\G'}{t\ssi}{\tau}
-\end{equation}
-Assuming $\typerelation{\G'}{\si}{\G}$, we induct over the typing relation, proving $\gtyperelation{t}{\tau}\rightarrow\typerelation{\G'}{t}{\tau}$
-
-\subsection{Variables}  
-    \paragraph{Case Var}
-        By inversion $\G = (\G'', x:A)$
-        So \begin{equation}
-            \typerelation{\G'',x:A}{x}{A}
-        \end{equation}
-
-        So by inversion, since $\typerelation{\G'}{\si}{\G'', x:A}$, 
-
-        \begin{equation}
-            \si = \si', x\setto v \wedge \typerelation{\G'}{v}{A}
-        \end{equation}
-
-        By the defintion of the effect of substitutions, $x\ssi = v$, So
-        \begin{equation}
-            \typerelation{\G'}{x\ssi}{A}
-        \end{equation}
-
-        holds.
+    \item $\treerule{Unit}{\ok{\G}}{\deno{\typerelation{\G}{\u}{\U}} = \term{\G} : \G \rightarrow \1}$
         
-    \paragraph{Case Weaken}
-        By inversion, $\G = \G'', y: B, x \neq y$, and there exists $\D$ such that
-
-        \begin{equation}
-            \treerule{Weaken}{\treerule{}{\D}{\typerelation{\G''}{x}{A}}}{\typerelation{\G'', y: B}{x}{A}}
-        \end{equation}
-
-        By inversion, $\si = \si', y\setto v$
-        and:
-
-        \begin{equation}
-            \typerelation{\G'}{\si'}{\G''}
-        \end{equation}
-
-        So by induction,
-
-        \begin{equation}
-            \typerelation{\G'}{x\sub{\si'}}{A}
-        \end{equation}
-
-        And so by definition of the effect of $\si$, $x\ssi = x\sub{\si'}$
-
-        \begin{equation}
-            \typerelation{\G'}{x\sub{\si}}{A}
-        \end{equation}
-\subsection{Other Value Terms}
-\paragraph{Case Lambda}
-    By inversion, there exists $\D$ such that:
-
-    \begin{equation}
-        \treerule{Fn}{
-            \treerule{}{\D}{\typerelation{\G, x:A }{C}{\meb}}
-        }{\typerelation{\G}{\lam{x}{A}{C}}{\aeb}}
-    \end{equation}
-    Using alpha equivalence, we pick $x\notin(\dom{\G}\cup\dom{\G'})$
-    Hence, by property 3, we have
-
-    \begin{equation}
-        \typerelation{(\G', x:A )}{(\si, x\setto x)}{\gax}
-    \end{equation}
-
-    So by induction using $\si,x\setto x$, we have $\D'$ such that:
-
-    \begin{equation}
-        \treerule{Fn}{
-            \treerule{}{\D'}{\typerelation{\G', x:A }{C\sub{\si, x\setto v}}{\meb}}
-        }{\typerelation{\G}{\lam{x}{A}{C\sub{\si, x\setto{x}}}}{\aeb}}
-    \end{equation} 
-    Since $\lam{x}{A}{(C\sub{\si, x\setto{x}})} = {\lam{x}{A}({C\ssi})} = (\lam{x}{A}{C})\ssi$, we have a typing derivation for $\typerelation{\G'}{(\lam{x}{A}{C})\ssi}{\aeb}$.
-
-\paragraph{Case Constants}
-    We use the same logic for all constants, $\u,\t,\f,\const{A}$:
-
-    $\typerelation{\G}{\si}{\G} \Rightarrow \ok{\G'}$ and:
-
-    \begin{equation}
-        \const{A}\ssi =\const{A}
-    \end{equation}
-
-    So \begin{equation}
-        \treerule{Const}{\ok{\G'}}{\typerelation{\G'}{\const{A}}{A}}
-    \end{equation}
-\subsection{Computation Terms}
-\paragraph{Case Return}
-    By inversion, we have $\D_1$ such that:
-
-    \begin{equation}
-        \treerule{Return}{\treerule{}{\D_1}{\typerelation{\G}{v}{A}}}{\typerelation{\G}{\return{v}}{\moa}}
-    \end{equation}
-
-    By induction, we have $\D_1'$ such that
-
-    \begin{equation}
-        \treerule{Return}{\treerule{}{\D'_1}{\typerelation{\G'}{v\ssi}{A}}}{\typerelation{\G'}{\return{(v\ssi)}}{\moa}}
-    \end{equation}
-
-    Since $(\return{v})\ssi = \return{(v\ssi)}$, the type derivation above holds for $\typerelation{\G'}{(\return{v})\ssi}{\moa}$.
-
-\paragraph{Case Apply}
-    By inversion, we have $\D_1$, $\D_2$ such that:
-
-    \begin{equation}
-        \treerule{Apply}{
-            \treerule{}{\D_1}{\typerelation{\G}{v_1}{\aeb}}
-            \s\s
-            \treerule{}{\D_2}{\typerelation{\G}{v_2}{A}}
-        }{\typerelation{\G}{\apply{v_1}{v_2}}{\meb}}
-    \end{equation}
-
-    By induction on $\D_1, \D_2$, we have $\D_1',\D_2'$ such that
-
-    \begin{equation}
-        \treerule{Apply}{
-            \treerule{}{\D'_1}{\typerelation{\G'}{v_1\ssi}{\aeb}}
-            \s\s
-            \treerule{}{\D_2'}{\typerelation{\G'}{v_2\ssi}{A}}
-        }{\typerelation{\G'}{\apply{(v_1\ssi)}{(v_2\ssi)}}{\meb}}
-    \end{equation}
-
-    Since $(\apply{v_1}{v_2})\ssi = \apply{(v_1\ssi)}{(v_2\ssi)}$, we the above derivation holds for $\typerelation{\G'}{(\apply{v_1}{v_2})\ssi}{\meb}$
-\paragraph{Case If}
-    By inversion, we have $\D_1,\D_2,\D_3$ such that:
-
-    \begin{equation}
-        \treerule{If}{
-            \treerule{}{\D_1}{\typerelation{\G}{v}{\B}}
-            \s\s
-            \treerule{}{\D_2}{\typerelation{\G}{C_1}{\mea}}
-            \s\s
-            \treerule{}{\D_3}{\typerelation{\G}{C_2}{\mea}}
-        }{
-            \typerelation{\G}{\ifthenelse{\e}{A}{v}{C_1}{C_2}}{\mea}
-        }
-    \end{equation}
-
-    By induction on $\D_1,\D_2, \D_3$, we derive 
-    $\D_1', \D_2',\D_3'$ such that:
+    \item $\treerule{Const}{\ok{\G}}{\deno{\typerelation{\G}{\const{A}}{A}} = \deno{\const{A}} \after \term{\G} : \G \rightarrow \deno{A}}$
+         
+    \item $\treerule{True}{\ok{\G}}{\deno{\typerelation{\G}{\t}{\B}} = \inl \after \term{\G} : \G \rightarrow \deno{\B} = \1+\1}$
+        
+    \item $\treerule{False}{\ok{\G}}{\deno{\typerelation{\G}{\f}{\B}} = \inr \after \term{\G} : \G \rightarrow \deno{\B} = \1+\1}$
+        
+    \item $\treerule{Var}{\ok{\G}}{\deno{\typerelation{\gax}{x}{A}} = \pp: \G \times A \rightarrow A}$
+    \item $\treerule{Weaken}{f = \deno{\gtyperelation{x}{A}}: \G \rightarrow A}{\deno{\typerelation{\gby}{x}{A}} = f \after \p: \G \times B \rightarrow A}$
+    \item $\treerule{Lambda}{f = \deno{\typerelation{\gax}{C}{\meb}} : \G \times A \rightarrow \teb}{\deno{\typerelation{\G}{\lam{x}{A}{C}}{A \rightarrow \meb}} = \cur{f} : \G \rightarrow (\teb)^A}$
     
-    \begin{equation}
-        \treerule{If}{
-            \treerule{}{\D_1'}{\typerelation{\G'}{v\ssi}{\B}}
-            \s\s
-            \treerule{}{\D_2'}{\typerelation{\G'}{C_1\ssi}{\mea}}
-            \s\s
-            \treerule{}{\D_3'}{\typerelation{\G'}{C_2\ssi}{\mea}}
-        }{
-            \typerelation{\G'}{\ifthenelse{\e}{A}{(v\ssi)}{(C_1\ssi)}{(C_2\ssi)}}{\mea}
-        }
-    \end{equation}
-
-    Since $(\ifthenelse{\e}{A}{v}{C_1}{C_2})\ssi = \ifthenelse{\e}{A}{(v\ssi)}{(C_1\ssi)}{(C_2\ssi)}$ The derivation above holds for $\typerelation{\G'}{(\ifthenelse{\e}{A}{v}{C_1}{C_2})\ssi}{\mea}$
-
-\paragraph{Case Bind}
-    By inversion, there exist $\D_1, \D_2$ such that:
-    \begin{equation}
-        \treerule{Bind}{
-            \treerule{}{\D_1}{\typerelation{\G}{C_1}{\M{\e_1}{A}}}
-            \s\s
-            \treerule{}{\D_2}{\typerelation{\G, x:A}{C_2}{\M{\e_2}{B}}}
-        }{\typerelation{\G}{\doin{x}{C_1}{C_2}}{\M{\e_1\dot\e_2}{B}}}
-    \end{equation}
-
-    Using alpha-equivalence, we pick $x\notin(\dom{\G}\cup\dom{\G'})$. Hence by property 3, $$\typerelation{(\G, x: A)}{(\si, x\setto x)}{(\gax)}$$
-    By induction on $\D_1, \D_2$, we have $\D_1', \D_2'$ such that:
-    \begin{equation}
-        \treerule{Bind}{
-            \treerule{}{\D_1'}{\typerelation{\G'}{C_1\ssi}{\M{\e_1}{A}}}
-            \s\s
-            \treerule{}{\D_2}{\typerelation{\G', x:A}{C_2\sub{\si, x\setto x}}{\M{\e_2}{B}}}
-        }{\typerelation{\G'}{\doin{x}{(C_1\ssi)}{(C_2\sub{\si, x\setto x})}}{\M{\e_1\dot\e_2}{B}}}
-    \end{equation}
-
-    Since $(\doin{x}{C_1}{C_2})\ssi = \doin{x}{(C_1\ssi)}{(C_2\ssi)} = \doin{x}{(C_1\ssi)}{(C_2\sub{\si, x\setto x})}$, the above derivation holds for $\typerelation{\G'}{(\doin{x}{C_1}{C_2})\ssi}{\M{\e_1\dot\e_2}{B}}$
-\subsection{Sub-typing and Sub-effecting}
-\paragraph{Case Sub-type}
-    By inversion, there exists $\D$ such that
-    \begin{equation}
-        \treerule{sub-type}{\treerule{}{\D}{\typerelation{\G}{v}{A}}\s\s A\subtype B}{\typerelation{\G}{v}{B}}
-    \end{equation}
-
-    By induction on $\D$ we derive $\D'$ such that:
-
-    \begin{equation}
-        \treerule{sub-type}{\treerule{}{\D'}{\typerelation{\G'}{v\ssi}{A}}\s\s A\subtype B}{\typerelation{\G}{v\ssi}{B}}
-    \end{equation}
-\paragraph{Case Sub-effect}
-By inversion, there exists $\D$ such that
-\begin{equation}
-    \treerule{sub-effect}{\treerule{}{\D}{\typerelation{\G}{C}{\M{\e_1}{A}}}\s\s A\subtype B\s\s\e_1\subtype\e_2}{\typerelation{\G}{C}{\M{\e_2}{B}}}
-\end{equation}
-
-By induction on $\D$ we derive $\D'$ such that:
-
-\begin{equation}
-    \treerule{sub-effect}{\treerule{}{\D'}{\typerelation{\G'}{C\ssi}{\M{\e_1}{A}}}\s\s A\subtype B\s\s\e_1\subtype\e_2}{\typerelation{\G'}{C\ssi}{\M{\e_2}{B}}}
-\end{equation}
-\section{Semantics of Substitution}
-\subsection{Denotation of Substitutions}
-We define the denotation of a well-formed-substitution as so:
-\begin{equation}
-    \deno{\typerelation{\G'}{\si}{\G}}: \G' \rightarrow \G
-\end{equation}
-\begin{itemize}
-    \item $\treerule{Nil}{\ok{\G'}}{\deno{\typerelation{\G'}{\nil}{\nil}} = \term{\G'}}$
-    \item $\treerule{Extend}{f = \deno{\typerelation{\G'}{\si}{\G}}\s\s g= \deno{\typerelation{\G'}{v}{A}}}{\deno{\typerelation{\G'}{(\si, x\setto v}{(\gax)}} = \pr{f}{g}:\G' \rightarrow (\G\times A)}$
+    \item $\treerule{Subtype}{f = \deno{\typerelation{\G}{v}{A}} : \G \rightarrow A\s\s g = \deno{A \subtype B}}{\deno{\typerelation{\G}{v}{B}} = g \after f : \G \rightarrow B}$
+  
 \end{itemize}
-\subsection{Extension Lemma}
-If $\typerelation{\G'}{\si}{\G}$ and $x\notin(\dom{\G'}\cup\dom{\G})$ then the substitution in property 3 has denotation:
-
-\begin{equation}
-    \deno{\typerelation{(\G', x:A)}{(\si, x\setto x)}{(\gax})} = (\deno{\typerelation{\G'}{\si}{\G}}\times \Id{A})
-\end{equation}
-
-This holds since 
-\begin{equation}
-    \deno{\typerelation{\G', x:A}{x}{A}} = \pp
-\end{equation}
-
-And $\wrel{\i\pi}{(\G',x:A)}{\G'}$
-\begin{equation}
-    \deno{\wrel{\i\pi}{(\G',x:A)}{\G'}} = \p
-\end{equation}
-
-So for each denotation $\deno{\typerelation{\G'}{v}{B}}$ of each $y\setto v$ in $\si$, we can prepend the denotation with the weakening denotation to yield: 
-\begin{equation}
-    \deno{\typerelation{\G',x:A}{v}{B}} = \deno{\typerelation{\G'}{v}{B}}\after\p
-\end{equation}
-Since $\p$ appears in every branch of $\deno{\typerelation{\G', x:A}{\si}{\G}}$, it can be factored out to yield:
-
-\begin{equation}
-    \deno{\typerelation{\G', x:A}{\si}{\G}} = \deno{\typerelation{\G'}{\si}{\G}}\after\p
-\end{equation}
-
-Hence,
-
-\begin{equation}
-    \deno{\typerelation{(\G', x:A)}{(\si, x\setto x)}{\gax}} = \pr{\deno{\typerelation{\G'}{\si}{\G}}\after\p}{\pp} = (\deno{\typerelation{\G'}{\si}{\G}}\times \Id{A})
-\end{equation}
-\subsection{Substitution Theorem}
-
-\todo{There is Tikz code here to draw the Substitution Theorem diagram, but it compiles v slowly}
-If $\D$ derives $\gtyperelation{t}{\tau}$ and $\typerelation{\G'}{\si}{\G}$ then the derivation $\D'$ deriving $\typerelation{\G'}{t\ssi}{\tau}$ satisfies:
-
-\begin{equation}
-    \D' = \D \after\deno{\typerelation{\G'}{\si}{\G}}
-\end{equation}
-
-%\begin{tikzcd}[ampersand replacement=\&]
-%    \G' 
-%        \arrow [rr, "\deno{\typerelation{\G'}{\si}{\G}}"] 
-%        \arrow [rrd, "\deno{\typerelation{\G'}{t\ssi}{\tau}} "] \&\&
-%    \G 
-%        \arrow [d, "\deno{\gtyperelation{t}{\tau}}"]
-%    \\
-%    \& \&\deno{T}
-%\end{tikzcd}
-This is proved by induction over the derivation of $\typerelation{\G}{t}{\tau}$.
-We shall use $\si$ to denote $\deno{\typerelation{\G'}{\si}{\G}}$ where it is clear from the context.
-\subsection{Proof For Value Terms}
-\paragraph{Case Var}
-By inversion $\G = \G'', x:A$
-\begin{equation}
-    \treerule{Var}{\ok{\G}}{\typerelation{\G'', x:A}{x}{A}}
-\end{equation}
-By inversion, $\si = \si', x\setto v$ and $\typerelation{\G'}{v}{A}$.
-
-Let 
-\begin{align}
-    \si &=\deno{\typerelation{\G'}{\si}{\G}} = \pr{\si'}{\D'}\\
-    \D &=\deno{\typerelation{\G'', x:A}{x}{A}} = \pp\\
-\end{align}
-
-\begin{align}
-    \D\after\si &= \pp\after\pr{\si'}{\D'}\qt{By definition}\\
-    &= \D'\qt{By product property}
-\end{align}
-\paragraph{Case Weaken}
-By inversion, $\G = \G', y:B$ and $\si = \si', y\setto v$
-and we have $\D_1$ deriving:
-
-\begin{equation}
-    \treerule{Weaken}{\treerule{}{\D_1}{\typerelation{\G''}{x}{A}}}{\typerelation{\G'',y: B}{x}{A}}
-\end{equation}
-
-Also by inversion of the well-formedness of $\typerelation{\G'}{\si}{\G}$, we have $\typerelation{\G'}{\si'}{\G''}$ and 
-
-\begin{equation}
-    \deno{\typerelation{\G'}{\si}{\G}} = \pr{\deno{\typerelation{\G'}{\si}{\G''}}}{\deno{\typerelation{\G'}{v}{B}}}
-\end{equation}
-
-Hence by induction on $\D_1$ we have $\D_1'$ such that
-
-\begin{equation}
-    \treerule{}{\D_1'}{\typerelation{\G'}{x\ssi}{A}}
-\end{equation}
-
-
-
-Hence
-\begin{align}
-    \D' & = \D_1' \qt{By definition}\\
-        & = \D_1\after\si'\qt{By induction}\\
-        & = \D_1\after\p\after\pr{\si'}{\deno{\typerelation{\G'}{v}{B}}}\qt{By product property}\\
-        & = \D_1\after\p\after\si\qt{By defintion of the denotation of $\si$}
-        & = \D\after\si\qt{By defintion.}
-\end{align}
-
-\paragraph{Case Constants}
-The logic for all constant terms ($\t,\f,\u\const{A}$) is the same.
-Let
-\begin{equation}
-    c = \deno{\const{A}}
-\end{equation}
-\begin{align}
-    \D' & = c\after\term{\G'}\qt{By Definition}\\
-        & = c\after\term{G}\after\si\qt{Terminal property}\\
-        & = \D\after\si\qt{By definition}
-\end{align}
-\paragraph{Case Lambda}
-
-By inversion, we have $\D_1$ such that
-\begin{equation}
-    \D = \treerule{Fn}{
-        \treerule{}{\D_1}{\typerelation{\G, x:A}{C}{\meb}}
-    }{\typerelation{\G}{\lam{x}{A}{C}}{\aeb}}
-\end{equation}
-
-By induction of $\D_1$ we have $\D_1'$ such that
-\begin{equation}
-    \D' = \treerule{Fn}{
-        \treerule{}{\D_1'}{\typerelation{\G', x:A}{(C\ssi)}{\meb}}
-    }{\typerelation{\G}{(\lam{x}{A}{C})\ssi}{\aeb}}
-\end{equation}
-By induction and the extension lemma, we have:
-\begin{equation}
-    \D_1' = \D_1\after(\si\times\Id{A})
-\end{equation}
-
-Hence:
-
-\begin{align}
-    \D' &= \cur{\D_1'}\qt{By definition}\\
-        &= \cur{\D_1\after(\si\times\Id{A})}\qt{By induction and extension lemma.}\\
-        & = \cur{\D_1}\after\si\qt{By the exponential property (Uniqueness)}\\
-        &= \D\after\si\qt{By Definition}\\ 
-\end{align}
-\paragraph{Case Subtype}
-By inversion, there exists derivation $\D_1$ such that:
-
-\begin{equation}
-    \D = \treerule{Sub-type}{\treerule{}{\D_1}{\typerelation{\G}{v}{A}}\s\s A\subtype B}{\typerelation{\G}{v}{B}}
-\end{equation}
-
-By induction on $\D_1$, we find $\D_1'$ such that $\D_1' = \D_1\after\si$ and:
-
-\begin{equation}
-    \D' = \treerule{Sub-type}{\treerule{}{\D_1'}{\typerelation{\G'}{v\ssi}{A}}\s\s A\subtype B}{\typerelation{\G'}{v\ssi}{B}}
-\end{equation}
-\subsection{Proof For Computation Terms}
-\paragraph{Case Return}
-\paragraph{Case Apply}
-\paragraph{Case If}
-\paragraph{Case Bind}
-\paragraph{Case Subeffect}
-\section{Single Substitution}
+\subsection{Denotation of Computation Terms}
+\begin{itemize}     
+    \item $\treerule{Return}{f = \deno{\typerelation{\G}{v}{A}}}{\deno{\typerelation{\G}{\return{v}}{\moa}} = \point{A} \after f}$
+        
+ 
+    \item $\treerule{If}{f = \deno{\typerelation{\G}{v}{\B}}: \G\rightarrow\1+\1 \s\s g = \deno{\typerelation{\G}{C_1}{\mea}}\s\s h = \deno{\typerelation{\G}{C_2}{\mea}}}{\deno{{\typerelation{\G}{\ifthenelse{\e}{A}{v}{C_1}{C_2}}{\mea}}} = \ifnt{\meb} \after \pr{f}{\pr{g}{h}} : \G \rightarrow \tea}$
+        
+    \item $\treerule{Bind}{f = \deno{\typerelation{\G}{C_1}{\M{\e_1}{A}} : \G \rightarrow \T{\e_1}{A}\s\s g = \deno{\typerelation{\gax}{C_2}{\M{\e_2}{B}}}}: \G \times A \rightarrow \T{\e_2}{B}}{\deno{\typerelation{\G}{\doin{x}{C_1}{C_2}}{\M{\e_1 \dot \e_2}}} = \bind{\e_1}{\e_2}{B} \after \T{\e_1}{g} \after \tstrength{\G}{A}{\e_1} \after \pr{\idg}{f}: \G \rightarrow \T{\e_1 \dot \e_2}{B}}$ 
+    \item  $\treerule{Subeffect}{f = \deno{\typerelation{\G}{c}{\M{\e_1}{A}}}: \G \rightarrow \T{\e_1}{A} \s\s g = \deno{A \subtype B}\s\s h = \dse{\e_1}{\e_2}}{\deno{\typerelation{\G}{C}{\M{\e_2}{B}}} = h_B \after \T{\e_1}{g} \after f}$
+    \item $\treerule{Apply}{f = \deno{\gtyperelation{v_1}{\lamtype{A}{\e}B}}: \G \rightarrow (\teb)^{A} \s\s g=\deno{\gtyperelation{v_2}{A}}: \G \rightarrow A}{\deno{\gtyperelation{\apply{v_1}{v_2}}{\meb}}= \app\after\pr{f}{g}: \G \rightarrow \teb }$
+    \item $\treerule{New-If}{
+        f = \deno{\typerelation{\G}{v}{\B}}: \G\rightarrow\1+\1 
+        \s\s
+         g = \deno{\typerelation{\G}{C_1}{\mea}}
+         \s\s 
+         h = \deno{\typerelation{\G}{C_2}{\mea}}
+        }{
+            \deno{
+                {\typerelation{\G}{\ifthenelse{\e}{A}{v}{C_1}{C_2}}{\mea}}
+            } = 
+                \app\after((\fld{\cur{g\after\pp}}{\cur{g\after\pp}}\after f)\times \idg)\after \diag{\G} : \G \rightarrow \tea}$
+\end{itemize}
 \end{document}

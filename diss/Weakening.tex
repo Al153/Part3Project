@@ -339,15 +339,41 @@
         }
     \end{equation}
 
+    And 
+    \begin{align}
+        \D_1' & =\D_1 \after \w\\
+        \D_3' & =\D_2 \after \w\\
+        \D_3' & =\D_3 \after \w 
+    \end{align}
 
-    This preserves denotations
+
+    This preserves denotations.
+    Since $\w: \G' \rightarrow \G$, \\
+    Let $(\tea)^{\w}: \tea^{\G}\rightarrow\tea^{\G'}$ be as defined in ExSh 3 (\footnote{https://www.cl.cam.ac.uk/teaching/1819/L108/exercises/L108-exercise-sheet-3.pdf})
+    That is:
 
     \begin{align}
-        \D' &= \ifnt{\tea}\after\pr{\D_1'}{\pr{\D_2'}{\D_3'}}\qt{By Definition}\\
-            &= \ifnt{\tea}\after\pr{\D_1\after\w}{\pr{\D_2\after\w}{\D_3\after\w}}\qt{By induction}\\
-            &= \ifnt{\tea}\after\pr{\D_1}{\pr{\D_2}{\D_3}}\after\w\qt{By Product property}\\
-            &= \D\after\w\qt{By Definition}\\
+        (\tea)^{\w} & = \cur{\app\after(\Id{\tea}\times w)}
+    \end{align}.
+    And hence, we have:
+
+    \begin{align}
+        \cur{f\after(\Id{}\times \w)} & = (\tea)^{\w} \after\cur{f}
     \end{align}
+
+    \begin{align}
+        \D' & =\app\after((\fld{\cur{\D_2'\after\pp}}{\cur{\D_3'\after\pp}}\after\D_1')\times \Id{\G'})\after\diag{\G'}\qt{By Definition}\\
+        & =\app\after((\fld{\cur{\D_2\after\w\after\pp}}{\cur{\D_3\after\w\after\pp}}\after\D_1')\times \Id{\G'})\after\diag{\G'}\qt{By Induction}\\
+        & = \app\after((\fld{\cur{\D_2\after\pp\after(\Id{\1}\times \w)}}{\cur{\D_3\after\pp\after(\Id{\1}\times \w)}}\after\D_1\after\w)\times \Id{\G'})\after\diag{\G'}\qt{By product property}\\
+        & = \app\after((\fld{(\tea)^{\w}\after\cur{\D_2\after\pp}}{(\tea)^{\w}\after\cur{\D_3\after\pp}}\after\D_1\after\w)\times \Id{\G'})\after\diag{\G'}\qt{By $(\tea)^{\w}$ property}\\
+        & = \app\after(((\tea)^{\w}\after\fld{\cur{\D_2\after\pp}}{\cur{\D_3\after\pp}}\after\D_1\after\w)\times \Id{\G'})\after\diag{\G'}\qt{Factor out transformation}\\
+        & = \app\after((\tea)^{\w}\times\Id{\G'})\after((\fld{\cur{\D_2\after\pp}}{\cur{\D_3\after\pp}}\after\D_1)\times \Id{\G'})\after(\w \times \Id{\G'})\after\diag{\G'}\qt{Factor out Identity pairs}\\
+        & = \app\after(\Id{(\tea)}\times\w)\after((\fld{\cur{\D_2\after\pp}}{\cur{\D_3\after\pp}}\after\D_1) \times \Id{\G'})\after(\w \times \Id{\G'})\after\diag{\G'}\qt{By defintion of $\app, (\tea)^{\w}$}\\
+        & = \app\after((\fld{\cur{\D_2\after\pp}}{\cur{\D_3\after\pp}}\after\D_1)\times \idg)\after(\w \times \w)\after\diag{\G'}\qt{Push through pairs}\\
+        & = \app\after((\fld{\cur{\D_2\after\pp}}{\cur{\D_3\after\pp}}\after\D_1)\times \idg)\after\diag{\G}\after\w\qt{By Definition of the diagonal morphism.}\\
+        & = \D\after\w
+    \end{align}
+
 
     \paragraph{Case Bind}
     By inversion, we have derivations $\D_1, \D_2$ such that:

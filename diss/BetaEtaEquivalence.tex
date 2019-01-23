@@ -1,9 +1,12 @@
 \newcommand\BetaEtaEquivalence[0]{
     \section{Beta and Eta Equivalence}
-    \subsection{Beta conversions}
+    \subsection{Beta-Eta conversions}
     \begin{itemize}
-        \item $\treerule{Lambda}{\typerelation{\gax}{C}{\meb}\s\s \gtyperelation{v}{A}}{\gberelation{\apply{(\lam{x}{A}{C})}{v} }{ C\ssub{v}{x}}{\meb}}$
+        \item $\treerule{Lambda-Beta}{\typerelation{\gax}{C}{\meb}\s\s \gtyperelation{v}{A}}{\gberelation{\apply{(\lam{x}{A}{C})}{v} }{ C\ssub{v}{x}}{\meb}}$
         
+        \item $\treerule{Lambda-Eta}{\gtyperelation{v}{\aeb}}{\gberelation{\lam{x}{A}{(\apply{v}{x}})}{v}{\aeb}}$
+     
+
         \item $\treerule{Left Unit}{\gtyperelation{v}{A} \s\s \typerelation{\gax}{C}{\meb}}{\gberelation{\doin{x}{\return{v}}{C}}{C\ssub{x}{V}}{\meb}}$
         
         \item $\treerule{Right Unit}{\gtyperelation{C}{\mea}}{\gberelation{\doin{x}{C}{\return{x}} }{C}{\mea}}$
@@ -11,9 +14,13 @@
             \gberelation{\doin{x}{C_1}{(\doin{y}{C_2}{C_3})}}{\doin{y}{(\doin{x}{C_1}{C_2})}{C_3}}{\M{\e_1 \dot \e_2 \dot \e_3}{C}}
         }$
 
-        \item $\treerule{Eta}{\gtyperelation{v}{\aeb}}{\gberelation{\lam{x}{A}{(\apply{v}{x}})}{v}{\aeb}}$
+        \item $\treerule{Unit}{\gtyperelation{v}{\U}}{\gberelation{v}{\u}{\U}}$
+
         \item $\treerule{if-true}{\gtyperelation{C_1}{\mea}\s\s\gtyperelation{C_2}{\mea}}{\gberelation{\ifthenelse{\e}{A}{\t}{C_1}{C_2}}{C_1}{\mea}}$
+        
         \item $\treerule{if-false}{\gtyperelation{C_2}{\mea}\s\s\gtyperelation{C_1}{\mea}}{\gberelation{\ifthenelse{\e}{A}{\f}{C_1}{C_2}}{C_2}{\mea}}$
+        
+        \item $\treerule{If-Eta}{\typerelation{\G, x: \B}{C}{\mea}\s\s\gtyperelation{v}{\B}}{\gberelation{\ifthenelse{\e}{A}{v}{C\ssub{x}{\t}}{C\ssub{x}{\f}}}{C\ssub{x}{V}}{\mea}}$
         
     \end{itemize}
     \subsection{Equivalence Relation}
@@ -162,7 +169,7 @@
             }{\gtyperelation{\lam{x}{A}{(\apply{v}{x})}}{\aeb}}
         \end{equation}
 
-        \paragraph{Case If True}
+        \paragraph{Case If-True}
             By inversion, we have $\gtyperelation{C_1}{\mea}$, $\gtyperelation{C_2}{\mea}$. Hence by the typing lemma \todo{Which?}, we have $\ok{\G}$ so $\gtyperelation{\t}{\B}$ by the axiom typing rule.
 
             Hence 
@@ -177,7 +184,7 @@
                         \gtyperelation{\ifthenelse{\e}{A}{\t}{C_1}{C_2}}{\mea}
                     }
             \end{equation}
-        \paragraph{Case If False}
+        \paragraph{Case If-False}
         As above,
 
         Hence 
@@ -555,11 +562,15 @@ We Have
     Then
     \begin{equation}
         \begin{split}
-            \deno{\gtyperelation{\ifthenelse{\t}{A}{v}{C_1}{C_2}}{\mea}} & = \ifnt{\mea}\after \pr{\deno{\t}\after\term{\G}}{\pr{f}{g}} \\
-            & = f\\
+            \deno{\gtyperelation{\ifthenelse{\t}{A}{v}{C_1}{C_2}}{\mea}} & = \ifMorph{\inl\after\term{\G}}{f}{g} \\
+            & = \app\after((\cur{f\after\pp}\after\term{\G})\times\idg)\after\diag{\G}\\
+            & = \app\after(\cur{f\after\pp}\times\idg)\after(\term{\G}\times\idg)\after\diag{\G}\\
+            & = f\after\pp\after\pr{\term{\G}}{\idg}\\
+            & = f \\
             & = \deno{\gtyperelation{C_1}{\mea}}\\
         \end{split}
     \end{equation}
+
 
     \paragraph{Case If-False}
     Let
@@ -571,11 +582,81 @@ We Have
     Then
     \begin{equation}
         \begin{split}
-            \deno{\gtyperelation{\ifthenelse{\f}{A}{v}{C_1}{C_2}}{\mea}} & = \ifnt{\mea}\after \pr{\deno{\f}\after\term{\G}}{\pr{f}{g}} \\
-            & = g\\
-            & = \deno{\gtyperelation{C_1}{\mea}}\\
+            \deno{\gtyperelation{\ifthenelse{\t}{A}{v}{C_1}{C_2}}{\mea}} & = \ifMorph{\inr\after\term{\G}}{f}{g} \\
+            & = \app\after((\cur{g\after\pp}\after\term{\G})\times\idg)\after\diag{\G}\\
+            & = \app\after(\cur{g\after\pp}\times\idg)\after(\term{\G}\times\idg)\after\diag{\G}\\
+            & = g\after\pp\after\pr{\term{\G}}{\idg}\\
+            & = g \\
+            & = \deno{\gtyperelation{C_2}{\mea}}\\
         \end{split}
     \end{equation}
+
+    \subsection{Case If-Eta}
+        Let 
+        \begin{align}
+            f & = \deno{\typerelation{\G}{v}{\B}} \\
+            g & = \deno{\typerelation{\G, x: \B}{C}{\mea}} \\
+        \end{align}
+
+
+        Then by the substitution theorem,
+        \begin{align}
+            \deno{\typerelation{\G}{C\ssub{x}{\t}}{\mea}} & = g\after\pr{\idg}{\inl_\1\after{\term{\G}}}\\
+            \deno{\typerelation{\G}{C\ssub{x}{\f}}{\mea}} & = g\after\pr{\idg}{\inr_\1\after{\term{\G}}}\\
+            \deno{\gtyperelation{C\ssub{x}{v}}{\mea}} & = g\after\pr{\idg}{f}
+        \end{align}
+
+        Hence we have (Using the diagonal and twist morphisms):
+     
+        \begin{align}
+            \deno{\gtyperelation{&\ifthenelse{\e}{A}{v}{C\ssub{x}{\t}}{C\ssub{x}{\f}}}{\mea}}  \\ 
+            & = \ifMorph{f}{g\after\pr{\idg}{\inl_\1\after{\term{\G}}}}{g\after\pr{\idg}{\inr_\1\after{\term{\G}}}}\\
+            & = \app\after((\fld{
+                \cur{g\after\pr{\pp}{\inl_1\after\term{\G}\after\pp}}
+            }{
+                \cur{g\after\pr{\pp}{\inr_1\after\term{\G}\after\pp}}
+            }\after f)\times \idg)\after\diag{\G}\qt{Pairing property}\\
+            &= \app\after((\fld{
+                \cur{g\after\pr{\pp}{\inl_1\after\term{\G}\after\p}}
+            }{
+                \cur{g\after\pr{\pp}{\inr_1\after\term{\G}\after\p}}
+            }\after f)\times \idg)\after\diag{\G}\qt{Terminal is unique}\\
+            &= \app\after((\fld{
+                \cur{g\after(\idg\times (\inl_\1\after\term{\1}))\after\twist{\1}{\G}}
+            }{
+                \cur{g\after(\idg\times (\inr_\1\after\term{\1}))\after\twist{\1}{\G}}
+            }\after f)\times \idg)\after\diag{\G}\qt{Definition of the twist morphism}\\
+            & = \app\after((\fld{
+                \cur{g\after(\idg\times \inl_\1)\after\twist{\1}{\G}}
+            }{
+                \cur{g\after(\idg\times \inr_\1)\after\twist{\1}{\G}}
+            }\after f)\times \idg)\after\diag{\G}\qt{Identity = $\Id{\1}$}\\
+            & = \app\after((\fld{
+                \cur{g\after\twist{\1+\1}{\G}\after(\inl_\1\times \idg)}
+            }{
+                \cur{g\after\twist{\1+\1}{\G}\after(\inr_\1\times \idg)}
+            }\after f)\times \idg)\after\diag{\G}\qt{Twist commutivity}\\
+            & = \app\after((\fld{
+                \cur{g\after\twist{\1+\1}{\G}}\after\inl_\1
+            }{
+                \cur{g\after\twist{\1+\1}{\G}}\after\inr_\1
+            }\after f)\times \idg)\after\diag{\G}\qt{Exponential property}\\
+            & = \app\after((\cur{g\after\twist{\1+\1}{\G}}\after\fld{
+                \inl_\1
+            }{
+                \inr_\1
+            }\after f)\times \idg)\after\diag{\G}\qt{Factoring out $\cur{..}$}\\
+            & = \app\after((\cur{g\after\twist{\1+\1}{\G}}\after f)\times \idg)\after\diag{\G}\qt{Since $\fld{\inl}{\inr} is the identity$}\\
+            & = \app\after(\cur{g\after\twist{\1+\1}{\G}}\times \idg)\after (f\times \idg)\after\diag{\G}\qt{Factoring}\\
+           & = g\after\twist{\1+\1}{\G} \after (f\times \idg)\after\diag{\G} \qt{Definition of $\app,\cur{..}$}\\
+           & = g\after(\idg\times f)\after \twist{\G}{\G} \after\diag{\G} \qt{Twist commutivity}\\
+           & = g\after(\idg\times f) \after\pr{\idg}{\idg} \qt{Twist, diagonal defintions} \\
+           & = g\after\pr{\idg}{f} \\
+           & = \deno{\gtyperelation{C\ssub{x}{v}}{\mea}} \\
+        \end{align}
+
+
+
 
 
 
@@ -665,7 +746,7 @@ We Have
     And so
     \begin{equation}
         \begin{split}
-            \deno{\gtyperelation{\ifthenelse{\e}{A}{v}{C_1}{C_2}}} & = \ifnt{\mea}\after \pr{f}{\pr{g}{h}}\\
+            \deno{\gtyperelation{\ifthenelse{\e}{A}{v}{C_1}{C_2}}} & = \ifMorph{f}{g}{h}\\
              & = \deno{\gtyperelation{\doin{x}{C_1}{C_2}}{\M{\e_1\dot\e_2}{A}}}
         \end{split}
     \end{equation}
