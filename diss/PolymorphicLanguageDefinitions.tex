@@ -1,0 +1,189 @@
+
+\newcommand\PolymorphicLanguageDefs[0]{\section{Terms}
+\subsection{Value Terms}
+
+\begin{equation}
+    \begin{split}
+        v \gens & x \\
+        & \mid \lam{x}{A}{C} \\
+        & \mid \const{A} \\
+        & \mid \u \\
+        & \mid \t \mid \f \\
+        & \mid \elam{\a}{v} \\
+        & \mid \eapp{v}{\e}
+    \end{split}
+\end{equation}
+
+\subsection{Computation Terms}
+    \begin{equation}
+        \begin{split}
+            C \gens & \ifthenelse{\e}{A}{v}{C_1}{C_2} \\
+                    & \mid \apply{v_1}{v_2} \\
+                    & \mid \doin{x}{C_1}{C_2} \\
+                    & \mid \return{v}
+        \end{split}
+    \end{equation}
+
+\section{Type System}
+\subsection{Effects}
+The effects should form a monotonous, pre-ordered monoid $(E, \dot, \1, \subeffect)$ with ground elements $e$, and denoted by metavariables $\e$, and in language-effect variables $\a$
+\subsection{Types}
+    \paragraph{Ground Types}
+        There exists a set $\ground$ of ground types, including \U, \B
+    \paragraph{Value Types}
+    $$ A, B, C \gens \ground \mid \aeb \mid \all{\a}{A}$$
+    \paragraph{Computation Types}
+    Computation types are of the form $\mea$
+
+\subsection{Sub-typing}
+    There exists a sub-typing pre-order relation $\subtype_{\ground}$ over ground types that is:
+    \begin{itemize}
+        \item $\treerule{Reflexive}{}{A \subtype_{\ground} A}$
+        \item $\treerule{Transitive}{A \subtype_{\ground} B \s \s B \subtype_{\ground} C}{A \subtype_{\ground} C}$
+    \end{itemize}
+
+    We extend this relation with the function and effect-lambda sub-typing rules to yield the full sub-typing relation $\subtype$
+
+    \begin{itemize}
+        \item $\treerule{ground}{A \subtype_{\ground} B}{A \subtype B}$
+        \item $\treerule{Fn}{A \subtype A' \s\s B' \subtype B \s \s \e \subeffect \e'}{\lamtype{A'}{\e'}{B'} \subtype \aeb}$
+        \item $\treerule{All}{A\subtype A'}{\all{\a}{A}\subtype\all{a}{A'}}$
+    \end{itemize}
+\subsection{Type and Effect Environments}
+A type environment is a snoc-list of value-variable, type pairs, $G \gens \nil \mid \gax$ .
+An effect environment is a snoc-list of effect-variables.
+
+$\P\gens\nil\mid\P, \a$
+\paragraph{Domain Function on Type Environments}
+\begin{itemize}
+    \item $\dom{\nil} = \emptyset$
+    \item $\dom{\gax} =  \dom{\G}  \cup \left\{x \right\}$
+\end{itemize}
+
+\paragraph{Membership of Effect Environments}
+Informally, $\a \in \P$ if $\a$ appears in the list represented by $\P$.
+
+\paragraph{$\ok{}$ Predicate On Effect Environments}
+\begin{itemize}
+    \item $\treerule{Atom}{}{\ok{\nil}}$
+    \item $\treerule{A}{\ok{\P} \s\s \a\notin \P}{\ok{\P, \a}}$
+\end{itemize}
+
+\paragraph{Well-Formed-ness of effects}
+We define a relation $\wellformed{\P}{\e}$.
+
+\begin{itemize}
+    \item $\treerule{Ground}{\ok{\P}}{\wellformed{\P}{e}}$
+    \item $\treerule{Var}{\ok{\P,\a}}{\wellformed{\P,\a}{\a}}$
+    \item $\condtreerule{Weaken}{\wellformed{\P}{\a}}{\wellformed{\P,\b}{\a}}{\a\neq\b}$
+    \item $\treerule{Monoid Op}{\wellformed{\P}{\e_1}\s\s\wellformed{\P}{\e_2}}{\wellformed{\P}{\e_1\dot\e_2}}$
+\end{itemize}
+
+\paragraph{Well-Formed-ness of Types}
+We define a relation $\wellformed{\P}{\tau}$ on types.
+
+\begin{itemize}
+    \item $\treerule{Ground}{}{\wellformed{\P}{\g}}$
+    \item $\treerule{Lambda}{\wellformed{\P}{A}\s\s\wellformed{\P}{\meb}}{\wellformed{\P}{\aeb}}$
+    \item $\treerule{Computation}{\wellformed{\P}{A}\s\s\wellformed{\P}{\e}}{\wellformed{\P}{\mea}}$
+    \item $\treerule{For-All}{\wellformed{\P,\a}{A}}{\wellformed{\P}{\all{\a}{A}}}$
+\end{itemize}
+
+\paragraph{Ok Predicate on Type Environments}
+We now define a predicate on type environments and effect environments: $\oke{\P}{\G}$
+
+\begin{itemize}
+    \item $\treerule{Nil}{}{\oke{\P}{\nil}}$
+    \item $\treerule{Var}{\oke{\P}{\G}\s\s\x\notin\dom{\G}\s\s \wellformed{\P}{A}}{\oke{\P}{\gax}}$
+\end{itemize}
+
+\subsection{Type Rules}
+\paragraph{Value Typing Rules}
+\begin{itemize}
+    \item $\treerule{Const}{\oke{\P}{\G}\s\s\wellformed{\P}{A}}{\gpetyperelation{\const{A}}{A}}$
+    \item $\treerule{Unit}{\oke{\P}{\G}}{\gpetyperelation{\u}{\U}}$
+    \item $\treerule{True}{\oke{\P}{\G}}{\gpetyperelation{\t}{\B}}$
+    \item $\treerule{False}{\oke{\P}{\G}}{\gpetyperelation{\f}{\B}}$
+    \item $\treerule{Var}{\oke{\P}{\gax}}{\etyperelation{\P}{\gax}{x}{A}}$
+    \item $\condtreerule{Weaken}{\etyperelation{\P}{\G}{x}{A}}{\etyperelation{\P}{\gby}{x}{A}}{x \neq y}$
+    \item $\treerule{Fn}{\etyperelation{\P}{\gax}{C}{\meb}}{\etyperelation{\P}{\G}{\lam{x}{A}{C}}{\aeb}}$
+    \item $\treerule{Sub}{\etyperelation{\P}{\G}{v}{A}\s\s A \subtype B}{\etyperelation{\P}{\G}{v}{B}}$
+    \item $\treerule{Effect-Abs}{\etyperelation{\P,\a}{\G}{v}{A}}{\gpetyperelation{\elam{\a}{v}}{\all{\a}{A}}}$
+    \item $\treerule{Effect-apply}{\gpetyperelation{v}{\all{\a}A}\s\s\wellformed{\P}{\e}}{\gpetyperelation{\eapp{v}{\e}}{A\ssub{\a}{\e}}}$
+\end{itemize}
+\paragraph{Computation typing rules}
+\begin{itemize}
+    \item $\treerule{Return}{\gpetyperelation{v}{A}}{\gpetyperelation{\return{v}}{\moa}}$
+    \item $\treerule{Apply}{\gpetyperelation{v_1}{\aeb}\s\s\gpetyperelation{v_2}{A}}{\gpetyperelation{\apply{v_1}{v_2}}{\meb}}$
+    \item $\treerule{if}{\gpetyperelation{v}{\B} \s\s \gpetyperelation{C_1}{\mea}\s\s\gpetyperelation{C_2}{\mea}}{\gpetyperelation{\ifthenelse{\e}{A}{V}{C_1}{C_2}}{\mea}}$
+    \item $\treerule{Do}{\gpetyperelation{C_1}{\M{\e_1}{A}} \s\s \etyperelation{\P}{\gax}{C_2}{\M{\e_2}{B}}}{\gpetyperelation{\doin{x}{C_1}{C_2}}{\M{\e_1 \dot \e_2}{B}}}$
+    \item $\treerule{Subeffect}{\gpetyperelation{C}{\M{\e_1}{A}}\s\s A \subtype B \s\s \e_1 \subeffect \e_2}{\gpetyperelation{C}{\M{e_2}{B}}}$
+\end{itemize}
+
+\subsection{Ok Lemma}
+If $\gpetyperelation{t}{\tau}$ then $\oke{\P}{\G}$.
+\paragraph{Proof}
+If $\ok{\gax}$ then by inversion $\ok{\G}$
+Only the type rule \texttt{Weaken} adds terms to the environment from its preconditions to its post-condition and it does so in an $\ok{}$ preserving way. Any type derivation tree has at least one leaf. All leaves are axioms which require $\oke{\P}{\G}$. And all non-axiom derivations preserve the $\ok{}$ property.
+
+
+\section{Beta-Eta-Equivalence}
+\subsection{Beta-Eta conversions}
+\begin{itemize}
+    \item $\treerule{Lambda-Beta}{\etyperelation{\P}{\gax}{C}{\meb}\s\s \gpetyperelation{v}{A}}{\gpeberelation{\apply{(\lam{x}{A}{C})}{v} }{ C\ssub{v}{x}}{\meb}}$
+    
+    \item $\treerule{Lambda-Eta}{\gpetyperelation{v}{\aeb}}{\gpeberelation{\lam{x}{A}{(\apply{v}{x}})}{v}{\aeb}}$
+ 
+
+    \item $\treerule{Left Unit}{\gpetyperelation{v}{A} \s\s \etyperelation{\P}{\gax}{C}{\meb}}{\gpeberelation{\doin{x}{\return{v}}{C}}{C\ssub{x}{V}}{\meb}}$
+    
+    \item $\treerule{Right Unit}{\gpetyperelation{C}{\mea}}{\gpeberelation{\doin{x}{C}{\return{x}} }{C}{\mea}}$
+    \item $\treerule{Associativity}{\gpetyperelation{C_1}{\M{\e_1}{A}} \s\s \etyperelation{\P}{\gax}{C_2}{\M{\e_2}{B}}\s\s \etyperelation{\P}{\gby}{C_3}{\M{\e_3}{C}}}{
+        \gpeberelation{\doin{x}{C_1}{(\doin{y}{C_2}{C_3})}}{\doin{y}{(\doin{x}{C_1}{C_2})}{C_3}}{\M{\e_1 \dot \e_2 \dot \e_3}{C}}
+    }$
+
+    \item $\treerule{Unit}{\gpetyperelation{v}{\U}}{\gpeberelation{v}{\u}{\U}}$
+
+    \item $\treerule{if-true}{\gpetyperelation{C_1}{\mea}\s\s\gpetyperelation{C_2}{\mea}}{\gpeberelation{\ifthenelse{\e}{A}{\t}{C_1}{C_2}}{C_1}{\mea}}$
+    
+    \item $\treerule{if-false}{\gpetyperelation{C_2}{\mea}\s\s\gpetyperelation{C_1}{\mea}}{\gpeberelation{\ifthenelse{\e}{A}{\f}{C_1}{C_2}}{C_2}{\mea}}$
+    
+    \item $\treerule{If-Eta}{\etyperelation{\P}{\G, x: \B}{C}{\mea}\s\s\gpetyperelation{v}{\B}}{\gpeberelation{\ifthenelse{\e}{A}{v}{C\ssub{x}{\t}}{C\ssub{x}{\f}}}{C\ssub{x}{V}}{\mea}}$
+    
+    \item $\treerule{Effect-beta}{\wellformed{\P}{\e}\s\s\etyperelation{\P, \a}{\G}{v}{A}}{\gpeberelation{\eapp{\elam{\a}{v}}{\e}}{v\ssub{\a}{\e}}{A\ssub{\a}{\e}}}$
+
+    \item $\treerule{Effect-eta}{\etyperelation{\P,\a}{\G}{v}{A}\s\s\wellformed{\P}{\b}}{\gpeberelation{\elam{\a}{(\eapp{v}{\b})}}{v\ssub{\a}{\b}}{A\ssub{\a}{\b}}}$
+    
+\end{itemize}
+\subsection{Equivalence Relation}
+\begin{itemize}
+    \item $\treerule{Reflexive}{\gpetyperelation{t}{\tau}}{\gpeberelation{t}{t}{\tau}}$
+    \item $\treerule{Symmetric}{\gpeberelation{t_1}{t_2}{\tau}}{\gpeberelation{t_2}{t_1}{\tau}}$
+    \item $\treerule{Transitive}{\gpeberelation{t_1}{t_2}{\tau}\s\s\gpeberelation{t_2}{t_3}{\tau}}{\gpeberelation{t_1}{t_3}{\tau}}$
+\end{itemize}
+\subsection{Congruences}
+\begin{itemize}
+    \item $\treerule{Effect-Abs}{\eberelation{\P, \a}{\G}{v_1}{v_2}{A}}{\gpeberelation{\elam{\a}{v_1}}{\elam{\a}{v_2}}{\all{\a}{A}}}$
+    \item $\treerule{Effect-Apply}{\gpeberelation{v_1}{v_2}{\all{\a}{A}}\s\s\wellformed{\P}{\e}}{\gpeberelation{\eapp{v_1}{\e}}{\eapp{v_2}{\e}}{A\ssub{\a}{\e}}}$
+    \item $\treerule{Lambda}{\eberelation{\P}{\gax}{C_1}{C_2}{\meb}}{\gpeberelation{\lam{x}{A}{C_1}}{\lam{x}{A}{C_2}}{\aeb}}$
+    
+    \item $\treerule{Return}{\gpeberelation{v_1}{v_2}{A}}{\gpeberelation{\return{v_1}}{\return{v_2}}{\moa}}$
+    
+    \item $\treerule{Apply}{\gpeberelation{v_1}{v_1'}{\aeb}\s\s\gpeberelation{v_2}{v_2'}{A}}{\gpeberelation{\apply{v_1}{v_2}}{\apply{v_1'}{v_2'}}{\meb}}$
+    
+    \item $\treerule{Bind}{\gpeberelation{C_1}{C_1'}{\M{\e_1}{A}} \s\s \eberelation{\P}{\gax}{C_2}{C_2'}{\M{\e_2}{B}}}{\gpeberelation{\doin{x}{C_1}{C_2}}{\doin{c}{C_1'}{C_2'}}{\M{\e_1 \dot \e_2}{B}}}$
+    
+    \item $\treerule{If}{\gpeberelation{v}{v'}{\B} \s\s \gpeberelation{C_1}{C_1'}{\mea}\s\s\gpeberelation{C_2}{C_2'}{\mea}}{\gpeberelation{\ifthenelse{\e}{A}{v}{C_1}{C_2}}{\ifthenelse{\e}{A}{v}{C_1'}{C_2'}}{\mea}}$
+    \item $\treerule{Subtype}{\gpeberelation{v}{v'}{A} \s\s A \subtype B}{\gpeberelation{v}{v'}{B}}$
+    \item $\treerule{Subeffect}{\gpeberelation{C}{C'}{\M{\e_1}{A}}\s\s A \subtype B \s\s \e_1 \subeffect \e_2}{\gpeberelation{C}{C'}{\M{\e_2}{B}}}$
+\end{itemize}
+}
+
+\ifdefined\NoDocument
+\else
+\documentclass{report}
+\input{header.tex}
+\begin{document}
+    \PolymorphicLanguageDefs
+\end{document}
+\fi

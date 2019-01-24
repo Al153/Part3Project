@@ -76,7 +76,7 @@ Denotations are defined recursively over the typing derivation of a term. Hence,
     \item $\treerule{Return}{f = \deno{\typerelation{\G}{v}{A}}}{\deno{\typerelation{\G}{\return{v}}{\moa}} = \point{A} \after f}$
         
  
-    \item $\treerule{If}{f = \deno{\typerelation{\G}{v}{\B}}: \G\rightarrow\1+\1 \s\s g = \deno{\typerelation{\G}{C_1}{\mea}}\s\s h = \deno{\typerelation{\G}{C_2}{\mea}}}{\deno{{\typerelation{\G}{\ifthenelse{\e}{A}{v}{C_1}{C_2}}{\mea}}} = \app\after((\fld{\cur{g\after\pp}}{\cur{g\after\pp}}\after f)\times \idg)\after \diag{\G} : \G \rightarrow \tea}$
+    \item $\treerule{If}{f = \deno{\typerelation{\G}{v}{\B}}: \G\rightarrow\1+\1 \s\s g = \deno{\typerelation{\G}{C_1}{\mea}}\s\s h = \deno{\typerelation{\G}{C_2}{\mea}}}{\deno{{\typerelation{\G}{\ifthenelse{\e}{A}{v}{C_1}{C_2}}{\mea}}} = \app\after((\fld{\cur{g\after\pp}}{\cur{h\after\pp}}\after f)\times \idg)\after \diag{\G} : \G \rightarrow \tea}$
         
     \item $\treerule{Bind}{f = \deno{\typerelation{\G}{C_1}{\M{\e_1}{A}} : \G \rightarrow \T{\e_1}{A}\s\s g = \deno{\typerelation{\gax}{C_2}{\M{\e_2}{B}}}}: \G \times A \rightarrow \T{\e_2}{B}}{\deno{\typerelation{\G}{\doin{x}{C_1}{C_2}}{\M{\e_1 \dot \e_2}}} = \bind{\e_1}{\e_2}{B} \after \T{\e_1}{g} \after \tstrength{\G}{A}{\e_1} \after \pr{\idg}{f}: \G \rightarrow \T{\e_1 \dot \e_2}{B}}$ 
     \item  $\treerule{Subeffect}{f = \deno{\typerelation{\G}{c}{\M{\e_1}{A}}}: \G \rightarrow \T{\e_1}{A} \s\s g = \deno{A \subtype B}\s\s h = \dse{\e_1}{\e_2}}{\deno{\typerelation{\G}{C}{\M{\e_2}{B}}} = h_B \after \T{\e_1}{g} \after f}$
