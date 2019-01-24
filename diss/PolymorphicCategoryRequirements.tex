@@ -1,0 +1,247 @@
+\newcommand\CategoryRequirements[0]{
+    \section{CCC}
+
+The section should be a cartesian closed category.
+That is it should have:
+\begin{itemize}
+    \item A Terminal object $\terminal$
+    \item Binary products
+    \item Exponentials
+\end{itemize}
+
+Further more, it should have a co-product of the terminal object $\1$. This is required for the beta-eta equivalence of $\texttt{if-then-else}$ terms.
+
+\begin{tikzcd}[ampersand replacement =\&]
+    \1 \arrow [r, "inl"]  \& A \& \1 \arrow {l}[swap]{inr}
+\end{tikzcd}
+
+For each: 
+
+\begin{tikzcd}[ampersand replacement =\&]
+    \1 \arrow [r, "f"]  \& A \& \1 \arrow {l}[swap]{g}
+\end{tikzcd}
+
+There exists unique $[f, g]: \1+\1 \rightarrow A$ such that:
+
+
+\begin{tikzcd}[ampersand replacement =\&]
+  \& A \&\\
+  \1 \arrow [ru, "f"] \arrow {r}[swap]{\inl} \& \1+\1 \arrow {u} {\left[f, g\right]} \& \1 \arrow {lu}[swap]{g}  \arrow {l}{\inr}
+\end{tikzcd}
+
+\section{Graded Pre-Monad}
+The category should have a graded pre-monad. That is:
+
+\begin{itemize}
+    \item An endo-functor indexed by the po-monad on effects: $\T{}{}: (\E, \dot\, \1,\subeffect)  \rightarrow \Cat(\C, \C)$
+    \item A unit natural transformation: $\point{}: \Id{} \rightarrow \T{\1}{}$
+    \item A join natural transformation: $\bind{\e_1}{\e_2}{}: \T{\e_1}{\T{\e_2}{}} \rightarrow \T{\e_1 \dot \e_2}{}$
+\end{itemize}
+
+Subject to the following commutative diagrams:
+\subsection{Left Unit}
+    \begin{tikzcd}[ampersand replacement=\&]
+    \tea \arrow[rd, "\Id{\tea}"] \arrow[r, "\T{\e}{\point{A}}"] \& \T{\e}{\T{\1}{A}} \arrow[d, "\bind{\e}{\1}{A}"] \\
+    \& \tea
+    \end{tikzcd}
+
+\subsection{Right Unit}
+    \begin{tikzcd}[ampersand replacement=\&]
+    \tea \arrow[rd, "\Id{\tea}"] \arrow[r, "\point{\tea}"] \& \T{\1}{\T{\1}{A}} \arrow[d, "\bind{\1}{\e}{A}"] \\
+    \& \tea
+    \end{tikzcd}
+
+\subsection{Associativity}
+\begin{tikzcd}[ampersand replacement=\&]
+    \T{\e_1}{\T{\e_2}{\T{\e_3}{A}}} 
+    \arrow [r, "\bind{\e_1}{\e_2}{\T{\e_3}{A}}"]
+    \arrow [d, "\T{\e_1}{\bind{\e_2}{\e_3}{A}}"] \& \T{\e_1 \dot \e_2}{\T{\e_3} A} \arrow [d, "\bind{\e_1 \dot \e_2}{\e_3}{A}"] \\
+    \T{\e_1}{\T{\e_2 \dot \e_3}{A}} \arrow [r, "\bind{\e_1}{\e_2 \dot \e_3}{A}"] \& \T{\e_1 \dot \e_2 \dot \e_3}{A}    
+\end{tikzcd}
+
+
+\section{Tensor Strength}
+The category should also have tensorial strength over its products and monads.
+That is, it should have a natural transformation
+ $$\tstrength{\e}{A}{B}: A \times \teb \rightarrow \T{\e}{(A \times B)} $$
+
+Satisfying the following rules:
+\subsection{Left Naturality}
+\begin{tikzcd}[ampersand replacement=\&]
+    A \times \teb \arrow [r, "\Id{A} \times \T{\e}{f}"] \arrow [d, "\tstrength{\e}{A}{B}"]\&
+    A \times \T{\e}{B'} \arrow [d, "\tstrength{\e}{A}{B'}"]\\
+    \T{\e}{(A \times B)} \arrow [r, "\T{e}{(\Id{A} \times f)}"] \&
+    \T{\e}{(A \times B')}
+\end{tikzcd}
+
+\subsection{Right Naturality}
+
+\begin{tikzcd}[ampersand replacement=\&]
+    A \times \teb  \arrow [r, "f \times \Id{\teb}"] \arrow [d, "\tstrength{\e}{A}{B}"]  \&
+    A' \times \teb \arrow [d, "\tstrength {\e} {A'}{B}"]\\
+    \T{\e}{(A \times B)} \arrow [r, "\T{\e}{(f \times \Id{B})}"]\&
+    \T{\e}{(A' \times B)}
+\end{tikzcd}
+
+\subsection{Unitor Law}
+\begin{tikzcd}[ampersand replacement=\&]
+    \1 \times \tea 
+    \arrow [r, "\tstrength{\e}{\1}{A}"]
+    \arrow [rd, "\lambda_{\tea}"]
+    \& 
+    \T{\e}{(\1 \times A)}
+    \arrow [d, "\T{\e}{(\lambda_A)}"]
+    \\
+    \&
+    \tea
+\end{tikzcd}
+Where $\lambda: \terminal \times \Id{} \rightarrow \Id{}$ is the left-unitor.
+($\lambda = \pp$)
+
+\paragraph{Tensor Strength and Projection}
+Due to the left-unitor law, we can develop a new law for the commutivity of $\pp$ with $\tstrength{}{}{}$
+
+    $$\pi_{2, A, B} = \pi_{2, \1, B} \after (\term{A} \times \Id{B})$$
+
+    And $\pi_{2, \1}$ is the left unitor, so by tensorial strength:
+    
+    \begin{equation}
+        \begin{split}
+            \T{\e}{\pp} \after \tstrength{\e}{A}{B} & = \T{\e}{\pi_{2, \1, B}} \after \T{\e}{(\term{A} \times \Id{B})} \after \tstrength{\e}{A}{B} \\
+            & = \T{\e}{\pi_{2, 1, B}} \after \tstrength{\e}{\1}{B} \after (\term{A} \times \Id{B}) \\
+            & = \pi_{2,1,B} \after (\term{A} \times \Id{B}) \\
+            & = \pp
+        \end{split}
+    \end{equation}
+
+So the following commutes:
+
+\begin{tikzcd}[ampersand replacement=\&]
+    A \times \teb 
+    \arrow [r, "\tstrength{\e}{A}{B}"]
+    \arrow [rd, "\pp"]
+    \& 
+    \T{\e}{(A \times B)}
+    \arrow [d, "\T{\e}{\pp}"]
+    \\
+    \&
+    \teb
+\end{tikzcd}
+
+
+\subsection{Commutativity with Join}
+\begin{tikzcd}[ampersand replacement=\&]
+    A \times \T{\e_1}{\T{\e_2}{B}} 
+    \arrow [r, "\tstrength{\e_1}{A}{\T{\e_2}{B}}"]
+    \arrow [dr, "\Id{A} \times \bind{\e_1}{\e_2}{B}"]
+    \& 
+    \T{\e_1}{(A \times \T{\e_2}{B})} 
+    \arrow [r, "\T{\e_1}{\tstrength{\e_2}{A}{B}}"]
+    \& 
+    \T{\e_1}{\T{\e_2}{(A \times B)}} 
+    \arrow [d, "\bind{\e_1}{\e_2}{A \times B}"]
+    \\
+    \&
+    A \times \T{\e_1 \dot \e_2}{B}  
+    \arrow [r, "\tstrength{\e_1 \dot \e_2}{A}{B}"] 
+    \&
+    \T{\e_1 \dot \e_2}({A \times B)}
+\end{tikzcd}
+
+\section{Commutivity with Unit}
+
+\begin{tikzcd}[ampersand replacement=\&]
+    A \times B
+    \arrow [r, "\Id{A} \times \point{B}"]
+    \arrow [rd, "\point{A \times B}"]
+    \&
+    A \times \teb 
+    \arrow [d, "\tstrength{\e}{A}{B}"]
+    \\
+    \&
+    \T{\e}{(A \times B)}
+\end{tikzcd}
+
+\section{Commutivity with $\alpha$}
+Let $\alpha_{A, B, C} = \pr{\p\after\p}{\pr{\pp\after\p}{\pp}}: ((A \times B) \times C) \rightarrow (A \times (B \times C))$
+
+
+\begin{tikzcd}[ampersand replacement=\&]
+    (A\times B)\times \T{\e}{C} 
+    \arrow [rr, "\tstrength{\e}{(A\times B)}{C}"]
+    \arrow [d, "\alpha_{A, B, \T{\e}{C}}"]
+    \& \& \T{\e}{((A \times B)\times C)}
+    \arrow [d, "\T{\e}{\alpha_{A, B, C}}"]
+    \\
+    A \times (B \times \T{\e}{C}) 
+    \arrow [r, "\Id{A}\times\tstrength{\e}{B}{C}"]
+    \&
+    A\times\T{\e}{(B \times C)} 
+    \arrow [r, "\tstrength{\e}{A}{(B \times C)}"]
+    \& \T{\e}{(A \times (B \times C))}
+    \\
+\end{tikzcd}
+\todo{Needed?}
+
+\section{Subeffecting}
+For each instance of the pre-order $(\E, \subeffect)$, $\e_1 \subeffect \e_2$, there exists a natural transformation
+$\dse{\e_1}{\e_2}: \T{\e_1}{} \rightarrow \T{\e_2}{}$ that commutes with $\tstrength{}{}{}$:
+
+\subsection{Subeffecting and Tensor Strength}
+\begin{tikzcd}[ampersand replacement=\&]
+    A \times \T{\e_1}{B} \arrow [r, "\Id{A} \times \dse{\e_1}{\e_2}_B"] \arrow [d, "\tstrength{\e_1}{A}{B}"] \&
+    A \times \T{\e_2}{B} \arrow [d, "\tstrength{\e_2}{A}{B}"] \\
+    \T{\e_1}{(A \times B)} \arrow [r, "\dse{\e_1}{\e_2}_{ A \times B}"] \&
+    \T{\e_2}{(A \times B)} 
+\end{tikzcd}
+
+\subsection{Sub-effecting and Monadic Join}\label{SubEffectJoin}
+Since the monoid operation on effects is monotone, we can introduce the following diagram.
+
+
+\begin{tikzcd}[ampersand replacement=\&]
+    \T{\e_1}{\T{\e_2}{}} 
+    \arrow [rr, "\T{\e_1}{\deno{\e_2\subeffect\e_2'}
+    }"]
+    \arrow [d, "\bind{\e_1}{\e_2}{}"]
+    \&  \&
+    \T{\e_1}{\T{\e_2'}{}}
+    \arrow [rr, "\db{\e_1 \subeffect\e_1'}_{M, \T{\e_2'}{}}"]
+    \& \&
+     \T{\e_1'}{\T{\e_2'}{}} 
+     \arrow [d, "\bind{\e_1'}{\e_2'}{}"]
+     \\
+    \T{\e_1\dot\e_2}{}
+    \arrow [rrrr, "\deno{\e_1\dot\e_2\subeffect\e_1'\e_2'}"]
+    \& \&
+     \& \&
+    \T{\e_1'\dot\e_2'}{}
+\end{tikzcd}
+
+
+\section{Subtyping}
+
+The denotation of ground types $\deno{\_}$ is a functor from the pre-order category of ground types $(\ground, \subtype_{\ground})$
+to $\C$. This pre-ordered sub-category of $\C$ is extended with the rule for function subtyping to form a larger pre-ordered sub-category of $\C$.
+
+$$
+\treerule{Function Subtyping}{f = \deno{A' \subtype A} \s\s g = \deno{B \subtype B'} \s\s h=\dse{\e_1}{\e_2}}{rhs = \deno{\lamtype{A}{\e_1}{B} \subtype \lamtype{A'}{\e_2}{B'}}: (\T{\e_1}{B})^A \rightarrow (\T{\e_2}{B'})^{A'}}
+$$
+
+\begin{equation}
+    \begin{split}
+        rhs = & (h_{B'} \after \T{\e_1}{g})^{A'}
+        \after (\T{\e_1}{B})^f \\
+        = & \cur{h_{B'}  \after \T{\e_1}{g}\after \app} \after \cur{\app \after (\Id{\T{\e_1}{B}^{A'}} \times f)}\\
+    \end{split}
+\end{equation}
+}
+
+\ifdefined\NoDocument
+\else
+\documentclass{report}
+\input{header.tex}
+\begin{document}
+    \CategoryRequirements{}
+\end{document}
+\fi

@@ -1,0 +1,129 @@
+\newcommand\Substitution[0]{
+    \section{Introduce Substitutions}
+    \subsection{Substitutions as SNOC lists}
+
+    \begin{equation}
+       \si \gens \nil \mid \si, x \setto v
+    \end{equation}
+
+    \subsection{Trivial Properties of substitutions}
+    \paragraph{$\fv{\si}$}
+    \begin{align}
+        \fv{\nil} &= \emptyset\\
+        \fv{\si, x\setto v} &= \fv{\si}\cup\fv{v}
+    \end{align}
+    \paragraph{$\dom{\si}$}
+    \begin{align}
+        \dom{\nil} & = \emptyset\\
+        \dom{\si, x\setto v} & = \dom{\si}\cup\left\{x\right\}
+    \end{align}
+
+    \paragraph{$x \# \si$}
+    \begin{equation}
+        x \# \si \Leftrightarrow x\notin(\fv{\si}\cup\dom{\si`})
+    \end{equation}
+
+    \subsection{Effect of substitutions}
+        We define the effect of applying a substitution $\si$ as 
+        $$t\ssi$$
+
+        
+        \begin{align}
+            x\sub{\nil} & = x \\
+            x\sub{\si,x\setto v} & = v \\
+            x\sub{\si,x'\setto v'} & = x\ssi\qt{If }x \neq x'\\
+            \const{A}\ssi & = \const{A} \\
+            (\lam{x}{A}{C})\ssi &= \lam{x}{A}{(C\ssi)}\qt{If }x\#\si\\
+            (\ifthenelse{\e}{A}{v}{C_1}{C_2})\ssi &= \ifthenelse{\e}{A}{v\ssi}{C_1\ssi}{C_2\ssi}\\
+            (\apply{v_1}{v_2})\ssi&= \apply{(v_1\ssi)}{v_2\ssi}\\
+            (\doin{x}{C_1}{C_2})&= \doin{x}{(C_1\ssi)}{(C_2\ssi)}\qt{If } x\#\si\\
+        \end{align}
+    \subsection{Well Formedness}
+    
+    \subsection{Simple Properties Of Substitution}
+    If $\typerelation{\G'}{\si}{\G}$ then:
+    \todo{Number these}
+
+        \paragraph{Property 1: $\ok{\G}$ and $\ok{\G'}$}
+         Since $\ok{\G'}$ holds by the Nil-axiom. $\ok{\G}$ holds by induction on the well-formed-ness relation.
+        \paragraph{Property 2: $\wrel{\w}{\G''}{\G'}$ implies $\typerelation{\G''}{\si}{\G}$}. 
+        By induction over well-formed-ness relation. For each $x\setto v$ in $\si$, $\typerelation{\G''}{v}{A}$ holds if $\typerelation{\G'}{v}{A}$ holds.
+        \paragraph{Property 3: $x \notin (\dom{\G} \cup \dom{\G''})$ implies $\typerelation{(\G', x: A)}{(\si, x \setto x)}{(\gax)}$} 
+        Since $\wrel{\i\pi}{\G',x: A}{\G'}$, so by (Property 2) \todo{Better referencing here}, 
+        $$\typerelation{\G', x: A}{\si}{\G}$$
+        In addition, $\typerelation{\G', x: A}{x}{A}$ trivially, so by the rule \textbf{Extend}, well-formed-ness holds for
+        \begin{equation}
+            \typerelation{(\G', x:A)}{(\si, x\setto v)}{(\gax)}
+        \end{equation}
+    
+
+    \section{Substitution Preserves Typing}
+    
+    \subsection{Variables}  
+        \paragraph{Case Var}
+           
+            
+        \paragraph{Case Weaken}
+           
+    \subsection{Other Value Terms}
+    \paragraph{Case Lambda}
+    \paragraph{Case Constants}
+        
+    \subsection{Computation Terms}
+    \paragraph{Case Return}
+      
+    \paragraph{Case Apply}
+        
+    \paragraph{Case If}
+       
+    \paragraph{Case Bind}
+        
+    \subsection{Sub-typing and Sub-effecting}
+    \paragraph{Case Sub-type}
+        
+    \paragraph{Case Sub-effect}
+    
+    \section{Semantics of Substitution}
+    \subsection{Denotation of Substitutions}
+    
+    \subsection{Extension Lemma}
+   
+    \subsection{Substitution Theorem}
+
+    \subsection{Proof For Value Terms}
+    \paragraph{Case Var}
+    
+    \paragraph{Case Weaken}
+   
+    \paragraph{Case Constants}
+    
+    \paragraph{Case Lambda}
+
+    \paragraph{Case Sub-type}
+    
+    \subsection{Proof For Computation Terms}
+    \paragraph{Case Return}
+    \paragraph{Case Apply}
+    
+    \paragraph{Case If}
+    \paragraph{Case Bind}
+    \paragraph{Case Subeffect}
+
+    
+    \section{The Identity Substitution}
+    \subsection{Properties of the Identity Substitution}
+    \paragraph{Property 1}
+    
+    \paragraph{Property 2}
+    
+}
+
+
+\ifdefined\NoDocument
+\else
+\documentclass{report}
+\input{header.tex}
+\begin{document}
+    \Substitution
+\end{document}
+\fi

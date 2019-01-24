@@ -1,0 +1,27 @@
+\newcommand\Denotations[0]{
+\section{Helper Morphisms}
+\subsection{Diagonal and Twist Morphisms}
+
+In the definition and proofs (Especially of the the If cases), I make use of the morphisms twist and diagonal.
+
+\begin{align}
+    \twist{A}{B}: (A\times B) \rightarrow (B\times A) = \pr{\pp}{\p}\\
+    \diag{A}: A \rightarrow (A\times A)  = \pr{\Id{A}}{\Id{A}}
+\end{align}
+\section{Denotations of Types}
+\subsection{Denotation of Ground Types}
+\subsection{Denotation of Polymorphic Types}
+\subsection{Denotation of Computation Type}
+\subsection{Denotation of Function Types}
+\subsection{Denotation of Type Environments}
+\subsection{Denotation of Value Terms}
+\subsection{Denotation of Computation Terms}
+}
+\ifdefined\NoDocument
+\else
+\documentclass{report}
+\input{header.tex}
+\begin{document}
+    \Denotations
+\end{document}
+\fi
