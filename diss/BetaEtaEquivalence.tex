@@ -199,6 +199,40 @@
                 \gtyperelation{\ifthenelse{\e}{A}{\f}{C_1}{C_2}}{\mea}
             }
     \end{equation}
+
+    \paragraph{Case If-Eta}
+        By inversion, we have:
+        \begin{equation}
+            \gtyperelation{v}{\B}
+        \end{equation}
+        and
+        \begin{equation}
+            \typerelation{\G, x:\B}{C}{\mea}
+        \end{equation}
+        
+        Hence we also have $\ok{\G}$. Hence, the following also hold:
+
+        $\gtyperelation{\t}{\B}$, and $\gtyperelation{\f}{\B}$.
+
+        Hence by the substitution theorem, we have:
+
+        \begin{equation}
+            \treerule{If}{
+                \gtyperelation{v}{\B}
+                \s\s
+                \gtyperelation{C\ssub{x}{\t}}{\mea}
+                \s\s
+                \gtyperelation{C\ssub{x}{\f}}{\mea}
+            }{\gtyperelation{\ifthenelse{\e}{A}{v}{C\ssub{x}{\t}}{C\ssub{x}{\f}}}{\mea}
+            }
+        \end{equation}
+
+        and 
+        \begin{equation}
+            \gtyperelation{C\ssub{x}{v}}{\mea}
+        \end{equation}
+
+
         \subsection{Congruences}
     Each congruence rule corresponds exactly to a type derivation rule. To convert to a type derivation, convert all preconditions, then use the equivalent type derivation rule.
 
