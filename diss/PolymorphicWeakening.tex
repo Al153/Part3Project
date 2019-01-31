@@ -1,21 +1,569 @@
+\newcommand\wrelw[2]{\wrel{\w}{#1}{#2}}
+\newcommand\proof[0]{\paragraph{Proof:}}
+\newcommand{\case}[1]{\paragraph{Case #1:}}
+\newcommand{\subcase}[1]{\subparagraph{Case: #1}}
+\newcommand\bi[0]{By inversion}
+
+\newcommand\ewrel[4]{\wellformed{#1}{\wrel{#2}{#3}{#4}}}
+\newcommand\pewrel[3]{\ewrel{\P}{#1}{#2}#3}
+\newcommand\ppewrel[3]{\ewrel{\P'}{#1}{#2}#3}
+
+
 \newcommand{\Weakening}[0]{
-    \section{Weakening Definition}
+    \section{Effect Weakening Definition}
+    Introduce a relation $\wrel{\w}{\P'}{\P}$ relating effect-environments.
     \subsection{Relation}
-    \subsection{Weakening Denotations}
-   
-    \section{Weakening Theorems}
+
+    \begin{itemize}
+        \item $\treerule{Id}{\ok{\P}}{\wrel{\i}{\P}{\P}}$
+        \item $\treerule{Project}{\wrel{\w}{\P'}{\P}}{\wrel{\w\pi}{(\P', \a)}{\P}}$
+        \item $\treerule{Extend}{\wrel{\w}{\P'}{\P}}{\wrel{\w\x}{(\P', \a)}{(\P, \a)}}$
+    \end{itemize}
+    \subsection{Weakening Properties}
+    \subsection{Effect Weakening Preserves $\ok{}$}
+    \begin{equation}
+        \wrelw{\P'}{\P} \wedge \ok{\P}\Leftarrow \ok{\P'}
+    \end{equation}
+
+    \paragraph{Proof}
+    \subcase{$\i$}
+    $$\ok{\P} \wedge\wrel{\i}{\P}{\P} \Leftarrow \ok{\P}$$ 
+    \subcase{$\w\pi$}
+    \bi,
+    \begin{equation}
+        \wrelw{\P'}{\P} \wedge \a\notin\P'
+    \end{equation}
+
+    So, by induction, $\ok{\P'}$ and hence $\ok{(\P', \a)}$
+
+    \subcase{$\w\x$}
+    \bi, 
+    \begin{equation}
+        \wrelw{\P'}{\P} \wedge \a\notin\P'
+    \end{equation}
+
+    So
+    \begin{align}
+        \ok{(\P, \a)} & \Rightarrow \ok{\P} \\
+        & \Rightarrow \ok{\P'}\\
+        & \Rightarrow \ok{(\P', \a)}\\
+    \end{align}
     \subsection{Domain Lemma}
+
+    $$\wrelw{\P'}{\P} \Rightarrow (\a\notin\P \Rightarrow \a\notin\P')$$
+
+    \paragraph{Proof}
+    By trivial Induction.
    
-    \subsection{Theorem 1}
+    \subsection{Weakening Preserves Effect Well-Formed-Ness}
+    If $\wrelw{\P'}{\P}$ then $\wellformed{\P}{\e}\implies\wellformed{\P'}{\e}$
+
+    \paragraph{Proof}
+    By induction over the well-formed-ness of effects
+    \paragraph{Case Ground}
+    \bi, $\ok{\P}\wedge\e\in E$.
+    Hence by the ok-property, $\ok{\P'}$
+    So $\wellformed{\P'}{\e}$
+
+    \paragraph{Case Var}
+
+    $\P = \P'', \a$
+
+    So either:
+
+    \subcase{$\P' = \P''', \a$}
+        So $\w = \w'\x$
+        So $\wrel{\w'}{\P'''}{\P''}$, and hence:
+        \begin{equation}
+            \treerule{Var}{\ok{\P''', \a}}{\wellformed{\P''',\a}{\a}}
+        \end{equation}
+    \subcase{$\P' = \P''', \b$} and $\b \neq\a$
+
+    So $\w = \w'\pi$
+
+    By induction, $\wrel{\w'}{\P'''}{\P}$
+    so \begin{equation}
+        \treerule{Weaken}{\wellformed{\P'''}{\a}}{\wellformed{\P'}{\a}}
+    \end{equation}
+
+    \paragraph{Case Weaken}
+
+    \bi, $\P = \P'', \b$.
+
+    So $\w = \w'\x$
+
+    And, $\P' = \P''', \b$
+    So \bi $\wrel{\w'}{\P'''}{\p''}$
+
+    So by induction
+    \begin{equation}
+        \treerule{weak}{\wellformed{\P'''}{\a}}{\wellformed{\P'}{\a}}
+    \end{equation}
+
+
+    \paragraph{Case Monoid}
+
+    \bi, $\wellformed{\P}{\e_1}$ and $\wellformed{\P}{\e_2}$. So by induction,
+    $\wellformed{\P'}{\e_1}$ and $\wellformed{\P'}{\e_2}$, and so:
+
+    \begin{equation}
+        \wellformed{\P'}{\e_1\dot\e_2}
+    \end{equation}
+    \subsection{Weakening Preserves Type-Well-Formed-Ness}
+
+    If $\wrelw{\P'}{\P}$ and $\wellformed{\P}{A}$ then $\wellformed{\P'}{A}$.
+
+    \proof
+    \case{Ground}
+    \bi, $\ok{\P}$, hence by property 1 of weakening, $\ok{\P'}$. Hence $\wellformed{\P'}{\g}$.
+    \case{Function}
+    \bi, $\wellformed{\P}{A}$, $\wellformed{\P}{B}$.
+    So by induction $\wellformed{\P'}{A}$, $\wellformed{\P'}{B}$, hence,
+
+    $$\wellformed{\P'}{\ab}$$
+
+    \case{Computation}
+
+    \bi $\wellformed{\P}{A}$, and $\wellformed{\P}{\e}$.
+
+    So by induction and the effect-well-formed-ness theorem, 
+
+    $\wellformed{\P'}{A}$ and $\wellformed{\P'}{\e}$
+
+    So $$\wellformed{\P'}{\mea}$$
+
+    \case{For All}
+    \bi, $\wellformed{\P,\a}{A}$
+    Picking $\a\notin\P'$ using $\a$-conversion.
+
+    So $\wrel{\w\x}{(\P', \a)}{(\P, \a)}$
+
+    So $\wellformed{(\P', \a)}{A}$
+
+    So $\wellformed{\P}{\all{\a}{A}}$
+
+    \subsection{Corollary}
+    $$\wrel{\w}{\P'}{\P}\wedge \wellformedok{\P}{\G} \implies \wellformedok{\P'}{\G}$$
+    \case{Nil}
+    \bi $\ok{\P}$ so $\wellformedok{\P}{\nil}$
+    \case{Var}
+
+    \bi $\wellformedok{\P}{\G}$, $x\in\dom{\G}$, $\wellformed{\P}{A}$
+
+    So by induction $\wellformedok{\P'}{\G}$, and $\wellformedok{\p'}{\G}$
+
+    So $\wellformedok{\P'}{(\gax)}$
     
+    \subsection{Effect Weakening preserves Type Relations}
+
+    \begin{equation}
+        \gpetyperelation{v}{A} \wedge \wrelw{\P'}{\P} \implies \etyperelation{\P'}{\G}{v}{A}
+    \end{equation}
+    \proof
+    \case{Constants}
+    If $\wellformedok{\P}{\G}$ then $\wellformedok{\P'}{\G}$ so:
+
+    \begin{equation}
+        \treerule{Const}{\wellformedok{\P'}{\G}}{\etyperelation{\P'}{\G}{\const{A}}{A}}
+    \end{equation}
+
+    \case{Variables}
+    If $\wellformedok{\P}{\G}$ then $\wellformedok{\P'}{\G}$ so:
+    So, $\etyperelation{\P'}{G}{x}{A}$, if $\etyperelation{\P}{G}{x}{A}$
+    \case{Lambda}
+    \bi, $\etyperelation{\P}{\gax}{v}{B}$, so by induction $\etyperelation{\P'}{\gax}{v}{B}$.
+
+    So,
+
+    \begin{equation}
+        \etyperelation{\P'}{\G}{\lam{x}{A}{v}}{\ab}
+    \end{equation}
+
+    \case{Apply}
+    \bi $\gpetyperelation{v_1}{\ab}$ and $\gpetyperelation{v_2}{A}$.
+
+    Hence by induction,
+    $\gppetyperelation{v_1}{\ab}$ and $\gppetyperelation{v_2}{A}$.
+
+    So $$\gppetyperelation{\app{v_1}{v_2}}{B}$$
+
+    \case{Return}
+
+    \bi $\gpetyperelation{v}{A}$ 
+    
+    So by induction $\gppetyperelation{v}{A}$
+
+    Hence $\gppetyperelation{\return{v}}{\moa}$
+
+    \case{Bind}
+
+    \bi $\gpetyperelation{v_1}{\M{\e_1}{A}}$ and $\etyperelation{\P}{\gax}{\e_2}{\M{\e_2}{A}}$.
+
+    Hence by induction $\gppetyperelation{v_1}{\M{\e_1}{A}}$ and $\etyperelation{\P'}{\gax}{v_2}{\M{\e_2}{A}}$.
+
+    So
+
+    \begin{equation}
+        \gppetyperelation{\doin{x}{v_1}{v_2}}{\M{\e_1\dot\e_2}{B}}
+    \end{equation}
+
+    \case{If}
+
+    \bi $\gpetyperelation{v}{\B}$, $\gpetyperelation{v_1}{A}$, and $\gpetyperelation{v_2}{A}$.
+
+    Hence by induction
+    $\gppetyperelation{v}{\B}$, $\gppetyperelation{v_1}{A}$, and $\gppetyperelation{v_2}{A}$.
+
+    So 
+
+    \begin{equation}
+        \gppetyperelation{\pifthenelse{A}{v}{v_1}{v_2}}{A}
+    \end{equation}
+
+    \case{Subtype}
+    \bi $\gpetyperelation{v}{A}$, and $A\subtype B$.
+
+    So by induction:
+    $\gppetyperelation{v}{A}$, and $A\subtype B$.
+
+    So \begin{equation}
+        \gppetyperelation{v}{B}
+    \end{equation}
+
+    \case{Effect-Lambda}
+    \bi $\etyperelation{\P, \a}{\G}{v}{A}$
+
+    By picking $\a\notin\P'$ using $\a$-conversion.
+
+    \begin{equation}
+        \wrel{\w\x}{\P',\a}{\P,\a}
+    \end{equation}
+
+    So by induction, $\etyperelation{\P', \a}{\G}{v}{A}$
+
+    Hence,
+
+    \begin{equation}
+        \gppetyperelation{\elam{\a}{v}}{\all{a}{A}}
+    \end{equation}
+
+    \case{Effect-Apply}
+
+    \bi, $\gpetyperelation{v}{\all{\a}{A}}$, and $\wellformed{\P}{\e}$.
+
+    So by induction, $\gppetyperelation{v}{\all{\a}{A}}$
+
+    And by the well-formed-ness-theorem $\wellformed{\P'}{\e}$
+
+    Hence, \begin{equation}
+        \gppetyperelation{\eapp{v}{\e}}{A\ssub{\a}{\e}}
+    \end{equation}
+
+    \section{Type Environment Weakening}
+    \subsection{Relation}
+    We define the ternary weakening relation $\pewrel{w}{\G'}{\G}$ using the following rules.
+
+
+    \begin{itemize}
+        \item $\treerule{Id}{\wellformedok{\P}{\G}}{\pewrel{\i}{\G}{\G}}$
+        \item $\treerule{Project}{\pewrel{\w}{\G'}{\G}\s\s x \notin \dom{\G'}}{\pewrel{\w \pi}{\G, x: A}{\G}}$
+        \item $\treerule{Extend}{\pewrel{\w}{\G'}{\G}\s\s x \notin \dom{\G'}\s\s A \subtype B}{\pewrel{w \x}{\G', x: A}{\G, x: B}}$
+    \end{itemize}
+
+    \subsection{Domain Lemma}
+    If $\pewrel{\w}{\G'}{\G}$, then $\dom{\G}\subseteq \dom{\G'}$.
+
+    \proof
+    \case{Id}
+    Then $\G' = \G$ and so $\dom{\G'} = \dom{\G}$.
+    \case{Project}
+    By inversion and induction, $\dom{\G}\subseteq\dom{\G'}\subseteq\dom{\G'\cup\left\{x\right\}}$
+    \case{Extend}
+    By inversion and induction, $\dom{\G}\subseteq\dom{\G'}$ so 
+    $$\dom{\gax} = \dom{\G}\cup\left\{x\right\} \subseteq\dom{\G'}\cup\left\{x\right\} = \dom{\G',x:A}$$
+    \subsection{Theorem 1}
+    If $\pewrel{\w}{\G'}{\G}$ and $\wellformedok{\P}{\G}$ then $\wellformedok{\P}{\G'}$
+    \proof
+    \case{Id}
+    $$\treerule{Id}{\wellformedok{\P}{\G}}{\pewrel{\i}{\G}{\G}}$$
+
+    By inversion, $\wellformedok{\P}{\G}$.
+
+    \case{Project}
+    $$\treerule{Project}{\pewrel{\w}{\G'}{\G}\s\s x \notin \dom{\G'}}{\pewrel{\w \pi}{\G, x: A}{\G}}$$
+
+    By inversion, $\pewrel{\w}{\G'}{\G}$ and $x\notin \dom{\G'}$.
+
+    Hence by induction $\wellformedok{\P}{\G'}$, $\wellformedok{\P}{\G}$. Since $x\notin\dom{\G'}$, we have $\wellformedok{\P}{\G', x:A}$.
+
+    \case{Extend}
+    $\treerule{Extend}{\pewrel{\w}{\G'}{\G}\s\s x \notin \dom{\G'}\s\s A \subtype B}{\pewrel{w \x}{\G', x: A}{\G, x: B}}$, 
+
+    By inversion, we have 
+
+    $\pewrel{\w}{\G'}{\G}$, $x\notin\dom{\G'}$.
+
+    Hence we have $\wellformedok{\P}{\G}$, $\wellformedok{\P}{\G'}$, and by the domain Lemma, $\dom{\G}\subseteq\dom{\G'}$, hence $x\notin\dom{\G}$. Hence, we have $\wellformedok{\P}{\gax}$ and $\wellformedok{\P}{\G',x:A}$
+
 
     \subsection{Theorem 2}
-    
-    \subsection{Theorem 3}
+    If $\gpetyperelation{t}{\tau}$ and $\pewrel{\w}{\G'}{\G}$ then there is a derivation of $\etyperelation{\P}{\G'}{t}{\tau}$
 
-    \section{Proof of Theorems 2 and 3}
-    \subsection{Variable Terms}
-    \subsection{Computation Terms}
+    \proof
+
+    We induct over the structure of typing derivations of $\gpetyperelation{t}{\tau}$, assuming $\pewrel{\w}{\G'}{\G}$ holds.
+
+    \case{Var and Weaken}
+        We case split on the weakening $\w$.
+        \subcase{$\w = \i$}
+        Then $\G' = \G$, and so $\etyperelation{\P}{\G'}{x}{A}$ holds and the derivation $\D'$ is the same as $\D$
+
+        \subcase{$\w = \w'\pi$}
+
+        Then  $\G' = (\G'',x': A')$ and $\pewrel{\w'}{\G''}{\G}$. So by induction, there is a tree, $\D_1$ deriving $\etyperelation{\P}{\G''}{x}{A}$,  such that:
+        
+        \begin{equation}
+            \treerule{Weaken}{\treerule{}{\D_1}{\etyperelation{\P}{\G''}{x}{A}}}{\etyperelation{\P}{\G'', x':A' }{x}{A}}
+        \end{equation}
+
+        \subcase{$\w = \w'\x$} 
+        Then 
+        \begin{align}
+            \G' & = \G''', x': B\\
+            \G &= \G'', x': A'\\
+            B & \subtype A
+        \end{align}
+
+        \subcase{$x = x'$}
+
+        Then $A = A'$.
+
+        Then we derive the new derivation, $\D'$ as so:
+
+        \begin{equation}
+            \treerule{Sub-type}{
+                \treerule{var}{}{\etyperelation{\P}{\G''', x: B}{x}{B}}
+                \s\s
+                B \subtype A
+            }{
+                \etyperelation{\P}{\G'}{x}{A}
+            }
+        \end{equation}
+
+        \subcase{$x \neq x'$}
+        Then 
+        \begin{equation}
+            \D = \treerule{Weaken}{\treerule{}{\D_1}{\etyperelation{\P}{\G''}{x}{A}}}{\gpetyperelation{x}{A}}
+        \end{equation}
+
+        By induction with $\pewrel{\w}{\G'''}{\G''}$,
+         we have a derivation $\D_1$ of $\etyperelation{\P}{\G'''}{x}{A}$
+
+        We have the weakened derivation:
+
+        \begin{equation}
+            \D' = \treerule{Weaken}{\treerule{}{\D_1'}{\etyperelation{\P}{\G'''}{x}{A}}}{\etyperelation{\P}{\G'}{x}{A}}
+        \end{equation}
+
+    \case{Constant}
+    The constant typing rules, $\u$, $\t$, $\f$, $\const{A}$, all proceed by the same logic. Hence I shall only prove the theorems for the case $\const{A}$.
+
+    \begin{equation}
+        \truleconst
+    \end{equation}
+
+    By inversion, we have $\wellformedok{\P}{\G}$, so we have $\wellformedok{\P}{\G'}$.
+
+    Hence
+
+    \begin{equation}
+        \treerule{Const}{\wellformedok{\P}{\G'}}{\etyperelation{\P}{\G'}{\const{A}}{A}}
+    \end{equation}
+    Holds.
+
+    \case{Lambda}
+    By inversion, we have a derivation $\D_1$ giving
+
+    \begin{equation}
+        \D = \treerule{Fn}{
+            \treerule{}{\D_1}{\etyperelation{\P}{\gax}{v}{B}}
+        }{\gpetyperelation{\lam{x}{A}{v}}{\ab}}
+    \end{equation}
+
+    Since $\pewrel{\w}{\G'}{\G}$, we have:
+
+    \begin{equation}
+        \pewrel{\w\x}{(\G,x:  A)}{(\gax)}
+    \end{equation}
+
+    Hence, by induction, using $\pewrel{\w\x}{(\G,x:  A)}{(\gax)}$, we derive $\D_1'$:
+
+    \begin{equation}
+        \D' = \treerule{Fn}{
+            \treerule{}{\D_1'}{\etyperelation{\P}{\G',x: A}{v}{B}}
+        }{\etyperelation{\P}{\G',x: A}{\lam{x}{A}{v}}{\ab}}
+    \end{equation}
+
+    \case{Sub-typing}
+
+    \begin{equation}
+        \treerule{Sub-type}{\gpetyperelation{v}{A}\s\s A\subtype B}{\gpetyperelation{v}{B}}
+    \end{equation}
+
+    by inversion, we have a derivation $\D_1$
+    \begin{equation}
+        \treerule{}{\D_1}{\gpetyperelation{v}{A}}
+    \end{equation}
+
+    So by induction, we have a derivation $\D_1'$ such that:
+    \begin{equation}
+        \treerule{Sub-type}{\treerule{}{\D_1'}{\etyperelation{\P}{\G'}{v}{a}}\s\s A \subtype B}{\etyperelation{\P}{\G'}{v}{B}}
+    \end{equation}
+
+    \case{Return}
+    We have the sub-derivation $\D_1$ such that
+    \begin{equation}
+        \D = \treerule{Return}{\treerule{}{\D_1}{\gpetyperelation{v}{A}}}{\gpetyperelation{\return{v}}{\moa}}
+    \end{equation}
+
+    Hence, by induction, with $\pewrel{\w}{\G'}{\G}$, we find the derivation $\D_1'$ such that:
+    \begin{equation}
+        \D' = \treerule{Return}{\treerule{}{\D_1'}{\etyperelation{\P}{\G'}{v}{A}}}{\etyperelation{\P}{\G'}{\return{v}}{\moa}}
+    \end{equation}
+
+    \case{Apply}
+        By inversion, we have derivations $\D_1$, $\D_2$ such that
+
+        \begin{equation}
+            \D = 
+            \treerule{Apply}{
+                \treerule{}{\D_1}{\gpetyperelation{v_1}{\ab}}
+                \s\s
+                \treerule{}{\D_2}{\gpetyperelation{v_2}{A}}
+            } {
+                \gpetyperelation{\apply{v_1}{v_2}}{B}
+            }
+        \end{equation}
+
+        By induction, this gives us the respective derivations: $\D_1',\D_2'$ such that
+
+        
+        \begin{equation}
+            \D' = 
+            \treerule{Apply}{
+                \treerule{}{\D_1'}{\etyperelation{\P}{\G'}{v_1}{\ab}}
+                \s\s
+                \treerule{}{\D_2'}{\etyperelation{\P}{\G'}{v_2}{A}}
+            } {
+                \etyperelation{\P}{\G'}{\apply{v_1}{v_2}}{B}
+            }
+        \end{equation}
+
+    \case{If}
+    By inversion, we have the sub-derivations $\D_1,\D_2,\D_3$, such that:
+
+
+    \begin{equation}
+        \D = \treerule{If}{
+            \treerule{}{\D_1}{\etyperelation{\P}{\G}{v}{\B}}
+            \s\s
+            \treerule{}{\D_2}{\etyperelation{\P}{\G}{v_1}{A}}
+            \s\s
+            \treerule{}{\D_3}{\etyperelation{\P}{\G}{v_2}{A}}
+        }{
+            \etyperelation{\P}{\G}{\pifthenelse{A}{v}{v_1}{v_2}}{A}
+        }
+    \end{equation}
+
+    By induction, this gives us the sub-derivations $\D_1', \D_2', \D_3'$ such that
+
+    \begin{equation}
+        \D' = \treerule{If}{
+            \treerule{}{\D_1'}{\etyperelation{\P}{\G'}{v}{\B}}
+            \s\s
+            \treerule{}{\D_2'}{\etyperelation{\P}{\G'}{v_1}{A}}
+            \s\s
+            \treerule{}{\D_3'}{\etyperelation{\P}{\G'}{v_2}{A}}
+        }{
+            \etyperelation{\P}{\G'}{\pifthenelse{A}{v}{v_1}{v_2}}{A}
+        }
+    \end{equation}
+   
+    \case{Bind}
+    By inversion, we have derivations $\D_1, \D_2$ such that:
+
+
+    \begin{equation}
+        \D = \treerule{Bind}{
+            \treerule{}{\D_1}{\etyperelation{\P}{\G}{v_1}{\M{\E_1}{A}}}
+            \s\s
+            \treerule{}{\D_2}{\etyperelation{\P}{\G,x: A}{v_2}{\M{\e_2}{B}}}
+        }{
+            \etyperelation{\P}{\G}{\doin{x}{v_1}{v_2}}{\M{\e_1\dot\e_2}{B}}
+        }
+    \end{equation}
+
+    If $\pewrel{\w}{\G'}{\G}$ then $\pewrel{\w\x}{\G',x:A}{\gax}$, so by induction, we can derive $\D_1'$, $\D_2'$ such that:
+
+    \begin{equation}
+        \D' = \treerule{Bind}{
+            \treerule{}{\D_1'}{\etyperelation{\P}{\G'}{v_1}{\M{\E_1}{A}}}
+            \s\s
+            \treerule{}{\D_2'}{\etyperelation{\P}{\G',x: A}{v_2}{\M{\e_2}{B}}}
+        }{
+            \etyperelation{\P}{\G'}{\doin{x}{v_1}{v_2}}{\M{\e_1\dot\e_2}{B}}
+        }
+    \end{equation}
+
+    \case{Effect-Abstraction}
+        \bi,we have derivation $\D_1$ deriving
+        \begin{equation}
+            \treerule{Effect-Abs}{
+                    \treerule{}{\D_1}{\etyperelation{\P,\a}{\G}{v}{A}}}{\gpetyperelation{\elam{\a}{v}}{\all{\a}{A}}
+                    }
+        \end{equation}
+        
+        By $\a$-conversion, we have $\wrel{\i\pi}{\P,\a}{\P}$,
+        So we have $\ewrel{\P,\a}{\w}{\G'}{\G}$ so by induction, there exists $\D_1$ deriving:
+
+        \begin{equation}
+            \D' = 
+            \treerule{Effect-Abs}{
+                \treerule{}{\D_1}{\etyperelation{\P,\a}{\G'}{v}{A}}
+            }{
+                \etyperelation{
+                    \P
+                }{
+                    \G'
+                }{
+                    \elam{\a}{v}
+                }{\all{\a}{A}}
+            }
+        \end{equation}
+    \case{Effect-Application}
+
+    \bi we have derivation $\D_1$ deriving
+    \begin{equation}
+        \treerule{Effect-App}{
+            \treerule{}{\D_1}{\gpetyperelation{v}{\all{\a}{A}}}
+            \s\s
+           \wellformed{\P}{\e}
+        }{
+            \gpetyperelation{\eapp{v}{\e}}{A\ssub{\a}{\e}}
+        }
+    \end{equation}
+
+    So by induction, we have $\D_1'$ deriving
+
+    \begin{equation}
+        \treerule{Effect-App}{
+            \treerule{}{\D_1'}{\etyperelation{\P}{\G'}{v}{\all{\a}{A}}}
+            \s\s
+           \wellformed{\P}{\e}
+        }{
+            \etyperelation{\P}{\G'}{\eapp{v}{\e}}{A\ssub{\a}{\e}}
+        }
+    \end{equation}
 }
 
 \ifdefined\NoDocument

@@ -205,14 +205,20 @@
 \newcommand{\all}[2]{\forall #1. #2}
 \renewcommand{\P}[0]{\Phi}
 \newcommand\wellformed[2]{#1\vdash #2}
+\newcommand\wellformedok[2]{\ok{#1\vdash #2}}
 \renewcommand{\b}[0]{\beta}
 \newcommand{\g}[0]{\gamma}
 \newcommand\oke[2]{\wellformed{#1}{\ok{#2}}}
 \newcommand\etyperelation[4]{\typerelation{#1\mid#2}{#3}{#4}}
 \newcommand{\gpetyperelation}[2]{\etyperelation{\P}{\G}{#1}{#2}}
+\newcommand{\gppetyperelation}[2]{\etyperelation{\P'}{\G}{#1}{#2}}
 
 
 \newcommand{\eberelation}[5]{\berelation{#1\mid#2}{#3}{#4}{#5}}
 \newcommand{\gpeberelation}[3]{\berelation{\P\mid\G}{#1}{#2}{#3}}
-
+\newcommand{\gppeberelation}[3]{\berelation{\P'\mid\G}{#1}{#2}{#3}}
+\newcommand{\pifthenelse}[4]{\ifthenelse{#1}{}{#2}{#3}{#4}}
+\newcommand{\dotp}[0]{\dot_\P}
+\newcommand{\fntype}[2]{#1\rightarrow #2}
+\newcommand{\ab}[0]{\fntype{A}{B}}
 \fi

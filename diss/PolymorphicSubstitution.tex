@@ -1,5 +1,63 @@
 \newcommand\Substitution[0]{
-    \section{Introduce Substitutions}
+    We need to define substutions of effects on effects,
+    effects on types, effects on terms, terms on terms.
+
+    \section{Effect Substitutions}
+    Define a substitution, $\si$ as 
+    \begin{equation}
+        \si \gens \nil \mid \si, \a \setto \e
+     \end{equation}
+
+     \subsection{Action of Effect Substitution on Effects}
+
+     Define the action of applying an effect substitution to an effect symbol:
+
+     \begin{equation}
+        \si(\e)
+     \end{equation}
+
+     \begin{align}
+         \si(e) & = e \\
+         \si(\e_1\dot\e_2) & = (\si(\e_1))\dot(\si(\e_2))\\
+         \nil(\a) & = \a\\
+         (\si, \b\setto \e)(\a) & = \si(\a) \\
+         (\si, \a\setto \e)(\a) & =\e
+     \end{align}
+
+     \subsection{Action of Effect Substitution on Types}
+
+     Define the effect of applying an effect substitution, $\si$ to a type $\tau$ as:
+
+     $$\tau\sub{\si}$$
+
+     Defined as so
+     \todo{Define $\#$}
+     \begin{align}
+         \g\sub{\si} &= \g \\
+         (\lamtype{A}{\e}{B})\sub{\si} &= \lamtype{(A\sub{\si})}{\si(\e)}{(B\sub{\si})} \\
+         (\M{\e}{A})\ssi &= \M{\si(\e)}{(A\ssi)}\\
+         (\all{\a}{A})\ssi &= \all{\a}{(A\ssi)}\qt{If $\a\#\si$}
+     \end{align}
+
+
+    \subsection{Action of Effect Substitution on Terms}
+
+    Define the effect of effect-substitution on terms:
+
+    \begin{align}
+        x\ssi & = x \\
+        \const{A}\ssi & = \const{(A\ssi)} \\
+        (\lam{x}{A}{C})\ssi &= \lam{x}{(A\ssi)}{(C\ssi)}\\
+        (\ifthenelse{\e}{A}{v}{C_1}{C_2})\ssi &= \ifthenelse{\si(\e)}{(A\ssi)}{v\ssi}{C_1\ssi}{C_2\ssi}\\
+        (\apply{v_1}{v_2})\ssi&= \apply{(v_1\ssi)}{v_2\ssi}\\
+        (\doin{x}{C_1}{C_2})&= \doin{x}{(C_1\ssi)}{(C_2\ssi)}\\
+        (\elam{\a}{v})\ssi & = \elam{\a}{(v\ssi)}\qt{If $\a\#\si$}\\
+        (\eapp{v}{\e})\ssi & = \eapp{(v\ssi)}{\si(\e)}\\
+    \end{align}
+
+    \subsection{Well-Formed-ness }
+
+    \section{Term-Term Substitutions}
     \subsection{Substitutions as SNOC lists}
 
     \begin{equation}
@@ -37,6 +95,8 @@
             (\ifthenelse{\e}{A}{v}{C_1}{C_2})\ssi &= \ifthenelse{\e}{A}{v\ssi}{C_1\ssi}{C_2\ssi}\\
             (\apply{v_1}{v_2})\ssi&= \apply{(v_1\ssi)}{v_2\ssi}\\
             (\doin{x}{C_1}{C_2})&= \doin{x}{(C_1\ssi)}{(C_2\ssi)}\qt{If } x\#\si\\
+            (\elam{\a}{v})\ssi & = \elam{\a}{(v\ssi)}\\
+            (\eapp{v}{\e})\ssi & = \eapp{(v\ssi)}{\e}\\
         \end{align}
     \subsection{Well Formedness}
     

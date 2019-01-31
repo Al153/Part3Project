@@ -1,4 +1,226 @@
 \documentclass{report}
 \input{header.tex}
+\newcommand\wrelw[2]{\wrel{\w}{#1}{#2}}
+\newcommand\proof[0]{\paragraph{Proof:}}
+\newcommand{\case}[1]{\paragraph{Case #1:}}
+\newcommand\bi[0]{By inversion}
+
 \begin{document}   
+\section{Effect Weakening Definition}
+Introduce a relation $\wrel{\w}{\P'}{\P}$ relating effect-environments.
+\subsection{Relation}
+
+\begin{itemize}
+    \item $\treerule{Id}{\ok{\P}}{\wrel{\i}{\P}{\P}}$
+    \item $\treerule{Project}{\wrel{\w}{\P'}{\P}}{\wrel{\w\pi}{(\P', \a)}{\P}}$
+    \item $\treerule{Extend}{\wrel{\w}{\P'}{\P}}{\wrel{\w\x}{(\P', \a)}{(\P, \a)}}$
+\end{itemize}
+\subsection{Weakening Properties}
+\subsection{Effect Weakening Preserves $\ok{}$}
+\begin{equation}
+    \wrelw{\P'}{\P} \wedge \ok{\P}\Leftarrow \ok{\P'}
+\end{equation}
+
+\paragraph{Proof}
+\subparagraph{Case $\i$}
+$$\ok{\P} \wedge\wrel{\i}{\P}{\P} \Leftarrow \ok{\P}$$ 
+\subparagraph{Case $\w\pi$}
+\bi,
+\begin{equation}
+    \wrelw{\P'}{\P} \wedge \a\notin\P'
+\end{equation}
+
+So, by induction, $\ok{\P'}$ and hence $\ok{(\P', \a)}$
+
+\subparagraph{Case $\w\x$}
+\bi, 
+\begin{equation}
+    \wrelw{\P'}{\P} \wedge \a\notin\P'
+\end{equation}
+
+So
+\begin{align}
+    \ok{(\P, \a)} & \Rightarrow \ok{\P} \\
+    & \Rightarrow \ok{\P'}\\
+    & \Rightarrow \ok{(\P', \a)}\\
+\end{align}
+\subsection{Domain Lemma}
+
+$$\wrelw{\P'}{\P} \Rightarrow (\a\notin\P \Rightarrow \a\notin\P')$$
+
+\paragraph{Proof}
+By trivial Induction.
+
+\subsection{Weakening Preserves Effect Well-Formed-Ness}
+If $\wrelw{\P'}{\P}$ then $\wellformed{\P}{\e}\implies\wellformed{\P'}{\e}$
+
+\paragraph{Proof}
+By induction over the well-formed-ness of effects
+\paragraph{Case Ground}
+\bi, $\ok{\P}\wedge\e\in E$.
+Hence by the ok-property, $\ok{\P'}$
+So $\wellformed{\P'}{\e}$
+
+\paragraph{Case Var}
+
+$\P = \P'', \a$
+
+So either:
+
+\subparagraph{Case $\P' = \P''', \a$}
+    So $\w = \w'\x$
+    So $\wrel{\w'}{\P'''}{\P''}$, and hence:
+    \begin{equation}
+        \treerule{Var}{\ok{\P''', \a}}{\wellformed{\P''',\a}{\a}}
+    \end{equation}
+\subparagraph{Case $\P' = \P''', \b$} and $\b \neq\a$
+
+So $\w = \w'\pi$
+
+By induction, $\wrel{\w'}{\P'''}{\P}$
+so \begin{equation}
+    \treerule{Weaken}{\wellformed{\P'''}{\a}}{\wellformed{\P'}{\a}}
+\end{equation}
+
+\paragraph{Case Weaken}
+
+\bi, $\P = \P'', \b$.
+
+So $\w = \w'\x$
+
+And, $\P' = \P''', \b$
+So \bi $\wrel{\w'}{\P'''}{\p''}$
+
+So by induction
+\begin{equation}
+    \treerule{weak}{\wellformed{\P'''}{\a}}{\wellformed{\P'}{\a}}
+\end{equation}
+
+
+\paragraph{Case Monoid}
+
+\bi, $\wellformed{\P}{\e_1}$ and $\wellformed{\P}{\e_2}$. So by induction,
+$\wellformed{\P'}{\e_1}$ and $\wellformed{\P'}{\e_2}$, and so:
+
+\begin{equation}
+    \wellformed{\P'}{\e_1\dot\e_2}
+\end{equation}
+\subsection{Weakening Preserves Type-Well-Formed-Ness}
+
+If $\wrelw{\P'}{\P}$ and $\wellformed{\P}{A}$ then $\wellformed{\P'}{A}$.
+
+\proof
+\case{Ground}
+\bi, $\ok{\P}$, hence by property 1 of weakening, $\ok{\P'}$. Hence $\wellformed{\P'}{\g}$.
+\case{Function}
+\bi, $\wellformed{\P}{A}$, $\wellformed{\P}{B}$.
+So by induction $\wellformed{\P'}{A}$, $\wellformed{\P'}{B}$, hence,
+
+$$\wellformed{\P'}{\ab}$$
+
+\case{Computation}
+
+\bi $\wellformed{\P}{A}$, and $\wellformed{\P}{\e}$.
+
+So by induction and the effect-well-formed-ness theorem, 
+
+$\wellformed{\P'}{A}$ and $\wellformed{\P'}{\e}$
+
+So $$\wellformed{\P'}{\mea}$$
+
+\case{For All}
+\bi, $\wellformed{\P,\a}{A}$
+Picking $\a\notin\P'$ using $\a$-conversion.
+
+So $\wrel{\w\x}{(\P', \a)}{(\P, \a)}$
+
+So $\wellformed{(\P', \a)}{A}$
+
+So $\wellformed{\P}{\all{\a}{A}}$
+
+\subsection{Corollary}
+$$\wrel{\w}{\P'}{\P}\wedge \ok{\wellformed{\P}{\G}} \implies \ok{\wellformed{\P'}{\G}}$$
+\case{Nil}
+\bi $\ok{\P}$ so $\ok{\wellformed{\P}{\nil}}$
+\case{Var}
+
+\bi $\ok{\wellformed{\P}{\G}}$, $x\in\dom{\G}$, $\wellformed{\P}{A}$
+
+So by induction $\ok{\wellformed{\P'}{\G}}$, and $\ok{\wellformed{\p'}{\G}}$
+
+So $\ok{\wellformed{\P'}{(\gax)}}$
+
+\subsection{Effect Weakening preserves Type Relations}
+
+\begin{equation}
+    \gpetyperelation{v}{A} \wedge \wrelw{\P'}{\P} \implies \etyperelation{\P'}{\G}{v}{A}
+\end{equation}
+\proof
+\case{Constants}
+If $\wellformedok{\P}{\G}$ then $\wellformedok{\P'}{\G}$ so:
+
+\begin{equation}
+    \treerule{Const}{\wellformedok{\P'}{\G}}{\etyperelation{\P'}{\G}{\const{A}}{A}}
+\end{equation}
+
+\case{Variables}
+If $\wellformedok{\P}{\G}$ then $\wellformedok{\P'}{\G}$ so:
+So, $\etyperelation{\P'}{G}{x}{A}$, if $\etyperelation{\P}{G}{x}{A}$
+\case{Lambda}
+\bi, $\etyperelation{\P}{\gax}{v}{B}$, so by induction $\etyperelation{\P'}{\gax}{v}{B}$.
+
+So,
+
+\begin{equation}
+    \etyperelation{\P'}{\G}{\lam{x}{A}{v}}{\ab}
+\end{equation}
+
+\case{Apply}
+\bi $\gpetyperelation{v_1}{\ab}$ and $\gpetyperelation{v_2}{A}$.
+
+Hence by induction,
+$\gppetyperelation{v_1}{\ab}$ and $\gppetyperelation{v_2}{A}$.
+
+So $$\gppetyperelation{\app{v_1}{v_2}}{B}$$
+
+\case{Return}
+
+\bi $\gpetyperelation{v}{A}$ 
+
+So by induction $\gppetyperelation{v}{A}$
+
+Hence $\gppetyperelation{\return{v}}{\moa}$
+
+\case{Bind}
+
+\bi $\gpetyperelation{v_1}{\M{\e_1}{A}}$ and $\etyperelation{\P}{\gax}{\e_2}{\M{\e_2}{A}}$.
+
+Hence by induction $\gppetyperelation{v_1}{\M{\e_1}{A}}$ and $\etyperelation{\P'}{\gax}{v_2}{\M{\e_2}{A}}$.
+
+So
+
+\begin{equation}
+    \gppetyperelation{\doin{x}{v_1}{v_2}}{\M{\e_1\dot\e_2}{B}}
+\end{equation}
+
+\case{If}
+
+\bi $\gpetyperelation{v}{\B}$, $\gpetyperelation{v_1}{A}$, and $\gpetyperelation{v_2}{A}$.
+
+Hence by induction
+$\gppetyperelation{v}{\B}$, $\gppetyperelation{v_1}{A}$, and $\gppetyperelation{v_2}{A}$.
+
+So 
+
+\begin{equation}
+    \gppetyperelation{\pifthenelse{A}{v}{v_1}{v_2}}{A}
+\end{equation}
+
+\case{Subtype}
+
+\case{Efect-Lambda}
+
+\case{Effect-Apply}
+
+\section{Type Environment Weakening}
 \end{document}

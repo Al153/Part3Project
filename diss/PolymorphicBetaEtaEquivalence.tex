@@ -1,49 +1,96 @@
 \newcommand\BetaEtaEquivalence[0]{
     \section{Beta and Eta Equivalence}
+    
     \subsection{Beta-Eta conversions}
-    \subsection{Equivalence Relation}
+            \begin{itemize}
+        \item $\treerule{Lambda-Beta}{\etyperelation{\P}{\gax}{v}{B}\s\s \gpetyperelation{v}{A}}{\gpeberelation{\apply{(\lam{x}{A}{v})}{v} }{ v\ssub{v}{x}}{B}}$
+            
+        \item $\treerule{Lambda-Eta}{\gpetyperelation{v}{\ab}}{\gpeberelation{\lam{x}{A}{(\apply{v}{x}})}{v}{\ab}}$            
+
+        \item $\treerule{Left Unit}{\gpetyperelation{v}{A} \s\s \etyperelation{\P}{\gax}{v}{\meb}}{\gpeberelation{\doin{x}{\return{v}}{v}}{v\ssub{x}{V}}{\meb}}$
+            
+        \item $\treerule{Right Unit}{\gpetyperelation{v}{\mea}}{\gpeberelation{\doin{x}{v}{\return{x}} }{v}{\mea}}$
+        
+        \item $\treerule{Associativity}{\gpetyperelation{v_1}{\M{\e_1}{A}} \s\s \etyperelation{\P}{\gax}{v_2}{\M{\e_2}{B}}\s\s \etyperelation{\P}{\gby}{v_3}{\M{\e_3}{C}}}{
+            \gpeberelation{\doin{x}{v_1}{(\doin{y}{v_2}{v_3})}}{\doin{y}{(\doin{x}{v_1}{v_2})}{v_3}}{\M{\e_1 \dot \e_2 \dot \e_3}{C}}
+        }$
+
+        \item $\treerule{Unit}{\gpetyperelation{v}{\U}}{\gpeberelation{v}{\u}{\U}}$
+
+        \item $\treerule{if-true}{\gpetyperelation{v_1}{A}\s\s\gpetyperelation{v_2}{A}}{\gpeberelation{\pifthenelse{A}{\t}{v_1}{v_2}}{v_1}{A}}$
+            
+        \item $\treerule{if-false}{\gpetyperelation{v_2}{A}\s\s\gpetyperelation{v_1}{A}}{\gpeberelation{\pifthenelse{A}{\f}{v_1}{v_2}}{v_2}{A}}$
+            
+        \item $\treerule{If-Eta}{\etyperelation{\P}{\G, x: \B}{v}{A}\s\s\gpetyperelation{v}{\B}}{\gpeberelation{\pifthenelse{A}{v}{v\ssub{x}{\t}}{v\ssub{x}{\f}}}{v\ssub{x}{V}}{A}}$
+            
+        \item $\treerule{Effect-beta}{\wellformed{\P}{\e}\s\s\etyperelation{\P, \a}{\G}{v}{A}}{\gpeberelation{\eapp{(\elam{\a}{v}}{\e})}{v\ssub{\a}{\e}}{A\ssub{\a}{\e}}}$
+
+        \item $\treerule{Effect-eta}{\etyperelation{\P}{\G}{v}{\all{\a}{A}}}{\gpeberelation{\elam{\a}{(\eapp{v}{\a})}}{v}{\all{\a}{A}}}$
+            
+    \end{itemize}
+        \subsection{Equivalence Relation}
+    \begin{itemize}
+        \item $\treerule{Reflexive}{\gpetyperelation{v}{A}}{\gpeberelation{v}{v}{A}}$
+        \item $\treerule{Symmetric}{\gpeberelation{v_1}{v_2}{A}}{\gpeberelation{v_2}{v_1}{A}}$
+        \item $\treerule{Transitive}{\gpeberelation{v_1}{v_2}{A}\s\s\gpeberelation{v_2}{v_3}{A}}{\gpeberelation{v_1}{v_3}{A}}$
+    \end{itemize}
     \subsection{Congruences}
-    \section{Beta-Eta Equivalence Implies Both Sides Have the Same Type}
+    \begin{itemize}
+        \item $\treerule{Effect-Abs}{\eberelation{\P, \a}{\G}{v_1}{v_2}{A}}{\gpeberelation{\elam{\a}{v_1}}{\elam{\a}{v_2}}{\all{\a}{A}}}$
+        \item $\treerule{Effect-Apply}{\gpeberelation{v_1}{v_2}{\all{\a}{A}}\s\s\wellformed{\P}{\e}}{\gpeberelation{\eapp{v_1}{\e}}{\eapp{v_2}{\e}}{A\ssub{\a}{\e}}}$
+        \item $\treerule{Lambda}{\eberelation{\P}{\gax}{v_1}{v_2}{B}}{\gpeberelation{\lam{x}{A}{v_1}}{\lam{x}{A}{v_2}}{\ab}}$
+
+        \item $\treerule{Return}{\gpeberelation{v_1}{v_2}{A}}{\gpeberelation{\return{v_1}}{\return{v_2}}{\moa}}$
+
+        \item $\treerule{Apply}{\gpeberelation{v_1}{v_1'}{\ab}\s\s\gpeberelation{v_2}{v_2'}{A}}{\gpeberelation{\apply{v_1}{v_2}}{\apply{v_1'}{v_2'}}{B}}$
+
+        \item $\treerule{Bind}{\gpeberelation{v_1}{v_1'}{\M{\e_1}{A}} \s\s \eberelation{\P}{\gax}{v_2}{v_2'}{\M{\e_2}{B}}}{\gpeberelation{\doin{x}{v_1}{v_2}}{\doin{c}{v_1'}{v_2'}}{\M{\e_1 \dot \e_2}{B}}}$
+
+        \item $\treerule{If}{\gpeberelation{v}{v'}{\B} \s\s \gpeberelation{v_1}{v_1'}{A}\s\s\gpeberelation{v_2}{v_2'}{A}}{\gpeberelation{\pifthenelse{A}{v}{v_1}{v_2}}{\pifthenelse{A}{v}{v_1'}{v_2'}}{A}}$
+        \item $\treerule{Subtype}{\gpeberelation{v}{v'}{A} \s\s A \subtype B}{\gpeberelation{v}{v'}{B}}$
+    \end{itemize}
+\section{Beta-Eta Equivalence Implies Both Sides Have the Same Type}
+
     \subsection{Equivalence Relations}
-    \paragraph{Case Symmetric} 
-    \paragraph{Case Transitive}
+        \paragraph{Case Symmetric} 
+        \paragraph{Case Transitive}
     \subsection{Beta conversions}
-    \paragraph{Case Lambda}
-    \paragraph{Case Associativity}
-    \paragraph{Case Eta}
-    \paragraph{Case If-True}
+        \paragraph{Case Lambda}
+        \paragraph{Case Associativity}
+        \paragraph{Case Eta}
+        \paragraph{Case If-True}
     \subsection{Congruences}
-    \paragraph{Case Lambda}
-    \paragraph{Case Return}
-    \paragraph{Case Apply}
-    \paragraph{Case Bind}
-    \paragraph{Case If}
-    \paragraph{Case Subtype}
-    \paragraph{Case subeffect}
-    \section{Beta-Eta equivalent terms have equal denotations}
+        \paragraph{Case Lambda}
+        \paragraph{Case Return}
+        \paragraph{Case Apply}
+        \paragraph{Case Bind}
+        \paragraph{Case If}
+        \paragraph{Case Subtype}
+        \paragraph{Case subeffect}
+\section{Beta-Eta equivalent terms have equal denotations}
     \subsection{Equivalence Relation}
-    \paragraph{Case Reflexive}
-    \paragraph{Case Symmetric}
-    \paragraph{Case Transitive}
+        \paragraph{Case Reflexive}
+        \paragraph{Case Symmetric}
+        \paragraph{Case Transitive}
     \subsection{Beta Conversions}
-    \paragraph{Case Lambda}
-    \paragraph{Case Left Unit}
-    \paragraph{Case Right Unit}
-    \paragraph{Case Associative}
-    \paragraph{Case Eta}
-    \paragraph{Case If-True}
-    \paragraph{Case If-False}
+        \paragraph{Case Lambda}
+        \paragraph{Case Left Unit}
+        \paragraph{Case Right Unit}
+        \paragraph{Case Associative}
+        \paragraph{Case Eta}
+        \paragraph{Case If-True}
+        \paragraph{Case If-False}
     \subsection{Case If-Eta}
     \subsection{Congruences}
-    \paragraph{Case Lambda}
-    \paragraph{Case Return}
-    \paragraph{Case Apply}
-    \paragraph{Case Bind}
-    \paragraph{Case If}
-    \paragraph{Case Subtype}
-    \paragraph{Case subeffect}  
-}
-
+        \paragraph{Case Lambda}
+        \paragraph{Case Return}
+        \paragraph{Case Apply}
+        \paragraph{Case Bind}
+        \paragraph{Case If}
+        \paragraph{Case Subtype}
+        \paragraph{Case subeffect}  
+}   
+    
 \ifdefined\NoDocument
 \else
 \documentclass{report}
