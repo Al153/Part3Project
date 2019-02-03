@@ -221,4 +221,15 @@
 \newcommand{\dotp}[0]{\dot_\P}
 \newcommand{\fntype}[2]{#1\rightarrow #2}
 \newcommand{\ab}[0]{\fntype{A}{B}}
+
+\newcommand\wrelw[2]{\wrel{\w}{#1}{#2}}
+\newcommand\proof[0]{\paragraph{Proof:}}
+\newcommand{\case}[1]{\paragraph{Case #1:}}
+\newcommand{\subcase}[1]{\subparagraph{Case: #1}}
+\newcommand\bi[0]{By inversion}
+
+\newcommand\ewrel[4]{\wellformed{#1}{\wrel{#2}{#3}{#4}}}
+\newcommand\pewrel[3]{\ewrel{\P}{#1}{#2}#3}
+\newcommand\ppewrel[3]{\ewrel{\P'}{#1}{#2}#3}
+
 \fi

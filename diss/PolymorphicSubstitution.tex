@@ -1,43 +1,72 @@
+\newcommand\fev[1]{fev(#1)}
+\newcommand\union[0]{\cup}
+
 \newcommand\Substitution[0]{
-    We need to define substutions of effects on effects,
+    We need to define substitutions of effects on effects,
     effects on types, effects on terms, terms on terms.
 
     \section{Effect Substitutions}
     Define a substitution, $\si$ as 
     \begin{equation}
         \si \gens \nil \mid \si, \a \setto \e
-     \end{equation}
+    \end{equation}
 
-     \subsection{Action of Effect Substitution on Effects}
+    Define the free-effect Variables of $\si$:
 
-     Define the action of applying an effect substitution to an effect symbol:
+    \begin{align*}
+        \fev{\nil} & = \emptyset \\
+        \fev{\si, \a\setto\e} & = \fev{\si} \union \fev{\e}
+    \end{align*}
 
-     \begin{equation}
-        \si(\e)
-     \end{equation}
+    We define the property:
+    \begin{equation}
+       \a\#\si \Leftrightarrow \a \notin (\dom{\si} \cup\fev{\si})
+    \end{equation}
 
-     \begin{align}
-         \si(e) & = e \\
-         \si(\e_1\dot\e_2) & = (\si(\e_1))\dot(\si(\e_2))\\
-         \nil(\a) & = \a\\
-         (\si, \b\setto \e)(\a) & = \si(\a) \\
-         (\si, \a\setto \e)(\a) & =\e
-     \end{align}
+    \subsection{Action of Effect Substitution on Effects}
 
-     \subsection{Action of Effect Substitution on Types}
+    Define the action of applying an effect substitution to an effect symbol:
 
-     Define the effect of applying an effect substitution, $\si$ to a type $\tau$ as:
+    \begin{equation}
+       \si(\e)
+    \end{equation}
 
-     $$\tau\sub{\si}$$
+    \begin{align}
+        \si(e) & = e \\
+        \si(\e_1\dot\e_2) & = (\si(\e_1))\dot(\si(\e_2))\\
+        \nil(\a) & = \a\\
+        (\si, \b\setto \e)(\a) & = \si(\a) \\
+        (\si, \a\setto \e)(\a) & =\e
+    \end{align}
 
-     Defined as so
-     \todo{Define $\#$}
-     \begin{align}
-         \g\sub{\si} &= \g \\
-         (\lamtype{A}{\e}{B})\sub{\si} &= \lamtype{(A\sub{\si})}{\si(\e)}{(B\sub{\si})} \\
-         (\M{\e}{A})\ssi &= \M{\si(\e)}{(A\ssi)}\\
-         (\all{\a}{A})\ssi &= \all{\a}{(A\ssi)}\qt{If $\a\#\si$}
-     \end{align}
+    \subsection{Action of Effect Substitution on Types}
+
+    Define the effect of applying an effect substitution, $\si$ to a type $\tau$ as:
+
+    $$\tau\sub{\si}$$
+
+    Defined as so
+
+    \begin{align}
+        \g\sub{\si} &= \g \\
+        (\lamtype{A}{\e}{B})\sub{\si} &= \lamtype{(A\sub{\si})}{\si(\e)}{(B\sub{\si})} \\
+        (\M{\e}{A})\ssi &= \M{\si(\e)}{(A\ssi)}\\
+        (\all{\a}{A})\ssi &= \all{\a}{(A\ssi)}\qt{If $\a\#\si$}
+    \end{align}
+
+
+    \subsection{Action of Effect-Substitution on Type Environments}
+
+    Define the action of effect substitution on type environments:
+    
+    $$\G\ssi$$
+
+    Defined as so:
+
+    \begin{align*}
+        \nil\ssi & = \nil \\
+        (\gax)\ssi &= (\G\ssi, x:(A\ssi))\\
+    \end{align*}
 
 
     \subsection{Action of Effect Substitution on Terms}
@@ -55,8 +84,101 @@
         (\eapp{v}{\e})\ssi & = \eapp{(v\ssi)}{\si(\e)}\\
     \end{align}
 
+
     \subsection{Well-Formed-ness }
 
+    For any two effect-environments, and a substitution, define the wellformedness relation:
+
+    \begin{equation}
+        \typerelation{\P'}{\si}{\P}
+    \end{equation}
+
+    \begin{itemize}
+        \item $\treerule{Nil}{\ok{\P'}}{\typerelation{\P'}{\nil}{\nil}}$
+        \item $\treerule{Extend}{\typerelation{\P'}{\si}{\P}\s\s\wellformed{\P'}{\e}\s\s\a\notin\P}{\typerelation{\P'}{\si, \a \setto\e}{(\P, \a)}}$
+    \end{itemize}
+
+    \subsection{Property 1}
+    If $\typerelation{\P'}{\si}{\P}$ then $\ok{P'}$ (By  the 
+    Nil case) and $\ok{P}$ Since each use of the extend case preserves $\ok{}$.
+
+    \subsection{Property 2}
+    If $\typerelation{\P'}{\si}{\P}$ then $\wrelw{\P'}{\P'} \implies \typerelation{\P''}{\si}{\P}$ since $\wellformed{\P'}{\e}\implies \wellformed{\P''}{\e}$ and $\ok{\P'}\implies \ok{\P''}$
+
+
+    \subsection{Property 3}
+    If $\typerelation{\P'}{\si}{\P}$ then
+
+    \begin{equation}
+        \a\notin\wedge\a\notin\P' \implies \typerelation{(\P', \a)}{(\si, \a\setto\a)}{(\P,\a)}
+    \end{equation}
+
+    Since $\wrel{\i\pi}{\P',\a}{\P'}$ so $\typerelation{\P',\a}{\si}{\P}$ and $\wellformed{\P',\a}{\a}$
+
+    \section{Substitution Preserves the Well-formed-ness of Effects}
+
+    I.e. \begin{equation}
+        \wellformed{\P}{\e}\wedge\typerelation{\P'}{\i}{\P} \implies \wellformed{\P'}{\si(\e)}
+    \end{equation}
+
+    \proof
+    \case{Ground}
+    $\si(e) = e$, so $\wellformed{\P'}{\si(\e)}$ holds.
+    \case{Multiply}
+    \bi, $\wellformed{\P}{\e_1}$ and $\wellformed{\P}{\e_2}$ so $\wellformed{\P'}{\si(\e_1)}$ and $\wellformed{\P'}{\si(\e_2)}$ by induction and hence $\wellformed{\P'}{\si(\e_1\dot\e_2)}$
+    \case{Var}
+    \bi, $\P=\P'',\a$ and $\ok{\P'',\a}$. Hence byu case splitting on $\i$, we see that $\si=\si', \a\setto\e$.
+
+    So by inversion, $\wellformed{\si}{\e}$ so $\wellformed{\P'}{\si(\a)=\e}$
+    \case{Weaken}
+    \bi $\P=\P'', \b$ and $\wellformed{\P''}{\a}$, so $\si=\si'\b\setto\e$.
+
+    So $\typerelation{\P'}{\si'}{\P''}$.
+
+    hence by induction, $\wellformed{\P'}{\si'(a)}$, so $\wellformed{\P'}{\si(\a)}$ since $\a\neq\b)$
+
+    \subsection{Substitution preserves well-formed-ness of Types}
+    \begin{equation}
+        \typerelation{\P'}{\si}{\P} \wedge \wellformed{\P}{A} \implies \wellformed{\P'}{A\ssi}
+    \end{equation}
+    \proof
+    \case{Ground}
+
+    $\ok{\P'}$ so $\wellformed{\P'}{\g}$ and $\g\ssi=\g$.
+
+    Hence $\wellformed{\P'}{\g\ssi}$.
+
+    \case {Lambda}
+
+    \bi $\wellformed{\P}{A}$ and $\wellformed{\P}{B}$.
+
+    So by induction, $\wellformed{\P'}{A\ssi}$ and $\wellformed{\P'}{B\ssi}$.
+
+    So \begin{equation}
+        \wellformed{\P'}{\fntype{(A\ssi)}{(B\ssi)}}
+    \end{equation}
+
+    So \begin{equation}
+        \wellformed{\P'}{(\ab)\ssi}
+    \end{equation}
+
+    
+
+    \case{Computation}
+
+    \bi, $\wellformed{\P}{\e}$ and $\wellformed{\P}{A}$ so by induction and substitution of effect preserving effect-well-formed-ness, 
+
+    $\wellformed{\P'}{\si(\e)}$ and $\wellformed{\P'}{A\ssi}$ so $\wellformed{\P}{\M{\si(\e)}{A\ssi}}$ so $\wellformed{\P'}{(\mea)\ssi}$
+
+    \case{For All}
+    \bi, $\wellformed{\P,\a}{A}$. So by picking $\a\notin\P\wedge\a\notin\P'$ using $\a$-equivalence, we have $\typerelation{(\P',\a)}{(\si\a\setto\a)}{(\P,\a)}$.
+
+    So by induction $\wellformed{(\P, \a)}{A\sub{\si,\a\setto\a}}$
+
+    So $\wellformed{(\P',\a)}{A\ssi}$
+
+    So $\wellformed{\P'}{(\all{\a}{A})\ssi}$
+    
     \section{Term-Term Substitutions}
     \subsection{Substitutions as SNOC lists}
 
@@ -81,7 +203,7 @@
         x \# \si \Leftrightarrow x\notin(\fv{\si}\cup\dom{\si`})
     \end{equation}
 
-    \subsection{Effect of substitutions}
+    \subsection{Action of substitutions}
         We define the effect of applying a substitution $\si$ as 
         $$t\ssi$$
 
@@ -98,7 +220,7 @@
             (\elam{\a}{v})\ssi & = \elam{\a}{(v\ssi)}\\
             (\eapp{v}{\e})\ssi & = \eapp{(v\ssi)}{\e}\\
         \end{align}
-    \subsection{Well Formedness}
+    \subsection{Well-Formed-ness}
     
     \subsection{Simple Properties Of Substitution}
     If $\typerelation{\G'}{\si}{\G}$ then:
