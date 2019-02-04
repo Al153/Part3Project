@@ -38,7 +38,7 @@
             (\apply{v_1}{v_2})\ssi&= \apply{(v_1\ssi)}{v_2\ssi}\\
             (\doin{x}{C_1}{C_2})&= \doin{x}{(C_1\ssi)}{(C_2\ssi)}\qt{If } x\#\si\\
         \end{align}
-    \subsection{Well Formedness}
+    \subsection{Well Formed-ness}
     Define the relation $$\typerelation{\G'}{\si}{\G}$$ by:
 
     \begin{itemize}
@@ -92,7 +92,7 @@
                 \si = \si', x\setto v \wedge \typerelation{\G'}{v}{A}
             \end{equation}
 
-            By the defintion of the effect of substitutions, $x\ssi = v$, So
+            By the definition of the effect of substitutions, $x\ssi = v$, So
             \begin{equation}
                 \typerelation{\G'}{x\ssi}{A}
             \end{equation}
@@ -302,7 +302,7 @@
         \deno{\wrel{\i\pi}{(\G',x:A)}{\G'}} = \p
     \end{equation}
 
-    So for each denotation $\deno{\typerelation{\G'}{v}{B}}$ of each $y\setto v$ in $\si$, we can prepend the denotation with the weakening denotation to yield: 
+    So for each denotation $\deno{\typerelation{\G'}{v}{B}}$ of each $y\setto v$ in $\si$, we can pre-pend the denotation with the weakening denotation to yield: 
     \begin{equation}
         \deno{\typerelation{\G',x:A}{v}{B}} = \deno{\typerelation{\G'}{v}{B}}\after\p
     \end{equation}
@@ -363,7 +363,7 @@
         \treerule{Weaken}{\treerule{}{\D_1}{\typerelation{\G''}{x}{A}}}{\typerelation{\G'',y: B}{x}{A}}
     \end{equation}
 
-    Also by inversion of the well-formedness of $\typerelation{\G'}{\si}{\G}$, we have $\typerelation{\G'}{\si'}{\G''}$ and 
+    Also by inversion of the well-formed-ness of $\typerelation{\G'}{\si}{\G}$, we have $\typerelation{\G'}{\si'}{\G''}$ and 
     
     \begin{equation}
         \deno{\typerelation{\G'}{\si}{\G}} = \pr{\deno{\typerelation{\G'}{\si}{\G''}}}{\deno{\typerelation{\G'}{v}{B}}}
@@ -634,7 +634,7 @@
 
     \subsection{Properties of the Identity Substitution}
     \paragraph{Property 1}
-    If $\ok{\G}$ then $\typerelation{\G}{I_{\G}}{\G}$, proved trivially by induction over the well formedness relation.
+    If $\ok{\G}$ then $\typerelation{\G}{I_{\G}}{\G}$, proved trivially by induction over the well formed-ness relation.
 
     \paragraph{Property 2}
     $\deno{\typerelation{\G}{I_{\G}}{\G}} = \idg$, proved trivially by induction over the definition of $I_{\G}$

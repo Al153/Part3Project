@@ -1,269 +1,28 @@
 \documentclass{report}
 \input{header.tex}
-\newcommand\fev[1]{fev(#1)}
-\newcommand\union[0]{\cup}
-
-\begin{document}        We need to define substitutions of effects on effects,
-effects on types, effects on terms, terms on terms.
-
-\section{Effect Substitutions}
-Define a substitution, $\si$ as 
-\begin{equation}
-    \si \gens \nil \mid \si, \a \setto \e
- \end{equation}
-
- Define the free-effect Variables of $\si$:
-
- \begin{align*}
-     \fev{\nil} & = \emptyset \\
-     \fev{\si, \a\setto\e} & = \fev{\si} \union \fev{\e}
- \end{align*}
-
- We define the property:
- \begin{equation}
-    \a\#\si \Leftrightarrow \a \notin (\dom{\si} \cup\fev{\si})
- \end{equation}
-
- \subsection{Action of Effect Substitution on Effects}
-
- Define the action of applying an effect substitution to an effect symbol:
-
- \begin{equation}
-    \si(\e)
- \end{equation}
-
- \begin{align}
-     \si(e) & = e \\
-     \si(\e_1\dot\e_2) & = (\si(\e_1))\dot(\si(\e_2))\\
-     \nil(\a) & = \a\\
-     (\si, \b\setto \e)(\a) & = \si(\a) \\
-     (\si, \a\setto \e)(\a) & =\e
- \end{align}
-
- \subsection{Action of Effect Substitution on Types}
-
- Define the effect of applying an effect substitution, $\si$ to a type $\tau$ as:
-
- $$\tau\sub{\si}$$
-
- Defined as so
-
- \begin{align}
-     \g\sub{\si} &= \g \\
-     (\lamtype{A}{\e}{B})\sub{\si} &= \lamtype{(A\sub{\si})}{\si(\e)}{(B\sub{\si})} \\
-     (\M{\e}{A})\ssi &= \M{\si(\e)}{(A\ssi)}\\
-     (\all{\a}{A})\ssi &= \all{\a}{(A\ssi)}\qt{If $\a\#\si$}
- \end{align}
 
 
-\subsection{Action of Effect Substitution on Terms}
-
-Define the effect of effect-substitution on terms:
-
-\begin{align}
-    x\ssi & = x \\
-    \const{A}\ssi & = \const{(A\ssi)} \\
-    (\lam{x}{A}{C})\ssi &= \lam{x}{(A\ssi)}{(C\ssi)}\\
-    (\ifthenelse{\e}{A}{v}{C_1}{C_2})\ssi &= \ifthenelse{\si(\e)}{(A\ssi)}{v\ssi}{C_1\ssi}{C_2\ssi}\\
-    (\apply{v_1}{v_2})\ssi&= \apply{(v_1\ssi)}{v_2\ssi}\\
-    (\doin{x}{C_1}{C_2})&= \doin{x}{(C_1\ssi)}{(C_2\ssi)}\\
-    (\elam{\a}{v})\ssi & = \elam{\a}{(v\ssi)}\qt{If $\a\#\si$}\\
-    (\eapp{v}{\e})\ssi & = \eapp{(v\ssi)}{\si(\e)}\\
-\end{align}
-
-\subsection{Well-Formed-ness }
-
-For any two effect-environments, and a substitution, define the wellformedness relation:
-
-\begin{equation}
-    \typerelation{\P'}{\si}{\P}
-\end{equation}
+\begin{document}
+\section{The Identity Substitution on Effect Environments}
+For each type environment $\P$, define the identity substitution $I_{\P}$ as so:
 
 \begin{itemize}
-    \item $\treerule{Nil}{\ok{\P'}}{\typerelation{\P'}{\nil}{\nil}}$
-    \item $\treerule{Extend}{\typerelation{\P'}{\si}{\P}\s\s\wellformed{\P'}{\e}\s\s\a\notin\P}{\typerelation{\P'}{\si, \a \setto\e}{(\P, \a)}}$
+    \item $I_{\nil} = \nil$
+    \item $I_{(\P, \a} = (I_{\P}, \a\setto \a)$
 \end{itemize}
 
-\subsection{Property 1}
-If $\typerelation{\P'}{\si}{\P}$ then $\ok{P'}$ (By  the 
-Nil case) and $\ok{P}$ Since each use of the extend case preserves $\ok{}$.
-
-\subsection{Property 2}
-If $\typerelation{\P'}{\si}{\P}$ then $\wrelw{\P'}{\P'} \implies \typerelation{\P''}{\si}{\P}$ since $\wellformed{\P'}{\e}\implies \wellformed{\P''}{\e}$ and $\ok{\P'}\implies \ok{\P''}$
-
-
-\subsection{Property 3}
-If $\typerelation{\P'}{\si}{\P}$ then
-
-\begin{equation}
-    \a\notin\wedge\a\notin\P' \implies \typerelation{(\P', \a)}{(\si, \a\setto\a)}{(\P,\a)}
-\end{equation}
-
-Since $\wrel{\i\pi}{\P',\a}{\P'}$ so $\typerelation{\P',\a}{\si}{\P}$ and $\wellformed{\P',\a}{\a}$
-
-\section{Substitution Preserves the Well-formed-ness of Effects}
-
-I.e. \begin{equation}
-    \wellformed{\P}{\e}\wedge\typerelation{\P'}{\i}{\P} \implies \wellformed{\P'}{\si(\e)}
-\end{equation}
-
-\proof
-\case{Ground}
-$\si(e) = e$, so $\wellformed{\P'}{\si(\e)}$ holds.
-\case{Multiply}
-\bi, $\wellformed{\P}{\e_1}$ and $\wellformed{\P}{\e_2}$ so $\wellformed{\P'}{\si(\e_1)}$ and $\wellformed{\P'}{\si(\e_2)}$ by induction and hence $\wellformed{\P'}{\si(\e_1\dot\e_2)}$
-\case{Var}
-\bi, $\P=\P'',\a$ and $\ok{\P'',\a}$. Hence byu case splitting on $\i$, we see that $\si=\si', \a\setto\e$.
-
-So by inversion, $\wellformed{\si}{\e}$ so $\wellformed{\P'}{\si(\a)=\e}$
-\case{Weaken}
-\bi $\P=\P'', \b$ and $\wellformed{\P''}{\a}$, so $\si=\si'\b\setto\e$.
-
-So $\typerelation{\P'}{\si'}{\P''}$.
-
-hence by induction, $\wellformed{\P'}{\si'(a)}$, so $\wellformed{\P'}{\si(\a)}$ since $\a\neq\b)$
-
-\subsection{Substitution preserves well-formed-ness of Types}
-\begin{equation}
-    \typerelation{\P'}{\si}{\P} \wedge \wellformed{\P}{A} \implies \wellformed{\P'}{A\ssi}
-\end{equation}
-\proof
-\case{Ground}
-
-$\ok{\P'}$ so $\wellformed{\P'}{\g}$ and $\g\ssi=\g$.
-
-Hence $\wellformed{\P'}{\g\ssi}$.
-
-\case {Lambda}
-
-\bi $\wellformed{\P}{A}$ and $\wellformed{\P}{B}$.
-
-So by induction, $\wellformed{\P'}{A\ssi}$ and $\wellformed{\P'}{B\ssi}$.
-
-
-
-\case{Computation}
-
-\case{For All}
-
-\section{Term-Term Substitutions}
-\subsection{Substitutions as SNOC lists}
-
-\begin{equation}
-   \si \gens \nil \mid \si, x \setto v
-\end{equation}
-
-\subsection{Trivial Properties of substitutions}
-\paragraph{$\fv{\si}$}
-\begin{align}
-    \fv{\nil} &= \emptyset\\
-    \fv{\si, x\setto v} &= \fv{\si}\cup\fv{v}
-\end{align}
-\paragraph{$\dom{\si}$}
-\begin{align}
-    \dom{\nil} & = \emptyset\\
-    \dom{\si, x\setto v} & = \dom{\si}\cup\left\{x\right\}
-\end{align}
-
-\paragraph{$x \# \si$}
-\begin{equation}
-    x \# \si \Leftrightarrow x\notin(\fv{\si}\cup\dom{\si`})
-\end{equation}
-
-\subsection{Action of substitutions}
-    We define the effect of applying a substitution $\si$ as 
-    $$t\ssi$$
-
-    
-    \begin{align}
-        x\sub{\nil} & = x \\
-        x\sub{\si,x\setto v} & = v \\
-        x\sub{\si,x'\setto v'} & = x\ssi\qt{If }x \neq x'\\
-        \const{A}\ssi & = \const{A} \\
-        (\lam{x}{A}{C})\ssi &= \lam{x}{A}{(C\ssi)}\qt{If }x\#\si\\
-        (\ifthenelse{\e}{A}{v}{C_1}{C_2})\ssi &= \ifthenelse{\e}{A}{v\ssi}{C_1\ssi}{C_2\ssi}\\
-        (\apply{v_1}{v_2})\ssi&= \apply{(v_1\ssi)}{v_2\ssi}\\
-        (\doin{x}{C_1}{C_2})&= \doin{x}{(C_1\ssi)}{(C_2\ssi)}\qt{If } x\#\si\\
-        (\elam{\a}{v})\ssi & = \elam{\a}{(v\ssi)}\\
-        (\eapp{v}{\e})\ssi & = \eapp{(v\ssi)}{\e}\\
-    \end{align}
-\subsection{Well Formedness}
-
-\subsection{Simple Properties Of Substitution}
-If $\typerelation{\G'}{\si}{\G}$ then:
-\todo{Number these}
-
-    \paragraph{Property 1: $\ok{\G}$ and $\ok{\G'}$}
-     Since $\ok{\G'}$ holds by the Nil-axiom. $\ok{\G}$ holds by induction on the well-formed-ness relation.
-    \paragraph{Property 2: $\wrel{\w}{\G''}{\G'}$ implies $\typerelation{\G''}{\si}{\G}$}. 
-    By induction over well-formed-ness relation. For each $x\setto v$ in $\si$, $\typerelation{\G''}{v}{A}$ holds if $\typerelation{\G'}{v}{A}$ holds.
-    \paragraph{Property 3: $x \notin (\dom{\G} \cup \dom{\G''})$ implies $\typerelation{(\G', x: A)}{(\si, x \setto x)}{(\gax)}$} 
-    Since $\wrel{\i\pi}{\G',x: A}{\G'}$, so by (Property 2) \todo{Better referencing here}, 
-    $$\typerelation{\G', x: A}{\si}{\G}$$
-    In addition, $\typerelation{\G', x: A}{x}{A}$ trivially, so by the rule \textbf{Extend}, well-formed-ness holds for
-    \begin{equation}
-        \typerelation{(\G', x:A)}{(\si, x\setto v)}{(\gax)}
-    \end{equation}
-
-
-\section{Substitution Preserves Typing}
-
-\subsection{Variables}  
-    \paragraph{Case Var}
-       
-        
-    \paragraph{Case Weaken}
-       
-\subsection{Other Value Terms}
-\paragraph{Case Lambda}
-\paragraph{Case Constants}
-    
-\subsection{Computation Terms}
-\paragraph{Case Return}
-  
-\paragraph{Case Apply}
-    
-\paragraph{Case If}
-   
-\paragraph{Case Bind}
-    
-\subsection{Sub-typing and Sub-effecting}
-\paragraph{Case Sub-type}
-    
-\paragraph{Case Sub-effect}
-
-\section{Semantics of Substitution}
-\subsection{Denotation of Substitutions}
-
-\subsection{Extension Lemma}
-
-\subsection{Substitution Theorem}
-
-\subsection{Proof For Value Terms}
-\paragraph{Case Var}
-
-\paragraph{Case Weaken}
-
-\paragraph{Case Constants}
-
-\paragraph{Case Lambda}
-
-\paragraph{Case Sub-type}
-
-\subsection{Proof For Computation Terms}
-\paragraph{Case Return}
-\paragraph{Case Apply}
-
-\paragraph{Case If}
-\paragraph{Case Bind}
-\paragraph{Case Subeffect}
-
-
-\section{The Identity Substitution}
 \subsection{Properties of the Identity Substitution}
 \paragraph{Property 1}
+If $\ok{\P}$ then $\typerelation{\P}{I_\P}{\P}$, proved trivially by induction over the $\ok{}$ relation.
 
 \paragraph{Property 2}
+\todo{The denotational property of id-substitution}
+\section{Single Substitution on Effect Environments}
+
+If $\wellformed{\P}{\e}$, let the single substitution $\typerelation{\P}{\ssub{\a}{\e}}{\P,\a}$, be defined as:
+\begin{equation}
+    \ssub{\a}{x} = (I_{\P}, \a\setto \e)
+\end{equation}
 
 
 \end{document}

@@ -1,7 +1,7 @@
 \newcommand\CategoryRequirements[0]{
     \section{CCC}
 
-The section should be a cartesian closed category.
+The category at each index should be a cartesian closed category.
 That is it should have:
 \begin{itemize}
     \item A Terminal object $\terminal$
@@ -99,7 +99,7 @@ Where $\lambda: \terminal \times \Id{} \rightarrow \Id{}$ is the left-unitor.
 ($\lambda = \pp$)
 
 \paragraph{Tensor Strength and Projection}
-Due to the left-unitor law, we can develop a new law for the commutivity of $\pp$ with $\tstrength{}{}{}$
+Due to the left-unitor law, we can develop a new law for the commutativity of $\pp$ with $\tstrength{}{}{}$
 
     $$\pi_{2, A, B} = \pi_{2, \1, B} \after (\term{A} \times \Id{B})$$
 
@@ -148,7 +148,7 @@ So the following commutes:
     \T{\e_1 \dot \e_2}({A \times B)}
 \end{tikzcd}
 
-\section{Commutivity with Unit}
+\section{Commutativity with Unit}
 
 \begin{tikzcd}[ampersand replacement=\&]
     A \times B
@@ -162,7 +162,7 @@ So the following commutes:
     \T{\e}{(A \times B)}
 \end{tikzcd}
 
-\section{Commutivity with $\alpha$}
+\section{Commutativity with $\alpha$}
 Let $\alpha_{A, B, C} = \pr{\p\after\p}{\pr{\pp\after\p}{\pp}}: ((A \times B) \times C) \rightarrow (A \times (B \times C))$
 
 
@@ -183,11 +183,11 @@ Let $\alpha_{A, B, C} = \pr{\p\after\p}{\pr{\pp\after\p}{\pp}}: ((A \times B) \t
 \end{tikzcd}
 \todo{Needed?}
 
-\section{Subeffecting}
+\section{Sub-effecting}
 For each instance of the pre-order $(\E, \subeffect)$, $\e_1 \subeffect \e_2$, there exists a natural transformation
 $\dse{\e_1}{\e_2}: \T{\e_1}{} \rightarrow \T{\e_2}{}$ that commutes with $\tstrength{}{}{}$:
 
-\subsection{Subeffecting and Tensor Strength}
+\subsection{Sub-effecting and Tensor Strength}
 \begin{tikzcd}[ampersand replacement=\&]
     A \times \T{\e_1}{B} \arrow [r, "\Id{A} \times \dse{\e_1}{\e_2}_B"] \arrow [d, "\tstrength{\e_1}{A}{B}"] \&
     A \times \T{\e_2}{B} \arrow [d, "\tstrength{\e_2}{A}{B}"] \\
@@ -219,10 +219,10 @@ Since the monoid operation on effects is monotone, we can introduce the followin
 \end{tikzcd}
 
 
-\section{Subtyping}
+\section{Sub-typing}
 
 The denotation of ground types $\deno{\_}$ is a functor from the pre-order category of ground types $(\ground, \subtype_{\ground})$
-to $\C$. This pre-ordered sub-category of $\C$ is extended with the rule for function subtyping to form a larger pre-ordered sub-category of $\C$.
+to $\C$. This pre-ordered sub-category of $\C$ is extended with the rule for function sub-typing to form a larger pre-ordered sub-category of $\C$.
 
 $$
 \treerule{Function Subtyping}{f = \deno{A' \subtype A} \s\s g = \deno{B \subtype B'} \s\s h=\dse{\e_1}{\e_2}}{rhs = \deno{\lamtype{A}{\e_1}{B} \subtype \lamtype{A'}{\e_2}{B'}}: (\T{\e_1}{B})^A \rightarrow (\T{\e_2}{B'})^{A'}}

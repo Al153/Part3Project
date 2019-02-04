@@ -1,6 +1,6 @@
 \newcommand\UniqueDenotations[0]{
     \section{Reduced Type Derivation}
-    A reduced type derivation is one where subtype and subeffect rules must, and may only, occur at the root or directly above an \textbf{if}, or \textbf{apply} rule.
+    A reduced type derivation is one where subtype and sub-effect rules must, and may only, occur at the root or directly above an \textbf{if}, or \textbf{apply} rule.
 
     In this section, I shall prove that there is at most one reduced derivation of $\gtyperelation{t}{\tau}$. Secondly, I shall present a function for generating reduced derivations from arbitrary typing derivations, in a way that does not change the denotations. These imply that all typing derivations of a type-relation have the same denotation.
 
@@ -176,7 +176,7 @@
         \deltacruleprime{\G, x:A}{C_2}{\e_2}{B}{\e_2'}{B'}
     \end{equation}
 
-    Be the respective unique reduced type derivations of the subterms]
+    Be the respective unique reduced type derivations of the sub-terms]
 
     By weakening, $\wrel{\i\x}{\G, x:A}{\G, x: A'}$ so if there's a derivation of $\typerelation{\G, x:A'}{C_2}{\meb}$, there's also one of   $\typerelation{\gax}{C_2}{\meb}$.
 
