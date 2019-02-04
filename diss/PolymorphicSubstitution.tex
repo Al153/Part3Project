@@ -41,7 +41,7 @@
 
     \subsection{Action of Effect Substitution on Types}
 
-    Define the effect of applying an effect substitution, $\si$ to a type $\tau$ as:
+    Define the action of applying an effect substitution, $\si$ to a type $\tau$ as:
 
     $$\tau\sub{\si}$$
 
@@ -71,7 +71,7 @@
 
     \subsection{Action of Effect Substitution on Terms}
 
-    Define the effect of effect-substitution on terms:
+    Define the action of effect-substitution on terms:
 
     \begin{align}
         x\ssi & = x \\
@@ -87,7 +87,7 @@
 
     \subsection{Well-Formed-ness }
 
-    For any two effect-environments, and a substitution, define the wellformedness relation:
+    For any two effect-environments, and a substitution, define the well-formed-ness relation:
 
     \begin{equation}
         \typerelation{\P'}{\si}{\P}
@@ -99,8 +99,8 @@
     \end{itemize}
 
     \subsection{Property 1}
-    If $\typerelation{\P'}{\si}{\P}$ then $\ok{P'}$ (By  the 
-    Nil case) and $\ok{P}$ Since each use of the extend case preserves $\ok{}$.
+    If $\typerelation{\P'}{\si}{\P}$ then $\ok{\P'}$ (By  the 
+    Nil case) and $\ok{\P}$ Since each use of the extend case preserves $\ok{}$.
 
     \subsection{Property 2}
     If $\typerelation{\P'}{\si}{\P}$ then $\wrelw{\P'}{\P'} \implies \typerelation{\P''}{\si}{\P}$ since $\wellformed{\P'}{\e}\implies \wellformed{\P''}{\e}$ and $\ok{\P'}\implies \ok{\P''}$
@@ -110,7 +110,7 @@
     If $\typerelation{\P'}{\si}{\P}$ then
 
     \begin{equation}
-        \a\notin\wedge\a\notin\P' \implies \typerelation{(\P', \a)}{(\si, \a\setto\a)}{(\P,\a)}
+        \a\notin\P\wedge\a\notin\P' \implies \typerelation{(\P', \a)}{(\si, \a\setto\a)}{(\P,\a)}
     \end{equation}
 
     Since $\wrel{\i\pi}{\P',\a}{\P'}$ so $\typerelation{\P',\a}{\si}{\P}$ and $\wellformed{\P',\a}{\a}$
@@ -136,6 +136,17 @@
     So $\typerelation{\P'}{\si'}{\P''}$.
 
     hence by induction, $\wellformed{\P'}{\si'(a)}$, so $\wellformed{\P'}{\si(\a)}$ since $\a\neq\b)$
+
+    \subsection{Effect Subsitution preserves the sub-effect relation}
+
+    If $\typerelation{\P'}{\si}{\P}$ and $\e_1\subeffectp\e_2$, then $\e_1\ssi\subeffect_{\P'}\e_2\ssi$.
+
+    \proof
+    For any ground substitution $\si'$ of $\P'$, then $\si\si'$ (the substitution $\si'$ applied after $\si$) is also a ground substitution.
+    
+    So $\e_1\ssi\sub{\si'}\subeffect\e_2\ssi\sub{\si'}$. 
+    
+    So $\e_1\ssi\subeffect_{\P'}\e_2\ssi$.
 
     \subsection{Substitution preserves well-formed-ness of Types}
     \begin{equation}
@@ -178,8 +189,188 @@
     So $\wellformed{(\P',\a)}{A\ssi}$
 
     So $\wellformed{\P'}{(\all{\a}{A})\ssi}$
+
+    \subsection{Subtitution of effects preserves Sub-Typing Relation}
+
+    If $\typerelation{\P'}{\si}{\P}$ and $A\subtypep B$ then $A\ssi\subtypepp B\ssi$
+
+    \proof
+    By induction on the sub-typing relation
+
+    \case{Ground}
+    \bi, $A\subtype_\g B$, so $A, B$ are ground types.
+    Hence $A\ssi = A$ and $B\ssi = B$.
+    So $A\ssi\subtypepp B\ssi$
+
+    \case{Fn}
+    \bi, $A'\subtypep A$ and $B\subtypep B'$.
     
+    So by induction, $A'\ssi\subtypepp A\ssi$ and $B\ssi\subtypepp B'\ssi$.
+
+    So $\fntype{(A\ssi)}{(B\ssi)}\subtypepp \fntype{(A'\ssi)}{(B'\ssi)}$
+
+    So $(\ab)\ssi\subtypepp (\fntype{A'}{B'})\ssi$
+
+    \case{Computation}
+
+    \bi, $A\subtypep B$, $\e_1\subeffectp\e_2$.
+
+    So by induction and substitution preserving the sub-effect relation, 
+
+    $A\ssi\subtypepp B\ssi$ and $\si(\e_1)\subeffectpp\si(\e_2)$
+
+    So $\M{\si(\e_1)}{(A\ssi)} \subtypepp\M{\si(\e_2)}{(B\ssi)}$
+
+    So $(\M{\e_1}{A})\ssi \subtypepp(\M{\e_2}{B})\ssi$
+
+    
+    \subsection{Substitution preserves well-formed-ness of Type Environments}
+
+    If $\wellformedok{\P}{\G}$ and $\typerelation{\P'}{\si}{\P}$ then $\wellformedok{\P'}{\G\ssi}$
+
+    \proof
+    \case{Nil}
+    $\ok{\P}\implies\ok{\P'}$ so $\wellformedok{\P'}{\nil}$
+    and $\nil\ssi = \nil$
+    \case{Var}
+    \bi, $\wellformedok{\P}{\G}$ and $\wellformed{\P}{A}$.
+
+    By induction and substitution preserving well-formed-ness of types, $\wellformedok{\P'}{\G'\ssi}$ and $\wellformed{\P'}{A\ssi}$.
+
+
+    So $\wellformedok{\P'}{(\G'\ssi, x: A\ssi)}$.
+
+    Hence $\wellformedok{\P'}{\gax\ssi}$.
+
+    \subsection{Effect-Polymorphism Preserves the Typing Relation}
+
+    If $\typerelation{\P'}{\si}{\P}$ and $\gpetyperelation{v}{A}$, then $\etyperelation{\P'}{\G\ssi}{v\ssi}{A\ssi}$
+
+
+    \proof
+    \case{Const}
+    \bi, $\wellformedok{\P}{\G}$.
+
+    So $\wellformedok{\P'}{\G}$
+
+    So $\etyperelation{\P'}{\G\ssi}{\const{A\ssi}}{A\ssi}$
+    \case{True, False, Unit}
+    The logic is the same for each of these cases, so we look at the case $\t$ only.
+
+    \bi, $\wellformedok{\P}{\G}$.
+
+    So $\wellformedok{\P'}{\G}$
+
+    So $\etyperelation{\P'}{\G\ssi}{\t}{\B}$
+
+    Since $\t\ssi=\t$ and $\B\ssi=\B$.
+   
+    \case{Var}
+    \bi $\G = \G', x:A$ and $\wellformedok{\P}{\G', x:A}$.
+
+    So since substitution preserves well-formed-ness of type environments, $\wellformedok{\P'}{\G'\ssi, x:A\ssi}$
+
+    So $\etyperelation{\P'}{\G\ssi}{x}{A\ssi}$
+
+    Since $x\ssi = x$
+
+    \case{Weaken}
+    \bi $\G = \G', y:B$, $\wellformed{\P}{B}$, and $\etyperelation{\P}{\G'}{x}{A}$. $x \neq y$
+
+    By induction and the theorem that effect-substitution preserves type well-formed-ness, we have: $\etyperelation{\P'}{\G'\ssi}{x}{A\ssi}$ and $\wellformed{\P'}{B\ssi}$
+
+    So $\etyperelation{\P'}{\G\ssi}{x\ssi}{A\ssi}$
+
+    Since $x\ssi = x$, $\G\ssi = (\G'\ssi, y:B\ssi)$
+
+    
+    \case{Lambda}
+    \bi $\etyperelation{\P}{\gax}{v}{B}$.
+
+    So, by induction $\etyperelation{\P'}{(\gax)\ssi}{v\ssi}{B\ssi}$.
+
+    So, $\etyperelation{\P}{\G\ssi, x:A\ssi}{v\ssi}{B\ssi}$.
+
+    Hence by the lambda type rule,
+
+    $\etyperelation{\P'}{\G\ssi}{\lam{x}{A\ssi}{v\ssi}}{\fntype{(A\ssi)}{(B\ssi)}}$
+
+    So
+    
+    $\etyperelation{\P'}{\G\ssi}{(\lam{x}{A}{v})\ssi}{(\ab)\ssi)}$
+
+    \case{Apply}
+    \bi, $\gpetyperelation{v_1}{\ab}$, $\gpetyperelation{V_2}{A}$.
+
+    So by induction, $\etyperelation{\P'}{\G\ssi}{v_1\ssi}{\fntype{(A\ssi)}{(B\ssi)}}$.
+
+    So $\etyperelation{\P'}{\G\ssi}{\apply{(v_1\ssi)}{(v_2\ssi)}}{B\ssi}$.
+
+    So $\etyperelation{\P'}{\G\ssi}{(\apply{v_1}{v_2})\ssi}{(\ab)\ssi}$
+    \case{Subtype}
+
+    \bi, $\gpetyperelation{v}{A}$ and $\wellformed{\P}{A\subtype B}$
+
+    So by induction and effect-substitution preserving subtyping, $\etyperelation{\P'}{\G\ssi}{v\ssi}{A\ssi}$ and $\wellformed{\P'}{A\ssi\subtype B\ssi}$
+
+    So $\etyperelation{\P'}{\G\ssi}{v\ssi}{B\ssi}$
+    \case{Return}
+    \bi, $\gpetyperelation{v}{A}$
+
+    So by induction, $\etyperelation{\P'}{\G\ssi}{v\ssi}{A\ssi}$
+
+    So $\etyperelation{\P'}{\G\ssi}{\return{(v\ssi)}}{\M{\1}{(A\ssi)}}$
+
+    Hence $\etyperelation{\P'}{\G\ssi}{(\return{v})\ssi}{(\moa)\ssi}$
+    \case{Bind}
+
+    \bi, $\gpetyperelation{v_1}{\M{\e_1}{A}}$ and $\etyperelation{\P}{\gax}{v_2}{\M{\e_2}{B}}$.
+
+    So by induction: $\etyperelation{\P'}{\G\ssi}{v_1\ssi}{\M{\si(\e_1)}{(A\ssi)}}$, and $\etyperelation{\P'}{\G\ssi, x:A\ssi}{v_2}{\M{\si(\e_2)}{(B\ssi)}}$.
+
+    And so $\etyperelation{\P'}{\G\ssi}{\doin{x}{(v_1\ssi)}{(v_2\ssi)}}{\M{\si(\e_1)\dot(\e_2\ssi)}{B\ssi}}$
+
+
+    \case{If}
+
+    \bi, $\gpetyperelation{v}{\B}$, $\gpetyperelation{v_1}{A}$, and $\gpetyperelation{v_2}{A}$
+
+    So by induction $\etyperelation{\P'}{\G\ssi}{v\ssi}{\B}$, $\etyperelation{\P'}{\G\ssi}{v_1}{A\ssi}$, and $\etyperelation{\P'}{\G\ssi}{v\ssi}{\B}$, $\etyperelation{\P'}{\G\ssi}{v_2}{A\ssi}$.
+    (Since $\B\ssi = \B$)
+
+    Hence:
+
+    $\etyperelation{\P'}{\G\ssi}{\pifthenelse{A\ssi}{v\ssi}{v_1\ssi}{v_2\ssi}}{A\ssi}$
+
+    So $\etyperelation{\P'}{\G\ssi}{(\pifthenelse{A}{v}{v_1}{v_2})\ssi}{A\ssi}$
+
+    \case{Effect-lambda}
+    \bi, $\etyperelation{\P,\a}{\G}{v}{A}$.
+
+    So by the substitution property 3 (\todo{Is this correct/reference correctly}), pick $\a\notin\P'\wedge\a\notin\P$ so we have:
+
+    $$\typerelation{(\P',\a)}{(\si, \a\setto\a)}{(\P,\a)}$$
+
+    So by induction, $\etyperelation{\P', \a}{\G\sub{\si, \a\setto\a}}{v\sub{\si,\a\setto\a}}{A\sub{\si, \a\setto\a}}$
+
+    So $\etyperelation{\P',\a}{\G\ssi}{v\ssi}{A\ssi}$ since $\a\notin\P' \wedge\a\notin\P$.
+
+    So $\etyperelation{\P'}{\G\ssi}{v\ssi}{(\all{\a}{A})\ssi}$
+    \case{Effect-Apply}
+    \bi, $\gpetyperelation{v}{\all{\a}{A}}$, $\wellformed{\P}{\e}$.
+
+    So by induction and effect-substitution preserving well-formed-ness of effects: $\etyperelation{\P'}{\G\ssi}{v\ssi}{(\all{\a}{A})\ssi}$ and $\wellformed{\P'}{\si(\e)}$
+
+    So $\etyperelation{\P'}{\G\ssi}{\eapp{(v\ssi)}{(\si(\e))}}{A\ssi\ssub{\a}{\si(\e)}}$.
+
+    Since $\a\#\si$, we can commute the applications of substitution. \todo{Do I need to prove this?}
+
+    So, $\etyperelation{\P'}{\G\ssi}{(\eapp{v}{\e})\ssi}{A\ssub{\a}{\e}\ssi}$
+
     \section{Term-Term Substitutions}
+
+
+
     \subsection{Substitutions as SNOC lists}
 
     \begin{equation}
@@ -204,7 +395,7 @@
     \end{equation}
 
     \subsection{Action of substitutions}
-        We define the effect of applying a substitution $\si$ as 
+        We define the action of applying a substitution $\si$ as 
         $$t\ssi$$
 
         
@@ -224,7 +415,7 @@
     
     \subsection{Simple Properties Of Substitution}
     If $\typerelation{\G'}{\si}{\G}$ then:
-    \todo{Number these}
+
 
         \paragraph{Property 1: $\ok{\G}$ and $\ok{\G'}$}
          Since $\ok{\G'}$ holds by the Nil-axiom. $\ok{\G}$ holds by induction on the well-formed-ness relation.

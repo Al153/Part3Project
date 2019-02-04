@@ -25,7 +25,8 @@
 \newcommand{\s}{\;}
 \newcommand{\doin}[3]{\texttt{do}\s #1 \leftarrow #2 \s\texttt{in}\s #3}
 \newcommand\apply[2]{#1\s#2}
-\newcommand\ifthenelse[5]{\texttt{if}_{#1, #2}\s#3\s \texttt{then}\s #4 \s\texttt{else} \s#5}
+\newcommand{\pifthenelse}[4]{\texttt{if}_{#1}\s#2\s \texttt{then}\s #3 \s\texttt{else} \s#4}
+\newcommand\ifthenelse[5]{\pifthenelse{#1, #2}{#3}{#4}{#5}}
 \newcommand\const[1]{\texttt{C}^{#1}}
 \newcommand\return[1]{\texttt{return} #1}
 \newcommand\lam[3]{\lambda #1 : #2. #3}
@@ -217,7 +218,7 @@
 \newcommand{\eberelation}[5]{\berelation{#1\mid#2}{#3}{#4}{#5}}
 \newcommand{\gpeberelation}[3]{\berelation{\P\mid\G}{#1}{#2}{#3}}
 \newcommand{\gppeberelation}[3]{\berelation{\P'\mid\G}{#1}{#2}{#3}}
-\newcommand{\pifthenelse}[4]{\ifthenelse{#1}{}{#2}{#3}{#4}}
+
 \newcommand{\dotp}[0]{\dot_\P}
 \newcommand{\fntype}[2]{#1\rightarrow #2}
 \newcommand{\ab}[0]{\fntype{A}{B}}
@@ -228,8 +229,14 @@
 \newcommand{\subcase}[1]{\subparagraph{Case: #1}}
 \newcommand\bi[0]{By inversion}
 
+%prefilled effect-weakening relations
 \newcommand\ewrel[4]{\wellformed{#1}{\wrel{#2}{#3}{#4}}}
 \newcommand\pewrel[3]{\ewrel{\P}{#1}{#2}#3}
 \newcommand\ppewrel[3]{\ewrel{\P'}{#1}{#2}#3}
+
+\newcommand\subtypep[0]{\subtype_\P}
+\newcommand\subtypepp[0]{\subtype_{\P'}}
+\newcommand\subeffectp[0]{\subeffect_{\P}}
+\newcommand\subeffectpp[0]{\subeffect_{\P'}}
 
 \fi

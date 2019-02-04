@@ -30,7 +30,7 @@ The effects should form a monotonous, pre-ordered monoid $(E, \dot, \1, \subeffe
 
 Derive a new Po-Monoid for each $\P$:
 \begin{equation}
-    (E_\P, \dotp, \1, \subeffect_\P)
+    (E_\P, \dotp, \1, \subeffectp)
 \end{equation}
 Where meta-variables, $\e$, range over $E_\P$
 Where
@@ -47,10 +47,10 @@ And
 Otherwise, $\dotp$ is symbolic in nature.
 
 \begin{equation}
-    \e_1 \subeffect_\P \e_2 \Leftrightarrow \forall \si\downarrow. \e_1\sub{\si\downarrow} \subeffect \e_2\sub{\si\downarrow}
+    \e_1 \subeffectp \e_2 \Leftrightarrow \forall \si\downarrow. \e_1\sub{\si\downarrow} \subeffect \e_2\sub{\si\downarrow}
 \end{equation}
 
-Where $\si\downarrow$ denotes any ground-substitution of $\P$. That is any substitution of all effect-variables in $\P$ to ground effects. Where it is obvious from the context, I shall use $\subeffect$ instead of $\subeffect_\P$.
+Where $\si\downarrow$ denotes any ground-substitution of $\P$. That is any substitution of all effect-variables in $\P$ to ground effects. Where it is obvious from the context, I shall use $\subeffect$ instead of $\subeffectp$.
 
 
 \subsection{Types}
@@ -59,22 +59,6 @@ Where $\si\downarrow$ denotes any ground-substitution of $\P$. That is any subst
     \paragraph{Term Types}
     $$ A, B, C \gens \ground \mid \ab \mid \mea \mid \all{\a}{A}$$
   
-
-\subsection{Sub-typing}
-    There exists a sub-typing pre-order relation $\subtype_{\ground}$ over ground types that is:
-    \begin{itemize}
-        \item $\treerule{Reflexive}{}{A \subtype_{\ground} A}$
-        \item $\treerule{Transitive}{A \subtype_{\ground} B \s \s B \subtype_{\ground} C}{A \subtype_{\ground} C}$
-    \end{itemize}
-
-    We extend this relation with the function and effect-lambda sub-typing rules to yield the full sub-typing relation $\subtype$
-
-    \begin{itemize}
-        \item $\treerule{ground}{A \subtype_{\ground} B}{A \subtype B}$
-        \item $\treerule{Fn}{A \subtype A' \s\s B' \subtype B }{\fntype{A'}{B'} \subtype \ab}$
-        \item $\treerule{All}{A\subtype A'}{\all{\a}{A}\subtype\all{a}{A'}}$
-        \item $\treerule{Effect}{A\subtype B\s\s \e_1\subeffect\e_2}{\M{\e_1}{A}\subtype\M{\e_2}{B}}$
-    \end{itemize}
 \subsection{Type and Effect Environments}
 A type environment is a snoc-list of tern-variable, type pairs, $G \gens \nil \mid \gax$ .
 An effect environment is a snoc-list of effect-variables.
@@ -123,6 +107,24 @@ We now define a predicate on type environments and effect environments: $\oke{\P
     \item $\treerule{Var}{\oke{\P}{\G}\s\s x\notin\dom{\G}\s\s \wellformed{\P}{A}}{\oke{\P}{\gax}}$
 \end{itemize}
 
+
+
+\subsection{Sub-typing}
+    There exists a sub-typing pre-order relation $\subtype_{\ground}$ over ground types that is:
+    \begin{itemize}
+        \item $\treerule{Reflexive}{}{A \subtype_{\ground} A}$
+        \item $\treerule{Transitive}{A \subtype_{\ground} B \s \s B \subtype_{\ground} C}{A \subtype_{\ground} C}$
+    \end{itemize}
+
+    We extend this relation with the function and effect-lambda sub-typing rules to yield the full sub-typing relation under an effect environment, $\P$, $\subtypep$
+
+    \begin{itemize}
+        \item $\treerule{ground}{A \subtype_{\ground} B}{A \subtypep B}$
+        \item $\treerule{Fn}{A \subtypep A' \s\s B' \subtypep B }{\fntype{A'}{B'} \subtypep \ab}$
+        \item $\treerule{All}{A\subtypep A'}{\all{\a}{A}\subtypep\all{a}{A'}}$
+        \item $\treerule{Effect}{A\subtypep B\s\s \e_1\subeffectp\e_2}{\M{\e_1}{A}\subtypep\M{\e_2}{B}}$
+    \end{itemize}
+
 \subsection{Type Rules}
 \begin{itemize}
     \item $\treerule{Const}{\oke{\P}{\G}\s\s\wellformed{\P}{A}}{\gpetyperelation{\const{A}}{A}}$
@@ -132,7 +134,7 @@ We now define a predicate on type environments and effect environments: $\oke{\P
     \item $\treerule{Var}{\oke{\P}{\gax}}{\etyperelation{\P}{\gax}{x}{A}}$
     \item $\condtreerule{Weaken}{\etyperelation{\P}{\G}{x}{A}\s\s\wellformed{\P}{B}}{\etyperelation{\P}{\gby}{x}{A}}{x \neq y}$
     \item $\treerule{Fn}{\etyperelation{\P}{\gax}{v}{\b}}{\etyperelation{\P}{\G}{\lam{x}{A}{v}}{\ab}}$
-    \item $\treerule{Sub}{\etyperelation{\P}{\G}{v}{A}\s\s A \subtype B}{\etyperelation{\P}{\G}{v}{B}}$
+    \item $\treerule{Sub}{\etyperelation{\P}{\G}{v}{A}\s\s A \subtypep B}{\etyperelation{\P}{\G}{v}{B}}$
     \item $\treerule{Effect-Abs}{\etyperelation{\P,\a}{\G}{v}{A}}{\gpetyperelation{\elam{\a}{v}}{\all{\a}{A}}}$
     \item $\treerule{Effect-apply}{\gpetyperelation{v}{\all{\a}A}\s\s\wellformed{\P}{\e}}{\gpetyperelation{\eapp{v}{\e}}{A\ssub{\a}{\e}}}$
     \item $\treerule{Return}{\gpetyperelation{v}{A}}{\gpetyperelation{\return{v}}{\moa}}$
