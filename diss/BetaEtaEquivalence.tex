@@ -2,12 +2,12 @@
     \section{Beta and Eta Equivalence}
     \subsection{Beta-Eta conversions}
     \begin{itemize}
-        \item $\treerule{Lambda-Beta}{\typerelation{\gax}{C}{\meb}\s\s \gtyperelation{v}{A}}{\gberelation{\apply{(\lam{x}{A}{C})}{v} }{ C\ssub{v}{x}}{\meb}}$
+        \item $\treerule{Lambda-Beta}{\typerelation{\gax}{C}{\meb}\s\s \gtyperelation{v}{A}}{\gberelation{\apply{(\lam{x}{A}{C})}{v} }{ C\ssub{x}{v}}{\meb}}$
         
         \item $\treerule{Lambda-Eta}{\gtyperelation{v}{\aeb}}{\gberelation{\lam{x}{A}{(\apply{v}{x}})}{v}{\aeb}}$
      
 
-        \item $\treerule{Left Unit}{\gtyperelation{v}{A} \s\s \typerelation{\gax}{C}{\meb}}{\gberelation{\doin{x}{\return{v}}{C}}{C\ssub{x}{V}}{\meb}}$
+        \item $\treerule{Left Unit}{\gtyperelation{v}{A} \s\s \typerelation{\gax}{C}{\meb}}{\gberelation{\doin{x}{\return{v}}{C}}{C\ssub{x}{v}}{\meb}}$
         
         \item $\treerule{Right Unit}{\gtyperelation{C}{\mea}}{\gberelation{\doin{x}{C}{\return{x}} }{C}{\mea}}$
         \item $\treerule{Associativity}{\gtyperelation{C_1}{\M{\e_1}{A}} \s\s \typerelation{\gax}{C_2}{\M{\e_2}{B}}\s\s \typerelation{\gby}{C_3}{\M{\e_3}{C}}}{
@@ -20,7 +20,7 @@
         
         \item $\treerule{if-false}{\gtyperelation{C_2}{\mea}\s\s\gtyperelation{C_1}{\mea}}{\gberelation{\ifthenelse{\e}{A}{\f}{C_1}{C_2}}{C_2}{\mea}}$
         
-        \item $\treerule{If-Eta}{\typerelation{\G, x: \B}{C}{\mea}\s\s\gtyperelation{v}{\B}}{\gberelation{\ifthenelse{\e}{A}{v}{C\ssub{x}{\t}}{C\ssub{x}{\f}}}{C\ssub{x}{V}}{\mea}}$
+        \item $\treerule{If-Eta}{\typerelation{\G, x: \B}{C}{\mea}\s\s\gtyperelation{v}{\B}}{\gberelation{\ifthenelse{\e}{A}{v}{C\ssub{x}{\t}}{C\ssub{x}{\f}}}{C\ssub{x}{v}}{\mea}}$
         
     \end{itemize}
     \subsection{Equivalence Relation}
@@ -54,9 +54,10 @@
     By inversion $\gberelation{t'}{t}{\tau}$. Hence by induction, derivations of $\gtyperelation{t'}{\tau}$ and $\gtyperelation{t}{\tau}$ are given.
 
     \paragraph{Case Transitive}
-    By inversion, there exists $t_2$ such that $\gberelation{t_1}{t_2}{\tau}$ and $\gberelation{t_2}{t_3}{\tau}$. Hence by induction, we have derivations of $\gtyperelation{t_1}{\tau}$ and $\gtyperelation{t_3}{\tau}$
+    By inversion, there exists $t_2$ such that $\gberelation{t_1}{t_2}{\tau}$ and $\gberelation{t_2}{t_3}{\tau}$.
+    Hence by induction, we have derivations of $\gtyperelation{t_1}{\tau}$ and $\gtyperelation{t_3}{\tau}$
 
-    \subsection{Beta conversions}
+    \subsection{Beta-Eta Conversions}
     
     \paragraph{Case Lambda}
         By inversion, we have $\typerelation{\gax}{C}{\meb}$ and $\gtyperelation{v}{A}$. Hence by the typing rules, we have:
@@ -232,6 +233,7 @@
             \gtyperelation{C\ssub{x}{v}}{\mea}
         \end{equation}
 
+        
 
         \subsection{Congruences}
     Each congruence rule corresponds exactly to a type derivation rule. To convert to a type derivation, convert all preconditions, then use the equivalent type derivation rule.
@@ -365,7 +367,7 @@
     There must exist $t_2$ such that $\gberelation{t_1}{t_2}{\tau}$ and $\gberelation{t_2}{t_3}{\tau}$, so by induction,
     $\gdenoequality{t_1}{t_2}{\tau}$ and $\gdenoequality{t_2}{t_3}{\tau}$. Hence by transitivity of equality, $\gdenoequality{t_1}{t_3}{\tau}$
 
-    \subsection{Beta Conversions}
+    \subsection{Beta-Eta Conversions}
     These cases are typically proved using the properties of a cartesian closed category with a strong graded monad.
 
     \paragraph{Case Lambda}

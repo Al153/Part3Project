@@ -2,27 +2,31 @@
 \input{header.tex}
 
 
-\begin{document}
-\section{The Identity Substitution on Effect Environments}
-For each type environment $\P$, define the identity substitution $I_{\P}$ as so:
-
-\begin{itemize}
-    \item $I_{\nil} = \nil$
-    \item $I_{(\P, \a} = (I_{\P}, \a\setto \a)$
-\end{itemize}
-
-\subsection{Properties of the Identity Substitution}
-\paragraph{Property 1}
-If $\ok{\P}$ then $\typerelation{\P}{I_\P}{\P}$, proved trivially by induction over the $\ok{}$ relation.
-
-\paragraph{Property 2}
-\todo{The denotational property of id-substitution}
-\section{Single Substitution on Effect Environments}
-
-If $\wellformed{\P}{\e}$, let the single substitution $\typerelation{\P}{\ssub{\a}{\e}}{\P,\a}$, be defined as:
+\begin{document} 
 \begin{equation}
-    \ssub{\a}{x} = (I_{\P}, \a\setto \e)
+    \treerule{Effect-Fn}{
+        \treerule{Effect-App}{
+            \treerule{Effect-weakening}{
+                \gpetyperelation{v}{\all{\a}{A}}
+            }{
+                \etyperelation{\P,\a}{\G}{v}{\all{\a}{A}}
+            }
+        \s\s
+            \wellformed{\P,\a}{\a}
+        }{
+            \etyperelation{
+                \P,\a
+                }{
+                    \G
+                }{
+               %     \eapp{v}{\a}
+               }{A\ssub{\a}{\a}\eq A
+            }
+            
+        }
+    }{
+        \gpetyperelation{\elam{\a}{\eapp{v}{\a}}}{\all{\a}{A}}
+    }
 \end{equation}
-
 
 \end{document}
