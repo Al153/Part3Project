@@ -69,7 +69,7 @@
     \begin{equation}
         \treerule{Sub-Effect}{\treerule{}{\D}{\typerelation{\gax}{C}{\meb}}\s\s B\subtype B'\s\s \e \subeffect \e'}{\typerelation{\gax}{C}{\M{\e'}{B'}}}
     \end{equation}
-    is the reduced derivation of $\typerelation{\gax}{C}{\meb}$ if it exists.
+    is the reduced derivation of $\typerelation{\gax}{C}{\M{\e'}{B}}$ if it exists.
 
     \paragraph{Case Subtype}
     \todo{Do we need to write anything here? (Probably needs an explanation)}
@@ -180,6 +180,10 @@
 
     By weakening, $\wrel{\i\x}{\G, x:A}{\G, x: A'}$ so if there's a derivation of $\typerelation{\G, x:A'}{C_2}{\meb}$, there's also one of   $\typerelation{\gax}{C_2}{\meb}$.
 
+    \begin{equation}
+        \deltacruleprimeprime{\G, x:A'}{C_2}{\e_2}{B}{\e_2'}{B'}
+    \end{equation}
+
     Since the effects monoid operation is monotone, if $\e_1\subeffect\e_1'$ and $\e_2\subeffect\e_2'$ then $\e_1\dot\e_2 \subeffect \e_1'\dot\e_2'$
 
     Hence the reduced type derivation of $\gtyperelation{\doin{x}{C_1}{C-2}}{\M{\e_1'\dot\e_2'}{B'}}$ is the following:
@@ -190,7 +194,7 @@
             \treerule{Bind}{
                 \deltacrule{\G}{C_1}{\e_1}{A}{\e_1'}{A'}
                 \s\s
-                \deltacruleprime{\G, x:A}{C_2}{\e_2}{B}{\e_2'}{B'}
+                \deltacruleprimeprime{\G, x:A'}{C_2}{\e_2}{B}{\e_2'}{B'}
             } {
                 \gtyperelation{\doin{x}{C_1}{C_2}}{\M{\e_1\dot\e_2}{B}}
             }
