@@ -1,0 +1,776 @@
+\documentclass{report}
+\input{header.tex}
+\newcommand{\allI}[0]{\forall_I}
+\newcommand{\allII}[0]{\forall_{I'}}
+\newcommand\type[0]{\texttt{Type}}
+\newcommand\effect[0]{\texttt{Effect}}
+\newcommand\ciw[0]{\C(I, W)}
+\newcommand\ciu[0]{\C(I, U)}
+\newcommand\ciuw[0]{\C(I\times U, W)}
+\newcommand\cipw[0]{\C(I', W)}
+\newcommand\cipu[0]{\C(I', U)}
+\newcommand\cii[0]{\C(I', I)}
+\newcommand\Eff[0]{\texttt{Eff}}
+\newcommand\Mul[0]{\texttt{Mul}}
+\renewcommand\star[0]{^*}
+\renewcommand\bar[1]{\overline{#1}}
+
+\newcommand\subtypeg[0]{\subtype_\g}
+\newcommand\subtypepa[0]{\subtype_{\P, \a}}
+\newcommand\subtypeppa[0]{\subtype_{\P', \a}}
+
+\usepackage{scalerel,stackengine}
+\stackMath
+\renewcommand\widehat[1]{%
+\savestack{\tmpbox}{\stretchto{%
+  \scaleto{%
+    \scalerel*[\widthof{\ensuremath{#1}}]{\kern.1pt\mathchar"0362\kern.1pt}%
+    {\rule{0ex}{\textheight}}%WIDTH-LIMITED CIRCUMFLEX
+  }{\textheight}% 
+}{2.4ex}}%
+\stackon[-6.9pt]{#1}{\tmpbox}%
+}
+\parskip 1ex
+
+\newcommand\pstar[0]{\p\star}
+
+\begin{document}
+
+\tableofcontents
+\chapter{Preliminaries}
+\section{Base Category Requirements}
+There are 3 distinct objects in the base category, $\C$:
+
+\begin{itemize}
+    \item $U$ - The kind of \effect
+    \item $W$ - The kind of \type
+    \item $\1$ - A terminal object
+\end{itemize}
+
+And we have finite products on $U$.
+
+\begin{itemize}
+    \item $U^0 = \1$
+    \item $U^{n+1} = U^n \times U$
+\end{itemize}
+
+We also have the following natural operations on morphisms in $\C$.
+
+Let $I = U^n$.
+
+\begin{itemize}
+    \item $\diamond: \ciw \times \ciw \rightarrow \ciw$ - Generates exponential types.
+    \item $\square: \ciw\times\ciw\rightarrow\ciw$ - Generates products of types.
+    \item $\allI: \ciuw\rightarrow\ciw$ - generates quantified types.
+    \item $\Eff:\ciu\times\ciw\rightarrow\ciw$ - generates monad types.
+    \item $\Mul:\ciu\times\ciu\rightarrow\ciu$ - Generates multiplication of effects.
+\end{itemize}
+
+With naturality conditions which mean, for $\theta: \U^m \rightarrow\U^n (I' \rightarrow I)$,
+\begin{itemize}
+    \item $\diamond(\phi,\psi)\after\theta = \diamond(\phi\after\theta,\psi\after\theta)$
+    \item $\square(\phi,\psi)\after\theta = \square(\phi\after\theta,\psi\after\theta)$
+    \item $\allI(\phi)\after\theta = \allII(\phi\after(\theta\times\Id{U}))$
+    \item $\Eff(\phi,\psi)\after\theta = \Eff(\phi\after\theta,\psi\after\theta)$
+    \item $\Mul(\phi,\psi)\after\theta = \Mul(\phi\after\theta,\psi\after\theta)$
+\end{itemize}
+\section{Well-Formed-ness}
+
+Each instance of the well-formed-ness relation on effects, $\wellformed{\P}{\e}$ has a denotation in $\C$: \begin{equation}
+    \deno{\typerelation{\P}{\e}{\effect}}: I \rightarrow U
+\end{equation}
+
+
+Each instance of the well-formed-ness relation on types, $\wellformed{\P}{A}$ has a denotation in $\C$:
+
+\begin{equation}
+    \deno{\typerelation{P}{A}{\type}}: I \rightarrow W
+\end{equation}
+
+It should also be the case that \begin{equation}
+    \Mul(\deno{\typerelation{\P}{\e_1}{\effect}}, \deno{\typerelation{\P}{\e_2}{\effect}}) = \deno{\typerelation{\P}{\e_1\dot\e_2}{\effect}} \in \ciu
+\end{equation}
+
+That is, $\Mul$ should be have identity $\deno{\typerelation{\P}{\1}{\effect}}$ and be associative.
+\section{Substitution and Weakening of the Effect Environment}
+
+For each instance of the well-formed-ness relation on substitution of effects $\typerelation{\P'}{\si}{\P}$, there exists a denotation in $\C$:
+
+\begin{equation}
+    \deno{\typerelation{\P'}{\si}{\P}}: I'\rightarrow I
+\end{equation}
+
+For each instance of the well-formed weakening relation on effect-environments, $\wrelw{\P'}{\P}$
+ there exists a denotation in $\C$:
+
+ \begin{equation}
+     \deno{\wrelw{\P'}{\P}}: I'\rightarrow I
+ \end{equation}.
+
+\section{Fibre Categories}
+Each set of morphisms $\ciw$ forms the objects of a semantic-closed (S-closed) category. That is, a category satisfying all the properties needed for the non-polymorphic language:
+
+\begin{itemize}
+    \item Cartesian Closed
+    \item Co-product of the terminal object with itself ($\1 + \1$)
+    \item Ground morphisms for each ground constant ($\const{A}: \1\rightarrow A$)
+    \item Partial order morphisms on ground types ($\deno{A\subtypeg} B$)
+    \item A strong, monad, graded by the po-monoid $(E_\P, \dot_\P, \subeffectp, \1)$.
+\end{itemize}
+
+\section{Re-indexing Functors}
+
+For each morphism $f: I' \rightarrow I$ in $\C$, there should be a co-variant, re-indexing functor  $f\star: \ciw \rightarrow \cipw$, which is S-closed. That is, it preserves the S-closed properties of $\ciw$. (See below).
+
+$(-)\star$ should be a contra-variant functor in its $\C$ argument and co-variant in its right argument.
+
+\begin{itemize}
+    \item $(g\after f)\star(a) = f\star(\g\star(a))$
+    \item $\Id{I}\star(a) = a$
+    \item $f\star(\Id{A}) = \Id{f\star(A)}$
+    \item $f\star(a\after b) = f\star(a)\after f\star(b)$
+\end{itemize}
+
+\subsection{$f\star$ Preserves Products}
+If $\pr{g}{h}:\ciw(Z, X\times Y)$
+Then 
+\begin{align}
+    f\star(X\times Y) & = f\star(X)\times f\star(Y)\\
+    f\star(\pr{g}{h}) & = \pr{f\star(g)}{f\star{h}}&:\cipw(f\star Z, f\star(X)\times f\star(Y))\\
+    f\star(\p) & = \p&:\cipw(f\star(X)\times f\star(Y), f\star(X)) \\
+    f\star(\pp) &= \pp&:\cipw(f\star(X)\times f\star(Y), f\star(Y))
+\end{align}
+
+\subsection{$f\star$ Preserves Terminal Object}
+If $\Id{A}:\ciw(A, \1)$
+Then 
+\begin{align}
+    f\star(\1) & = \1 \\
+    f\star(\term{A}) & = \term{f\star(A)}&:\cipw(f\star A, \1)\\
+\end{align}
+
+\subsection{$f\star$ Preserves Exponentials}
+\begin{align}
+    f\star(Z^X) & = (f\star(Z))^{(f\star(X))}\\
+     f\star(\app) &= \app&:\cipw(f\star(Z^X)\times f\star(X), f\star(Z))\\
+     f\star(\cur{g}) &= \cur{f\star(g)}&:\cipw(f\star(Y)\times f\star(X), f\star(Z)^{f\star(X)})
+\end{align}
+
+\subsection{$f\star$ Preserves Co-product on Terminal}
+
+\begin{align}
+    f\star(\1+\1) &= \1+\1\\
+    f\star(\inl)  &= \inl&:\cipw(\1, \1+\1) \\
+    f\star(\inr) &= \inr&:\cipw(\1, \1+\1) \\
+    f\star([g, h]) &= [f\star(g), f\star(h)]&:\cipw(\1+\1, f\star(Z))
+\end{align}
+
+\subsection{$f\star$ Preserves Graded Monad}
+\begin{align}
+    f\star(\tea) &= \T{f\star(\e)}{f\star(A)}&:\cipw\\
+    f\star(\1) &= \1 \qt{The unit effect}\\
+    f\star(\point{A}) &= \point{f\star(A)}&:\cipw(f\star(A), f\star(\toa))\\
+    f\star(\bind{\e_1}{\e_2}{A}) &= \bind{f\star(\e_1)}{f\star(\e_2)}{f\star(A)}&:\cipw(f\star(\T{\e_1}{\T{\e_2}{A}}), f\star(\T{f\star(\e_1)\dot f\star(\e_2)}{f\star(A)}))\\
+    f\star(\e_1\dot\e_2) &= f\star(\e_1)\dot f\star(\e_2)\\
+\end{align}
+
+\subsection{$f\star$ Preserves Tensor Strength}
+\begin{align}
+    f\star(\tstrength{\e}{A}{B}) &= \tstrength{f\star(\e)}{f\star(A)}{f\star(B)} &: \cipw(f\star(A\times\teb), f\star(\T{\e}{(A\times B)}))
+\end{align}
+\subsection{$f\star$ Preserves Ground Constants}
+For each ground constant $\deno{\const{A}}$ in $\ciw$,
+
+\begin{align}
+    f\star(\deno{\const{A}}) = \const{f\star(A)} : \cipw(\1, f\star(A))
+\end{align}
+\subsection{$f\star$ Preserves Ground Sub-effecting}
+For ground effects $e_1, e_2$ such that $e_1\subeffect e_2$
+
+
+
+\begin{align}
+    f\star(e) & = e: \cipu\\
+    f\star\db{\e_1\subeffect e_2}_A = \db{e_1 \subeffect e_2}_{f\star(A)} &:\cipw{f\star(\T{e_1}{A}), f\star(\T{e_2}{A})} \\
+\end{align}
+\subsection{$f\star$ Preserves Ground Sub-typing}
+For ground types $\g_1, \g_2$ such that $\g_1\subtypeg\g_2$
+
+\begin{align}
+    f\star{\g} = \g: \cipw(\1, \g)\\
+    f\star(\deno{\g_1 \subtypeg \g_2}) & = \deno{\g_1 \subtypeg \g_2} &: \cipw(\g_1, \g_2)\\
+\end{align}
+
+\subsection{Action on Objects}
+
+It follows that the action of $f\star$ on an object $A$ in $\ciw$ (i.e. a morphism $I \rightarrow U$ in $\C$) is:
+
+\begin{equation}
+    f\star(A) = A\after f: I'\rightarrow I\rightarrow W
+\end{equation}
+
+\section{Naturality Properties}
+
+\section{The $\allI$ functor}
+We expand $\allI: \ciuw \rightarrow \ciw$ to be a functor which is right adjoint to the re-indexing functor $\pstar$.
+
+\begin{equation}
+    \bar{(\_)}: \ciuw(\pstar A, B) \leftrightarrow \ciw(A, \allI B) : \widehat{(\_)}
+\end{equation}
+
+For $A: \ciw$, $B: \ciuw$.
+
+Hence the action of $\allI$ on a morphism $l : A\rightarrow A'$ is as follows:
+\begin{eqnarray}
+    \allI(l) = \bar{l\after\e_A}
+\end{eqnarray}
+Where $\e_A: \ciuw(\pstar\allI A \rightarrow A)$ is the co-unit of the adjunction.
+
+\section{Naturality Corollaries}
+Here are some simple corollaries of the adjunction between $\pstar$ and $\allI$.
+
+\subsection{Naturality}
+By the definition of an adjunction:
+
+\begin{equation}
+    \bar{f\after\pstar(n)} = \bar{f}\after n
+\end{equation}
+
+\subsection{$\bar{(-)}$ and Re-indexing Functors}
+
+\todo{Why does this occur? it comes from page 222 of Crole?}
+\begin{align}
+    \theta\star(\bar{f}) & = (\p\after(\theta\times\Id{U}))\star(\bar{f})\\\
+     &= (\theta\times\Id{U})\star(\p\star(\bar{f}))\\
+     \\
+     \\
+     &= \bar{(\theta\times\Id{U})\star f}\\
+     \\
+\end{align}
+
+\subsection{$\hat{(-)}$ and Re-Indexing Functors}
+\begin{align}
+    \theta\star(\pr{\Id{I}}{\rho}\star(\widehat{m})) &= (\pr{\Id{I}}{\rho}\after\theta)\star(\widehat{m})\\
+    & = ((\theta\times\Id{U})\after\pr{\Id{I}}{\rho})\star(\widehat{m})\\
+    & = \pr{\Id{I}}{\rho\after\theta}\star(\theta\times\Id{U})\star(\widehat{m}) \\
+    & = \pr{\Id{I}}{\theta\star\rho}\star(\theta\star(\widehat{m}))
+\end{align}
+
+\subsection{Pushing Morphisms into $f\star$}
+
+\begin{align}
+    \pr{\Id{I}}{\rho}\star(\widehat{m})\after n &= \pr{\Id{I}}{\rho}\star(\widehat{m})\after\pr{\Id{I}}{\rho}\star\p\star(n)\\
+    & = \pr{\Id{I}}{\rho}\star(\widehat{m}\after\pstar(n))\\
+    &= \pr{\Id{I}}{\rho}\star(\widehat{m\after n})
+\end{align}
+
+\chapter{Denotations}
+\section{Effects}
+For each instance of the well-formed-ness relation on effects, we define a morphism $\deno{\typerelation{\P}{\e}{\effect}}: \ciu$
+
+\begin{itemize}
+    \item $\deno{\typerelation{\P}{e}{\effect}} = \deno{\e} \after \term{I}: \rightarrow U$
+    \item $\deno{\typerelation{\P,\a}{\a}{\effect}} = \pp: I\times U \rightarrow U$
+    
+    \item $\deno{\typerelation{\P, \b}{\a}{\effect}} = \deno{\typerelation{\P}{\a}{\effect}}\after\p: I\times U\rightarrow U$
+    
+    \item $\deno{\typerelation{\P}{\e_1\dot \e_2}{\effect}} = \Mul(\deno{\typerelation{\P}{\e_2}{\effect}},\deno{\typerelation{\P}{\e_1}{\effect}}): I \rightarrow U$
+\end{itemize}
+\section{Types}
+For each instance of the well-formed-ness relation on types, we define a morphism $\deno{\typerelation{\P}{A}{\type}}: \ciw$.
+
+$\deno{\U}$ is the morphism generating the terminal object of $\ciw$. $\B$ is the morphism generating the co-product of this terminal object, $\1 + \1$.
+\begin{itemize}
+    \item $\deno{\typerelation{\P}{\U}{\type}} = \deno{\U}\after\term{I}: I \rightarrow W$
+    
+    \item $\deno{\typerelation{\P}{\B}{\type}} = \deno{\B}\after\term{I}: I \rightarrow W$
+    
+    \item $\deno{\typerelation{\P}{\g}{\type}} = \deno{\g}\after\term{I} : I \rightarrow W$
+    
+    \item $\deno{\typerelation{\P}{\ab}{\type}} = \diamond(\deno{\typerelation{\P}{A}{\type}},\deno{\typerelation{\P}{B}{\type}}): I \rightarrow W$
+    
+    \item $\deno{\typerelation{\P}{\mea}{\type}} =\Eff(\deno{\typerelation{\P}{\e}{\effect}},\deno{\typerelation{\P}{A}{\type}}): I \rightarrow W$
+    \item $\deno{\typerelation{\P}{\all{\a}{A}}{\type}} =\allI(\deno{\typerelation{\P,\a}{A}{\type}}): I \rightarrow W$
+\end{itemize}
+
+\section{Effect Substitution}
+
+For each effect-substitution well-formed-ness-relation, define a denotation morphism, $\deno{\typerelation{\P'}{\si}{\P}}: \cii$
+
+\begin{itemize}
+    \item $\deno{\typerelation{\P'}{\nil}{\nil}} = \term{I}: \C(I', \1)$
+    \item $\deno{\typerelation{\P'}{(\si, \a\setto\e)}{\P,\a}} = \pr{\deno{\typerelation{\P'}{\si}{\P}}}{\deno{\typerelation{\P}{\e}{\effect}}}: \C(I', I\times U)$
+\end{itemize}
+\section{Effect Weakening}
+
+For each instance of the effect-environment weakening relation, define a denotation morphism: $\deno{\wrelw{\P'}{P}}: \cii$
+
+\begin{itemize}
+    \item $\deno{\wrel{\i}{\P}{\P}} = \Id{I}: I \rightarrow I$
+    \item $\deno{\wrel{w\pi}{\P',\a}{\P}} = \deno{\wrelw{\P'}{\P}}\after \p: I'\times U\rightarrow I$
+    \item $\deno{\wrel{w\x}{\P',\a}{\P,\a}} = (\deno{\wrelw{\P'}{\P}}\times \Id{U}): I'\times U\rightarrow I\times U$
+\end{itemize}
+\section{Sub-Typing}
+For each instance of the sub-typing relation with respect  to an effect environment, there exists a denotation, $\deno{A\subtypep B}: \ciw(A, B)$.
+
+\begin{itemize}
+    \item $\deno{\g_1\subtypep \g_2} = \deno{\g_1\subtypeg \g_2} : \ciw(\g_1, \g_2)$
+    \item $\deno{\ab \subtypep \fntype{A'}{B'}} = \deno{B\subtypep B'}^{A'}\after B^{\deno{A'\subtypep A}}$
+    \item $\deno{\M{\e_1}{A}\subtypep\M{\e_2}{B}} = \deno{\e_1\subeffectp\e_2}\after\T{\e_1}{\deno{A\subtypep B}}$
+    \item $\deno{\all{\a}{A}\subtypep\all{\a}{B}} = \allI{\deno{A\subtypepa B}}$
+\end{itemize}
+\section{Type-Environments}
+
+For each instance of the well-formed relation on type environments, define an object in $\deno{\wellformedok{I}{W}}\in\ciw$.
+
+\begin{itemize}
+    \item $\deno{\wellformedok{\P}{\nil}} = \1: \ciw$
+    \item $\deno{\wellformedok{\P}{\gax}} = \square(\deno{\wellformedok{\P}{\G}}, \deno{\typerelation{\P}{A}{\type}})$
+\end{itemize}
+
+\section{Terms}
+For each instance of the typing relation, define a denotation morphism: $\deno{\gpetyperelation{v}{A}}: \ciw(\G_I, A_I)$. Writing $\G_I$ and $A_I$ for $\deno{\wellformedok{\P}{\G}}$ and $\deno{\typerelation{\P}{A}{\type}}$.
+
+For each ground constant, $\const{A}$, there exists $c: \1 \rightarrow A_I$ in $\ciw$.
+
+\begin{itemize}
+    \item $\treerule{Unit}{\wellformedok{\P}{\G}}{\deno{\etyperelation{\P}{\G}{\u}{\U}} = \term{\G} : \G_I \rightarrow \1}$
+        
+    \item $\treerule{Const}{\wellformedok{\P}{\G}}{\deno{\etyperelation{\P}{\G}{\const{A}}{A}} = \deno{\const{A}} \after \term{\G} : \G \rightarrow \deno{A}}$
+         
+    \item $\treerule{True}{\wellformedok{\P}{\G}}{\deno{\etyperelation{\P}{\G}{\t}{\B}} = \inl \after \term{\G} : \G \rightarrow \deno{\B} = \1+\1}$
+        
+    \item $\treerule{False}{\wellformedok{\P}{\G}}{\deno{\etyperelation{\P}{\G}{\f}{\B}} = \inr \after \term{\G} : \G \rightarrow \deno{\B} = \1+\1}$
+        
+    \item $\treerule{Var}{\wellformedok{\P}{\G}}{\deno{\etyperelation{\P}{\gax}{x}{A}} = \pp: \G \times A \rightarrow A}$
+    \item $\treerule{Weaken}{f = \deno{\gpetyperelation{x}{A}}: \G \rightarrow A}{\deno{\etyperelation{\P}{\gby}{x}{A}} = f \after \p: \G \times B \rightarrow A}$
+    \item $\treerule{Lambda}{f = \deno{\etyperelation{\P}{\gax}{C}{\meb}} : \G \times A \rightarrow \teb}{\deno{\etyperelation{\P}{\G}{\lam{x}{A}{C}}{A \rightarrow \meb}} = \cur{f} : \G \rightarrow (\teb)^A}$
+    
+    \item $\treerule{Subtype}{f = \deno{\etyperelation{\P}{\G}{v}{A}} : \G \rightarrow A\s\s g = \deno{A \subtype B}}{\deno{\etyperelation{\P}{\G}{v}{B}} = g \after f : \G \rightarrow B}$
+  
+    \item $\treerule{Return}{f = \deno{\etyperelation{\P}{\G}{v}{A}}}{\deno{\etyperelation{\P}{\G}{\return{v}}{\moa}} = \point{A} \after f}$
+        
+ 
+    \item $\treerule{If}{f = \deno{\etyperelation{\P}{\G}{v}{\B}}: \G\rightarrow\1+\1 \s\s g = \deno{\etyperelation{\P}{\G}{C_1}{\mea}}\s\s h = \deno{\etyperelation{\P}{\G}{C_2}{\mea}}}{\deno{{\etyperelation{\P}{\G}{\ifthenelse{\e}{A}{v}{C_1}{C_2}}{\mea}}} = \app\after((\fld{\cur{g\after\pp}}{\cur{h\after\pp}}\after f)\times \idg)\after \diag{\G} : \G \rightarrow \tea}$
+        
+    \item $\treerule{Bind}{f = \deno{\etyperelation{\P}{\G}{C_1}{\M{\e_1}{A}} : \G \rightarrow \T{\e_1}{A}\s\s g = \deno{\etyperelation{\P}{\gax}{C_2}{\M{\e_2}{B}}}}: \G \times A \rightarrow \T{\e_2}{B}}{\deno{\etyperelation{\P}{\G}{\doin{x}{C_1}{C_2}}{\M{\e_1 \dot \e_2}}} = \bind{\e_1}{\e_2}{B} \after \T{\e_1}{g} \after \tstrength{\G}{A}{\e_1} \after \pr{\idg}{f}: \G \rightarrow \T{\e_1 \dot \e_2}{B}}$ 
+   
+    \item $\treerule{Apply}{f = \deno{\gpetyperelation{v_1}{\lamtype{A}{\e}B}}: \G \rightarrow (\teb)^{A} \s\s g=\deno{\gpetyperelation{v_2}{A}}: \G \rightarrow A}{\deno{\gpetyperelation{\apply{v_1}{v_2}}{\meb}}= \app\after\pr{f}{g}: \G \rightarrow \teb }$
+    \item $\treerule{Effect-Lambda}{f = \deno{\etyperelation{\P,\a}{\G}{v}{A}}: \ciuw(\G, A)}{\deno{\gpetyperelation{\elam{\a}{A}}{\all{\e}{A}}} = \bar{f}: \ciw(\G, \allI(A))}$
+    \item $\treerule{Effect-App}{g=\deno{\gpetyperelation{v}{\all{\a}{A}}}: \ciw(\G, \allI(A))\s\s h = \deno{\typerelation{\P}{\e}{\effect}}: \ciu}{\deno{\gpetyperelation{\eapp{v}{\e}}{A\ssub{\a}{\e}}} = \pr{\Id{I}}{h}\star(\e_{\deno{\typerelation{\P,\b}{A\ssub{\a}{\b}}{\type}}})\after g: \ciw(\G, A\ssub{\a}{\e})}$
+\end{itemize}
+
+\chapter{Effect Substitution Theorem}
+In this section, we state and prove a theorem that the action of a simultaneous effect-variable substitution upon a structure in the language has a consistent effect upon the denotation of the language. More formally, for the denotation morphism $\D$ of some relation, the denotation of the substituted relation, $\D' = \si\star(\D)$.
+\section{Effects}
+If $\si = \deno{\typerelation{\P'}{\si}{\P}}$ then $\deno{\typerelation{\P'}{\si(\e)}{\effect}} = \si\star\deno{\typerelation{\P}{\e}{\effect}} = \deno{\typerelation{\P}{\e}{\effect}}\after\si$.
+
+\proof
+By induction on the derivation on $\deno{\typerelation{\P}{\e}{\effect}}$
+
+\case{Ground}
+\begin{align}
+    \deno{\typerelation{\P}{e}{\effect}}\after\si & = \deno{e}\after\term{I}\after\si \\
+    & = \deno{e}\after\term{I'} \\
+    & = \deno{\typerelation{\P'}{e}{\type}}\\
+\end{align}
+
+\case{Var}
+\begin{align}
+    \deno{\typerelation{\P,\a}{\a}{\effect}}\after\si' &= \pp\after\pr{\si}{\deno{\typerelation{\P'}{\e}{\effect}}}\qt{By inversion $\si' = (\si, \a\setto\e)$}\\
+    & =\deno{\typerelation{\P'}{\e}{\effect}} \\
+    &= \deno{\typerelation{\P'}{\si'(\a)}{\effect}}\\
+\end{align}
+
+\case{Weaken}
+\begin{align}
+    \deno{\typerelation{\P, \b}{\a}{\type}}\after\si' &= \deno{\typerelation{\P}{\a}{\type}} \after \p\after\pr{\si}{\deno{\typerelation{\P'}{\e}{\effect}}}\qt{By inversion, $\si' = (\si, \b\setto\e)$}\\
+    & = \deno{\typerelation{\P}{\a}{\type}}\after\si\\
+    & = \deno{\typerelation{\P'}{\si(\a)}{\type}}\\
+    & = \deno{\typerelation{\P'}{\si'(\a)}{\type}}\\
+\end{align}
+
+\case{Multiply}
+\begin{align}
+    \deno{\typerelation{\P}{\e_1\dot\e_2}{\type}} \after\si &=
+    \Mul(\deno{\typerelation{\P}{\e_1}{\effect}}, \deno{\typerelation{\P}{\e_2}{\effect}})\after \si \\
+    & = \Mul(\deno{\typerelation{\P}{\e_1}{\effect}}\after \si, \deno{\typerelation{\P}{\e_2}{\effect}}\after \si)\qt{By Naturality}\\
+    & = \Mul(\deno{\typerelation{\P'}{\si(\e_1)}{\effect}}, \deno{\typerelation{\P}{\si(\e_2)}{\effect}})\\
+\end{align}
+
+\section{Types}
+If $\si = \deno{\typerelation{\P'}{\si}{\P}}$ then $\deno{\typerelation{\P'}{A\ssi}{\type}} = \si\star\deno{\typerelation{\P}{A}{\type}} = \deno{\typerelation{\P}{A}{\type}}\after\si$.
+
+\proof
+By induction on the derivation on $\deno{\typerelation{\P}{A}{\type}}$. Making use of naturality properties of the type constructors.
+
+\case{Ground}
+\begin{align}
+    \deno{\typerelation{\P}{\g}{\type}}\after\si &= \deno{\g}\after\term{I}\after\si\\
+    & =  \deno{\g}\after\term{I'}\\
+    & = \deno{\typerelation{\P'}{\g}{\type}}\\
+    & = \deno{\typerelation{\P'}{\g\ssi}{\type}}
+\end{align}
+
+\case{Monad}
+\begin{align}
+    \deno{\typerelation{\P}{\mea}{\type}}\after\si & =  \Eff(\deno{\typerelation{\P}{\e}{\effect}}, \deno{\typerelation{\P}{A}{\type}})\after\si \\
+    & = \Eff(\deno{\typerelation{\P}{\e}{\effect}}\after\si, \deno{\typerelation{\P}{A}{\type}}\after\si) \qt{By naturality}\\
+    & = \Eff(\deno{\typerelation{\P'}{\si(\e)}{\effect}}, \deno{\typerelation{\P'}{A\ssi}{\type}})\\
+    & = \deno{\typerelation{\P'}{\M{\si(\e)}{A\ssi}}{\type}}\\
+    & = \deno{\typerelation{\P'}{(\mea)\ssi}{\type}}
+\end{align}
+\case{Quantification}
+    \begin{align}
+        \deno{\typerelation{\P}{\all{\a}A}{\type}}\after\si & = \allI(\deno{\typerelation{\P,\a}{A}{\type}})\after\si\\
+        & = \allI(\deno{\typerelation{\P,\a}{A}{\type}}\after(\si\times\Id{U}))\\
+        & = \allI(\deno{\typerelation{\P',\a}{A\sub{\si, \a\setto\e}}{\type}})\\
+        & = \allI(\deno{\typerelation{\P',\a}{A\ssi}{\type}})\\
+        & = \deno{\typerelation{\P'}{\all{\a}{A\ssi}}{\type}}\\
+        & = \deno{\typerelation{\P'}{(\all{\a}{A})\ssi}{\type}}\\
+    \end{align}
+
+\case{Function}
+\begin{align}
+    \deno{\typerelation{\P}{\ab}{\type}}\after\si &= \diamond(\deno{\typerelation{\P}{A}{\type}},\deno{\typerelation{\P}{B}{\type}})\after\si\\
+    &= \diamond(\deno{\typerelation{\P}{A}{\type}}\after\si,\deno{\typerelation{\P}{B}{\type}}\after\si)\qt{By Naturality}\\
+    & = \diamond(\deno{\typerelation{\P'}{A\ssi}{\type}},\deno{\typerelation{\P'}{B\ssi}{\type}})\\
+    & = \deno{\typerelation{\P'}{\fntype{(A\ssi)}{(B\ssi)}}{\type}}\\
+    & = \deno{\typerelation{\P'}{(\ab)\ssi}{\type}}\\
+\end{align}
+
+\section{Sub-typing}
+If $\si = \deno{\typerelation{\P'}{\si}{\P}}$ then $\deno{A\ssi\subtypepp B\ssi} = \si\star\deno{A\subtypep B}: \cipw(A, B)$.
+
+\proof
+By induction on the derivation on $\deno{A\subtypep B}$. Using S-closure of $\si\star$ 
+
+\case{Ground}
+\begin{align}
+    \si\star(\g_1\subtypeg\g_2) &= (\g_1\subtypeg\g_2)
+\end{align}
+
+Since $\si\star$ is s-closed.
+
+\case{Monad}
+\begin{align}
+    \si\star\deno{\M{\e_1}{A} \subtypep \M{\e_2}{B}} & = \si\star(\deno{\e_1\subeffectp\e_2})\after\si\star(\T{\e_1}(\deno{A\subtypep B})) \\ 
+     &= \deno{\si(\e_1)\subeffectpp\si(\e_2)} \after \T{\si(\e_1)}{\deno{A\ssi\subtypepp B\ssi}}\qt{By S-Closure}\\
+     &= \deno{\M{\si(\e_1)}{A\ssi}\subtypepp\M{\si(\e_2)}{B\ssi}}\\
+     &= \deno{(\M{\e_1}{A})\ssi\subtypepp\M{\e_2}{B}\ssi}\\
+\end{align}
+
+\case{For All}
+    \begin{align}
+        \si\star\deno{\all{\a}{A}\subtypep\all{\a}{B}} &= \si\star(\allI(\deno{A\subtypepa B})) \\
+        &=\allII((\si\times\Id{U})\star(\deno{A\subtypepa B}))\\
+        &=\allII(\deno{A\sub{\si,\a\setto\a}\subtypeppa B\sub{\si,\a\setto\a}})\\
+        &= \deno{(\all{\a}{A})\ssi \subtypepp(\all{\a}{B})\ssi}\\
+    \end{align}
+
+\case{Fn}
+\begin{align}
+    \si\star\deno{(\ab)\subtypep\fntype{A'}{B'}} &= \si\star(\deno{B\subtypep B'}^{A'}\after B^{\deno{A'\subtypep A}})\\
+    &= \si\star(\cur{\deno{B\subtypep B'}\after\app})\after\si\star(\cur{\app\after(\Id{B}\times\deno{A'\subtypep A})})\\
+    & = \cur{\si\star(\deno{B\subtypep B'})\after\app}\after\cur{\app\after(\Id{B}\times\si\star(\deno{A'\subtypep A}))}\\
+    & = \cur{\deno{B\ssi\subtypepp B'\ssi}\after\app}\after\cur{\app\after(\Id{B\ssi}\times\deno{A'\ssi\subtypepp A\ssi})}\\
+    &= \deno{\fntype{(A\ssi)}{(B\ssi)}\subtypepp\fntype{(A'\ssi)}{(B'\ssi)}}\\
+    &= \deno{(\ab)\ssi\subtypepp(\fntype{A'}{B'})\ssi}
+\end{align}
+\section{Type Environments}
+If $\si = \deno{\typerelation{\P'}{\si}{\P}}$ then $\deno{\wellformedok{\P'}{\G\ssi}} = \si\star\deno{\wellformedok{\P}{\G}} = \deno{\wellformedok{\P}{\G}}: \cipw$.
+
+\proof
+By induction on the derivation on $\deno{\wellformedok{\P}{\G}}$. Using Naturality.
+
+\case{Nil}
+\begin{align}
+    \si\star\deno{\wellformedok{\P}{\nil}} &= \term{I}\after\si\\
+    &= \term{I'}\\
+    &= \deno{\wellformedok{\P'}{\nil}}\\
+    \deno{\wellformedok{\P'}{\nil\ssi}}\\
+\end{align}
+
+\case{Var}
+\begin{align}
+   \si\star\deno{\wellformedok{\P}{\gax}} &= \si\star(\square(\deno{\wellformedok{\P}{\G}},\deno{\typerelation{\P}{A}{\type}})) \\
+    & = \square(\deno{\wellformedok{\P}{\G}},\deno{\typerelation{\P}{A}{\type}})\after\si\\
+   & = \square(\deno{\wellformedok{\P}{\G}}\after\si, \deno{\typerelation{\P}{A}{\type}}\after\si)\\
+    & = \square(\deno{\wellformedok{\P'}{\G\ssi}},\deno{\typerelation{\P'}{A\ssi}{\type}})\\
+    & = \deno{\wellformedok{\P'}{\G\ssi, x: A\ssi}}\\
+    & = \deno{\wellformedok{\P'}{(\gax)\ssi}}\\
+\end{align}
+
+\section{Terms}
+If 
+\begin{align}
+    \si &= \deno{\typerelation{\P'}{\si}{\P}}\\
+    \D &= \deno{\gpetyperelation{v}{A}}\\
+    \D' &= \deno{\etyperelation{\P'}{\G\ssi}{v\ssi}{A\ssi}}\\
+\end{align}
+
+Then \begin{eqnarray}
+    \D' = \si\star(\D)
+\end{eqnarray}
+
+\proof
+By induction over the derivation of $\D$. Using the S-Closure of $\si\star$. We use $\G_I$ to indicate $\deno{\wellformedok{\P}{\G}}$, an $A_I$ to indicate $\deno{\typerelation{\P}{A}{\effect}}$
+
+\case{Unit}
+
+\begin{equation}
+    \D = \term{\G_I}
+\end{equation}
+
+So
+
+\begin{equation}
+    \si\star(\D) = \term{\G_I\ssi} = \D'
+\end{equation}
+
+\case{True, False}
+Giving the case for true as false is the same but using $\inr$
+\begin{equation}
+    \D = \inl\after\term{\G_I}
+\end{equation}
+
+So
+
+\begin{equation}
+    \si\star(\D) = \inl\after \term{\G_I\ssi} = \D'
+\end{equation}
+
+Since $\si\star$ is S-closed.
+
+\case{Constant}
+
+
+\begin{equation}
+    \D = \deno{\const{A}}\after\term{\G_I}
+\end{equation}
+
+So
+
+\begin{equation}
+    \si\star(\D) = \si\star\deno{\const{A}}\after \term{\G_I\ssi}=\deno{\const{A\ssi}}\after \term{\G_I\ssi}  = \D'
+\end{equation}
+
+Since $\si\star$ is S-closed.
+
+\case{Subtype}
+
+Let \begin{equation}
+    \D_1 = \deno{\gpetyperelation{v}{A}}
+\end{equation}
+
+Then
+
+\begin{equation}
+    \D = \deno{A\subtypep B}\after \D_1\\
+\end{equation}
+
+So 
+\begin{align}
+    \si\star(\D) & = \si\star{\deno{A\subtypep B}}\after\si\star\D_1 \\
+    & = \deno{A\ssi\subtypepp B\ssi}\after\D_1'\qt{By induction}\\
+    & = D'
+\end{align}
+
+\case{Lambda}
+Let \begin{equation}
+    \D_1 = \deno{\etyperelation{\P}{\gax}{v}{B}}
+\end{equation}
+
+Then
+
+\begin{equation}
+    \D = \cur(\D_1)\\
+\end{equation}
+
+So
+\begin{align}
+    \si\star(\D) & = \si\star(\cur{\D_1})\\
+    & = \cur{\si\star(\D_1)}\qt{By S-closure}\\
+    & = \cur{\D_1'}\qt{By induction}\\
+    & = \D'
+\end{align}
+
+\case{Application}
+Let \begin{align}
+    \D_1 &= \deno{\gpetyperelation{v_1}{\ab}}\\
+    \D_2 &= \deno{\gpetyperelation{v_2}{A}}
+\end{align}
+
+Then
+
+\begin{equation}
+    \D = \app\after\pr{\D_1}{\D_2}\\
+\end{equation}
+
+So
+
+\begin{align}
+    \si\star\D & = \si\star(\app\after\pr{\D_1}{\D_2})\\
+    & = \app\after\pr{\si\star(\D_1)}{\si\star(\D_2)}\qt{By S-closure}\\
+    & = \app\after\pr{\D_1'}{\D_2'}\qt{By Induction}\\
+    & = \D'
+\end{align}
+
+\case{Return}
+Let \begin{equation}
+    \D_1 = \deno{\gpetyperelation{v}{A}}
+\end{equation}
+
+Then
+
+\begin{equation}
+    \D = \point{A_I}\after \D_1\\
+\end{equation}
+
+So
+
+\begin{align}
+    \si\star(\D) &= \si\star(\point{A_I}\after \D_1)\\
+            & = \point{A_{I'}} \after\si\star(\D_1)\qt{By S-closure}\\
+            & = \point{A_{I'}} \after\D_1'\\
+            & = \D'
+\end{align}
+
+\case{Bind}
+Let \begin{align}
+    \D_1 &= \deno{\gpetyperelation{v_1}{\M{\e_1}{A}}}\\
+    \D_2 &= \deno{\etyperelation{\P}{\gax}{v_2}{\M{\e_2}{B}}}
+\end{align}
+
+Then
+
+\begin{equation}
+    \D = \M{\e_1}{\e_2}{A_I}\after\T{\e_1}{\D_2}\after\tstrength{\e_1}{\G_I}{A_I}\after\pr{\Id{\G_{I}}}{\D_1}\\
+\end{equation}
+
+So
+
+\begin{align}
+    \si\star(\D) &= \si\star(\bind{\e_1}{\e_2}{A}\after\T{\e_1}{\D_2}\after\tstrength{\e_1}{\G}{A}\after\pr{\Id{\G}}{\D_1})\\
+    & = \si\star(\bind{\e_1}{\e_2}{A})\after\si\star(\T{\e_1}{\D_2})\after\si\star(\tstrength{\e_1}{\G}{A})\after\pr{\si\star(\Id{\G_{I})}}{\si\star(\D_1)}\qt{By S-Closure}\\
+    &= \bind{\si(\e_1)}{\si(\e_2)}{A\ssi'}\after\T{\si(\e_1)}{\si\star(\D_2)}\after\tstrength{\si(\e_1)}{\G\ssi}{A\ssi}\after\pr{\si\star(\Id{\G_{I})}}{\si\star(\D_1)}\qt{By S-Closure}\\
+    &= \bind{\si(\e_1)}{\si(\e_2)}{A\ssi'}\after\T{\si(\e_1)}{\D_2'}\after\tstrength{\si(\e_1)}{\G\ssi}{A\ssi}\after\pr{\si\star(\Id{\G_{I})}}{\D_1'}\qt{By Induction}\\
+    &= \D'\\
+\end{align}
+
+\case{If}
+
+Let \begin{align}
+    \D_1 &= \deno{\gpetyperelation{v}{\B}}\\
+    \D_2 &= \deno{\gpetyperelation{v_1}{A}}\\
+    \D_3 &= \deno{\gpetyperelation{v_2}{A}}\\
+\end{align}
+
+Then
+
+\begin{equation}
+    \D = \app\after(([\cur{\D_2\after\pp}, \cur{\D_3\after\pp}]\after\D_1)\times\Id{\G})\after\diag{\G}\\
+\end{equation}
+
+So
+
+\begin{align}
+    \si\star(\D) &= \si\star(\app\after(([\cur{\D_2\after\pp}, \cur{\D_3\after\pp}]\after\D_1)\times\Id{\G})\after\diag{\G})\\
+    &= \app\after(([\cur{\si\star(\D_2)\after\pp}, \cur{\si\star(\D_3)\after\pp}]\after\si\star(\D_1))\times\Id{\G\ssi})\after\diag{\G\ssi}\qt{By S-Closure}\\
+    &= \app\after(([\cur{\D_2'\after\pp}, \cur{\D_3'\after\pp}]\after\D_1')\times\Id{\G\ssi})\after\diag{\G\ssi}\qt{By Induction}\\
+    & = \D'\\
+\end{align}
+
+
+\case{Effect-Lambda}
+
+Let \begin{equation}
+    \D_1 = \deno{\etyperelation{\P,\a}{\G}{v}{A}}
+\end{equation}
+
+Then
+
+\begin{equation}
+    \D = \hat{\D_1}\\
+\end{equation}
+
+And also
+
+\begin{equation}
+    \si\times\Id{} = \deno{\typerelation{(\P',\a)}{(\si, \a\setto\e)}{(\P,\a)}}
+\end{equation}
+
+So
+\begin{align}
+    \si\star\D &= \si\star(\hat{\D_1})\\
+    & = \hat{(\si\times\Id{U})\star\D_1}\qt{By naturality}\\
+    & = \hat{\D_1'}\qt{By induction}\\
+    & = \D'
+\end{align}
+
+\case{Effect-Application}
+
+Let \begin{align}
+    \D_1 &= \deno{\gpetyperelation{v}{\all{\a}{A}}}\\
+    h &= \deno{\typerelation{\P}{\e}{\effect}}\\
+\end{align}
+
+Then
+
+\begin{equation}
+    \D = \pr{\Id{\G}}{h}\star(\e_{\deno{\typerelation{\P,\b}{A\ssub{\a}{\b}}{\type}}})\after\D_1\\
+\end{equation}
+
+So
+Due to the substitution theorem on effects
+\begin{equation}
+    h\after\si = \deno{\typerelation{\P}{\e}{\effect}}\after\si = \deno{\typerelation{\P'}{\si(\e)}{\effect}} = h'
+\end{equation}
+
+\begin{align}
+    \si\star{\D} & = \si\star(\pr{\Id{\G}}{h}\star(\e_{\deno{\typerelation{\P,\b}{A\ssub{\a}{\b}}{\type}}})\after\D_1)\\
+    & = (\pr{\Id{\G}}{h}\after\si)\star(\e_{\deno{\typerelation{\P,\b}{A\ssub{\a}{\b}}{\type}}})\after\si\star(\D_1)\\
+    & = ((\si\times\Id{U})\after\pr{\Id{\G}}{h\after\si})\star(\e_{\deno{\typerelation{\P,\b}{A\ssub{\a}{\b}}{\type}}})\after\D_1)'\\
+    & = (\pr{\Id{\G}}{h'})\star((\si\times\Id{U})\star\e_{\deno{\typerelation{\P,\b}{A\ssub{\a}{\b}}{\type}}})\after\D_1)'\\
+\end{align}
+
+Looking at the inner part of the functor application:
+Let \begin{align}
+    A & = \deno{\typerelation{\P,\b}{A\ssub{\a}{\b}}{\type}}\\
+\end{align}
+\begin{align}
+    (\si\times\Id{U})\star\e_{\deno{\typerelation{\P,\b}{A\ssub{\a}{\b}}{\type}}} &= (\si\times\Id{U})\star\e_{A}\\
+    & = (\si\times\Id{U})\star(\widehat{\Id{\allI(A)}})\\
+    & = \widehat{\bar{(\si\times\Id{U})\star(\widehat{\Id{\allI(A)}})}}\qt{By bijection}\\
+    & = \widehat{\si\star(\bar{\widehat{\Id{\allI(A)}}})}\qt{By naturality}\\
+    & = \widehat{\si\star(\Id{\allI(A)})}\qt{By bijection}\\
+    & = \widehat{\Id{\allI(A\after(\si\times\Id{U}))}}\qt{By S-Closure, naturality}\\
+    & = \widehat{\Id{\allI(A\sub{\si,\a\setto\a})}}\qt{By Substitution theorem}\\
+    & = \e_{A\ssi}
+\end{align}
+
+Going back to the original expression:
+
+\begin{align}
+    \si\star{\D} & = (\pr{\Id{\G}}{h'})\star((\si\times\Id{U})\star\e_{A\ssi})\after\D_1)'\\
+    & = \D'\\
+\end{align}
+
+\chapter{Effect Weakening Theorem}
+\section{Effects}
+\section{Types}
+\section{Type Environments}
+\section{Sub-typing}
+\section{Terms}
+
+\chapter{Value Substitution Theorem}
+
+\chapter{Type-Environment Weakening Theorem}
+
+\chapter{Unique Denotation Theorem}
+
+\chapter{Beta-Eta-Equivalence Theorem (Soundness)}
+
+
+    
+\end{document}

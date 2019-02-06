@@ -309,7 +309,7 @@
         \treerule{Sub-type}{
             \treerule{}{\D}{\etyperelation{\P,\a}{\G}{v}{A}}
             \s\s
-            A\subtype_{\P,\a}B
+            A\subtypepaB
         }{
             \etyperelation{\P,\a}{\G}{v}{B}
         }
@@ -336,7 +336,7 @@
     and
     \begin{equation}
         \treerule{Subtype}{
-            \treerule{}{\D}{\gpetyperelation{v}{\all{\a}{B}}}\s\s \treerule{Quantification}{A\subtype_{\P,\a}B}{\all{\a}{A}\subtypep\all{\a}{B}}
+            \treerule{}{\D}{\gpetyperelation{v}{\all{\a}{B}}}\s\s \treerule{Quantification}{A\subtypepaB}{\all{\a}{A}\subtypep\all{\a}{B}}
         }{\gpetyperelation{v}{\all{\a}{B}}}
     \end{equation}
 
@@ -671,7 +671,7 @@
                     \gpetyperelation{\elam{\a}{v}}{\all{\a}{A'}}
                 }
             \s\s 
-            \treerule{Quantification}{A' \subtype_{\P,\a}}{\all{\a}{A'} \subtypep \all{\a}{A}}
+            \treerule{Quantification}{A' \subtypepa}{\all{\a}{A'} \subtypep \all{\a}{A}}
             }{
                 \gpetyperelation{\elam{\a}{v}}{\all{\a}{A}}
             }
@@ -692,7 +692,7 @@
             \treerule{Subtype}{
                 \treerule{}{\D_1'}{\gpetyperelation{v}{\all{\a}{A'}}}
                 \s\s 
-                \treerule{Quantification}{A'\subtype_{\P,\a}A}{\all{\a}{A'}\subtypep\all{\a}{A}}
+                \treerule{Quantification}{A'\subtypepaA}{\all{\a}{A'}\subtypep\all{\a}{A}}
             }{
                 \gpetyperelation{v}{\all{\a}{A}}
             }= \reduce(\D_1)
