@@ -207,12 +207,14 @@ By the definition of an adjunction:
 
 \todo{Why does this occur? it comes from page 222 of Crole?}
 \begin{align}
-    \theta\star(\bar{f}) & = (\p\after(\theta\times\Id{U}))\star(\bar{f})\\\
-     &= (\theta\times\Id{U})\star(\p\star(\bar{f}))\\
+    \theta\star(\bar{f}) & = \theta\star(\allI(f)\after\eta_A)\\
+    & = \theta\star(\allI(f))\after\theta\star(\eta_A)\\
+    & = \theta\star(\allI(f))\after\eta_{(\theta\times \Id{U})\star A}\qt{\todo{Not sure how to derive this step}}\\
+    & = \allIU((\theta\times\Id{U})\star(f))\after\eta_{(\theta\times \Id{U})\star A}\\
+    &= \bar{(\theta\times\Id{U})\star(f))\after\epsilon_{(\theta\times\Id{U})\star A}}\after\eta_{(\theta\times \Id{U})\star A}
      \\
-     \\
-     &= \bar{(\theta\times\Id{U})\star f}\\
-     \\
+     &= \bar{(\theta\times\Id{U})\star(f))\after\epsilon_{(\theta\times\Id{U})\star A}\after\pstar\eta_{(\theta\times \Id{U})\star A}}\\
+     & = \bar{(\theta\times\Id{U})\star(f))}\qt{By adjunction}
 \end{align}
 
 \subsection{$\hat{(-)}$ and Re-Indexing Functors}
