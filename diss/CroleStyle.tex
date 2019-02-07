@@ -2786,6 +2786,542 @@ We induct over the structure of typing derivations of $\gpetyperelation{v}{A}$, 
 
 \chapter{Beta-Eta-Equivalence Theorem (Soundness)}
 
+If $\\eberelation{\P}{v}{v'}{A}$ then $\gdenoequality{v}{v'}{A}$
+
+By induction over Beta-eta equivalence relation.
+\subsection{Equivalence Relation}
+The cases over the equivalence relation laws hold by the uniqueness of denotations and the fact that equality over morphisms is an equivalence relation.
+\case{Reflexive}
+Equality is reflexive, so if $\gpetyperelation{v}{A}$ then $\deno{\gpetyperelation{v}{A}}$ is equal to itself.
+\case{Symmetric}
+By inversion, if $\gpeberelation{v}{v'}{A}$ then $\gpeberelation{v'}{v}{A}$, so by induction $\gdenoequality{v'}{v}{A}$ and hence $\gdenoequality{v}{v'}{A}$
+\case{Transitive}
+There must exist $v_2$ such that $\gpeberelation{v_1}{v_2}{A}$ and $\gpeberelation{v_2}{v_3}{A}$, so by induction,
+$\gdenoequality{v_1}{v_2}{A}$ and $\gdenoequality{v_2}{v_3}{A}$. Hence by transitivity of equality, $\gdenoequality{v_1}{v_3}{A}$
+
+\subsection{Beta-Eta Conversions}
+These cases are typically proved using the properties of a cartesian closed category with a strong graded monad.
+
+\case{Lambda}
+    Let $f = \deno{\etyperelation{\P}{\gax}{v_1}{B}}: (\G \times A) \rightarrow B$
+
+    Let $g = \deno{\gpetyperelation{v_2}{A}}: \G \rightarrow A$
+
+    By the substitution denotation, $$\deno{\etyperelation{\P}{\G}{\ssub{x}{v_2}}{\gax}}: \G \rightarrow (\G \times A) = \pr{\idg}{g}$$
+
+    We have $$\deno{\gpetyperelation{v_1\ssub{x}{_2v}}{B}} = f \after \pr{\idg}{g}$$
+
+    and hence
+    \begin{equation}
+        \begin{split}
+            \deno{\gpetyperelation{\apply{(\lam{x}{A}{v})}{v}}{B}} & = \app\after\pr{\cur{f}}{g} \\
+            & = \app\after(\cur{f}\times\Id{A})\after\pr{\idg}{g}\\
+            & = f \after \pr{\idg}{g} \\
+            & = \deno{\gpetyperelation{v_1\ssub{x}{v_2}}{B}}  
+        \end{split}
+    \end{equation}
+   
+
+\case{Left Unit}
+Let $f = \deno{\etyperelation{\P}{\gax}{v_1}{\meb}}$
+
+Let $g = \deno{\gpetyperelation{v_2}{A}}: \G \rightarrow A$
+
+By the substitution denotation, $$\deno{\etyperelation{\P}{\G}{\ssub{x}{v_2}}{\gax}}: \G \rightarrow (\G \times A) = \pr{\idg}{g}$$
+
+We have $$\deno{\gpetyperelation{v_1\ssub{x}{v_2}}{\meb}} = f \after \pr{\idg}{g}$$
+
+And hence
+
+\begin{equation}
+    \begin{split}
+        \deno{\gpetyperelation{\doin{x}{\return{v_2}}{v_1}}{\meb}} = &  \bind{\1}{\e}{B} \after \T{\1}{f} \after \tstrength{1}{\G}{A} \after \pr{\idg}{\point{A}\after g} \\
+        = & \bind{\1}{\e}{B} \after \T{\1}{f} \after \tstrength{1}{\G}{A} \after (\idg\times \point{A}) \after \pr{\idg}{g} \\
+        = & \bind{\1}{\e}{B} \after \T{\1}{f} \after \point{(\G \times A)} \after \pr{\idg}{g} \qt{By Tensor strength + unit}\\
+        = & \bind{\1}{\e}{B}\after\point{\teb}\after f\after\pr{\idg}{g} \qt{By Naturality of $\point{}$}\\
+        = & f\after\pr{\idg}{g} \qt{By left unit law}\\
+        = & \deno{\gpetyperelation{v_1\ssub{x}{v_2}}{\meb}}\\
+    \end{split}
+\end{equation}
+
+
+
+
+\case{Right Unit}
+
+Let $f = \deno{\gpetyperelation{v}{\mea}}$ 
+    \begin{equation}
+    \begin{split}
+        \deno{\gpetyperelation{\doin{x}{v}{\return{x}}}{\mea}}  & = \bind{\e}{\1}{A} \after \T{\e}{(\point{A} \after \pp)} \after \tstrength{\e}{\G}{A}\after \pr{\idg}{f} \\
+        & = \T{\e}{\pp} \after \tstrength{\e}{\G}{A} \after \pr {\idg}{f} \\
+        & = \pp \after \pr{\idg}{f}\\
+        & = f
+    \end{split}
+\end{equation}
+
+
+
+\case{Associative}
+Let
+\begin{align}
+    f ={}& \deno{\gpetyperelation{v_1}{\M{\e_1}{A}}}\\
+    g ={}& \deno{\etyperelation{\P}{\gax}{v_2}{\M{\e_2}{B}}}\\
+    h ={}& \deno{\etyperelation{\P}{\gby}{v_3}{\M{\e_3}{C}}}\\
+\end{align}
+
+We also have the weakening:
+\begin{equation}
+    \ewrel{\P}{\i\pi\times}{\gax, y: B}{\gby}
+\end{equation}
+
+With denotation:
+
+\begin{equation}
+    \deno{\ewrel{\P}{\i\pi\times}{\gax, y: B}{\gby}} = (\p \times \Id{B})
+\end{equation}
+
+We need to prove that the following are equal
+
+\begin{align}
+    &lhs =  \deno{\gpetyperelation{\doin{x}{v_1}{(\doin{y}{v_2}{v_3})}}{\M{\e_1\dot\e_2\dot\e_2}{C}}} \\
+    & = \bind{\e_1}{\e_2\dot\e_3}{C}\after\T{
+        \e_1}{(\bind{\e_2}{\e_3}{C}\after\T{\e_2}{h\after(\p \times \Id{B})}\after\tstrength{\e_2}{(\G\times A)}{B}\after\pr{\Id{(\G\times A)}}{g}
+        )}\after\tstrength{\e_1}{\G}{A}\after\pr{\idg}{f}\\
+    & rhs = \deno{\gpetyperelation{\doin{y}{(\doin{x}{v_1}{v_2})}{v_3}}{\M{\e_1\dot\e_2\dot\e_2}{C}}}  \\
+    & = \bind{\e_1\dot\e_2}{\e_3}{C}\after\T{\e_1\dot\e_2}{(h)}\after\tstrength{\e_1\dot\e_2}{\G}{B}\after\pr{\idg}{(\bind{\e_1}{\e_2}{B}\after\T{\e_1}{g}\after\tstrength{\e_1}{\G}{A}\after\pr{\idg}{f})} \\
+\end{align}
+Let's look at fragment $F$ of $rhs$.
+\begin{equation}
+    F = \tstrength{\e_1\dot\e_2}{\G}{B}\after\pr{\idg}{(\bind{\e_1}{\e_2}{B}\after\T{\e_1}{g}\after\tstrength{\e_1}{\G}{A}\after\pr{\idg}{f})}
+\end{equation}
+
+So 
+\begin{equation}
+    rhs = \bind{\e_1\dot\e_2}{\e_3}{C}\after\T{\e_1\dot\e_2}{(h)}\after F
+\end{equation}
+
+\begin{equation}
+    \begin{split}
+        F & = \tstrength{\e_1\dot\e_2}{\G}{B}\after(\idg\times\bind{\e_1}{\e_2}{B})\after(\idg\times\T{\e_1}{g})\after\pr{\idg}{\tstrength{\e_1}{\G}{A}\after\pr{\idg}{f}}\\
+        &  = \bind{\e_1}{\e_2}{(\G\times B)} \after \T{\e_1}{\tstrength{\e_2}{\G}{B}} \after\tstrength{\e_1}{\G}{(\T{\e_2}{B})} \after (\idg \after\T{\e_1}{g})\after\pr{\idg}{\tstrength{\e_1}{\G}{A}\after\pr{\idg}{f}}\qt{By \todo{ref: mu+tstrength}}
+        \\ & = \bind{\e_1}{\e_2}{(\G \times B))} \after \T{\e_1}{(\tstrength{\e_2}{\G}{B} \after (\idg \times g))} \after \tstrength{\e_1}{\G}{(\G \times A)} \after \pr{\idg}{\tstrength{\e_1}{\G}{A}\after\pr{\idg}{f}}\qt{By naturality of v-strength}
+    \end{split}
+\end{equation}
+Since
+$
+    rhs = \bind{\e_1\dot\e_2}{\e_3}{C}\after\T{\e_1\dot\e_2}{(h)}\after F
+$, 
+
+\begin{equation}
+    \begin{split}
+        rhs = &\bind{\e_1\dot\e_2}{\e_3}{C}\after\T{\e_1\dot\e_2}{(h)}\after\bind{\e_1}{\e_2}{(\G \times B))} \after \T{\e_1}{(\tstrength{\e_2}{\G}{B} \after (\idg \times g))} \after \tstrength{\e_1}{\G}{(\G \times A)} \after \pr{\idg}{\tstrength{\e_1}{\G}{A}\after\pr{\idg}{f}}\\
+        = &\bind{\e_1\dot\e_2}{\e_3}{C}\after\bind{\e_1}{\e_2}{(\T{\e_3}{C})}\after\T{\e_1}{(\T{\e_2}{(h)} \after \tstrength{\e_2}{\G}{B} \after (\idg \times g))} \after \tstrength{\e_1}{\G}{(\G \times A)} \after \pr{\idg}{\tstrength{\e_1}{\G}{A}\after\pr{\idg}{f}}\qt{Naturality of $\mu$}\\
+        = & \bind{\e_1}{\e_2\dot\e_3}{C}\after\T{\e_1}{(\bind{\e_2}{\e_3}{C}\after \T{\e_2}{(h)} \after \tstrength{\e_2}{\G}{B} \after (\idg \times g))} \after \tstrength{\e_1}{\G}{(\G \times A)} \after \pr{\idg}{\tstrength{\e_1}{\G}{A}\after\pr{\idg}{f}}
+    \end{split}
+\end{equation}
+
+Let's now look at the fragment $G$ of $rhs$
+\begin{equation}
+    G = \T{\e_1}{(\idg\times g)}\after\tstrength{\e_1}{\G}{(\G\times A)}\after\pr{\idg}{\tstrength{\e_1}{\G}{A}\after\pr{\idg}{f}}
+\end{equation}
+
+So
+\begin{equation}
+    rhs = \bind{\e_1}{\e_2\dot\e_3}{C}\after\T{\e_1}{(\bind{\e_2}{\e_3}{C}\after \T{\e_2}{(h)} \after \tstrength{\e_2}{\G}{B})}\after G
+\end{equation}
+
+
+By folding out the $\pr{...}{...}$, we have
+\begin{equation}
+    G = \T{\e_1}{(\idg\times g)}\after\tstrength{\e_1}{\G}{\G \times A}\after(\idg\times\tstrength{\e_1}{\G}{A})\after\pr{\idg}{\pr{\idg}{f}}
+\end{equation}
+
+From the rule \todo{Ref} showing the commutativity of tensor strength with $\alpha$, the following commutes
+
+\begin{tikzcd}[ampersand replacement=\&]
+    \G 
+    \arrow [r, "\pr{\idg}{\pr{\idg}{f}}"]
+    \&
+    \G\times(\G \times \T{\e_1}{A}) 
+    \arrow [d, "\idg\times\tstrength{\e_1}{\G}{A}"]
+    \&
+    (\G \times \G) \times\T{\e_1}{A} 
+    \arrow [l, "\alpha_{\G, \G, (\T{\e_1}{A})}"]
+    \arrow [d, "\tstrength{\e_1}{(\G \times \G)}{A}"]
+    \\
+    \&
+    \G \times \T{\e_1}{(\G \times A)}
+    \arrow [d, "\tstrength{\e_1}{\G}{\G \times A}"]
+    \& \T{\e_1}{((\G \times \G)\times A)} 
+    \arrow [ld, "\T{\e_1}{\alpha_{\G, \G, A}}"]
+    \\
+    \& \T{\e_1}{(\G \times (\G \times A))}
+\end{tikzcd}
+
+Where $\alpha: ((\_ \times \_) \times \_) \rightarrow (\_ \times (\_ \times \_))$ is a natural isomorphism.
+
+\begin{align}
+    \alpha & = \pr{\p\after\p}{\pr{\pp\after\p}{\pp}}\\
+    \alpha^{-1} &= \pr{\pr{\p}{\p\after\pp}}{\pp\after\pp}
+\end{align}
+
+So:
+
+\begin{equation}
+    \begin{split}
+        G = & \T{\e_1}{((\idg\times g)\after \alpha_{\G, \G, A})} \after \tstrength{\e_1}{(\G\times\G)}{A}\after\alpha^{-1}_{\G, \G, (\T{\e_1}{A})}\after\pr{\idg}{\pr{\idg}{f}} \\
+        = & \T{\e_1}{((\idg\times g)\after \alpha_{\G, \G, A})} \after \tstrength{\e_1}{(\G\times\G)}{A}\after(\pr{\idg}{\idg}\times \Id{\T{\e_1}{A}})\after\pr{\idg}{f}\qt{By definition of $\alpha$ and products}\\
+        = & \T{\e_1}{((\idg\times g)\after \alpha_{\G, \G, A}\after(\pr{\idg}{\idg}\times \Id{A}))}\after\tstrength{\e_1}{\G}{A}\after\pr{\idg}{f}\qt{By tensor strength's left-naturality}\\
+        = & \T{\e_1}{((\p\times\Id{\T{\e_2}{B}})\after\pr{\Id{(\G\times A)}}{g})}\after\tstrength{\e_1}{\G}{A}\after\pr{\idg}{f}
+    \end{split}
+\end{equation}
+Since 
+\begin{equation}
+rhs = \bind{\e_1}{\e_2\dot\e_3}{C}\after\T{\e_1}{(\bind{\e_2}{\e_3}{C}\after \T{\e_2}{(h)} \after \tstrength{\e_2}{\G}{B})}\after G
+\end{equation}
+
+We Have
+\begin{equation}
+\begin{split}
+    rhs ={} & \bind{\e_1}{\e_2\dot\e_3}{C}\after\T{\e_1}{(\bind{\e_2}{\e_3}{C}\after \T{\e_2}{(h)} \after \tstrength{\e_2}{\G}{B}\after(\p\times\Id{\T{\e_2}{B}})\after\pr{\Id{(\G\times A)}}{g})}\after\tstrength{\e_1}{\G}{A}\after\pr{\idg}{f}\\
+    ={} & \bind{\e_1}{\e_2\dot\e_3}{C}\after\T{\e_1}{(\bind{\e_2}{\e_3}{C}\after \T{\e_2}{(h \after (\p\times\Id{B}))}\after\tstrength{\e_2}{(\G\times A)}{B}\after\pr{\Id{(\G\times A)}}{g})}\after\tstrength{\e_1}{\G}{A}\after\pr{\idg}{f}\qt{By Left-Tensor Strength}\\
+    ={} & lhs \qt{Woohoo!}
+\end{split}
+\end{equation}
+
+%%%%%% END CASE ASSOCIATIVE %%%%%%%
+
+\case{Eta}
+Let 
+\begin{equation}
+    f = \deno{\gpetyperelation{v}{\ab}} : \G \rightarrow (B)^{A}
+\end{equation}
+
+By weakening, we have
+
+\begin{align}
+    \deno{\etyperelation{\P}{\gax}{v}{\ab}} & = f \after \p : \G \times A \rightarrow (B)^A \\
+    \deno{\etyperelation{\P}{\gax}{\apply{v}{x}}{B}} & = \app\after\pr{f \after \p}{\pp} \\
+\end{align}
+
+Hence, we have 
+\begin{equation}
+    \begin{split}
+        \deno{\gpetyperelation{\lam{x}{A}{(\apply{v}{x})}}{\ab}} & = \cur{\app\after\pr{f \after \p}{\pp}}\\
+        \app\after(\deno{\gpetyperelation{\lam{x}{A}{(\apply{v}{x})}}{\ab}} \times \Id{A}) & = \app \after(\cur{\app\after\pr{f \after \p}{\pp}}\times \Id{A})\\
+        & = \app \after\pr{f\after\p}{\pp}\\
+        & = \app\after(f\times\Id{A})
+    \end{split}
+\end{equation}
+
+Hence, by the fact that $\cur{f}$ is unique in a cartesian closed category, 
+
+\begin{equation}
+    \deno{\gpetyperelation{\lam{x}{A}{(\apply{v}{x})}}{\ab}} = f =\deno{\gpetyperelation{v}{\ab}}
+\end{equation}
+
+\case{If-True}
+Let
+\begin{align}
+    f = &\deno{\gpetyperelation{v_1}{A}}\\
+    g = &\deno{\gpetyperelation{v_2}{A}}\\
+\end{align}
+
+Then
+\begin{equation}
+    \begin{split}
+        \deno{\gpetyperelation{\pifthenelse{A}{v}{v_1}{v_2}}{A}} & = \ifMorph{\inl\after\term{\G}}{f}{g} \\
+        & = \app\after((\cur{f\after\pp}\after\term{\G})\times\idg)\after\diag{\G}\\
+        & = \app\after(\cur{f\after\pp}\times\idg)\after(\term{\G}\times\idg)\after\diag{\G}\\
+        & = f\after\pp\after\pr{\term{\G}}{\idg}\\
+        & = f \\
+        & = \deno{\gpetyperelation{v_1}{A}}\\
+    \end{split}
+\end{equation}
+
+
+\case{If-False}
+Let
+\begin{align}
+    f = &\deno{\gpetyperelation{v_1}{A}}\\
+    g = &\deno{\gpetyperelation{v_2}{A}}\\
+\end{align}
+
+Then
+\begin{equation}
+    \begin{split}
+        \deno{\gpetyperelation{\pifthenelse{A}{v}{v_1}{v_2}}{A}} & = \ifMorph{\inr\after\term{\G}}{f}{g} \\
+        & = \app\after((\cur{g\after\pp}\after\term{\G})\times\idg)\after\diag{\G}\\
+        & = \app\after(\cur{g\after\pp}\times\idg)\after(\term{\G}\times\idg)\after\diag{\G}\\
+        & = g\after\pp\after\pr{\term{\G}}{\idg}\\
+        & = g \\
+        & = \deno{\gpetyperelation{v_2}{A}}\\
+    \end{split}
+\end{equation}
+
+\case{If-Eta}
+    Let 
+    \begin{align}
+        f & = \deno{\etyperelation{\P}{\G}{v_1}{\B}} \\
+        g & = \deno{\etyperelation{\P}{\G, x: \B}{v_2}{A}} \\
+    \end{align}
+
+
+    Then by the substitution theorem,
+    \begin{align}
+        \deno{\etyperelation{\P}{\G}{v_2\ssub{x}{\t}}{A}} & = g\after\pr{\idg}{\inl_\1\after{\term{\G}}}\\
+        \deno{\etyperelation{\P}{\G}{v_2\ssub{x}{\f}}{A}} & = g\after\pr{\idg}{\inr_\1\after{\term{\G}}}\\
+        \deno{\gpetyperelation{v_2\ssub{x}{v_1}}{A}} & = g\after\pr{\idg}{f}
+    \end{align}
+
+    Hence we have (Using the diagonal and twist morphisms):
+ 
+    \begin{align}
+        \deno{\gpetyperelation{&\pifthenelse{A}{v_1}{v_2\ssub{x}{\t}}{v_2\ssub{x}{\f}}}{A}}  \\ 
+        & = \ifMorph{f}{g\after\pr{\idg}{\inl_\1\after{\term{\G}}}}{g\after\pr{\idg}{\inr_\1\after{\term{\G}}}}\\
+        & = \app\after((\fld{
+            \cur{g\after\pr{\pp}{\inl_1\after\term{\G}\after\pp}}
+        }{
+            \cur{g\after\pr{\pp}{\inr_1\after\term{\G}\after\pp}}
+        }\after f)\times \idg)\after\diag{\G}\qt{Pairing property}\\
+        &= \app\after((\fld{
+            \cur{g\after\pr{\pp}{\inl_1\after\term{\G}\after\p}}
+        }{
+            \cur{g\after\pr{\pp}{\inr_1\after\term{\G}\after\p}}
+        }\after f)\times \idg)\after\diag{\G}\qt{Terminal is unique}\\
+        &= \app\after((\fld{
+            \cur{g\after(\idg\times (\inl_\1\after\term{\1}))\after\twist{\1}{\G}}
+        }{
+            \cur{g\after(\idg\times (\inr_\1\after\term{\1}))\after\twist{\1}{\G}}
+        }\after f)\times \idg)\after\diag{\G}\qt{Definition of the twist morphism}\\
+        & = \app\after((\fld{
+            \cur{g\after(\idg\times \inl_\1)\after\twist{\1}{\G}}
+        }{
+            \cur{g\after(\idg\times \inr_\1)\after\twist{\1}{\G}}
+        }\after f)\times \idg)\after\diag{\G}\qt{Identity = $\Id{\1}$}\\
+        & = \app\after((\fld{
+            \cur{g\after\twist{\1+\1}{\G}\after(\inl_\1\times \idg)}
+        }{
+            \cur{g\after\twist{\1+\1}{\G}\after(\inr_\1\times \idg)}
+        }\after f)\times \idg)\after\diag{\G}\qt{Twist commutivity}\\
+        & = \app\after((\fld{
+            \cur{g\after\twist{\1+\1}{\G}}\after\inl_\1
+        }{
+            \cur{g\after\twist{\1+\1}{\G}}\after\inr_\1
+        }\after f)\times \idg)\after\diag{\G}\qt{Exponential property}\\
+        & = \app\after((\cur{g\after\twist{\1+\1}{\G}}\after\fld{
+            \inl_\1
+        }{
+            \inr_\1
+        }\after f)\times \idg)\after\diag{\G}\qt{Factoring out $\cur{..}$}\\
+        & = \app\after((\cur{g\after\twist{\1+\1}{\G}}\after f)\times \idg)\after\diag{\G}\qt{Since $\fld{\inl}{\inr} is the identity$}\\
+        & = \app\after(\cur{g\after\twist{\1+\1}{\G}}\times \idg)\after (f\times \idg)\after\diag{\G}\qt{Factoring}\\
+       & = g\after\twist{\1+\1}{\G} \after (f\times \idg)\after\diag{\G} \qt{Definition of $\app,\cur{..}$}\\
+       & = g\after(\idg\times f)\after \twist{\G}{\G} \after\diag{\G} \qt{Twist commutivity}\\
+       & = g\after(\idg\times f) \after\pr{\idg}{\idg} \qt{Twist, diagonal defintions} \\
+       & = g\after\pr{\idg}{f} \\
+       & = \deno{\gpetyperelation{v_2\ssub{x}{v_1}}{A}} \\
+    \end{align}
+
+    \case{Effect-Beta}
+    let 
+    \begin{align}
+        h & = \deno{\typerelation{\P}{\e}{\effect}}
+        \\
+        f & = \deno{\etyperelation{\P,\a}{\G}{v}{A}}
+        \\
+        A &= \deno{\typerelation{\P,\a}{A\ssub{\a}{\a}}{\type}}
+    \end{align}
+
+    Then
+
+    \begin{equation}
+        \deno{\gpetyperelation{\elam{\a}{v}}{\all{\a}{A}}} = \bar{f}\\
+    \end{equation}
+
+    So
+    \begin{align}
+        \deno{\gpetyperelation{\eapp{(\elam{\a}{v})}{\e}}{\all{\a}{A}}} & = \pr{\Id{I}}{h}\star(\e_A)\after\bar{f}\\
+        & = \pr{\Id{I}}{h}\star(\e_A)\after\pr{\Id{I}}{h}\star(\pstar(\bar{f}))\qt{Identity functor}\\
+        &= \pr{\Id{I}}{h}\star(\e_A\after\pstar(\bar{f}))\\
+        &= \pr{\Id{I}}{h}\star(f)\qt{By adjunction}\\
+        &= \deno{\gpetyperelation{v\ssub{\a}{\e}}{A\ssub{\a}{e}}}\qt{By substitution theorem}\\
+    \end{align}
+
+    \case{Effect-Eta}
+    Let \begin{align}
+        f & = \deno{\gpetyperelation{v}{\all{\a}{A}}}\\
+        A & = \deno{\typerelation{\P,\a}{A}{\type}}
+    \end{align}
+
+    so
+    \begin{align}
+        \deno{\gpetyperelation{\elam{\a}{(\eapp{v}{\a})}}{\all{\a}{A}}} & = \bar{\deno{\etyperelation{\P,\a}{\G}{\eapp{\e}{\a}}{\all{\a}{A}}}} \\
+        & = \bar{\pr{\Id{I\times U}}{\pp}\star(\e_{\deno{\typerelation{\P,\a,\b}{A\ssub{\a}{\b}}{\type}}})\after\pstar(f)}
+    \end{align}
+
+    Let's look at $\deno{\typerelation{\P,\a,\b}{A\ssub{\a}{\b}}{\type}}$.
+
+    We have the weakening:
+    \begin{equation}
+        \wrel{\i\pi\x}{\P,\a,\b}{\P,\b}
+    \end{equation}
+
+    So by the weakening theorem on type denotations:
+
+    \begin{align}
+        \deno{\typerelation{\P,\a,\b}{A\ssub{\a}{\b}}{\type}} & = \deno{\typerelation{\P,\b}{A\ssub{\a}{\b}}{\type}}\after(\p\times\Id{U})\\
+        \allIU(\deno{\typerelation{\P,\a,\b}{A\ssub{\a}{\b}}{\type}}) & = \allI(\deno{\typerelation{\P,\b}{A\ssub{\a}{\b}}{\type}})\after\p\\
+        & = \pstar\allI(\deno{\typerelation{\P,\b}{A\ssub{\a}{\b}}{\type}})\\
+        \e_{\deno{\typerelation{\P,\a,\b}{A\ssub{\a}{\b}}{\type}}} & = \widehat{\Id{\pstar\allI(\deno{\typerelation{\P,\b}{A\ssub{\a}{\b}}{\type}})}}\\
+        & =\widehat{\Id{\pstar\allI A}}\\
+        & = \widehat{\pstar(\Id{\allI A})}\\
+        & = \widehat{\pstar(\bar{\e_{A}})}\\
+        & = \widehat{\bar{(\p\times\Id{U})\star(\e_{A})}}\\
+        & = (\p\times\Id{U})\star(\e_A) 
+    \end{align}
+
+    So
+    \begin{align}
+        \deno{\gpetyperelation{\elam{\a}{(\eapp{v}{\a})}}{\all{\a}{A}}} & = \bar{\pr{\Id{I\times U}}{\pp}\star(\e_{\deno{\typerelation{\P,\a,\b}{A\ssub{\a}{\b}}{\type}}})\after\pstar(f)}\\
+        & = \bar{\pr{\Id{I\times U}}{\pp}\star((\p\times\Id{U})\star(\e_A))\after\pstar(f)}\\
+        & = \bar{\pr{\p}{\pp}\star(\e_A)\after\pstar(f)}\\
+        &= \bar{\Id{I\times U}\star(\e_A)\after\pstar(f)}\\
+        & = \bar{\e_A\after \pstar(f)}\qt{By adjunction}\\
+        & = f
+    \end{align}
+
+\subsection{Congruences}
+These cases can be proved fairly mechanically by assuming the preconditions, using induction to prove that the matching pairs of sub-expressions have equal denotations, then constructing the denotations of the expressions using the equal denotations which gives trivially equal denotations.
+
+\case{Lambda}
+    By inversion, we have $\\eberelation{\P}{\gax}{v_1}{v_2}{B}$
+    By induction, we therefore have $\deno{\etyperelation{\P}{\gax}{v_1}{B}} = \deno{\etyperelation{\P}{\gax}{v_2}{B}}$
+
+    Then let
+    \begin{equation}
+        f = \deno{\etyperelation{\P}{\gax}{v_1}{B}} = \deno{\etyperelation{\P}{\gax}{v_2}{B}}
+    \end{equation}
+
+    And so
+    \begin{equation}
+        \deno{\gpetyperelation{\lam{x}{A}{v_1}}{\ab}} = \cur{f} = \deno{\gpetyperelation{\lam{x}{A}{v_2}}{\ab}}
+    \end{equation}
+
+
+\case{Return}
+By inversion, we have $\gpeberelation{v_1}{v_2}{A}$
+By induction, we therefore have $\deno{\gpetyperelation{v_1}{A}} = \deno{\gpetyperelation{v_2}{A}}$
+
+Then let
+\begin{equation}
+    f = \deno{\gpetyperelation{v_1}{A}} = \deno{\gpetyperelation{v_2}{A}}
+\end{equation}
+
+And so
+\begin{equation}
+    \deno{\gpetyperelation{\return{v_1}}{\M{\1}{A}}} = \point{A}\after f = \deno{\gpetyperelation{\return{v_2}}{\M{\1}{A}}}
+\end{equation}
+
+
+\case{Apply}
+By inversion, we have $\gpeberelation{v_1}{v_1'}{\ab}$ and $\gpeberelation{v_2}{v_2'}{A}$
+By induction, we therefore have $\deno{\gpetyperelation{v_1}{\ab}}= \deno{\gpetyperelation{v_1'}{\ab}}$ and $\deno{\gpetyperelation{v_2}{A}} = \deno{\gpetyperelation{v_2'}{A}}$
+
+Then let
+\begin{align}
+    f &{}= \deno{\gpetyperelation{v_1}{\ab}} = \deno{\gpetyperelation{v_1'}{\ab}}\\
+    g &{}= \deno{\gpetyperelation{v_2}{A}} = \deno{\gpetyperelation{v_2'}{A}}
+\end{align}
+
+
+
+And so
+\begin{equation}
+    \deno{\gpetyperelation{\apply{v_1}{v_2}}{B}} = \app\after\pr{f}{g} = \deno{\gpetyperelation{\apply{v_1'}{v_2'}}{B}}
+\end{equation}
+
+
+\case{Bind}
+By inversion, we have $\gpeberelation{v_1}{v_1'}{\M{e_1}{A}}$ and $\\eberelation{\P}{\gax}{v_2}{v_2'}{\M{\e_2}{B}}$
+By induction, we therefore have $\deno{\gpetyperelation{v_1}{\M{e_1}{A}}}= \deno{\gpetyperelation{v_1'}{\M{e_1}{A}}}$ and $\deno{\etyperelation{\P}{\gax}{v_2}{\M{\e_2}{B}}} = \deno{\etyperelation{\P}{\gax}{v_2'}{\M{\e_2}{B}}}$
+
+Then let
+\begin{align}
+    f &{}=\deno{\gpetyperelation{v_1}{\M{\e_1}{A}}}= \deno{\gpetyperelation{v_1'}{\M{\e_1}{A}}}\\
+    g &{}=\deno{\etyperelation{\P}{\gax}{v_2}{\M{\e_2}{B}}} = \deno{\etyperelation{\P}{\gax}{v_2'}{\M{\e_2}{B}}}
+\end{align}
+
+
+
+And so
+\begin{equation}
+    \begin{split}
+        \deno{\gpetyperelation{\doin{x}{v_1}{v_2}}{\M{\e_1\dot\e_2}{A}}} & = \bind{\e_1}{\e_2}{B} \after \T{\e_1}{g} \after \tstrength{\e_1}{\G}{A} \after \pr{\idg}{f}\\
+         & = \deno{\gpetyperelation{\doin{x}{v_1}{v_2}}{\M{\e_1\dot\e_2}{A}}}
+    \end{split}
+\end{equation}
+\case{If}
+By inversion, we have $\gpeberelation{v}{v'}{\B}$, $\gpeberelation{v_1}{v_1'}{A}$ and $\gpeberelation{v_2}{v_2'}{A}$
+By induction, we therefore have $\deno{\gpetyperelation{v}{\B}} = \deno{\gpetyperelation{v'}{\B}}$, $\deno{\gpetyperelation{v_1}{A}}= \deno{\gpetyperelation{v_1'}{A}}$ and $\deno{\etyperelation{\P}{\gax}{v_2}{A}} = \deno{\etyperelation{\P}{\gax}{v_2'}{A}}$
+
+Then let
+\begin{align}
+    f &{}=\deno{\gpetyperelation{v}{\B}} = \deno{\gpetyperelation{v'}{\B}}\\
+    g &{}=\deno{\gpetyperelation{v_1}{A}}= \deno{\gpetyperelation{v_1'}{A}}\\
+    h &{}=\deno{\etyperelation{\P}{\gax}{v_2}{A}} = \deno{\etyperelation{\P}{\gax}{v_2'}{A}}
+\end{align}
+
+
+
+And so
+\begin{equation}
+    \begin{split}
+        \deno{\gpetyperelation{\pifthenelse{A}{v}{v_1}{v_2}}{A}} & = \ifMorph{f}{g}{h}\\
+         & = \deno{\gpetyperelation{\pifthenelse{A}{v'}{v_1'}{v_2'}}{A}}
+    \end{split}
+\end{equation}
+\case{Subtype}
+By inversion, we have $\gpeberelation{v_1}{v_2}{A}$, and $A \subtypep B$ 
+By induction, we therefore have $\deno{\gpetyperelation{v_1}{A}} = \deno{\gpetyperelation{v_2}{A}}$
+
+Then let
+\begin{align}
+    f &{}=\deno{\gpetyperelation{v_1}{A}} = \deno{\gpetyperelation{v_2}{B}}\\
+    g &{}=\deno{A \subtypep B}
+\end{align}
+
+
+
+And so
+\begin{equation}
+        \deno{\gpetyperelation{v_1}{B}} = g \after f = \deno{\gpetyperelation{v_1}{B}}
+\end{equation}
+
+\case{Effect-Lambda}
+By inversion, we have $\eberelation{\P,\a}{\G}{v_1}{v_2}{A}$. So by induction, $\deno{\etyperelation{\P,\a}{\G}{v_1}{A}} = \deno{\etyperelation{\P,\a}{\G}{v_2}{A}}$
+
+So \begin{align}
+    \deno{\gpetyperelation{\elam{\a}{v_1}}{\all{\a}{A}}} & = \bar{\deno{\etyperelation{\P,\a}{\G}{v_1}{A}}}\\
+    & = \bar{\deno{\etyperelation{\P,\a}{\G}{v_2}{A}}}\\
+    & = \deno{\gpetyperelation{\elam{\a}{v_2}}{\all{\a}{A}}} 
+\end{align}
+
+\case{Effect-Apply}
+
+By inversion, we have $\gpeberelation{v_1}{v_2}{\all{\a}{A}}$ and $\typerelation{\P}{\e}{\effect}$.
+
+So by induction, we have $\deno{\gpetyperelation{v_1}{\all{\a}{A}}} = \deno{\gpetyperelation{v_2}{\all{\a}{A}}}$
+
+So
+\begin{align}
+    \deno{\gpetyperelation{\eapp{v_1}{\e}}{A\ssub{\a}{\e}}} & = \pr{\Id{I}}{\deno{\typerelation{\P}{\e}{\effect}}}\star(\e_{A})\after\deno{\gpetyperelation{v_1}{\all{\a}{A}}}
+    \\
+    & = \pr{\Id{I}}{\deno{\typerelation{\P}{\e}{\effect}}}\star(\e_{A})\after\deno{\gpetyperelation{v_2}{\all{\a}{A}}}
+    \\
+    & = \deno{\gpetyperelation{\eapp{v_2}{\e}}{A\ssub{\a}{\e}}}
+\end{align}
+$$\square$$
 
     
 \end{document}
