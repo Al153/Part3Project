@@ -271,4 +271,77 @@
 \parskip 1ex
 
 \newcommand\pstar[0]{\p\star}
+
+\newcommand\edeltavrule[5]{\deltavrule{#1 \mid #2}{#3}{#4}{#5}}
+
+\newcommand\subeffecttree[4]{\treerule{Computation}{
+    #1\subeffectp #3\s\s #2 \subtypep #4
+}{\M{#1}{
+    #2
+}\subtypep\M{#3}{#4}}}
+
+\newcommand{\edeltavruleprime}[5]{
+        \deltavruleprime{#1\mid #2}{#3}{#4}{#5}}
+    
+\newcommand{\edeltavruleprimeprime}[5]{
+        \deltavruleprimeprime{#1\mid #2}{#3}{#4}{#5}}
+    
+\newcommand{\edeltacrule}[6]{
+            \treerule{Subtype}{
+                \treerule{}{
+                    \D
+                }{
+                    \typerelation{\P\mid#1}{#2}{\M{#3}{#4}}
+                }
+                \s\s
+                \treerule{Computation}{
+                    #4 \subtypep #6
+                    \s\s #3 \subeffectp #5
+                }{
+                    \M{#3}{#4}\subtypep{\M{#5}{#6}}
+                }
+            }{
+                \typerelation{\P\mid #1}{#2}{\M{#5}{#6}}
+            }
+        }
+        
+
+        \newcommand{\edeltacruleprime}[6]{
+            \treerule{Subtype}{
+                \treerule{}{
+                    \D'
+                }{
+                    \typerelation{\P\mid #1}{#2}{\M{#3}{#4}}
+                }
+                \s\s
+                \treerule{Computation}{
+                    #4 \subtypep #6
+                    \s\s #3 \subeffectp #5
+                }{
+                    \M{#3}{#4}\subtypep{\M{#5}{#6}}
+                }
+            }{
+                \typerelation{\P\mid #1}{#2}{\M{#5}{#6}}
+            }
+        }
+                   
+
+        \newcommand{\edeltacruleprimeprime}[6]{
+            \treerule{Subtype}{
+                \treerule{}{
+                    \D''
+                }{
+                    \typerelation{\P\mid #1}{#2}{\M{#3}{#4}}
+                }
+                \s\s
+                \treerule{Computation}{
+                    #4 \subtypep #6
+                    \s\s #3 \subeffectp #5
+                }{
+                    \M{#3}{#4}\subtypep{\M{#5}{#6}}
+                }
+            }{
+                \typerelation{\P\mid #1}{#2}{\M{#5}{#6}}
+            }
+        }
 \fi
