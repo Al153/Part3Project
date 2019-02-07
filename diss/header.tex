@@ -237,4 +237,38 @@
 \newcommand\subeffectp[0]{\subeffect_{\P}}
 \newcommand\subeffectpp[0]{\subeffect_{\P'}}
 
+
+\newcommand{\allI}[0]{\forall_I}
+\newcommand{\allII}[0]{\forall_{I'}}
+\newcommand\type[0]{\texttt{Type}}
+\newcommand\effect[0]{\texttt{Effect}}
+\newcommand\ciw[0]{\C(I, W)}
+\newcommand\ciu[0]{\C(I, U)}
+\newcommand\ciuw[0]{\C(I\times U, W)}
+\newcommand\cipw[0]{\C(I', W)}
+\newcommand\cipu[0]{\C(I', U)}
+\newcommand\cii[0]{\C(I', I)}
+\newcommand\Eff[0]{\texttt{Eff}}
+\newcommand\Mul[0]{\texttt{Mul}}
+\renewcommand\star[0]{^*}
+\renewcommand\bar[1]{\overline{#1}}
+
+\newcommand\subtypeg[0]{\subtype_\g}
+\newcommand\subtypepa[0]{\subtype_{\P, \a}}
+\newcommand\subtypeppa[0]{\subtype_{\P', \a}}
+
+\usepackage{scalerel,stackengine}
+\stackMath
+\renewcommand\widehat[1]{%
+\savestack{\tmpbox}{\stretchto{%
+  \scaleto{%
+    \scalerel*[\widthof{\ensuremath{#1}}]{\kern.1pt\mathchar"0362\kern.1pt}%
+    {\rule{0ex}{\textheight}}%WIDTH-LIMITED CIRCUMFLEX
+  }{\textheight}% 
+}{2.4ex}}%
+\stackon[-6.9pt]{#1}{\tmpbox}%
+}
+\parskip 1ex
+
+\newcommand\pstar[0]{\p\star}
 \fi

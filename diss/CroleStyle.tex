@@ -1,38 +1,5 @@
 \documentclass{report}
 \input{header.tex}
-\newcommand{\allI}[0]{\forall_I}
-\newcommand{\allII}[0]{\forall_{I'}}
-\newcommand\type[0]{\texttt{Type}}
-\newcommand\effect[0]{\texttt{Effect}}
-\newcommand\ciw[0]{\C(I, W)}
-\newcommand\ciu[0]{\C(I, U)}
-\newcommand\ciuw[0]{\C(I\times U, W)}
-\newcommand\cipw[0]{\C(I', W)}
-\newcommand\cipu[0]{\C(I', U)}
-\newcommand\cii[0]{\C(I', I)}
-\newcommand\Eff[0]{\texttt{Eff}}
-\newcommand\Mul[0]{\texttt{Mul}}
-\renewcommand\star[0]{^*}
-\renewcommand\bar[1]{\overline{#1}}
-
-\newcommand\subtypeg[0]{\subtype_\g}
-\newcommand\subtypepa[0]{\subtype_{\P, \a}}
-\newcommand\subtypeppa[0]{\subtype_{\P', \a}}
-
-\usepackage{scalerel,stackengine}
-\stackMath
-\renewcommand\widehat[1]{%
-\savestack{\tmpbox}{\stretchto{%
-  \scaleto{%
-    \scalerel*[\widthof{\ensuremath{#1}}]{\kern.1pt\mathchar"0362\kern.1pt}%
-    {\rule{0ex}{\textheight}}%WIDTH-LIMITED CIRCUMFLEX
-  }{\textheight}% 
-}{2.4ex}}%
-\stackon[-6.9pt]{#1}{\tmpbox}%
-}
-\parskip 1ex
-
-\newcommand\pstar[0]{\p\star}
 
 \begin{document}
 
@@ -396,6 +363,8 @@ By induction on the derivation on $\deno{\typerelation{\P}{\e}{\effect}}$
     \Mul(\deno{\typerelation{\P}{\e_1}{\effect}}, \deno{\typerelation{\P}{\e_2}{\effect}})\after \si \\
     & = \Mul(\deno{\typerelation{\P}{\e_1}{\effect}}\after \si, \deno{\typerelation{\P}{\e_2}{\effect}}\after \si)\qt{By Naturality}\\
     & = \Mul(\deno{\typerelation{\P'}{\si(\e_1)}{\effect}}, \deno{\typerelation{\P}{\si(\e_2)}{\effect}})\\
+    & = \deno{\typerelation{\P'}{\si(\e_1)\dot\si(\e_2)}{\effect}}\\
+    & = \deno{\typerelation{\P'}{\si(\e_1\dot\e_2)}{\effect}}\\
 \end{align}
 
 \section{Types}
@@ -477,8 +446,9 @@ Since $\si\star$ is s-closed.
     &= \deno{\fntype{(A\ssi)}{(B\ssi)}\subtypepp\fntype{(A'\ssi)}{(B'\ssi)}}\\
     &= \deno{(\ab)\ssi\subtypepp(\fntype{A'}{B'})\ssi}
 \end{align}
+
 \section{Type Environments}
-If $\si = \deno{\typerelation{\P'}{\si}{\P}}$ then $\deno{\wellformedok{\P'}{\G\ssi}} = \si\star\deno{\wellformedok{\P}{\G}} = \deno{\wellformedok{\P}{\G}}: \cipw$.
+If $\si = \deno{\typerelation{\P'}{\si}{\P}}$ then $\deno{\wellformedok{\P'}{\G\ssi}} = \si\star\deno{\wellformedok{\P}{\G}} = \deno{\wellformedok{\P}{\G}}\after\si: \cipw$.
 
 \proof
 By induction on the derivation on $\deno{\wellformedok{\P}{\G}}$. Using Naturality.
@@ -691,7 +661,7 @@ Let \begin{equation}
 Then
 
 \begin{equation}
-    \D = \hat{\D_1}\\
+    \D = \widehat{\D_1}\\
 \end{equation}
 
 And also
@@ -702,9 +672,9 @@ And also
 
 So
 \begin{align}
-    \si\star\D &= \si\star(\hat{\D_1})\\
-    & = \hat{(\si\times\Id{U})\star\D_1}\qt{By naturality}\\
-    & = \hat{\D_1'}\qt{By induction}\\
+    \si\star\D &= \si\star(\widehat{\D_1})\\
+    & = \widehat{(\si\times\Id{U})\star\D_1}\qt{By naturality}\\
+    & = \widehat{\D_1'}\qt{By induction}\\
     & = \D'
 \end{align}
 
@@ -744,24 +714,532 @@ Let \begin{align}
     & = \widehat{\bar{(\si\times\Id{U})\star(\widehat{\Id{\allI(A)}})}}\qt{By bijection}\\
     & = \widehat{\si\star(\bar{\widehat{\Id{\allI(A)}}})}\qt{By naturality}\\
     & = \widehat{\si\star(\Id{\allI(A)})}\qt{By bijection}\\
-    & = \widehat{\Id{\allI(A\after(\si\times\Id{U}))}}\qt{By S-Closure, naturality}\\
-    & = \widehat{\Id{\allI(A\sub{\si,\a\setto\a})}}\qt{By Substitution theorem}\\
+    & = \widehat{\Id{\allII(A\after(\si\times\Id{U}))}}\qt{By S-Closure, naturality}\\
+    & = \widehat{\Id{\allII(A\sub{\si,\a\setto\a})}}\qt{By Substitution theorem}\\
     & = \e_{A\ssi}
 \end{align}
 
 Going back to the original expression:
 
 \begin{align}
-    \si\star{\D} & = (\pr{\Id{\G}}{h'})\star((\si\times\Id{U})\star\e_{A\ssi})\after\D_1)'\\
+    \si\star{\D} & = (\pr{\Id{\G}}{h'})\star(\e_{A\ssi})\after\D_1)'\\
     & = \D'\\
 \end{align}
 
 \chapter{Effect Weakening Theorem}
+In this section, we state and prove a theorem that the action of a simultaneous effect-weakening upon a structure in the language has a consistent effect upon the denotation of the language. More formally, for the denotation morphism $\D$ of some relation, the denotation of the weakened relation, $\D' = \w\star(\D)$.
+
 \section{Effects}
+If $\w = \deno{\wrelw{\P'}{\P}}$ then $\typerelation{\P'}{\e}{\effect} = \w\star\deno{\typerelation{\P}{\e}{\effect}} = \deno{\typerelation{\P}{\e}{\effect}}\after\w$
+
+\proof
+By induction on the derivation on $\deno{\typerelation{\P}{\e}{\effect}}$
+
+\case{Ground}
+\begin{align}
+    \deno{\typerelation{\P}{e}{\effect}}\after\w & = \deno{e}\after\term{I}\after\w \\
+    & = \deno{e}\after\term{I'} \\
+    & = \deno{\typerelation{\P'}{e}{\type}}\\
+\end{align}
+
+\case{Var}
+Case split on $\w$.
+\subcase{$\w = \i$}
+Then $\P' = \P$ and $\w = \Id{I}$. So the theorem holds trivially.
+\subcase{$\w = \w'\x$}
+Then
+
+\begin{align}
+    \deno{\typerelation{\P,\a}{\a}{\effect}}\after\w &= \pp\after(\w'\times \Id{U}) \\
+    & = \pp\\
+    & = \deno{\typerelation{\P',\a}{\a}{\effect}}
+\end{align}
+
+\subcase{$\w = \w'\p$}
+Then \begin{equation}
+    \deno{\typerelation{\P,\a}{\a}{\effect}} = \pp\after\w'\after\p
+\end{equation}
+
+Where $\P' = \P,\b$ and $\wrel{\w'}{\P''}{\P}$.
+
+So\begin{align}
+    \pp\after\w' & = \deno{\typerelation{\P''}{\a}{\effect}}
+    \\
+    \pp\after\w'\after\p & =\deno{\typerelation{\P'',\b}{\a}{\effect}}
+    &= \deno{\typerelation{\P'}{\a}{\effect}}
+\end{align}
+
+\case{Weaken}
+\begin{equation}
+    \deno{\typerelation{\P,\b}{\a}{\effect}}\after\w = \deno{\typerelation{\P}{\a}{\effect}}\after\p\after\w
+\end{equation}
+
+Case split of structure of $w$
+
+\subcase{$\w=\i$}
+Then $\P' = \P,\b$ so $\w=\Id{I}$
+So $\deno{\typerelation{\P,\b}{\a}{\effect}}\after\w = \deno{\typerelation{\P'}{\a}{\effect}}$
+
+\subcase{$\w=\w'\p$}
+Then $\P' = \P'',\g$ and $\w=\w'\after\p$
+Where $\wrel{\w'}{\P''}{\P,\b}$.
+So
+\begin{align}
+    \deno{\typerelation{\P,\b}{\a}{\effect}}\after\w & = \deno{\typerelation{\P,\b}{\a}{\effect}}\after\w'\after\p\\
+    & = {\typerelation{\P''}{\a}{\effect}}\after\p\\
+    & = {\typerelation{\P'',\g}{\a}{\effect}}\\
+    & = {\typerelation{\P'}{\a}{\effect}}\\
+\end{align}
+
+\subcase{$\w=\w'\x$}
+Then $\P'=\P'',\b$ and $\wrel{\w'}{\P'}{\P}$
+
+So \begin{align}
+    \deno{\typerelation{\P,\b}{\a}{\effect}}\after\w &= \deno{\typerelation{\P}{\a}{\effect}}\after\p\after(\w'\times\Id{U})\\
+    &=\deno{\typerelation{\P}{\a}{\effect}}\after\w'\after\p\\
+    & = \deno{\typerelation{\P''}{\a}{\effect}}\after\p\\
+    & = \deno{\typerelation{\P'}{\a}{\effect}}\\
+\end{align}
+
+\case{Multiply}
+\begin{align}
+    \deno{\typerelation{\P}{\e_1\dot\e_2}{\type}} \after\w &=
+    \Mul(\deno{\typerelation{\P}{\e_1}{\effect}}, \deno{\typerelation{\P}{\e_2}{\effect}})\after \w \\
+    & = \Mul(\deno{\typerelation{\P}{\e_1}{\effect}}\after \w, \deno{\typerelation{\P}{\e_2}{\effect}}\after \w)\qt{By Naturality}\\
+    & = \Mul(\deno{\typerelation{\P'}{\e_1}{\effect}}, \deno{\typerelation{\P}{\e_2}{\effect}})\\
+    & = \deno{\typerelation{\P}{\e_1\dot\e_2}{\effect}}
+\end{align}
+
+
 \section{Types}
-\section{Type Environments}
+If $\w = \deno{\wrelw{\P'}{\P}}$ then $\deno{\typerelation{\P'}{A}{\type}} = \w\star\deno{\typerelation{\P}{A}{\type}} = \deno{\typerelation{\P}{A}{\type}}\after\w$.
+
+\proof
+By induction on the derivation on $\deno{\typerelation{\P}{A}{\type}}$. Making use of naturality properties of the type constructors.
+
+\case{Ground}
+\begin{align}
+    \deno{\typerelation{\P}{\g}{\type}}\after\w &= \deno{\g}\after\term{I}\after\w\\
+    & =  \deno{\g}\after\term{I'}\\
+    & = \deno{\typerelation{\P'}{\g}{\type}}\\
+    & = \deno{\typerelation{\P'}{\g}{\type}}
+\end{align}
+
+\case{Monad}
+\begin{align}
+    \deno{\typerelation{\P}{\mea}{\type}}\after\w & =  \Eff(\deno{\typerelation{\P}{\e}{\effect}}, \deno{\typerelation{\P}{A}{\type}})\after\w \\
+    & = \Eff(\deno{\typerelation{\P}{\e}{\effect}}\after\w, \deno{\typerelation{\P}{A}{\type}}\after\w) \qt{By naturality}\\
+    & = \Eff(\deno{\typerelation{\P'}{\e}{\effect}}, \deno{\typerelation{\P'}{A}{\type}})\\
+    & = \deno{\typerelation{\P'}{(\mea)}{\type}}
+\end{align}
+\case{Quantification}
+    Note $\deno{\wrel{\w\x}{\P',\a}{\P,\a}} = \w\times\Id{U}$
+
+    \begin{align}
+        \deno{\typerelation{\P}{\all{\a}A}{\type}}\after\w & = \allI(\deno{\typerelation{\P,\a}{A}{\type}})\after\w\\
+        & = \allI(\deno{\typerelation{\P,\a}{A}{\type}}\after(\w\times\Id{U}))\qt{By naturality}\\
+        & = \allI(\deno{\typerelation{\P',\a}{A}{\type}})\qt{By induction}\\
+        & = \deno{\typerelation{\P'}{\all{\a}{A}}{\type}}\\
+        & = \deno{\typerelation{\P'}{(\all{\a}{A})}{\type}}\\
+    \end{align}
+
+\case{Function}
+\begin{align}
+    \deno{\typerelation{\P}{\ab}{\type}}\after\w &= \diamond(\deno{\typerelation{\P}{A}{\type}},\deno{\typerelation{\P}{B}{\type}})\after\w\\
+    &= \diamond(\deno{\typerelation{\P}{A}{\type}}\after\w,\deno{\typerelation{\P}{B}{\type}}\after\w)\qt{By Naturality}\\
+    & = \diamond(\deno{\typerelation{\P'}{A}{\type}},\deno{\typerelation{\P'}{B}{\type}})\\
+    & = \deno{\typerelation{\P'}{(\ab)}{\type}}\\
+\end{align}
+
 \section{Sub-typing}
+If $\w = \deno{\wrelw{\P'}{\P}}$ then $\deno{A\subtypepp B} = \w\star\deno{A\subtypep B}: \cipw(A, B)$.
+
+\proof
+By induction on the derivation on $\deno{A\subtypep B}$. Using S-closure of $\w\star$ 
+
+\case{Ground}
+\begin{align}
+    \w\star(\g_1\subtypeg\g_2) &= (\g_1\subtypeg\g_2)
+\end{align}
+
+Since $\w\star$ is s-closed.
+
+\case{Monad}
+\begin{align}
+    \w\star\deno{\M{\e_1}{A} \subtypep \M{\e_2}{B}} & = \w\star(\deno{\e_1\subeffectp\e_2})\after\w\star(\T{\e_1}(\deno{A\subtypep B})) \\ 
+     &= \deno{\e_1\subeffectpp\e_2} \after \T{\e_1}{\deno{A\subtypepp B}}\qt{By S-Closure}\\
+     &= \deno{\M{\e_1}{A}\subtypepp\M{\e_2}{B}}\\
+     &= \deno{(\M{\e_1}{A})\subtypepp\M{\e_2}{B}}\\
+\end{align}
+
+\case{For All}
+Note $\deno{\wrel{\w\x}{\P',\a}{\P,\a}} = (\w\times\Id{U})$
+    \begin{align}
+        \w\star\deno{\all{\a}{A}\subtypep\all{\a}{B}} &= \w\star(\allI(\deno{A\subtypepa B})) \\
+        &=\allII((\w\times\Id{U})\star(\deno{A\subtypepa B}))\\
+        &=\allII(\deno{A\subtypeppa B})\\
+        &= \deno{(\all{\a}{A}) \subtypepp(\all{\a}{B})}\\
+    \end{align}
+
+\case{Fn}
+\begin{align}
+    \w\star\deno{(\ab)\subtypep\fntype{A'}{B'}} &= \w\star(\deno{B\subtypep B'}^{A'}\after B^{\deno{A'\subtypep A}})\\
+    &= \w\star(\cur{\deno{B\subtypep B'}\after\app})\after\w\star(\cur{\app\after(\Id{B}\times\deno{A'\subtypep A})})\\
+    & = \cur{\w\star(\deno{B\subtypep B'})\after\app}\after\cur{\app\after(\Id{B}\times\w\star(\deno{A'\subtypep A}))}\\
+    & = \cur{\deno{B\subtypepp B'}\after\app}\after\cur{\app\after(\Id{B}\times\deno{A'\subtypepp A})}\\
+    &= \deno{(\ab)\subtypepp(\fntype{A'}{B'})}
+\end{align}
+
+\section{Type Environments}
+If $\w = \deno{\wrelw{\P'}{\P}}$ then $\deno{\wellformedok{\P'}{\G}} = \w\star\deno{\wellformedok{\P}{\G}} = \deno{\wellformedok{\P}{\G}}\after\w: \cipw$.
+
+\proof
+By induction on the derivation on $\deno{\wellformedok{\P}{\G}}$. Using Naturality.
+
+\case{Nil}
+\begin{align}
+    \w\star\deno{\wellformedok{\P}{\nil}} &= \term{I}\after\w\\
+    &= \term{I'}\\
+    &= \deno{\wellformedok{\P'}{\nil}}\\
+\end{align}
+
+\case{Var}
+\begin{align}
+   \w\star\deno{\wellformedok{\P}{\gax}} &= \w\star(\square(\deno{\wellformedok{\P}{\G}},\deno{\typerelation{\P}{A}{\type}})) \\
+    & = \square(\deno{\wellformedok{\P}{\G}},\deno{\typerelation{\P}{A}{\type}})\after\w\\
+   & = \square(\deno{\wellformedok{\P}{\G}}\after\w, \deno{\typerelation{\P}{A}{\type}}\after\w)\\
+    & = \square(\deno{\wellformedok{\P'}{\G}},\deno{\typerelation{\P'}{A}{\type}})\\
+    & = \deno{\wellformedok{\P'}{(\gax)}}\\
+\end{align}
+
 \section{Terms}
+
+
+\section{Terms}
+If 
+\begin{align}
+    \w &= \deno{\wrelw{\P'}{\P}}\\
+    \D &= \deno{\gpetyperelation{v}{A}}\\
+    \D' &= \deno{\etyperelation{\P'}{\G}{v}{A}}\\
+\end{align}
+
+Then \begin{eqnarray}
+    \D' = \w\star(\D)
+\end{eqnarray}
+
+\proof
+By induction over the derivation of $\D$. Using the S-Closure of $\w\star$. We use $\G_I$ to indicate $\deno{\wellformedok{\P}{\G}}$, an $A_I$ to indicate $\deno{\typerelation{\P}{A}{\effect}}$
+
+\case{Unit}
+
+\begin{equation}
+    \D = \term{\G_I}
+\end{equation}
+
+So
+
+\begin{equation}
+    \w\star(\D) = \term{\G_{I'}} = \D'
+\end{equation}
+
+\case{True, False}
+Giving the case for true as false is the same but using $\inr$
+\begin{equation}
+    \D = \inl\after\term{\G_I}
+\end{equation}
+
+So
+
+\begin{equation}
+    \w\star(\D) = \inl\after \term{\G_{I'}} = \D'
+\end{equation}
+
+Since $\w\star$ is S-closed.
+
+\case{Constant}
+
+
+\begin{equation}
+    \D = \deno{\const{A}}\after\term{\G_I}
+\end{equation}
+
+So
+
+\begin{equation}
+    \w\star(\D) = \w\star\deno{\const{A}}\after \term{\G_{I'}}=\deno{\const{A_{I'}}}\after \term{\G_{I'}}  = \D'
+\end{equation}
+
+Since $\w\star$ is S-closed.
+
+\case{Subtype}
+
+Let \begin{equation}
+    \D_1 = \deno{\gpetyperelation{v}{A}}
+\end{equation}
+
+Then
+
+\begin{equation}
+    \D = \deno{A\subtypep B}\after \D_1\\
+\end{equation}
+
+So 
+\begin{align}
+    \w\star(\D) & = \w\star{\deno{A\subtypep B}}\after\w\star\D_1 \\
+    & = \deno{A_{I'}\subtypepp B_{I'}}\after\D_1'\qt{By induction}\\
+    & = D'
+\end{align}
+
+\case{Lambda}
+Let \begin{equation}
+    \D_1 = \deno{\etyperelation{\P}{\gax}{v}{B}}
+\end{equation}
+
+Then
+
+\begin{equation}
+    \D = \cur(\D_1)\\
+\end{equation}
+
+So
+\begin{align}
+    \w\star(\D) & = \w\star(\cur{\D_1})\\
+    & = \cur{\w\star(\D_1)}\qt{By S-closure}\\
+    & = \cur{\D_1'}\qt{By induction}\\
+    & = \D'
+\end{align}
+
+\case{Application}
+Let \begin{align}
+    \D_1 &= \deno{\gpetyperelation{v_1}{\ab}}\\
+    \D_2 &= \deno{\gpetyperelation{v_2}{A}}
+\end{align}
+
+Then
+
+\begin{equation}
+    \D = \app\after\pr{\D_1}{\D_2}\\
+\end{equation}
+
+So
+
+\begin{align}
+    \w\star\D & = \w\star(\app\after\pr{\D_1}{\D_2})\\
+    & = \app\after\pr{\w\star(\D_1)}{\w\star(\D_2)}\qt{By S-closure}\\
+    & = \app\after\pr{\D_1'}{\D_2'}\qt{By Induction}\\
+    & = \D'
+\end{align}
+
+\case{Return}
+Let \begin{equation}
+    \D_1 = \deno{\gpetyperelation{v}{A}}
+\end{equation}
+
+Then
+
+\begin{equation}
+    \D = \point{A_I}\after \D_1\\
+\end{equation}
+
+So
+
+\begin{align}
+    \w\star(\D) &= \w\star(\point{A_I}\after \D_1)\\
+            & = \point{A_{I'}} \after\w\star(\D_1)\qt{By S-closure}\\
+            & = \point{A_{I'}} \after\D_1'\\
+            & = \D'
+\end{align}
+
+\case{Bind}
+Let \begin{align}
+    \D_1 &= \deno{\gpetyperelation{v_1}{\M{\e_1}{A}}}\\
+    \D_2 &= \deno{\etyperelation{\P}{\gax}{v_2}{\M{\e_2}{B}}}
+\end{align}
+
+Then
+
+\begin{equation}
+    \D = \M{\e_1}{\e_2}{A_I}\after\T{\e_1}{\D_2}\after\tstrength{\e_1}{\G_I}{A_I}\after\pr{\Id{\G_{I}}}{\D_1}\\
+\end{equation}
+
+So
+
+\begin{align}
+    \w\star(\D) &= \w\star(\bind{\e_1}{\e_2}{A}\after\T{\e_1}{\D_2}\after\tstrength{\e_1}{\G}{A}\after\pr{\Id{\G}}{\D_1})\\
+    & = \w\star(\bind{\e_1}{\e_2}{A})\after\w\star(\T{\e_1}{\D_2})\after\w\star(\tstrength{\e_1}{\G}{A})\after\pr{\w\star(\Id{\G_{I})}}{\w\star(\D_1)}\qt{By S-Closure}\\
+    &= \bind{\e_1}{\e_2}{A_{I'}}\after\T{\e_1}{\w\star(\D_2)}\after\tstrength{\e_1}{\G_{I'}}{A_{I'}}\after\pr{\w\star(\Id{\G_{I})}}{\w\star(\D_1)}\qt{By S-Closure}\\
+    &= \bind{\e_1}{\e_2}{A_{I'}}\after\T{\e_1}{\D_2'}\after\tstrength{\e_1}{\G_{I'}}{A_{I'}}\after\pr{\w\star(\Id{\G_{I})}}{\D_1'}\qt{By Induction}\\
+    &= \D'\\
+\end{align}
+
+\case{If}
+
+Let \begin{align}
+    \D_1 &= \deno{\gpetyperelation{v}{\B}}\\
+    \D_2 &= \deno{\gpetyperelation{v_1}{A}}\\
+    \D_3 &= \deno{\gpetyperelation{v_2}{A}}\\
+\end{align}
+
+Then
+
+\begin{equation}
+    \D = \app\after(([\cur{\D_2\after\pp}, \cur{\D_3\after\pp}]\after\D_1)\times\Id{\G})\after\diag{\G}\\
+\end{equation}
+
+So
+
+\begin{align}
+    \w\star(\D) &= \w\star(\app\after(([\cur{\D_2\after\pp}, \cur{\D_3\after\pp}]\after\D_1)\times\Id{\G})\after\diag{\G})\\
+    &= \app\after(([\cur{\w\star(\D_2)\after\pp}, \cur{\w\star(\D_3)\after\pp}]\after\w\star(\D_1))\times\Id{\G_{I'}})\after\diag{\G_{I'}}\qt{By S-Closure}\\
+    &= \app\after(([\cur{\D_2'\after\pp}, \cur{\D_3'\after\pp}]\after\D_1')\times\Id{\G_{I'}})\after\diag{\G_{I'}}\qt{By Induction}\\
+    & = \D'\\
+\end{align}
+
+
+\case{Effect-Lambda}
+
+Let \begin{equation}
+    \D_1 = \deno{\etyperelation{\P,\a}{\G}{v}{A}}
+\end{equation}
+
+Then
+
+\begin{equation}
+    \D = \widehat{\D_1}\\
+\end{equation}
+
+And also
+
+\begin{equation}
+    \w\times\Id{} = \deno{\wrel{\w\x}{(\P',\a)}{(\P,\a)}}
+\end{equation}
+
+So
+\begin{align}
+    \w\star\D &= \w\star(\widehat{\D_1})\\
+    & = \widehat{(\w\times\Id{U})\star\D_1}\qt{By naturality}\\
+    & = \widehat{\D_1'}\qt{By induction}\\
+    & = \D'
+\end{align}
+
+\case{Effect-Application}
+
+Let \begin{align}
+    \D_1 &= \deno{\gpetyperelation{v}{\all{\a}{A}}}\\
+    h &= \deno{\typerelation{\P}{\e}{\effect}}\\
+\end{align}
+
+Then
+
+\begin{equation}
+    \D = \pr{\Id{\G}}{h}\star(\e_{\deno{\typerelation{\P,\b}{A\ssub{\a}{\b}}{\type}}})\after\D_1\\
+\end{equation}
+
+So due to the substitution theorem on effects
+\begin{equation}
+    h\after\w = \deno{\typerelation{\P}{\e}{\effect}}\after\w = \deno{\typerelation{\P'}{\e}{\effect}} = h'
+\end{equation}
+
+Also note $(\w\times\Id{U}) = \deno{\wrel{\w\x}{\P',\a}{\P\a}}$
+
+\begin{align}
+    \w\star{\D} & = \w\star(\pr{\Id{\G}}{h}\star(\e_{\deno{\typerelation{\P,\b}{A\ssub{\a}{\b}}{\type}}})\after\D_1)\\
+    & = (\pr{\Id{\G}}{h}\after\w)\star(\e_{\deno{\typerelation{\P,\b}{A\ssub{\a}{\b}}{\type}}})\after\w\star(\D_1)\\
+    & = ((\w\times\Id{U})\after\pr{\Id{\G}}{h\after\w})\star(\e_{\deno{\typerelation{\P,\b}{A\ssub{\a}{\b}}{\type}}})\after\D_1)'\\
+    & = (\pr{\Id{\G}}{h'})\star((\w\times\Id{U})\star\e_{\deno{\typerelation{\P,\b}{A\ssub{\a}{\b}}{\type}}})\after\D_1)'\\
+\end{align}
+
+Looking at the inner part of the functor application:
+Let \begin{align}
+    A & = \deno{\typerelation{\P,\b}{A\ssub{\a}{\b}}{\type}}\\
+\end{align}
+\begin{align}
+    (\w\times\Id{U})\star\e_{\deno{\typerelation{\P,\b}{A\ssub{\a}{\b}}{\type}}} &= (\w\times\Id{U})\star\e_{A}\\
+    & = (\w\times\Id{U})\star(\widehat{\Id{\allI(A)}})\\
+    & = \widehat{\bar{(\w\times\Id{U})\star(\widehat{\Id{\allI(A)}})}}\qt{By bijection}\\
+    & = \widehat{\w\star(\bar{\widehat{\Id{\allI(A)}}})}\qt{By naturality}\\
+    & = \widehat{\w\star(\Id{\allI(A)})}\qt{By bijection}\\
+    & = \widehat{\Id{\allII(A\after(\w\times\Id{U}))}}\qt{By S-Closure, naturality}\\
+    & = \widehat{\Id{\allII(A)}}\qt{By Substitution theorem}\\
+    & = \e_{A_{I'}}
+\end{align}
+
+Going back to the original expression:
+
+\begin{align}
+    \w\star{\D} & = (\pr{\Id{\G}}{h'})\star(\e_{A_{I'}})\after\D_1)'\\
+    & = \D'\\
+\end{align}
+
+
+
+\section{Term-Substitution}
+
+If $\w = \deno{\wrelw{\P'}{\P}}$, then $\deno{\etyperelation{\P'}{\G'}{\si}{\G}} = \w\star\deno{\etyperelation{\P}{\G'}{\si}{\G}}$.
+
+\proof
+By induction on the structure of $\si$, making use of the weakening of term denotations above.
+
+\case{Nil}
+Then $\si = \term{\G'_{I}}$, so $\w\star(\si) = \term{\G'_{I'}} = \deno{\etyperelation{\P'}{\G'}{\si}{\G}}$
+
+\case{Var}
+Then $\si = (\si',x\setto v)$
+
+\begin{align}
+    \w\star\si & = \w*\pr{\si'}{\deno{\gpetyperelation{v}{A}}}\\
+    & = \pr{\w\star\si'}{\w\star\deno{\gpetyperelation{v}{A}}}\\
+    &=\pr{\deno{\etyperelation{\P'}{\G'}{\si'}{\G}}}{\deno{\etyperelation{\G'}{\P'}{v}{A}}}\\
+    &=\deno{\etyperelation{\P'}{\G'}{\si}{\gax}}
+\end{align}
+
+\section{Term-Weakening}
+If $\w = \deno{\wrelw{\P'}{\P}}$, then $\deno{\ewrel{\P'}{\w_1}{\G'}{\G}} = \w\star\deno{\ewrel{\P}{\w_1}{\G'}{\G}}$.
+
+
+\proof
+By induction on the structure of $\w_1$.
+
+\case{Id}
+Then $\w_1 = \i$, so its denotation is $\w_1 = \Id{\G_I}$
+
+So
+\begin{equation}
+  \w\star(\Id{\G_I}) = \Id{\G_{I'}} = \deno{\ewrel{\P'}{\i}{\G}{\G}}  
+\end{equation}
+
+\case{Project}
+Then $\w_1 = \w_1'\pi$
+
+\begin{equation}
+    \treerule{Project}{\ewrel{\P}{\w_1'}{\G'}{\G}}{\ewrel{\P}{\w_1\pi}{\G',x:A}{\G}}
+\end{equation}
+
+So $\w_1 = \w_1'\after\p$
+
+Hence
+\begin{align}
+    \w\star(\w_1) &= \w\star(\w_1')\after\w\star(\p)\\
+    & = \deno{\ewrel{\P'}{\w_1'}{\G'}{\G}}\after\p\\
+    & = \deno{\ewrel{\P'}{\w_1'\pi}{\G',x:A}{\G}}\\
+    & = \deno{\ewrel{\P'}{\w_1}{\G', x:A}{\G}}
+\end{align}
+
+\case{Extend}
+Then $\w_1 = \w_1'\x$
+
+\begin{equation}
+    \treerule{Extend}{\ewrel{\P}{\w_1'}{\G'}{\G}}{\ewrel{\P}{\w_1\x}{\G',x:A}{\gax}}
+\end{equation}
+
+So $\w_1 = \w_1'\times\Id{A_I}$
+
+Hence
+\begin{align}
+    \w\star(\w_1) &=(\w\star(\w_1')\times\w\star(\Id{A_I})\\
+    & = (\deno{\ewrel{\P'}{\w_1'}{\G'}{\G}}\times\Id{A_I})\\
+    & = \deno{\wrel{\P'}{\w_1}{\G',x:A}{\gax}}
+\end{align}
 
 \chapter{Value Substitution Theorem}
 
