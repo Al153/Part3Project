@@ -1231,16 +1231,16 @@ Hence
 Then $\w_1 = \w_1'\x$
 
 \begin{equation}
-    \treerule{Extend}{\ewrel{\P}{\w_1'}{\G'}{\G}}{\ewrel{\P}{\w_1\x}{\G',x:A}{\gax}}
+    \treerule{Extend}{\ewrel{\P}{\w_1'}{\G'}{\G}\s\s A\subtypep B}{\ewrel{\P}{\w_1\x}{\G',x:A}{\G, x:B}}
 \end{equation}
 
-So $\w_1 = \w_1'\times\Id{A_I}$
+So $\w_1 = \w_1'\times\deno{A\subtypep B}$
 
 Hence
 \begin{align}
-    \w\star(\w_1) &=(\w\star(\w_1')\times\w\star(\Id{A_I})\\
-    & = (\deno{\ewrel{\P'}{\w_1'}{\G'}{\G}}\times\Id{A_I})\\
-    & = \deno{\wrel{\P'}{\w_1}{\G',x:A}{\gax}}
+    \w\star(\w_1) &=(\w\star(\w_1')\times\w\star(\deno{A\subtypep B})\\
+    & = (\deno{\ewrel{\P'}{\w_1'}{\G'}{\G}}\times\deno{A\subtypepp B})\\
+    & = \deno{\ewrel{\P'}{\w_1}{\G',x:A}{\G,x:B}}
 \end{align}
 
 \chapter{Value Substitution Theorem}
