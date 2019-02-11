@@ -28,7 +28,7 @@ Let $I = U^n$.
     \item $\Mul:\ciu\times\ciu\rightarrow\ciu$ - Generates multiplication of effects.
 \end{itemize}
 
-With naturality conditions which mean, for $\theta: \U^m \rightarrow\U^n (I' \rightarrow I)$,
+With naturality conditions which mean, for $\theta: U^m \rightarrow U^n (I' \rightarrow I)$,
 \begin{itemize}
     \item $\diamond(\phi,\psi)\after\theta = \diamond(\phi\after\theta,\psi\after\theta)$
     \item $\square(\phi,\psi)\after\theta = \square(\phi\after\theta,\psi\after\theta)$
@@ -295,23 +295,23 @@ For each instance of the sub-typing relation with respect  to an effect environm
 \end{itemize}
 }
 
-\newcommand{\typeEnvDenotations}[0]{
+\newcommand{\typeEnvDenotations}[1]{
     
 
-For each instance of the well-formed relation on type environments, define an object in $\deno{\wellformedok{I}{W}}\in\ciw$.
+For each instance of the well-formed relation on type environments, define an object in $\deno{\wellformedok{\P}{\G}}\in#1$.
 
 \begin{itemize}
-    \item $\deno{\wellformedok{\P}{\nil}} = \1: \ciw$
+    \item $\deno{\wellformedok{\P}{\nil}} = \1: #1$
     \item $\deno{\wellformedok{\P}{\gax}} = \square(\deno{\wellformedok{\P}{\G}}, \deno{\typerelation{\P}{A}{\type}})$
 \end{itemize}
 
 }
 
-\newcommand\termDenotations[0]{
+\newcommand\termDenotations[1]{
     
-For each instance of the typing relation, define a denotation morphism: $\deno{\gpetyperelation{v}{A}}: \ciw(\G_I, A_I)$. Writing $\G_I$ and $A_I$ for $\deno{\wellformedok{\P}{\G}}$ and $\deno{\typerelation{\P}{A}{\type}}$.
+For each instance of the typing relation, define a denotation morphism: $\deno{\gpetyperelation{v}{A}}: #1(\G_I, A_I)$. Writing $\G_I$ and $A_I$ for $\deno{\wellformedok{\P}{\G}}$ and $\deno{\typerelation{\P}{A}{\type}}$.
 
-For each ground constant, $\const{A}$, there exists $c: \1 \rightarrow A_I$ in $\ciw$.
+For each ground constant, $\const{A}$, there exists $c: \1 \rightarrow A_I$ in $#1$.
 
 \begin{itemize}
     \item $\treerule{Unit}{\wellformedok{\P}{\G}}{\deno{\etyperelation{\P}{\G}{\u}{\U}} = \term{\G} : \G_I \rightarrow \1}$
@@ -336,8 +336,8 @@ For each ground constant, $\const{A}$, there exists $c: \1 \rightarrow A_I$ in $
     \item $\treerule{Bind}{f = \deno{\etyperelation{\P}{\G}{C_1}{\M{\e_1}{A}} : \G \rightarrow \T{\e_1}{A}\s\s g = \deno{\etyperelation{\P}{\gax}{C_2}{\M{\e_2}{B}}}}: \G \times A \rightarrow \T{\e_2}{B}}{\deno{\etyperelation{\P}{\G}{\doin{x}{C_1}{C_2}}{\M{\e_1 \dot \e_2}}} = \bind{\e_1}{\e_2}{B} \after \T{\e_1}{g} \after \tstrength{\G}{A}{\e_1} \after \pr{\idg}{f}: \G \rightarrow \T{\e_1 \dot \e_2}{B}}$ 
    
     \item $\treerule{Apply}{f = \deno{\gpetyperelation{v_1}{\lamtype{A}{\e}B}}: \G \rightarrow (\teb)^{A} \s\s g=\deno{\gpetyperelation{v_2}{A}}: \G \rightarrow A}{\deno{\gpetyperelation{\apply{v_1}{v_2}}{\meb}}= \app\after\pr{f}{g}: \G \rightarrow \teb }$
-    \item $\treerule{Effect-Lambda}{f = \deno{\etyperelation{\P,\a}{\G}{v}{A}}: \ciuw(\G, A)}{\deno{\gpetyperelation{\elam{\a}{A}}{\all{\e}{A}}} = \bar{f}: \ciw(\G, \allI(A))}$
-    \item $\treerule{Effect-App}{g=\deno{\gpetyperelation{v}{\all{\a}{A}}}: \ciw(\G, \allI(A))\s\s h = \deno{\typerelation{\P}{\e}{\effect}}: \ciu}{\deno{\gpetyperelation{\eapp{v}{\e}}{A\ssub{\a}{\e}}} = \pr{\Id{I}}{h}\star(\e_{\deno{\typerelation{\P,\b}{A\ssub{\a}{\b}}{\type}}})\after g: \ciw(\G, A\ssub{\a}{\e})}$
+    \item $\treerule{Effect-Lambda}{f = \deno{\etyperelation{\P,\a}{\G}{v}{A}}: \ciuw(\G, A)}{\deno{\gpetyperelation{\elam{\a}{A}}{\all{\e}{A}}} = \bar{f}: #1(\G, \allI(A))}$
+    \item $\treerule{Effect-App}{g=\deno{\gpetyperelation{v}{\all{\a}{A}}}: #1(\G, \allI(A))\s\s h = \deno{\typerelation{\P}{\e}{\effect}}: \ciu}{\deno{\gpetyperelation{\eapp{v}{\e}}{A\ssub{\a}{\e}}} = \pr{\Id{I}}{h}\star(\e_{\deno{\typerelation{\P,\b}{A\ssub{\a}{\b}}{\type}}})\after g: #1(\G, A\ssub{\a}{\e})}$
 \end{itemize}
 }
 
