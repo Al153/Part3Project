@@ -423,8 +423,8 @@ By induction on the derivation on $\deno{\typerelation{\P}{A}{\type}}$. Making u
 \end{align}
 }
 
-\newcommand\effectSubstitutionSubtyping[0]{
-    If $\si = \deno{\typerelation{\P'}{\si}{\P}}$ then $\deno{A\ssi\subtypepp B\ssi} = \si\star\deno{A\subtypep B}: \cipw(A, B)$.
+\newcommand\effectSubstitutionSubtyping[1]{
+    If $\si = \deno{\typerelation{\P'}{\si}{\P}}$ then $\deno{A\ssi\subtypepp B\ssi} = \si\star\deno{A\subtypep B}: #1(A, B)$.
 
 \proof
 By induction on the derivation on $\deno{A\subtypep B}$. Using S-closure of $\si\star$ 
@@ -503,7 +503,7 @@ Then \begin{eqnarray}
 \end{eqnarray}
 
 \proof
-By induction over the derivation of $\D$. Using the S-Closure of $\si\star$. We use $\G_I$ to indicate $\deno{\wellformedok{\P}{\G}}$, an $A_I$ to indicate $\deno{\typerelation{\P}{A}{\effect}}$
+By induction over the derivation of $\D$. Using the S-Closure of $\si\star$. We use $\G_I$ to indicate $\deno{\wellformedok{\P}{\G}}$, an $A_I$ to indicate $\deno{\typerelation{\P}{A}{\type}}$
 
 \case{Unit}
 
@@ -870,8 +870,8 @@ By induction on the derivation on $\deno{\typerelation{\P}{A}{\type}}$. Making u
 
 }
 
-\newcommand\effectWeakeningSubtyping[0]{
-    If $\w = \deno{\wrelw{\P'}{\P}}$ then $\deno{A\subtypepp B} = \w\star\deno{A\subtypep B}: \cipw(A, B)$.
+\newcommand\effectWeakeningSubtyping[1]{
+    If $\w = \deno{\wrelw{\P'}{\P}}$ then $\deno{A\subtypepp B} = \w\star\deno{A\subtypep B}: #1(A, B)$.
 
 \proof
 By induction on the derivation on $\deno{A\subtypep B}$. Using S-closure of $\w\star$ 
@@ -948,7 +948,7 @@ Then \begin{eqnarray}
 \end{eqnarray}
 
 \proof
-By induction over the derivation of $\D$. Using the S-Closure of $\w\star$. We use $\G_I$ to indicate $\deno{\wellformedok{\P}{\G}}$, an $A_I$ to indicate $\deno{\typerelation{\P}{A}{\effect}}$
+By induction over the derivation of $\D$. Using the S-Closure of $\w\star$. We use $\G_I$ to indicate $\deno{\wellformedok{\P}{\G}}$, an $A_I$ to indicate $\deno{\typerelation{\P}{A}{\type}}$
 
 \case{Unit}
 
@@ -1018,7 +1018,7 @@ Let \begin{equation}
 Then
 
 \begin{equation}
-    \D = \cur(\D_1)\\
+    \D = \cur{\D_1}\\
 \end{equation}
 
 So

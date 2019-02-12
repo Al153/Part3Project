@@ -1,0 +1,383 @@
+
+\input{CroleSections.tex}
+
+\newcommand\simplifiedBaseCategory{
+    There are 2 distinct objects in the base category, $\C$:
+
+\begin{itemize}
+    \item $U$ - The kind of \effect
+    \item $\1$ - A terminal object
+\end{itemize}
+
+And we have finite products on $U$.
+
+\begin{itemize}
+    \item $U^0 = \1$
+    \item $U^{n+1} = U^n \times U$
+\end{itemize}
+
+We also have the following natural operations on morphisms in $\C$.
+
+Let $I = U^n$.
+
+\begin{itemize}
+    \item $\Mul:\ciu\times\ciu\rightarrow\ciu$ - Generates multiplication of effects.
+\end{itemize}
+
+With naturality conditions which mean, for $\theta: U^m \rightarrow U^n (I' \rightarrow I)$,
+\begin{itemize}
+    \item $\Mul(\phi,\psi)\after\theta = \Mul(\phi\after\theta,\psi\after\theta)$
+\end{itemize}
+}
+
+\newcommand\simplifiedWellFormedNess[0]{
+    
+Each instance of the well-formed-ness relation on effects, $\wellformed{\P}{\e}$ has a denotation in $\C$: \begin{equation}
+    \deno{\typerelation{\P}{\e}{\effect}}: I \rightarrow U
+\end{equation}
+
+It should also be the case that \begin{equation}
+    \Mul(\deno{\typerelation{\P}{\e_1}{\effect}}, \deno{\typerelation{\P}{\e_2}{\effect}}) = \deno{\typerelation{\P}{\e_1\dot\e_2}{\effect}} \in \ciu
+\end{equation}
+
+That is, $\Mul$ should be have identity $\deno{\typerelation{\P}{\1}{\effect}}$ and be associative.
+}
+
+\newcommand\simpleFibres[0]{
+    Each set of morphisms $\ciu$ corresponds to a semantic-closed (S-closed) category. That is, a category satisfying all the properties needed for the non-polymorphic language:
+
+    \begin{itemize}
+        \item Cartesian Closed
+        \item Co-product of the terminal object with itself ($\1 + \1$)
+        \item Ground morphisms for each ground constant ($\const{A}: \1\rightarrow A$)
+        \item Partial order morphisms on ground types ($\deno{A\subtypeg} B$)
+        \item \todo{Po-Monoid is over morphisms $\ciu$}A strong, monad, graded by the po-monoid $(\ciu, \Mul, \subeffectp, \deno{\1})$.
+    \end{itemize}
+}
+
+\newcommand\simpleReindexingFunctors[0]{
+    
+For each morphism $f: I' \rightarrow I$ in $\C$, there should be a co-variant, re-indexing functor  $f\star: \ciu \rightarrow \cipu$, which is S-closed. That is, it preserves the S-closed properties of $\ciu$. (See below).
+
+$(-)\star$ should be a contra-variant functor in its $\C$ argument and co-variant in its right argument.
+
+\begin{itemize}
+    \item $(g\after f)\star(a) = f\star(\g\star(a))$
+    \item $\Id{I}\star(a) = a$
+    \item $f\star(\Id{A}) = \Id{f\star(A)}$
+    \item $f\star(a\after b) = f\star(a)\after f\star(b)$
+\end{itemize}
+\subsection{Preserves Ground Types}
+If $\deno{\g}\in\obj\ciu$ then $f\star\deno{\g} = \deno{\g}\in\obj\cipu$
+\subsection{$f\star$ Preserves Products}
+If $\pr{g}{h}:\ciu(Z, X\times Y)$
+Then 
+\begin{align}
+    f\star(X\times Y) & = f\star(X)\times f\star(Y)\\
+    f\star(\pr{g}{h}) & = \pr{f\star(g)}{f\star{h}}&:\cipu(f\star Z, f\star(X)\times f\star(Y))\\
+    f\star(\p) & = \p&:\cipu(f\star(X)\times f\star(Y), f\star(X)) \\
+    f\star(\pp) &= \pp&:\cipu(f\star(X)\times f\star(Y), f\star(Y))
+\end{align}
+
+\subsection{$f\star$ Preserves Terminal Object}
+If $\Id{A}:\ciu(A, \1)$
+Then 
+\begin{align}
+    f\star(\1) & = \1 \\
+    f\star(\term{A}) & = \term{f\star(A)}&:\cipu(f\star A, \1)\\
+\end{align}
+
+\subsection{$f\star$ Preserves Exponentials}
+\begin{align}
+    f\star(Z^X) & = (f\star(Z))^{(f\star(X))}\\
+     f\star(\app) &= \app&:\cipu(f\star(Z^X)\times f\star(X), f\star(Z))\\
+     f\star(\cur{g}) &= \cur{f\star(g)}&:\cipu(f\star(Y)\times f\star(X), f\star(Z)^{f\star(X)})
+\end{align}
+
+\subsection{$f\star$ Preserves Co-product on Terminal}
+
+\begin{align}
+    f\star(\1+\1) &= \1+\1\\
+    f\star(\inl)  &= \inl&:\cipu(\1, \1+\1) \\
+    f\star(\inr) &= \inr&:\cipu(\1, \1+\1) \\
+    f\star([g, h]) &= [f\star(g), f\star(h)]&:\cipu(\1+\1, f\star(Z))
+\end{align}
+
+\subsection{$f\star$ Preserves Graded Monad}
+\begin{align}
+    f\star(\tea) &= \T{f\star(\e)}{f\star(A)}&:\cipu\\
+    f\star(\1) &= \1 \qt{The unit effect}\\
+    f\star(\point{A}) &= \point{f\star(A)}&:\cipu(f\star(A), f\star(\toa))\\
+    f\star(\bind{\e_1}{\e_2}{A}) &= \bind{f\star(\e_1)}{f\star(\e_2)}{f\star(A)}&:\cipu(f\star(\T{\e_1}{\T{\e_2}{A}}), f\star(\T{f\star(\e_1)\dot f\star(\e_2)}{f\star(A)}))\\
+    f\star(\e_1\dot\e_2) &= f\star(\e_1)\dot f\star(\e_2)\\
+\end{align}
+
+\subsection{$f\star$ Preserves Tensor Strength}
+\begin{align}
+    f\star(\tstrength{\e}{A}{B}) &= \tstrength{f\star(\e)}{f\star(A)}{f\star(B)} &: \cipu(f\star(A\times\teb), f\star(\T{\e}{(A\times B)}))
+\end{align}
+\subsection{$f\star$ Preserves Ground Constants}
+For each ground constant $\deno{\const{A}}$ in $\ciu$,
+
+\begin{align}
+    f\star(\deno{\const{A}}) = \const{f\star(A)} : \cipu(\1, f\star(A))
+\end{align}
+\subsection{$f\star$ Preserves Ground Sub-effecting}
+For ground effects $e_1, e_2$ such that $e_1\subeffect e_2$
+
+
+
+\begin{align}
+    f\star(e) & = e: \cipu\\
+    f\star\db{\e_1\subeffect e_2}_A = \db{e_1 \subeffect e_2}_{f\star(A)} &:\cipu{f\star(\T{e_1}{A}), f\star(\T{e_2}{A})} \\
+\end{align}
+\subsection{$f\star$ Preserves Ground Sub-typing}
+For ground types $\g_1, \g_2$ such that $\g_1\subtypeg\g_2$
+
+\begin{align}
+    f\star{\g} = \g: \cipu(\1, \g)\\
+    f\star(\deno{\g_1 \subtypeg \g_2}) & = \deno{\g_1 \subtypeg \g_2} &: \cipu(\g_1, \g_2)\\
+\end{align}
+
+\subsection{Action on Objects}
+
+It follows that the action of $f\star$ on an object $A$ in $\ciu$ (i.e. a morphism $I \rightarrow U$ in $\C$) is:
+
+\begin{equation}
+    f\star(A) = A\after f: I'\rightarrow I\rightarrow W
+\end{equation}
+}
+
+
+
+\newcommand\allISimple[0]{
+    
+We expand $\allI: \ciuu \rightarrow \ciu$ to be a functor which is right adjoint to the re-indexing functor $\pstar$.
+
+\begin{equation}
+    \bar{(\_)}: \ciuu(\pstar A, B) \leftrightarrow \ciu(A, \allI B) : \widehat{(\_)}
+\end{equation}
+
+For $A: \ciu$, $B: \ciuu$.
+
+Hence the action of $\allI$ on a morphism $l : A\rightarrow A'$ is as follows:
+\begin{eqnarray}
+    \allI(l) = \bar{l\after\e_A}
+\end{eqnarray}
+Where $\e_A: \ciuu(\pstar\allI A \rightarrow A)$ is the co-unit of the adjunction.
+}
+
+\newcommand\effectSubstitutionTypesSimple[0]{
+        If $\si = \deno{\typerelation{\P'}{\si}{\P}}$ then $\deno{\typerelation{\P'}{A\ssi}{\type}} = \si\star\deno{\typerelation{\P}{A}{\type}}$.
+
+\proof
+By induction on the derivation on $\deno{\typerelation{\P}{A}{\type}}$. Making use of the S-Closure of the reindexing functor.
+
+\case{Ground}
+\begin{align}
+    \si\star\deno{\typerelation{\P}{\g}{\type}} &= \si\star\deno{\g}\\
+    & =  \deno{\g}\qt{By S-Closure}\\
+    & = \deno{\typerelation{\P'}{\g\ssi}{\type}}
+\end{align}
+
+\case{Monad}
+\begin{align}
+    \si\star\deno{\typerelation{\P}{\mea}{\type}}\after\si & =  \si\star(\T{\deno{\typerelation{\P}{\e}{\effect}}}{\deno{\typerelation{\P}{A}{\type}}})\\
+    &= \T{\si\star(\deno{\typerelation{\P}{\e}{\effect}})}{\si\star(\deno{\typerelation{\P}{A}{\type}})}\\
+    & = \deno{\typerelation{\P'}{(\mea)\ssi}{\type}}
+\end{align}
+\case{Quantification}
+    \begin{align}
+        \si\star\deno{\typerelation{\P}{\all{\a}A}{\type}} & = \si\star(\allI(\deno{\typerelation{\P,\a}{A}{\type}}))\\
+        & = \allI((\si\times\Id{U})\star\deno{\typerelation{\P,\a}{A}{\type}})\qt{By Beck-Chevalley}\\
+        & = \allI(\deno{\typerelation{\P',\a}{A\sub{\si, \a\setto\e}}{\type}})\\
+        & = \allI(\deno{\typerelation{\P',\a}{A\ssi}{\type}})\\
+        & = \deno{\typerelation{\P'}{\all{\a}{A\ssi}}{\type}}\\
+        & = \deno{\typerelation{\P'}{(\all{\a}{A})\ssi}{\type}}\\
+    \end{align}
+
+\case{Function}
+\begin{align}
+    \si\star\deno{\typerelation{\P}{\ab}{\type}} &= \si\star(\deno{\typerelation{\P}{B}{\type}}^{\deno{\typerelation{\P}{A}{\type}}})\\
+    &=\si\star(\deno{\typerelation{\P}{B}{\type}})^{\si\star(\deno{\typerelation{\P}{A}{\type}})}\\
+    & = \deno{\typerelation{\P'}{B\ssi}{\type}}^{\deno{\typerelation{\P'}{A\ssi}{\type}}}\\
+    & = \deno{\typerelation{\P'}{\fntype{(A\ssi)}{(B\ssi)}}{\type}}\\
+    & = \deno{\typerelation{\P'}{(\ab)\ssi}{\type}}\\
+\end{align}
+}
+
+
+\newcommand\effectSubstitutionSubtypingSimple[0]{
+    If $\si = \deno{\typerelation{\P'}{\si}{\P}}$ then $\deno{A\ssi\subtypepp B\ssi} = \si\star\deno{A\subtypep B}: \cipu(A, B)$.
+
+\proof
+By induction on the derivation on $\deno{A\subtypep B}$. Using S-closure of $\si\star$ 
+
+\case{Ground}
+\begin{align}
+    \si\star(\g_1\subtypeg\g_2) &= (\g_1\subtypeg\g_2)
+\end{align}
+
+Since $\si\star$ is s-closed.
+
+\case{Monad}
+\begin{align}
+    \si\star\deno{\M{\e_1}{A} \subtypep \M{\e_2}{B}} & = \si\star(\deno{\e_1\subeffectp\e_2})\after\si\star(\T{\e_1}(\deno{A\subtypep B})) \\ 
+     &= \deno{\si(\e_1)\subeffectpp\si(\e_2)} \after \T{\si(\e_1)}{\deno{A\ssi\subtypepp B\ssi}}\qt{By S-Closure}\\
+     &= \deno{\M{\si(\e_1)}{A\ssi}\subtypepp\M{\si(\e_2)}{B\ssi}}\\
+     &= \deno{(\M{\e_1}{A})\ssi\subtypepp\M{\e_2}{B}\ssi}\\
+\end{align}
+
+\case{For All}
+    \begin{align}
+        \si\star\deno{\all{\a}{A}\subtypep\all{\a}{B}} &= \si\star(\allI(\deno{A\subtypepa B})) \\
+        &=\allII((\si\times\Id{U})\star(\deno{A\subtypepa B}))\\
+        &=\allII(\deno{A\sub{\si,\a\setto\a}\subtypeppa B\sub{\si,\a\setto\a}})\\
+        &= \deno{(\all{\a}{A})\ssi \subtypepp(\all{\a}{B})\ssi}\\
+    \end{align}
+
+\case{Fn}
+\begin{align}
+    \si\star\deno{(\ab)\subtypep\fntype{A'}{B'}} &= \si\star(\deno{B\subtypep B'}^{A'}\after B^{\deno{A'\subtypep A}})\\
+    &= \si\star(\cur{\deno{B\subtypep B'}\after\app})\after\si\star(\cur{\app\after(\Id{B}\times\deno{A'\subtypep A})})\\
+    & = \cur{\si\star(\deno{B\subtypep B'})\after\app}\after\cur{\app\after(\Id{B}\times\si\star(\deno{A'\subtypep A}))}\\
+    & = \cur{\deno{B\ssi\subtypepp B'\ssi}\after\app}\after\cur{\app\after(\Id{B\ssi}\times\deno{A'\ssi\subtypepp A\ssi})}\\
+    &= \deno{\fntype{(A\ssi)}{(B\ssi)}\subtypepp\fntype{(A'\ssi)}{(B'\ssi)}}\\
+    &= \deno{(\ab)\ssi\subtypepp(\fntype{A'}{B'})\ssi}
+\end{align}
+
+}
+
+
+\newcommand\typeDenotationsSimple[0]{
+    
+For each instance of the well-formed-ness relation on types, we derive an object $\deno{\typerelation{\P}{A}{\type}}\in\obj\ciu$.
+
+Since the fibre category $\ciu$ is S-Closed, it has objects for all ground types, a terminal object, graded monad $\T{}{}$, exponentials, products, and co-product over $\1+\1$.
+
+\begin{itemize}
+    \item $\deno{\typerelation{\P}{\U}{\type}} = \1$
+    
+    \item $\deno{\typerelation{\P}{\B}{\type}} = \1+\1$
+    
+    \item $\deno{\typerelation{\P}{\g}{\type}} = \deno{\g} $
+    
+    \item $\deno{\typerelation{\P}{\ab}{\type}} = (\deno{\typerelation{\P}{B}{\type}})^{(\deno{\typerelation{\P}{A}{\type}})}$
+    
+    \item $\deno{\typerelation{\P}{\mea}{\type}} =\T{\deno{\typerelation{\P}{\e}{\effect}}}{\deno{\typerelation{\P}{A}{\type}}}$
+    \item $\deno{\typerelation{\P}{\all{\a}{A}}{\type}} =\allI(\deno{\typerelation{\P,\a}{A}{\type}})$
+\end{itemize}
+}
+
+
+\newcommand\subtypingDenotationsSimple[0]{
+    
+For each instance of the sub-typing relation with respect  to an effect environment, there exists a denotation, $\deno{A\subtypep B}: \ciu(A, B)$.
+
+\begin{itemize}
+    \item $\deno{\g_1\subtypep \g_2} = \deno{\g_1\subtypeg \g_2} : \ciu(\g_1, \g_2)$
+    \item $\deno{\ab \subtypep \fntype{A'}{B'}} = \deno{B\subtypep B'}^{A'}\after B^{\deno{A'\subtypep A}}$
+    \item $\deno{\M{\e_1}{A}\subtypep\M{\e_2}{B}} = \deno{\e_1\subeffectp\e_2}\after\T{\e_1}{\deno{A\subtypep B}}$
+    \item $\deno{\all{\a}{A}\subtypep\all{\a}{B}} = \allI{\deno{A\subtypepa B}}$
+\end{itemize}
+}
+
+
+\newcommand{\typeEnvDenotationsSimple}[0]{
+    
+
+For each instance of the well-formed relation on type environments, define an object $\deno{\wellformedok{\P}{\G}}\in\obj\ciu$.
+
+\begin{itemize}
+    \item $\deno{\wellformedok{\P}{\nil}} = \1: \ciu$
+    \item $\deno{\wellformedok{\P}{\gax}} = (\deno{\wellformedok{\P}{\G}} \times \deno{\typerelation{\P}{A}{\type}})$
+\end{itemize}
+
+}
+
+
+\newcommand\effectSubstitutionTypeEnvsSimple[0]{
+    
+If $\si = \deno{\typerelation{\P'}{\si}{\P}}$ then $\deno{\wellformedok{\P'}{\G\ssi}} = \si\star\deno{\wellformedok{\P}{\G}}\in\obj\cipu$.
+
+\proof
+By induction on the derivation on $\deno{\wellformedok{\P}{\G}}$. Using the S-Closure of the re-indexing functor.
+
+\case{Nil}
+\begin{align}
+    \si\star\deno{\wellformedok{\P}{\nil}} &=\si\star\1\\
+    & = \1\qt{By S-closure}\\
+    &= \deno{\wellformedok{\P'}{\nil}}\\
+    &= \deno{\wellformedok{\P'}{\nil\ssi}}\\
+\end{align}
+
+\case{Var}
+\begin{align}
+   \si\star\deno{\wellformedok{\P}{\gax}} &= \si\star(\deno{\wellformedok{\P}{\G}} \times \deno{\typerelation{\P}{A}{\type}}) \\
+   & = (\si\star\deno{\wellformedok{\P}{\G}} \times \si\star\deno{\typerelation{\P}{A}{\type}})\\
+    & = (\deno{\wellformedok{\P'}{\G\ssi}} \times \deno{\typerelation{\P'}{A\ssi}{\type}})\\
+    & = \deno{\wellformedok{\P'}{\G\ssi, x: A\ssi}}\\
+    & = \deno{\wellformedok{\P'}{(\gax)\ssi}}\\
+\end{align}
+}
+
+
+\newcommand\effectWeakeningTypesSimple[0]{
+    If $\w = \deno{\typerelation{\P'}{\w}{\P}}$ then $\deno{\typerelation{\P'}{A}{\type}} = \w\star\deno{\typerelation{\P}{A}{\type}}$.
+    
+    \proof
+    By induction on the derivation on $\deno{\typerelation{\P}{A}{\type}}$. Making use of the S-Closure of the reindexing functor.
+    
+    \case{Ground}
+    \begin{align}
+        \w\star\deno{\typerelation{\P}{\g}{\type}} &= \w\star\deno{\g}\\
+        & =  \deno{\g}\qt{By S-Closure}\\
+        & = \deno{\typerelation{\P'}{\g}{\type}}
+    \end{align}
+    
+    \case{Monad}
+    \begin{align}
+        \w\star\deno{\typerelation{\P}{\mea}{\type}}\after\w & =  \w\star(\T{\deno{\typerelation{\P}{\e}{\effect}}}{\deno{\typerelation{\P}{A}{\type}}})\\
+        &= \T{\w\star(\deno{\typerelation{\P}{\e}{\effect}})}{\w\star(\deno{\typerelation{\P}{A}{\type}})}\\
+        & = \deno{\typerelation{\P'}{\mea}{\type}}
+    \end{align}
+    \case{Quantification}
+        \begin{align}
+            \w\star\deno{\typerelation{\P}{\all{\a}A}{\type}} & = \w\star(\allI(\deno{\typerelation{\P,\a}{A}{\type}}))\\
+            & = \allI((\w\times\Id{U})\star\deno{\typerelation{\P,\a}{A}{\type}})\qt{By Beck-Chevalley}\\
+            & = \allI(\deno{\typerelation{\P',\a}{A}{\type}})\\
+            & = \allI(\deno{\typerelation{\P',\a}{A}{\type}})\\
+            & = \deno{\typerelation{\P'}{\all{\a}{A}}{\type}}\\
+        \end{align}
+    
+    \case{Function}
+    \begin{align}
+        \w\star\deno{\typerelation{\P}{\ab}{\type}} &= \w\star(\deno{\typerelation{\P}{B}{\type}}^{\deno{\typerelation{\P}{A}{\type}}})\\
+        &=\w\star(\deno{\typerelation{\P}{B}{\type}})^{\w\star(\deno{\typerelation{\P}{A}{\type}})}\\
+        & = \deno{\typerelation{\P'}{B}{\type}}^{\deno{\typerelation{\P'}{A}{\type}}}\\
+        & = \deno{\typerelation{\P'}{\ab}{\type}}\\
+    \end{align}
+}
+
+\newcommand\effectWeakeningTypeEnvSimple[0]{
+    
+If $\w = \deno{\typerelation{\P'}{\w}{\P}}$ then $\deno{\wellformedok{\P'}{\G}} = \w\star\deno{\wellformedok{\P}{\G}}\in\obj\cipu$.
+
+\proof
+By induction on the derivation on $\deno{\wellformedok{\P}{\G}}$. Using the S-Closure of the re-indexing functor.
+
+\case{Nil}
+\begin{align}
+    \w\star\deno{\wellformedok{\P}{\nil}} &=\w\star\1\\
+    & = \1\qt{By S-closure}\\
+    &= \deno{\wellformedok{\P'}{\nil}}\\
+\end{align}
+
+\case{Var}
+\begin{align}
+   \w\star\deno{\wellformedok{\P}{\gax}} &= \w\star(\deno{\wellformedok{\P}{\G}} \times \deno{\typerelation{\P}{A}{\type}}) \\
+   & = (\w\star\deno{\wellformedok{\P}{\G}} \times \w\star\deno{\typerelation{\P}{A}{\type}})\\
+    & = (\deno{\wellformedok{\P'}{\G}} \times \deno{\typerelation{\P'}{A}{\type}})\\
+    & = \deno{\wellformedok{\P'}{\G, x: A}}\\
+\end{align}
+}
