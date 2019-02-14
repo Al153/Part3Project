@@ -224,17 +224,16 @@ Since the monoid operation on effects is monotone, we can introduce the followin
 The denotation of ground types $\deno{\_}$ is a functor from the pre-order category of ground types $(\ground, \subtype_{\ground})$
 to $\C$. This pre-ordered sub-category of $\C$ is extended with the rule for function sub-typing to form a larger pre-ordered sub-category of $\C$.
 
-$$
-\treerule{Function Subtyping}{f = \deno{A' \subtype A} \s\s g = \deno{B \subtype B'} \s\s h=\dse{\e_1}{\e_2}}{rhs = \deno{\lamtype{A}{\e_1}{B} \subtype \lamtype{A'}{\e_2}{B'}}: (\T{\e_1}{B})^A \rightarrow (\T{\e_2}{B'})^{A'}}
-$$
-
 \begin{equation}
-    \begin{split}
-        rhs = & (h_{B'} \after \T{\e_1}{g})^{A'}
-        \after (\T{\e_1}{B})^f \\
-        = & \cur{h_{B'}  \after \T{\e_1}{g}\after \app} \after \cur{\app \after (\Id{\T{\e_1}{B}^{A'}} \times f)}\\
-    \end{split}
+    \treerule{Function Subtyping}{f = \deno{A' \subtype A} \s\s g = \deno{B \subtype B'}}{rhs = \deno{\fntype{A}{B} \subtype \fntype{A'}{B'}}: (B)^A \rightarrow (B')^{A'}}  
 \end{equation}
+
+
+\begin{align}
+        rhs = & (g)^{A'}
+        \after ({B})^f \\
+        = & \cur{g\after \app} \after \cur{\app \after (\Id{{B}^{A'}} \times f)}\\
+\end{align}
 }
 
 \ifdefined\NoDocument
