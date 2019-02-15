@@ -40,14 +40,16 @@ def check[E: Effect](
         \begin{verbatim}
 check[IO, RealWorld](() => check[RealWorld](FireMissiles))
 check[Transaction](SendMoney(Bob, 100, USD))
-check[Exception](ThrowException(“Not Aborted”))
+check[Exception](ThrowException("Not Aborted"))
         \end{verbatim}
     \end{framed}
 \end{framed}
 
-In this case, we are reusing the same “check” function in three different cases with three different effects in a type safe manner. “Check” is polymorphic in the effect parameter it receives. To analyse this language, it would be useful to have precision to compare different effects.
+In this case, we are reusing the same “check” function in three different cases with three different effects in a type safe manner. “Check” is polymorphic in the effect parameter it receives. To analyse this language, it would be useful to have an analysis tool that can precisely model these separate, though potentially interdependent effects. A denotational semantics that can account for the parametric polymorphism over effects would be a step towards building such tools.
 
 \section{An Introduction to Categorical Semantics}
+A denotational semantics for a language is a mapping, known as a denotation, $\deno{-}$, of concepts in the language, such as types and terms to mathematical objects in such a way that properties of the terms in the language correspond to other properties of the denotations of the terms.
+
 When we specify a denotational semantics of a language in category theory, we look to find a mapping of types and typing environments to objects in a given category.
 
 \begin{align}
@@ -71,12 +73,17 @@ This should occur in a sound manner. That is, for every instance of the $\beta\e
 
 To prove soundness, we induct over derivation of the $\beta\eta$-equivalence relation. In doing so, we need to prove a couple of properties which help prove cases. These are substitution and weakening. \todo{What do these do?}
 
-
-\subsection{Arrows and Objects}
 \subsection{Languages and Their Requirements}
-One of the simplest, while still interesting, languages to derive a denotational semantics for is the simply typed lambda calculus (STLC). STLC's semantics require a cartesian closed category (see section \ref{CCC}).
+One of the simplest, while still interesting, languages to derive a denotational semantics for is the simply typed lambda calculus (STLC). STLC's semantics require a cartesian closed category (CCC, see section \ref{CCC}).
 
-Products are used to denote the lists of variable types in the typing environment, exponential objects model functions, and the terminal object is used to derive "points" (\todo{Terminology}) which represent the ground terms, such as the unit term, $()$, as well as the empty typing environment.
+Products in the CCC are used to denote the lists of variable types in the typing environment, exponential objects model functions, and the terminal object is used to derive "points" (\todo{Terminology}) which represent the ground terms, such as the unit term, $()$, as well as the empty typing environment.
+
+
+\begin{itemize}
+    \item Products are used to construct type environments. $\deno{\G} = \deno{\nil, x: A, y:B, ... z:C} = \1 \times \deno{A} \times \deno{B} \times ... \times \deno{C}$
+    \item Terminal objects are used in the denotation of constant terms $\deno{\gtyperelation{\const{A}}{A}} = \deno{\const{A}}\after\term{\deno{\G}}$
+    \item Exponentials are used in the denotations of functions. $\deno{\typerelation{\G}{\lam{x}{A}{v}}{\ab}} = \cur{\deno{\typerelation{\gax}{v}{B}}}$
+\end{itemize}
 
 From this, we can specify what structures categories need to have in order to model more complex languages.
 \begin{center}
@@ -97,11 +104,30 @@ From this, we can specify what structures categories need to have in order to mo
 \end{center}
 
 
-A single effect can be modelled using a strong monad, as shown by Moggi \todo{Reference}. The monad allows us to generate a unit effect and to compose multiple instances of the effect together in a way that intuitively matches the type system of a monadic language.
+A single effect can be modelled by adding a strong monad to the category, as shown by Moggi \todo{Reference}. The monad allows us to generate a unit effect and to compose multiple instances of the effect together in a way that intuitively matches the type system of a monadic language.
 
-For more precise analysis of languages with multiple effects, we can look into the algebra on the effects. A simple algebra is a partially ordered monoid. The monoid operation defines how to compose effects, and the partial order gives a sub-typing relation to make programming more intuitive with respect to if statements. A strong graded monad allows us to model this algebra in a category theoretic way.
+\begin{eqnarray}\label{MonadTypeRules}
+    \treerule{Return}{\typerelation{\G}{v}{A}}{\typerelation{\G}{\return{v}}{\M{}{A}}} & \treerule{Bind}{\typerelation{\G}{v_1}{\M{}{A}} \s\s \typerelation{\gax}{v_2}{\M{}{B}}}{\typerelation{\G}{\doin{x}{v_1}{v_2}}{\M{}{B}}}
+\end{eqnarray}
 
-To express polymorphism over a property $P$, the language's semantics are expanded to use a new environment specifying the variables ranging over $P$ that are allowed in a given context. To model this, we can create a category representing the semantics of the non-polymorphic language at each given context, indexed by a base category which models the operations and relationships between the $P$-Environment. Morphism in the base category between environments correspond to functors between the semantic categories for the relevant environments. These functors can then be used to construct the semantics of polymorphic terms. \todo{Index diagram}
+These type rules can be modelled using the "unit" natural transformation and a combination of the "join" and tensor strength natural transformations respectively. 
+
+For more precise analysis of languages with multiple effects, we can look into the algebra on the effects. A simple example of such an algebra is a partially ordered monoid. The monoid operation defines how to compose effects, and the partial order gives a sub-typing relation to make programming more intuitive with respect to if statements. A category with a strong graded monad allows us to model this algebra in a category theoretic way. It also allows us to do some effect analysis in the type system, as seen in the type rules for return and bind in equation \ref{GradedMonadTypeRules}.
+
+\begin{eqnarray}\label{GradedMonadTypeRules}
+    \treerule{Return}{\typerelation{\G}{v}{A}}{\typerelation{\G}{\return{v}}{\moa}} & \treerule{Bind}{\typerelation{\G}{v_1}{\M{\e_1}{A}} \s\s \typerelation{\gax}{v_2}{\M{\e_2}{B}}}{\typerelation{\G}{\doin{x}{v_1}{v_2}}{\M{\e_1 \dot \e_2}{B}}}
+\end{eqnarray}
+
+
+To express polymorphism over a property $P$, the language's semantics are expanded to use a new environment specifying the variables ranging over $P$ that are allowed in a given context. This can be seen in the augmented type rules in \ref{PolymorphismTypeRules}.
+
+\begin{eqnarray}\label{PolymorphismTypeRules}
+    \treerule{Gen}{\etyperelation{\P, \a}{v}{A}}{\gpetyperelation{\elam{\a}{v}}{\all{\a}{A}}}& \treerule{Spec}{\gpetyperelation{v}{\all{\a}{A}}\s\s\wellformed{\P}{\e}}{\gpetyperelation{\eapp{v}{\e}}{A\ssub{\a}{\e}}}
+\end{eqnarray}
+
+To model these augmented type rules, we can create a category representing the semantics of the non-polymorphic language at each given context. This collection of non-polymorphic categories can be indexed by a base category which models the operations and relationships between the $P$-Environment. Morphisms in the base category between environments correspond to functors between the semantic categories for the relevant environments. These functors can then be used to construct the semantics of polymorphic terms. \todo{Index diagram}
+
+In this dissertation, I shall show how these category theoretic building blocks can be put together to give the class of categories that can model polymorphic effect systems.
 
 
 \chapter{Required Category Theory}
