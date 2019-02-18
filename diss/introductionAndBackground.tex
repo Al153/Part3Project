@@ -45,7 +45,7 @@ check[Exception](ThrowException("Not Aborted"))
     \end{framed}
 \end{framed}
 
-In this case, we are reusing the same “check” function in three different cases with three different effects in a type safe manner. Hence, “check” is polymorphic in the effect parameter it receives. To analyse this language, it would be useful to have an analysis tool that can precisely model these separate, though potentially interdependent effects. A denotational semantics that can account for the parametric polymorphism over effects would be a step towards building such tools.
+In this example, we are reusing the same “check” function in three different cases with three different effects in a type safe manner. Hence, “check” is polymorphic in the effect parameter it receives. To analyse this language, it would be useful to have an analysis tool that can precisely model these separate, though potentially interdependent effects. A denotational semantics that can account for the parametric polymorphism over effects would be a step towards building such tools.
 
 \section{An Introduction to Categorical Semantics}
 A denotational semantics for a language is a mapping, known as a denotation, $\deno{-}$, of concepts in the language, such as types and terms to mathematical objects in such a way that non-trivial properties of the terms in the language correspond to other properties of the denotations of the terms.
@@ -168,7 +168,33 @@ A category has exponentials if for all objects $A, B$, it has an object $B^A$ an
     A\times B\arrow{u}{\cur{f}\times \Id{B}} \arrow{ur}{f}    
 \end{tikzcd}
 
+\section{Initial Object}
+
+An initial object, $I$ of $\C$ is one such that for every other object $X\in\obj\C$, there exists a unique morphism $\i_X: I\rightarrow X$. It is the conceptual dual of a terminal objects.
+
 \section{Co-Product}
+A co-product is the conceptual dual of a product.
+
+There is a product for a pair of objects $X, Y\in\obj\C$ if there exists an object and morphisms in C:
+\begin{tikzcd}
+    X  \arrow{r}[swap]{\inl} & (X + Y) & \arrow [l, "inr"]  Y
+\end{tikzcd}
+
+Such that for any other object and morphisms,
+
+\begin{tikzcd}
+    X \arrow{r}[swap]{f} & Z & \arrow [l, "g"]  Y
+\end{tikzcd}
+
+There exists a unique morphism $[f, g]: X + Y \rightarrow Z $ such that the following commutes:
+
+
+\begin{tikzcd}
+    &  Z   & \\
+    X \arrow{ur}{f} \arrow [r, "\inl"] &  \arrow{u}{[f, g]} (X + Y)  & \arrow{l}[swap]{\inr} \arrow{ul}[swap]{g} Y\\
+\end{tikzcd}
+
+
 
 \section{Functors}
 A functor $F: \C \rightarrow \DC$ is a mapping of objects:
@@ -431,5 +457,25 @@ For example, we may use the the case of cartesian closed categories indexed by a
 \end{align}
 
 \section{Limits}
+A limit is a generalisation of concepts such as terminal objects, products, and pullbacks. Co-products and initial objects are examples of co-limits.
 
+
+For a diagram $D$ in $\C$, we define a cone of $D$ to be an instance of $D$, accompanied by another object $X$ and a collection of morphisms $\vec{\phi}$ completing the diagram. If one imagines the diagram as a 2-dimensional shape in C with its morphisms as edges, the object $X$ above the plane forms a cone shape.
+
+\begin{tikzcd}
+    & X \arrow{dd}{\phi_1} \arrow{lddd}{\phi_2} \arrow{rddd}{\phi_3} &\\
+    \\
+    & \arrow{ld}{d_1}    D_1 & \\
+    D_2 \arrow{rr}{d_2}& & D_3 \arrow{lu}{d_3}
+\end{tikzcd}
+
+A limit of the diagram is a least-cone. That is, it is a cone object $L$ with morphisms $\vec{\psi}$ such that any other cone $X$ can be factored into a unique morphism $l$ to $L$ and the cone formed by $L$.
+
+\begin{tikzcd}
+    &  &X \arrow[dotted]{ld}{l}\arrow{lddd}{\phi_1} \arrow[bend right]{lldddd}{\phi_2} \arrow{dddd}{\phi_3} \\
+    & L \arrow{dd}{\psi_1} \arrow{lddd}{\psi_2} \arrow{rddd}{\psi_3} &\\
+    \\
+    & \arrow{ld}{d_1}    D_1 & \\
+    D_2 \arrow{rr}{d_2}& & D_3 \arrow{lu}{d_3}
+\end{tikzcd}
 \end{document}
