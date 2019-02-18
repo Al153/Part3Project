@@ -48,7 +48,7 @@ check[Exception](ThrowException("Not Aborted"))
 In this example, we are reusing the same “check” function in three different cases with three different effects in a type safe manner. Hence, “check” is polymorphic in the effect parameter it receives. To analyse this language, it would be useful to have an analysis tool that can precisely model these separate, though potentially interdependent effects. A denotational semantics that can account for the parametric polymorphism over effects would be a step towards building such tools.
 
 \section{An Introduction to Categorical Semantics}
-A denotational semantics for a language is a mapping, known as a denotation, $\deno{-}$, of concepts in the language, such as types and terms to mathematical objects in such a way that non-trivial properties of the terms in the language correspond to other properties of the denotations of the terms.
+A denotational semantics for a language is a mapping, known as a denotation, $\deno{-}$, of structures in the language, such as types and terms to mathematical objects in such a way that non-trivial properties of the terms in the language correspond to other properties of the denotations of the terms.
 
 When we specify a denotational semantics of a language in category theory, we look to find a mapping of types and typing environments to objects in a given category.
 
@@ -71,7 +71,57 @@ This should occur in a sound manner. That is, for every instance of the $\beta\e
     \gberelation{v_1}{v_2}{A} & \implies \deno{\gtyperelation{v_1}{A}} = \deno{\gtyperelation{v_2}{A}}
 \end{align}
 
-To prove soundness, we induct over derivation of the $\beta\eta$-equivalence relation. In doing so, we need to prove a couple of properties which help prove cases. These are substitution and weakening. \todo{What do these do?}
+An example of $\beta\eta$-equivalence is that of the $\beta$-reduction of lambda terms. It should be the case that:
+
+\begin{align}
+    \treerule{Lambda-Beta}{\typerelation{\gax}{v_1}{B}\s\s\gtyperelation{v_2}{A}}{\gberelation{\apply{(\lam{x}{A}{v_1})}{v_2}}{v_1\ssub{x}{v_2}}{B}}
+\end{align}
+
+Means that the denotations $\deno{\gtyperelation{\apply{(\lam{x}{A}{v_1})}{v_2}}{B}}$ and $\deno{\gtyperelation{v_1\ssub{x}{v_2}}{B}}$ are equal.
+
+To prove soundness, we perform rule induction over the derivation of the $\beta\eta$-equivalence relation, such as the lambda-beta-reduction rule above. 
+
+Some of the inductive cases require us to quantify what the substitution of terms for variables, such as $\ssub{x}{v_1}$ does to the denotations of the parent term. Substitution theorems, allow us to quantify this action on denotations in a category theoretic way. 
+
+If \begin{equation}
+    \typerelation{\gax}{v_1}{B}
+\end{equation}
+
+And \begin{equation}
+    \typerelation{\G}{v_2}{A}
+\end{equation}
+
+Then \begin{equation}
+    \deno{\typerelation{\G}{v_1\ssub{x}{v_2}}{B}}
+\end{equation}
+
+Should be derivable from
+
+\begin{equation}
+    \deno{\typerelation{\gax}{v_1}{B}}
+\end{equation}
+
+And  \begin{equation}
+    \deno{\gtyperelation{v_2}{A}}
+\end{equation}
+
+A similar concept is that of environment weakening. $\gax$ can derive every typing relation that $\G$ can, if $x$ is not already in the environment $\G$. Hence, $\gax$ is an example of a typing environment that is \textit{weaker} than $\G$. A weakening theorem proves that there is a systematic way to generate the denotation of a typing-relation on a term in a weaker environment from the denotation of the same term in a stronger environment.
+
+If \begin{equation}
+    \G' \leq_{\text{weaker}} \G
+\end{equation}
+
+Then
+
+\begin{equation}
+    \deno{\typerelation{\G'}{v}{A}}
+\end{equation}
+
+should be derivable from
+
+\begin{equation}
+    \deno{\typerelation{\G}{v}{A}}
+\end{equation}
 
 \subsection{Languages and Their Requirements}
 One of the simplest, while still interesting, languages to derive a denotational semantics for is the simply typed lambda calculus (STLC). STLC's semantics require a cartesian closed category (CCC, see section \ref{CCC}).
