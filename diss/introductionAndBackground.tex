@@ -38,17 +38,17 @@ def check[E: Effect](
 
     \begin{framed}
         \begin{verbatim}
-check[IO, RealWorld](() => check[RealWorld](FireMissiles))
+check[RealWorld](() => check[RealWorld](FireMissiles))
 check[Transaction](SendMoney(Bob, 100, USD))
 check[Exception](ThrowException("Not Aborted"))
         \end{verbatim}
     \end{framed}
 \end{framed}
 
-In this case, we are reusing the same “check” function in three different cases with three different effects in a type safe manner. “Check” is polymorphic in the effect parameter it receives. To analyse this language, it would be useful to have an analysis tool that can precisely model these separate, though potentially interdependent effects. A denotational semantics that can account for the parametric polymorphism over effects would be a step towards building such tools.
+In this case, we are reusing the same “check” function in three different cases with three different effects in a type safe manner. Hence, “check” is polymorphic in the effect parameter it receives. To analyse this language, it would be useful to have an analysis tool that can precisely model these separate, though potentially interdependent effects. A denotational semantics that can account for the parametric polymorphism over effects would be a step towards building such tools.
 
 \section{An Introduction to Categorical Semantics}
-A denotational semantics for a language is a mapping, known as a denotation, $\deno{-}$, of concepts in the language, such as types and terms to mathematical objects in such a way that properties of the terms in the language correspond to other properties of the denotations of the terms.
+A denotational semantics for a language is a mapping, known as a denotation, $\deno{-}$, of concepts in the language, such as types and terms to mathematical objects in such a way that non-trivial properties of the terms in the language correspond to other properties of the denotations of the terms.
 
 When we specify a denotational semantics of a language in category theory, we look to find a mapping of types and typing environments to objects in a given category.
 
@@ -132,7 +132,7 @@ In this dissertation, I shall show how these category theoretic building blocks 
 
 \chapter{Required Category Theory}
 
-Before going further, it is assert a common level of category theory knowledge.
+Before going further, it is necessary to assert a common level of category theory knowledge. This section is not intended as a tutorial but as a to jog the memory of the reader, and briefly introduce some new concepts.
 
 \section{Cartesian Closed Category}\label{CCC}
 
@@ -210,16 +210,16 @@ A monad is famously "a monoid on the category of endofunctors". In less opaque t
 
 Such that the following diagrams commute:
 
-\paragraph{Associativity}
+\subsection{Associativity}
 \begin{tikzcd}
     T(T(T(A)) \arrow{r}{\mu_{T(A)}} \arrow{d}{T(\mu_{A})} & T(T(A)) \arrow{d}{\mu_A} \\
     T(T(A)) \arrow{r}{\mu_A} & T(A)    
 \end{tikzcd}
 
 
-\paragraph{Left and Right Unit}
+\subsection{Left and Right Unit}
 \begin{tikzcd}
-    T(A) \arrow{r}{\point{T(A)}} \arrow{d}{T(\point{A})} \arrow{rd}{todo} & T(T(A)) \arrow{d}{\mu_A}\\
+    T(A) \arrow{r}{\point{T(A)}} \arrow{d}{T(\point{A})} \arrow[equal]{rd} & T(T(A)) \arrow{d}{\mu_A}\\
     T(T(A)) \arrow{r}{\mu_A} & T(A)
 \end{tikzcd}
 
@@ -235,16 +235,19 @@ A graded monad is a generalisation of a monad to be indexed by a monoidal algebr
 \end{itemize}
 
 Such that the following diagrams commute.:
-\subsection{Left Unit}
+\subsection{Left and Right  Units}
     \begin{tikzcd}[ampersand replacement=\&]
-    \tea \arrow[rd, "\Id{\tea}"] \arrow[r, "\T{\e}{\point{A}}"] \& \T{\e}{\T{\1}{A}} \arrow[d, "\bind{\e}{\1}{A}"] \\
-    \& \tea
-    \end{tikzcd}
-
-\subsection{Right Unit}
-    \begin{tikzcd}[ampersand replacement=\&]
-    \tea \arrow[rd, "\Id{\tea}"] \arrow[r, "\point{\tea}"] \& \T{\1}{\T{\1}{A}} \arrow[d, "\bind{\1}{\e}{A}"] \\
-    \& \tea
+        \tea
+         \arrow[equal]{rd} 
+         \arrow[r, "\T{\e}{\point{A}}"]
+         \arrow{d}{\point{\tea}}
+        \& 
+        \T{\e}{\T{\1}{A}} 
+            \arrow[d, "\bind{\e}{\1}{A}"] \\
+            \T{\1}{\T{\e}{A}}
+                 \arrow{r}{\bind{\1}{\e}{A}}
+        \& 
+        \tea
     \end{tikzcd}
 
 \subsection{Associativity}
@@ -427,5 +430,6 @@ For example, we may use the the case of cartesian closed categories indexed by a
     A \leq B & \mapsto (A \leq B)\star: \C \rightarrow \DC\qt{Morphisms are mapped to functors preserving CCC properties.}
 \end{align}
 
+\section{Limits}
 
 \end{document}
