@@ -1,0 +1,480 @@
+\documentclass{report}
+
+\input{header.tex}
+\newcommand{\Tz}[2]{\texttt{T}^0_{#1}#2}
+\newcommand{\Tn}[2]{\texttt{T}^n_{#1}#2}
+
+\newcommand{\pointz}[1]{\point{#1}^0}
+\newcommand{\pointn}[1]{\point{#1}^n}
+
+\newcommand{\bindz}[3]{\bind{#1}{#2}{#3}^0}
+\newcommand{\bindn}[3]{\bind{#1}{#2}{#3}^n}
+
+\newcommand\tstrengthz[3]{\tstrength{#1}{#2}{#3}^0}
+\newcommand\tstrengthn[3]{\tstrength{#1}{#2}{#3}^n}
+
+\newcommand\set[0]{\texttt{Set}}
+\newcommand\ev[0]{\vec{\e}}
+\newcommand\emv[0]{\vec{\e_m}}
+\newcommand\env[0]{\vec{\e_n}}
+
+\newcommand\subeffectz[0]{\subeffect_0}
+\newcommand\subeffectn[0]{\subeffect_n}
+
+\newcommand\dsen[2]{\db{#1 \subeffectn #2}}
+\newcommand\dsez[2]{\db{#1 \subeffectz #2}}
+
+\newcommand\allEn[0]{\forall_{E^n}}
+\newcommand\allEm[0]{\forall_{E^m}}
+
+\newcommand\counit[1]{\boldsymbol{\epsilon}_{#1}}
+\newcommand\unit[1]{\boldsymbol{\eta}_{#1}}
+
+\begin{document}
+
+Given a set based S-Category $\C$ which is a model of the non-polymorphic effect calculus, we generate an indexed category capable of modelling the polymorphic effect calculus.
+\section{The Non-Polymorphic Model}
+Since $\C$ is a model of the non-polymorphic calculus,
+\begin{itemize}
+    \item $\C$ is cartesian closed.
+    \item $\C$ has a strong graded monad: $\Tz{}{}: (E, \dot, \subeffect_0, \1) \rightarrow [\C, \C]$
+    \item $\C$ has a co-product on the terminal object $\1$.
+\end{itemize}
+
+In addition, we require that 
+\begin{itemize}
+    \item $\C$ should be complete (e.g a sub-category of $\set$)
+    \item $E$ should be small.
+    \item The Non-polymorphic effect calculus has a least effect $\bot\in E$ such that $\forall \e \in E. \bot \subeffect_0 \e$.
+\end{itemize}
+
+
+\section{Base Category}
+
+We construct the base category, $\Eff$ as follows:
+
+\begin{itemize}
+    \item $U = E$, the set of ground effects in the non-polymorphic language.
+    \item $\1$ is a singleton set.
+    \item $U^n = E^n$, set of $n$-wide tuples of effects, $\vec{\e}$
+\end{itemize}
+
+Hence when we treat effects that are well formed in $\P$ as morphisms, $E^n \rightarrow E$ in $\Eff$, we should treat them as functions $f: E^n \rightarrow E$. Ground effects become point functions: $e: \1 \rightarrow E$, so the denotation of a ground effect is the constant value function: $\deno{\typerelation{\P}{e}{\effect}} = \ev \mapsto e$
+
+We extend the multiplication of ground effects to multiplication on effect functions, giving us our $\Mul$ operation
+
+\begin{align}
+    \Mul(f, g) & = f\dot g\\
+    (f\dot g)(\ev) & = (f\ev)\dot(g\ev)\\
+\end{align}
+
+This satisfies naturality of $\Mul$.
+
+\begin{equation}
+    ((f\dot g)\after \theta)\ev = (f(\theta\ev))\dot(g(\theta\ev)) = ((f\after\theta)\dot(g\after\theta))\ev
+\end{equation}
+
+\section{S-Categories}
+The semantic category, $\C_0$ of the effect-environment $\nil$ is $\C$.
+
+Since each effect-environment is alpha equivalent to a natural number, the semantic category for $\P$ shall be represented as $\C_{\P} = \C_n = [E^n, \C]$, the category of functions $E^n\rightarrow \C$.
+
+Objects in $[E^n, \C]$ are functions and we describe them by their actions on a generic vector of ground effects, $\ev$.
+
+Morphisms in $[E^n, \C]$ are natural transformations between the functions. So:
+
+\begin{align}
+    m:\quad&A \rightarrow B \qt{ In $[E^n, \C]$}\\
+    m\ev:\quad& A\ev \rightarrow B\ev \qt{In $\C$}\\
+    (f\after g)\ev =\quad& (f\ev)\after(g\ev)\\
+    \1(\ev) =\quad& \1
+\end{align}
+
+So morphisms are dependently typed functions from a vector of ground effects to morphisms in $\C$.
+\subsection{Each S-Category is a CCC}
+Since $\C$ is complete and a CCC, and $E^n$ is small, since $E$ is small, $[E^n, \C]$ is a CCC.
+
+\begin{align}
+    (A\times B)\ev & = (A\ev)\times(B\ev)\\
+    \1\ev & = \1\\
+    (B^A)\ev &= (B\ev)^{(A\ev)}\\
+    \p\ev & = \p\\
+    \pp\ev & = \pp\\
+    \app\ev & = \app\\
+    \cur{f}\ev & = \cur{f\ev}\\
+    \pr{f}{g}\ev & = \pr{f\ev}{g\ev}\\
+\end{align}
+
+\subsection{Ground Types and Terms}
+Each ground type in the non-polymorphic calculus has a fixed denotation $\deno{\g}\in\obj\C$. The ground type in the polymorphic calculus hence has a denotation represented by the constant function.
+
+\begin{align}
+    \deno{\g}:&\quad E^n\rightarrow \obj\C\\
+    \ev \mapsto&\quad  \deno{\g}\\
+\end{align}
+
+Each constant term $\const{A}$ in the non-polymorphic calculus has a fixed denotation $\deno{\const{A}}\in\C(\1, A)$.
+
+So the morphism $\deno{\const{A}}$ in $[E^n, \C]$ is the corresponding constant dependently typed morphism.
+
+\begin{align}
+    \deno{\const{A}}:&\quad[E^n, \C](\1, A)\\
+    \ev\mapsto&\quad\deno{\const{A}}
+\end{align}
+
+\subsection{Graded Monad}
+Given the strong graded monad $(\Tz{}{}, \pointz{}{}{}, \bindz{}{}{}, \tstrengthz{}{}{})$ on $\C$ we can construct an appropriate graded monad on $[E^n, \C]$.
+
+\begin{align}
+    \Tn{}{}:&\quad(E^n, \dot, \subeffect_n, \1_n) \rightarrow [[E^n, \C], [E^n, \C]]\\
+    (\Tn{f}{A})\ev=&\quad \Tz{(f\ev)}{A\ev}\\
+    (\pointn{A})\ev=&\quad\pointz{A\ev}\\
+    (\bindn{f}{g}{A})\ev=&\quad\bindz{(f\ev)}{(g\ev)}{(A\ev)}\\
+    (\tstrengthn{f}{A}{B})\ev=&\quad\tstrengthz{(f\ev)}{(A\ev)}{(B\ev)}
+\end{align}
+
+Through some mechanical proof and the naturality of the $\C$ strong graded monad, these morphisms are natural in their type parameters and form a strong graded monad in $[E^n, \C]$
+
+
+\subsubsection{Naturality}
+
+\begin{tikzcd}
+    A\ev 
+    \arrow{r}{\pointz{(A\ev)}}
+    \arrow{d}{f\ev}
+    &
+    \Tz{\1}{(A\ev)}
+    \arrow{d}{\Tz{\1}{(f\ev)}}
+    \\
+    B\ev
+    \arrow{r}{\pointz{(B\ev)}}
+    &
+    \Tz{\1}{(B\ev)}
+\end{tikzcd}
+
+\begin{tikzcd}
+    \Tz{(f\ev)}{\Tz{(g\ev)}{(A\ev)}}
+    \arrow{r}{\bindz{f\ev}{g\ev}{(B\ev)}}
+    \arrow{d}{\Tz{f\ev}{\Tz{g\ev}{m\ev}}}
+    &
+    \Tz{(f\ev)\dot(g\ev)}{(A\ev)}
+    \arrow{d}{\Tz{(f\ev)\dot(g\ev)}{m\ev}}
+    \\
+    \Tz{(f\ev)}{\Tz{(g\ev)}{(B\ev)}}
+    \arrow{r}{\bindz{f\ev}{g\ev}{(B\ev)}}
+    &
+    \Tz{(f\ev)\dot(g\ev)}{(A\ev)}
+\end{tikzcd}
+
+
+\begin{tikzcd}
+    A\ev \times \Tz{f\ev}{(B\ev)}
+    \arrow{r}{\tstrengthz{f\ev}{(A\ev)}{(B\ev)}}
+    \arrow{d}{(m\ev\times\Id{\Tz{f\ev}{B}})}
+    &
+    \Tz{f\ev}{(A\ev\times B\ev)}
+    \arrow{d}{\Tz{(f\ev)}{(m\ev\times \Id{B\ev})}}
+    \\
+    A'\ev \times \Tz{f\ev}{(B\ev)}
+    \arrow{r}{\tstrengthz{f\ev}{(A'\ev)}{(B\ev)}}
+    &
+    \Tz{f\ev}{(A'\ev\times B\ev)}
+\end{tikzcd}
+
+\begin{tikzcd}
+    A\ev \times \Tz{f\ev}{(B\ev)}
+    \arrow{r}{\tstrengthz{f\ev}{(A\ev)}{(B\ev)}}
+    \arrow{d}{(\Id{A\ev}\times \Tz{f\ev}{(m\ev)})}
+    &
+    \Tz{f\ev}{(A\ev\times B\ev)}
+    \arrow{d}{\Tz{(f\ev)}{(\Id{A\ev} \times m\ev)}}
+    \\
+    A\ev \times \Tz{f\ev}{(B'\ev)}
+    \arrow{r}{\tstrengthz{f\ev}{(A\ev)}{(B'\ev)}}
+    &
+    \Tz{f\ev}{(A\ev\times B'\ev)}
+\end{tikzcd}
+
+
+\subsubsection{Monad Laws}
+\paragraph{Left Unit}
+
+\begin{align}
+    (\bindn{f}{\1}{A}\after\Tn{f}{\pointn{A}})\ev &= \bindz{(f\ev)}{\1}{(A\ev)} \after \Tz{f\ev}{(\pointz{A\ev})}\\
+    &= \Id{\Tz{f\ev}{A\ev}}\\
+    &=(\Id{\Tn{f}{A}})\ev
+\end{align}
+
+\paragraph{Right Unit}
+
+\begin{align}
+    (\bindn{\1}{g}{A}\after\pointn{\Tn{f}{A}})\ev &= \bindz{\1}{(f\ev)}{(A\ev)} \after (\pointz{\Tz{f\ev}{A\ev}})\\
+    &= \Id{\Tz{f\ev}{A\ev}}\\
+    &=(\Id{\Tn{f}{A}})\ev
+\end{align}
+
+
+\paragraph{Monad Associativity}
+
+\begin{align}
+    ((\bindn{f}{(g\dot h)}{A})\after\Tn{f}{(\bindn{g}{h}{A})})\ev &= \bindz{(f\ev)}{((g\ev)\dot(h\ev))}{(A\ev)}\after\Tz{f\ev}{\bindz{(h\ev)}{(g\ev)}{A\ev}}\\
+    &= \bindz{((f\ev)\dot(g\ev))}{(h\ev)}{(A\ev)}\after\bindz{(f\ev)}{(g\ev)}{(\Tz{h\ev}{(A\ev)})}\\
+    & = (\bindn{f\dot g}{h}{A}\after\bindn{f}{g}{\Tz{h}{A}})\ev
+\end{align}
+\subsubsection{Tensorial Strength}
+
+\paragraph{Unitor Law}
+\begin{align}
+    (\Tn{f}{\pp})\ev&= \Tz{(f\ev)}{(\pp\ev)}\\
+    & =  \Tz{(f\ev)}{(\pp)}\\
+    & = \pp\\
+    &= \pp\ev
+\end{align}
+
+\paragraph{Bind Law}
+
+\begin{tikzcd}[ampersand replacement=\&]
+    A \times \Tn{f}{\Tn{g}{B}} 
+    \arrow [r, "\tstrength{f}{A}{\Tn{g}{B}}"]
+    \arrow [dr, "\Id{A} \times \bindn{f}{g}{B}"]
+    \& 
+    \Tn{f}{(A \times \Tn{g}{B})} 
+    \arrow [r, "\Tn{f}{\tstrength{g}{A}{B}}"]
+    \& 
+    \Tn{f}{\Tn{g}{(A \times B)}} 
+    \arrow [d, "\bindn{f}{g}{A \times B}"]
+    \\
+    \&
+    A \times \Tn{f \dot g}{B}  
+    \arrow [r, "\tstrength{f \dot g}{A}{B}"] 
+    \&
+    \Tn{f \dot g}({A \times B)}
+\end{tikzcd}
+
+\begin{align}
+    (\tstrengthn{(f\dot g)}{A}{B}\after (\Id{A}\times \bindn{f}{g}{B}))\ev & = (\tstrengthz{((f\ev)\dot (g\ev))}{(A\ev)}{(B\ev)}\after (\Id{A\ev}\times \bindn{(f\ev)}{(g\ev)}{(B\ev)}))\\
+    & = \bindz{(f\ev)}{(g\ev)}{(A\times B)\ev}\after\Tz{f\ev}{(\tstrengthz{(g\ev)}{(A\ev)}{(B\ev)})}\after\tstrengthz{(f\ev)}{(A\ev)}{\Tz{g\ev}{(B\ev)}}\\
+    & = (\bindn{f}{g}{(A\times B)}\after\Tn{f}{(\tstrengthn{g}{A}{B})}\after\tstrengthn{f}{A}{\Tn{g}{(B)}})\ev
+\end{align}
+
+
+
+\paragraph{Commutativity with Unit}
+
+\begin{tikzcd}[ampersand replacement=\&]
+    A \times B
+    \arrow [r, "\Id{A} \times \point{B}"]
+    \arrow [rd, "\point{A \times B}"]
+    \&
+    A \times \tob 
+    \arrow [d, "\tstrength{\1}{A}{B}"]
+    \\
+    \&
+    \Tn{\1}{(A \times B)}
+\end{tikzcd}
+
+\begin{align}
+    (\tstrengthn{\1}{A}{B}\after(\Id{A}\times \pointn{A}))\ev & = \tstrengthz{\1}{(A\ev)}{(B\ev)}\after(\Id{A\ev}\times \pointz{A\ev})\\
+    & = \pointz{A\ev\times B\ev}\\
+    & = (\pointn{A\times B})\ev
+\end{align}
+
+\paragraph{Commutativity with $\alpha$}
+Let $\alpha_{A, B, C} = \pr{\p\after\p}{\pr{\pp\after\p}{\pp}}: ((A \times B) \times C) \rightarrow (A \times (B \times C))$
+
+
+\begin{tikzcd}[ampersand replacement=\&]
+    (A\times B)\times \Tn{\e}{C} 
+    \arrow [rr, "\tstrength{\e}{(A\times B)}{C}"]
+    \arrow [d, "\alpha_{A, B, \Tn{\e}{C}}"]
+    \& \& \Tn{\e}{((A \times B)\times C)}
+    \arrow [d, "\Tn{\e}{\alpha_{A, B, C}}"]
+    \\
+    A \times (B \times \Tn{\e}{C}) 
+    \arrow [r, "\Id{A}\times\tstrength{\e}{B}{C}"]
+    \&
+    A\times\Tn{\e}{(B \times C)} 
+    \arrow [r, "\tstrength{\e}{A}{(B \times C)}"]
+    \& \Tn{\e}{(A \times (B \times C))}
+    \\
+\end{tikzcd}
+
+\begin{align}
+    (\Tn{f}{\alpha_{A, B, C}}\after\tstrengthn{f}{A\times B}{C})\ev & = \Tz{f\ev}{\alpha_{A\ev, B\ev, C\ev}} \after\tstrengthz{(f\ev)}{(A\times B)\ev}{(C\ev)}\\
+    & = \tstrengthz{(f\ev)}{(A\ev)}{(B\ev\times C\ev)}\after(\Id{A\ev}\times \tstrengthz{(f\ev)}{(B\ev)}{(C\ev)})\after\alpha_{A\ev, B\ev, C\ev}\\
+    & = (\tstrengthn{f}{A}{(B\times C)}\after(\Id{A}\times \tstrengthn{f}{B}{C})\after\alpha_{A, B, C})\ev\\
+\end{align}
+
+
+\subsection{Sub-Effecting}
+Given a collection of sub-effecting natural transformation in $\C$,
+
+\begin{align}
+    \deno{\e_1\subeffectz \e_2}:&\quad \Tz{\e_1}{} \rightarrow \Tz{\e_2}{}
+\end{align}
+
+We can form sub-effect natural transformations in $[E^n, \C]$:
+
+\begin{align}
+    \deno{f\subeffectn g}:&\quad\Tn{f}{}\rightarrow \Tn{g}{}\\
+    \deno{f\subeffectn g} A \ev:&\quad\Tn{f\ev}{(A\ev)}\rightarrow \Tn{g\ev}{(B\ev)}\\
+    =&\quad \deno{f\ev\subeffectz g\ev}A\ev
+\end{align}
+
+\subsubsection{Naturality}
+
+\begin{tikzcd}
+    \Tz{f\ev}{A\ev}
+    \arrow{r}{\deno{f\ev\subeffectz g\ev}A\ev}
+    \arrow{d}{\Tz{f\ev}{m\ev}}
+    &
+    \Tz{g\ev}{A\ev}
+    \arrow{d}{\Tz{g\ev}{m\ev}}
+    \\
+    \Tz{f\ev}{B\ev}
+    \arrow{r}{\deno{f\ev\subeffectz g\ev}B\ev}
+    &
+    \Tz{g\ev}{B\ev}
+\end{tikzcd}
+
+\subsubsection{Commutes With Tensor Strength}
+
+\begin{tikzcd}[ampersand replacement=\&]
+    A \times \Tn{f}{B} \arrow [r, "\Id{A} \times \dsen{f}{g}_B"] \arrow [d, "\tstrengthn{f}{A}{B}"] \&
+    A \times \Tn{g}{B} \arrow [d, "\tstrengthn{g}{A}{B}"] \\
+    \Tn{f}{(A \times B)} \arrow [r, "\dsen{f}{g}_{ A \times B}"] \&
+    \Tn{g}{(A \times B)} 
+\end{tikzcd}
+
+\begin{align}
+    (\tstrengthn{g}{A}{B}\after(\Id{A}\times \db{f\subeffectn g}_B))\ev & = \tstrengthz{(g\ev)}{(A\ev)}{(B\ev)}\after(\Id{A\ev}\times \db{f\ev \subeffectz g\ev}_{B\ev})\\
+    & = \db{f\ev \subeffectz g\ev}_{(A\times B)\ev} \after\tstrengthz{(f\ev)}{(A\ev)}{(B\ev)}\\
+    & = (\db{f \subeffectn g}_{(A\times B)} \after\tstrengthn{f}{A}{B})\ev\\
+\end{align}
+
+\subsubsection{Commutes with Join}
+
+\begin{tikzcd}[ampersand replacement=\&]
+    \Tn{f}{\Tn{g}{}} 
+    \arrow [rr, "\Tn{f}{\deno{g\subeffectn g'}
+    }"]
+    \arrow [d, "\bindn{f}{g}{}"]
+    \&  \&
+    \Tn{f}{\Tn{g'}{}}
+    \arrow [rr, "\db{f \subeffectn f'}_{M, \Tn{g'}{}}"]
+    \& \&
+     \Tn{f'}{\Tn{g'}{}} 
+     \arrow [d, "\bindn{f'}{g'}{}"]
+     \\
+    \Tn{f\dot g}{}
+    \arrow [rrrr, "\deno{f\dot g\subeffectn f'\dot g'}"]
+    \& \&
+     \& \&
+    \Tn{f'\dot g'}{}
+\end{tikzcd}
+
+\begin{align}
+    (\dsen{f\dot g}{f'\dot g'}_A\after\bindn{f}{g}{A})\ev & = \dsez{(f\ev)\dot(g\ev)}{(f'\ev)\dot (g\ev)}_{A\ev}\after\bindz{(f\ev)}{(g\ev)}{(A\ev)}\\
+    & = \bindz{(f\ev)}{(g\ev)}{(A\ev)}\after\dsez{f\ev}{f'\ev}_{\Tz{g'\ev}{(A\ev)}}\after \Tz{f\ev}{\dsez{g\ev}{g'\ev}}_{(A\ev)}\\
+    &= \bindn{f}{g}{A}\after\dsen{f}{f'}_{\Tn{g'}{A}}\after\Tn{f}{\dsen{g}{g'}}_A
+\end{align}
+
+\subsection{Sub-Typing}
+Sub-typing in $[E^n, \C]$ holds via sub-typing in $\C$
+
+\begin{align}
+    \deno{A\subtype_n B}:&\quad A\rightarrow B\\
+    \deno{A\subtype_n B}\ev=&\quad \deno{A\ev\subtype_0 B\ev}
+\end{align}
+
+So the subtyping relation $A \subtype B$ forms a morphism in $[E^n, \C]$
+
+\section{Functors Between S-Categories}
+For a function $\theta: E^m \rightarrow E^n$ , the re-indexing functor $\theta\star$ is defined as follows:
+
+\begin{align}
+    \theta\star:\quad& [E^n, \C] \rightarrow [E^m, \C]\\
+    \theta\star(A)\emv=&\quad A(\theta (\emv))\\
+    f:\quad& A \rightarrow B \in[E^n, \C]\\
+    \theta\star(f)\emv =&\quad f(\theta(\emv)): A(\theta(\emv)\rightarrow B(\theta(\emv)))
+\end{align}
+
+\subsection{Quantification}
+
+We need to define $\allEn: [E^{n+1}, \C]\rightarrow[E^n, \C]$
+
+So
+\begin{align}
+    (\allEn A)\env =&\quad A(\env, \bot)\\
+    m:&\quad A\rightarrow B\\
+    (\allEn m):&\quad \allEn A\rightarrow \allEn B\\
+    (\allEn m)\env =&\quad m(\env, \bot)\\
+\end{align}
+
+\subsection{Adjunction}
+It is the case that:
+$$\pstar \dashv \allEn$$
+
+With unit:
+
+\begin{align}
+    \unit{A}:&\quad A \rightarrow \allEn\pstar A\\
+    \unit{A}(\env)=&\quad\Id{A\env}
+\end{align}
+
+Since $(\allEn\pstar A)\env = (\pstar A)(\env, \bot) = A\env$, so $A = \allEn\pstar A$
+
+And co-unit
+
+
+\begin{align}
+    \counit{B} : &\quad \pstar\allEn B \rightarrow B\\
+    \counit{B}(\env, \e_{n+1}) =&\quad \db{(\env, \bot)\subeffectz (\env, \e_{n+1})}_B
+\end{align}
+
+Which uses the point-wise $E^n$ sub-effect natural transformation.
+
+We then define the natural bijection as so:
+
+\begin{equation}
+    \bar{(-)}: [E^{n_1}, \C](\pstar A, B) \leftrightarrow [E^n,\C] (A, \allEn B): \widehat{(-)}
+\end{equation}
+
+\begin{align}
+    m:&\quad \pstar A \rightarrow B\\
+    \bar{m}:&\quad A\rightarrow \allEn B\\
+    \bar{m}(\env) =&\quad m(\env, \bot)
+\end{align}
+
+
+\begin{align}
+    n:&\quad A \rightarrow \allEn B\\
+    \widehat{n}:&\quad \pstar A\rightarrow B\\
+    \widehat{n}(\env, \e_{n+1}) =&\quad \db{(\env, \bot)\subeffectz (\env, \e_{n+1})}_B\after n(\env)
+\end{align}
+
+\subsubsection{This is an Adjunction}
+
+For any $g: \pstar A \rightarrow B$,
+
+\begin{align}
+    (\counit{B}\after\pstar(\bar{g}))(\env, \e_{n+1}) & = \db{(\env, \bot)\subeffectz (\env, \e_{n+1})}_{B} \after g(\env, \bot)\\
+    &= g(\env, \e_{n+1})\qt{By the limit.}
+\end{align}
+
+Since $g(\env, \bot)$ is the limit of $g(\env, -)$
+
+\subsection{Beck-Chevalley Condition}
+
+For $\theta: E^m \rightarrow E^n$:
+\begin{align}
+    ((\theta\star\after\allEn)A)\env &= \theta\star(\allEn A)\env\\
+    &= (\allEn A)(\theta(\env))\\
+    &= A(\theta(\env), \bot)\\
+    &= A((\theta\times\Id{E})(\env, \bot))\\
+    &= ((\theta\times\Id{E})\star A)(\env, \bot)\\
+    &= \allEm((\theta\times\Id{E})\star A)\env\\
+    &= ((\allEm\after(\theta\times\Id{E})\star)A)\env
+\end{align}
+
+\end{document}
