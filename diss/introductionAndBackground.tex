@@ -3,6 +3,10 @@
 
 \input{../proofs/header.tex}
 
+\usepackage{tikz}
+\usetikzlibrary{arrows}
+
+
 \begin{document}
 \abstract
 
@@ -787,6 +791,46 @@ Separately, we prove that all derivable denotations for a typing relation instan
 
 This collection of theorems finally allows us to complete all cases of the $\beta\eta$-equivalence soundness theorem.
 
+\begin{figure}[h!]\begin{tikzpicture}[->,>=stealth',shorten >=1pt,auto,node distance=3cm,
+    thick,main node/.style={rectangle,fill=blue!20,draw,
+    font=\sffamily\small\bfseries,minimum size=15mm}]
+
+    \node[main node,text width=20mm] (IndexCategory) {Indexed Category and Adjunction};
+    \node[main node,text width=20mm] (MulNaturality) [below of=IndexCategory] {Naturality of Mul Operator};
+
+    \node[main node,text width=20mm] (BeckChevalley) [left of=MulNaturality]{Beck-Chevalley Condition};
+    \node[main node,text width=20mm](SClosure) [right of=MulNaturality]{S-Closure of Re-indexing};
+
+    \node[main node, text width=20mm](EffectWeakeningEffects) [below left of=MulNaturality]{Effect Weakening on Effects};
+
+    \node[main node, text width=20mm](EffectSubEffects) [below right of=MulNaturality]{Effect Weakening on Effects};
+
+    \node[main node, text width=20mm](EffectWeakeningTypes)[below of=EffectWeakeningEffects]{Effect Weakening on Types};
+
+    \node[main node, text width=20mm](EffectSubTypes)[below of=EffectSubEffects]{Effect Substitution on Types};
+
+    \node[main node, text width=20mm](EffectWeakeningTerms)[below of=EffectWeakeningTypes]{Effect Weakening on Terms};
+
+    \node[main node, text width=20mm](EffectSubTerms)[below of=EffectSubTypes]{Effect Substitution on Terms};
+
+    \node[main node, text width=20mm](EffectWeakeningSubtyping)[left of=EffectWeakeningTerms]{Effect Weakening on Sub-typing};
+
+    \node[main node, text width=20mm](EffectSubSubtyping)[right of=EffectSubTerms]{Effect Substitution on Sub-typing};
+
+    \node[main node, text width=20mm](EffectWeakeningWeakening)[below of=EffectWeakeningTerms]{Effect Weakening on Term Weakening};
+
+    \node[main node, text width=20mm](EffectWeakeningSubstitution)[below of=EffectSubTerms]{Effect Weakening on Term Substitution};
+
+    \node[main node, text width=20mm](TermWeakening)[below of=EffectWeakeningWeakening]{Term Weakening Theorem};
+
+    \node[main node, text width=20mm](TermSubstitution)[below of=EffectWeakeningSubstitution]{Term Substitution Theorem};
+
+    \node[main node, text width=20mm](UniqueDenotations)[below left of=TermSubstitution]{Unique Denotations};
+
+    \node[main node, text width=20mm](Soundness)[below of=UniqueDenotations]{Soundness};
+  \end{tikzpicture}
+\caption{A road map of the proof dependencies}
+\end{figure}
 
 
 \section{Denotations}
