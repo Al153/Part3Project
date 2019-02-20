@@ -48,7 +48,7 @@ check[Exception](ThrowException("Not Aborted"))
 In this example, we are reusing the same “check” function in three different cases with three different effects in a type safe manner. Hence, “check” is polymorphic in the effect parameter it receives. To analyse this language, it would be useful to have an analysis tool that can precisely model these separate, though potentially interdependent effects. A denotational semantics that can account for the parametric polymorphism over effects would be a step towards building such tools.
 
 \section{An Introduction to Categorical Semantics}
-A denotational semantics for a language is a mapping, known as a denotation, $\deno{-}$, of structures in the language, such as types and terms to mathematical objects in such a way that non-trivial properties of the terms in the language correspond to other properties of the denotations of the terms.
+In this dissertation, I shall be describing a denotational semantics using category theory. A denotational semantics for a language is a mapping, known as a denotation, $\deno{-}$, of structures in the language, such as types and terms to mathematical objects in such a way that non-trivial properties of the terms in the language correspond to other properties of the denotations of the terms.
 
 When we specify a denotational semantics of a language in category theory, we look to find a mapping of types and typing environments to objects in a given category.
 
@@ -124,9 +124,11 @@ should be derivable from
 \end{equation}
 
 \subsection{Languages and Their Requirements}
+Different languages require different structures to be present in a category for the category to be able to interpret terms in the language. Using the concepts defined in \ref{CategoryTheoryRequirements}, I shall now give an introduction to which category-theoretic structures are required to interpret different language features. 
+
 One of the simplest, while still interesting, languages to derive a denotational semantics for is the simply typed lambda calculus (STLC). STLC's semantics require a cartesian closed category (CCC, see section \ref{CCC}).
 
-Products in the CCC are used to denote the lists of variable types in the typing environment, exponential objects model functions, and the terminal object is used to derive "points" (\todo{Terminology}) which represent the ground terms, such as the unit term, $()$, as well as the empty typing environment.
+Products in the CCC are used to denote the lists of variable types in the typing environment, exponential objects model functions, and the terminal object is used to derive representations of ground terms, such as the unit term, $()$, as well as the empty typing environment.
 
 
 \begin{itemize}
@@ -143,6 +145,8 @@ From this, we can specify what structures categories need to have in order to mo
         \hline
         \hline
         STLC            & CCC \\
+        \hline
+        If expressions and booleans   & Co-product on the terminal object \\
         \hline
         Single Effect   & Strong Monad \\
         \hline
@@ -162,7 +166,7 @@ A single effect can be modelled by adding a strong monad to the category, as sho
 
 These type rules can be modelled using the "unit" natural transformation and a combination of the "join" and tensor strength natural transformations respectively. 
 
-For more precise analysis of languages with multiple effects, we can look into the algebra on the effects. A simple example of such an algebra is a partially ordered monoid. The monoid operation defines how to compose effects, and the partial order gives a sub-typing relation to make programming more intuitive with respect to if statements. A category with a strong graded monad allows us to model this algebra in a category theoretic way. It also allows us to do some effect analysis in the type system, as seen in the type rules for return and bind in equation \ref{GradedMonadTypeRules}.
+For a more precise analysis of languages with multiple effects, we can look into the algebra on the effects. A simple example of such an algebra is a partially ordered monoid. The monoid operation defines how to compose effects, and the partial order gives a sub-typing relation to make programming more intuitive with respect to if statements. A category with a strong graded monad allows us to model this algebra in a category theoretic way. It also allows us to do some effect analysis in the type system, as seen in the type rules for return and bind in equation \ref{GradedMonadTypeRules}.
 
 \begin{eqnarray}\label{GradedMonadTypeRules}
     \treerule{Return}{\typerelation{\G}{v}{A}}{\typerelation{\G}{\return{v}}{\moa}} & \treerule{Bind}{\typerelation{\G}{v_1}{\M{\e_1}{A}} \s\s \typerelation{\gax}{v_2}{\M{\e_2}{B}}}{\typerelation{\G}{\doin{x}{v_1}{v_2}}{\M{\e_1 \dot \e_2}{B}}}
@@ -172,7 +176,7 @@ For more precise analysis of languages with multiple effects, we can look into t
 To express polymorphism over a property $P$, the language's semantics are expanded to use a new environment specifying the variables ranging over $P$ that are allowed in a given context. This can be seen in the augmented type rules in \ref{PolymorphismTypeRules}.
 
 \begin{eqnarray}\label{PolymorphismTypeRules}
-    \treerule{Gen}{\etyperelation{\P, \a}{v}{A}}{\gpetyperelation{\elam{\a}{v}}{\all{\a}{A}}}& \treerule{Spec}{\gpetyperelation{v}{\all{\a}{A}}\s\s\wellformed{\P}{\e}}{\gpetyperelation{\eapp{v}{\e}}{A\ssub{\a}{\e}}}
+    \treerule{Gen}{\etyperelation{\P, \a}{\G}{v}{A}}{\gpetyperelation{\elam{\a}{v}}{\all{\a}{A}}}& \treerule{Spec}{\gpetyperelation{v}{\all{\a}{A}}\s\s\wellformed{\P}{\e}}{\gpetyperelation{\eapp{v}{\e}}{A\ssub{\a}{\e}}}
 \end{eqnarray}
 
 To model these augmented type rules, we can create a category representing the semantics of the non-polymorphic language at each given context. This collection of non-polymorphic categories can be indexed by a base category which models the operations and relationships between the $P$-Environment. Morphisms in the base category between environments correspond to functors between the semantic categories for the relevant environments. These functors can then be used to construct the semantics of polymorphic terms. \todo{Index diagram}
@@ -180,7 +184,7 @@ To model these augmented type rules, we can create a category representing the s
 In this dissertation, I shall show how these category theoretic building blocks can be put together to give the class of categories that can model polymorphic effect systems.
 
 
-\chapter{Required Category Theory}
+\chapter{Required Category Theory}\label{CategoryTheoryRequirements}
 
 Before going further, it is necessary to assert a common level of category theory knowledge. This section is not intended as a tutorial but as a to jog the memory of the reader, and briefly introduce some new concepts.
 
@@ -225,7 +229,7 @@ An initial object, $I$ of $\C$ is one such that for every other object $X\in\obj
 \section{Co-Product}
 A co-product is the conceptual dual of a product.
 
-There is a product for a pair of objects $X, Y\in\obj\C$ if there exists an object and morphisms in C:
+There is a co-product for a pair of objects $X, Y\in\obj\C$ if there exists an object and morphisms in C:
 \begin{tikzcd}
     X  \arrow{r}[swap]{\inl} & (X + Y) & \arrow [l, "inr"]  Y
 \end{tikzcd}
@@ -336,7 +340,7 @@ Such that the following diagrams commute.:
 
 
 \section{Tensor Strength}
-Tensorial strength over a graded monad gives us the tools necessary to manipulate monadic operations in an intuitive way. Tensorial strength consists of a natural transformation:
+Tensorial strength over a graded monad gives us the tools necessary to manipulate monadic operations in an intuitive way. A monad with tensor strength is referred to as "strong". Tensorial strength consists of a natural transformation:
 
 \begin{align}
     \tstrength{\e}{A}{B}: A \times \teb \rightarrow \T{\e}{(A \times B)}
@@ -530,4 +534,265 @@ A limit of the diagram is a least-cone. That is, it is a cone object $L$ with mo
 \end{tikzcd}
 
 \chapter{The Polymorphic-Effect-Calculus}
+In this chapter I'll be introducing the monadic, effect-ful language used in the rest of the dissertation, known from now on as the Effect Calculus (EC). Then I shall introduce polymorphic terms to the EC which yield the Polymorphic Effect Calculus (PEC).
+
+\section{Effect Calculus}
+The basic effect calculus is an extension of the simply typed lambda calculus to include constants, if-statements, effects, and sub-typing.
+
+It has terms of the following form:
+
+\begin{align}
+    v ::= \const{A} \mid x\mid \t \mid\f \mid\u\mid\lam{x}{A}{v}\mid\apply{v_1}{v_2}\mid\return{v}\mid\doin{x}{v_1}{v_2}\mid\pifthenelse{A}{v}{v_1}{v_2} 
+\end{align}
+
+Where $\const{A}$ is one of collection of ground constants, and $A$ ranges over the types:
+
+\begin{align}
+    A, B, C ::= \g\mid \ab \mid\mea
+\end{align}
+
+Where $\g$ is from a collection of ground types, including $\U, \B$, and $\e$ ranges over pre-ordered monoid of effects: $(E, \dot, \subeffect, \1)$
+
+
+\todo{This is very vague so far. I don't want to get too bogged down in the semantics of the Effect Calculus though}
+A full derivation and proof of soundness of the semantics of the Effect Calculus can be found online \todo{Link} as it is too long to include here and many of the concepts will be repeated in the rest of this dissertation anyway. The categorical semantics of the Effect Calculus require a CCC with a strong graded monad, sub-typing morphisms, sub-effecting natural transformations, and a co-product on the terminal object. These features allow us to prove the soundness of the effect-calculus semantics.
+
+\section{Polymorphic Effect Calculus}
+Next, we shall consider the Effect Calculus extended with terms to allow System-F style polymorphism over effects.
+
+\begin{align}
+    v::=\text{..}\mid\elam{\a}{v}\mid\eapp{v}{\e}
+\end{align}
+
+\begin{align}
+    A, B, C::=\text{...}\mid \all{\a}{A}
+\end{align}
+
+Where effects $\e$ now range over the effect pre-ordered monoid augmented with effect variables from an environment $\P = \nil, \a, \b ...$, written as $(E_\P, \dotp, \subeffectp, \1)$.
+
+\section{Type System}
+\subsection{Environments}
+As mentioned before, effects can now include effect variables. These are managed in the type system using a well-formed effect-variable-environment $\P$, which is a snoc-list.
+
+\begin{align}
+    \P ::= \nil \mid \P, \a
+\end{align}
+
+
+
+\subsection{Effects}
+The ground effects form the same monotonous, pre-ordered monoid $(E, \dot, \1, \subeffect)$ over ground elements $e$. For each effect environment $\P$, we define a new, symbolic pre-ordered monoid:
+
+\begin{equation}
+    (E_\P, \dotp, \1, \subeffectp)
+\end{equation}
+
+Where $E_\P$ is the closure of $E\cup \left\{\a\mid\a\in\P\right\}$ under $\dotp$, which is defined as:
+
+\begin{equation}
+    \treerule{}{\e_3 = \e_1\dot\e_2}{\e_3 = \e_1\dotp\e_2}
+\end{equation} 
+
+For variable-free terms and is defined symbolically for variable containing terms. Further more, we also define the sub-effecting relation in terms of its variables and the ground relation.
+
+\begin{equation}
+    \e_1 \subeffectp \e_2 \Leftrightarrow \forall \si\downarrow. \e_1\sub{\si\downarrow} \subeffect \e_2\sub{\si\downarrow}
+\end{equation}
+
+Where $\si\downarrow$ denotes any ground-effect-substitution of $\P$. That is any substitution of all effect-variables in $\P$ to ground effects. Where it is obvious from the context, I shall use $\subeffect$ instead of $\subeffectp$.
+
+
+\subsection{Types}
+As stated, types are now generated by the following grammar.
+
+$$ A, B, C \gens \ground \mid \ab \mid \mea \mid \all{\a}{A}$$
+  
+\subsection{Type Environments}
+As is often the case in similar type systems, a type environment is a snoc-list of term-variable, type pairs, $G \gens \nil \mid \gax$.
+
+\paragraph{Domain Function on Type Environments}
+
+\[
+    \dom{\nil} = \emptyset
+    \quad\quad\quad
+    \dom{\gax} =  \dom{\G}  \cup \left\{x \right\}
+\]
+
+\subsection{Well-Formed-Ness Predicates}
+To formalise properties of the type system, it will be useful to have a collection of predicates ensuring that structures in the language are well-behaved with respect to their use of effect variables.
+
+Informally, $\a \in \P$ if $\a$ appears in the list represented by $\P$.
+
+The $\ok{}$ predicate on effect environments asserts that the effect environment does not contain any duplicate effect-variables.
+
+\[
+    \treerule{Atom}{}{\ok{\nil}}
+\quad
+    \treerule{A}{\ok{\P} \s\s \a\notin \P}{\ok{\P, \a}}
+\]
+
+Using this, we can define the well-formed-ness relation on effects, $\wellformed{\P}{\e}$. In short, this relation ensures that effects don't reference variables that are not in the effect environment.
+
+\[
+    \treerule{Ground}{\ok{\P}}{\wellformed{\P}{e}}
+    \quad
+    \treerule{Var}{\ok{\P,\a}}{\wellformed{\P,\a}{\a}}
+    \quad
+    \condtreerule{Weaken}{\wellformed{\P}{\a}}{\wellformed{\P,\b}{\a}}{\a\neq\b}
+    \quad
+    \treerule{Monoid Op}{\wellformed{\P}{\e_1}\s\s\wellformed{\P}{\e_2}}{\wellformed{\P}{\e_1\dot\e_2}}
+\]
+
+The well-formed-ness of effects can be used to a similar well-typed-relation on types, $\wellformed{\P}{A}$, which asserts that all effects in the type are well-formed.
+
+\[
+    \treerule{Ground}{}{\wellformed{\P}{\g}}
+    \quad
+    \treerule{Lambda}{\wellformed{\P}{A}\s\s\wellformed{\P}{B}}{\wellformed{\P}{\ab}}
+    \quad
+    \treerule{Computation}{\wellformed{\P}{A}\s\s\wellformed{\P}{\e}}{\wellformed{\P}{\mea}}
+    \quad
+    \treerule{For-All}{\wellformed{\P,\a}{A}}{\wellformed{\P}{\all{\a}{A}}}
+\]
+
+Finally, we can derive the a well-formed-ness of type-environments,   $\oke{\P}{\G}$, which ensures that all types in the environment are well formed.
+
+\[
+    \treerule{Nil}{}{\oke{\P}{\nil}}
+    \quad
+    \treerule{Var}{\oke{\P}{\G}\s\s x\notin\dom{\G}\s\s \wellformed{\P}{A}}{\oke{\P}{\gax}}
+\]
+
+\subsection{Sub-typing}
+    There exists a sub-typing pre-order relation $\subtype_{\ground}$ over ground types. That is:
+
+    \[
+        \treerule{Reflexive}{}{A \subtype_{\ground} A}
+        \quad
+        \treerule{Transitive}{A \subtype_{\ground} B \s \s B \subtype_{\ground} C}{A \subtype_{\ground} C}
+    \]
+
+    We extend this relation with the function, effect, and effect-lambda sub-typing rules to yield the full sub-typing relation under an effect environment, $\P$, $\subtypep$
+\[
+    \treerule{ground}{A \subtype_{\ground} B}{A \subtypep B}
+    \quad
+    \treerule{Fn}{A \subtypep A' \s\s B' \subtypep B }{\fntype{A'}{B'} \subtypep \ab}
+    \quad
+    \treerule{All}{A\subtypep A'}{\all{\a}{A}\subtypep\all{a}{A'}}
+    \quad
+    \treerule{Effect}{A\subtypep B\s\s \e_1\subeffectp\e_2}{\M{\e_1}{A}\subtypep\M{\e_2}{B}}
+\]
+
+
+\subsection{Type Rules}
+We define a fairly standard set of type rules on the language. \todo{stack these horizontally to reduce the vertical space.}
+
+
+\[
+    \treerule{Const}{\oke{\P}{\G}\s\s\wellformed{\P}{A}}{\gpetyperelation{\const{A}}{A}} 
+    \quad
+    \treerule{Unit}{\oke{\P}{\G}}{\gpetyperelation{\u}{\U}} 
+    \quad
+    \treerule{True}{\oke{\P}{\G}}{\gpetyperelation{\t}{\B}}
+    \quad
+    \treerule{False}{\oke{\P}{\G}}{\gpetyperelation{\f}{\B}}
+\]
+\[
+\treerule{Var}{\oke{\P}{\gax}}{\etyperelation{\P}{\gax}{x}{A}}
+\quad
+\condtreerule{Weaken}{\etyperelation{\P}{\G}{x}{A}\s\s\wellformed{\P}{B}}{\etyperelation{\P}{\gby}{x}{A}}{x \neq y}
+\quad
+\treerule{Fn}{\etyperelation{\P}{\gax}{v}{\b}}{\etyperelation{\P}{\G}{\lam{x}{A}{v}}{\ab}}
+\]
+\[
+    \treerule{Sub}{\etyperelation{\P}{\G}{v}{A}\s\s A \subtypep B}{\etyperelation{\P}{\G}{v}{B}}
+    \quad
+    \treerule{Effect-Abs}{\etyperelation{\P,\a}{\G}{v}{A}}{\gpetyperelation{\elam{\a}{v}}{\all{\a}{A}}}
+    \quad
+    \treerule{Effect-apply}{\gpetyperelation{v}{\all{\a}A}\s\s\wellformed{\P}{\e}}{\gpetyperelation{\eapp{v}{\e}}{A\ssub{\a}{\e}}}
+\]
+\[
+    \treerule{Return}{\gpetyperelation{v}{A}}{\gpetyperelation{\return{v}}{\moa}}
+    \quad
+    \treerule{Apply}{\gpetyperelation{v_1}{\aeb}\s\s\gpetyperelation{v_2}{A}}{\gpetyperelation{\apply{v_1}{v_2}}{\meb}}
+\]
+\[
+    \treerule{If}{\gpetyperelation{v}{\B} \s\s \gpetyperelation{v_1}{A}\s\s\gpetyperelation{v_2}{A}}{\gpetyperelation{\pifthenelse{A}{V}{v_1}{v_2}}{A}}
+    \quad
+    \treerule{Do}{\gpetyperelation{v_1}{\M{\e_1}{A}} \s\s \etyperelation{\P}{\gax}{v_2}{\M{\e_2}{B}}}{\gpetyperelation{\doin{x}{v_1}{v_2}}{\M{\e_1 \dot \e_2}{B}}}
+\]
+
+\subsection{Ok Lemma} The first lemma used in this dissertation is that: If $\gpetyperelation{v}{A}$ then $\oke{\P}{\G}$.
+\paragraph{Proof}
+If $\ok{\gax}$ then by inversion $\ok{\G}$
+Only the type rule \texttt{Weaken} adds terms to the environment from its preconditions to its post-condition and it does so in an $\ok{}$ preserving way. Any type derivation tree has at least one leaf. All leaves are axioms which require $\oke{\P}{\G}$. And all non-axiom derivations preserve the $\ok{}$ property.
+
+
+\chapter{Semantics for EC in an S-Category}
+As hinted at previously, we can interpret the Effect Calculus in a CCC with a strong graded monad and co-products. A further requirement is the appropriate sub-effecting natural transformations. For each instance of $\e_1 \subeffect \e_2$, there exists a natural transformation $\db{\e_1\subeffect\e2}: \T{\e_1}{}\rightarrow\T{\e_2}{}$ such that it has the following interactions with the graded monad:
+
+\todo{Put these horizontal to each other.}
+
+\subsection{Sub-Effecting and Tensor Strength}
+\begin{tikzcd}[ampersand replacement=\&]
+    A \times \T{\e_1}{B} \arrow [r, "\Id{A} \times \dse{\e_1}{\e_2}_B"] \arrow [d, "\tstrength{\e_1}{A}{B}"] \&
+    A \times \T{\e_2}{B} \arrow [d, "\tstrength{\e_2}{A}{B}"] \\
+    \T{\e_1}{(A \times B)} \arrow [r, "\dse{\e_1}{\e_2}_{ A \times B}"] \&
+    \T{\e_2}{(A \times B)} 
+\end{tikzcd}
+
+\begin{tikzcd}[ampersand replacement=\&]
+    \T{\e_1}{\T{\e_2}{}} 
+    \arrow [rr, "\T{\e_1}{\deno{\e_2\subeffect\e_2'}
+    }"]
+    \arrow [d, "\bind{\e_1}{\e_2}{}"]
+    \&  \&
+    \T{\e_1}{\T{\e_2'}{}}
+    \arrow [rr, "\db{\e_1 \subeffect\e_1'}_{M, \T{\e_2'}{}}"]
+    \& \&
+     \T{\e_1'}{\T{\e_2'}{}} 
+     \arrow [d, "\bind{\e_1'}{\e_2'}{}"]
+     \\
+    \T{\e_1\dot\e_2}{}
+    \arrow [rrrr, "\deno{\e_1\dot\e_2\subeffect\e_1'\dot\e_2'}"]
+    \& \&
+     \& \&
+    \T{\e_1'\dot\e_2'}{}
+\end{tikzcd}
+
+We shall call a category fulfilling these properties an S-Category (Semantic Category).
+
+\todo{This has been very vague as I want to save words on the non-polymorphic stuff.}
+
+\chapter{Semantics For PEC in an Indexed Category}
+In this chapter, I shall describe the category structure required to interpret an instance of the PEC. I shall then present denotations of each type of structure in the language, such as types, effects, terms, substitutions, and environment weakenings. Finally, I shall provide outlines and interesting cases of the proofs of the lemmas leading up to and including soundness of $\beta\eta$-conversion.
+
+
+\section{Required Category Structure}
+
+
+\section{Road Map}
+\todo{Diagram}.
+The first pair of theorems is effect-substitution theorem on effects. These theorems show that substitutions of effects have well-behaved and easily defined action upon the denotations of effects.
+
+Using these theorems, we can then move on to characterize the action of effect-substitutions and effect-environment-weakening on the denotations of types and type-environments.
+
+Using the above, we can characterize the action of effect-substitutions and effect-environment weakening on the denotations of terms.
+
+From this we can characterize the action of effect-weakening on term-substitutions and term weakenings. This gives us the means to prove the substitution and weakening theorems for typing environments.
+
+The substitution and weakening theorems allow us to easily find the denotation of a substituted term, simply by pre-composing the term before substitution with the denotation of the substitution or the weakening.
+
+Separately, we prove that all derivable denotations for a typing relation instance, $\gpetyperelation{v}{A}$ have the same denotation. This is important, since sub-typing allows us to find multiple distinct typing derivations for terms, which initially look like they may have distinct denotations. Using a reduction function to transform typing derivations into a unique form, I shall prove that all typing derivations yield equal denotations.
+
+This collection of theorems finally allows us to complete all cases of the $\beta\eta$-equivalence soundness theorem.
+
+
+
+\section{Denotations}
+
+\section{Substitution and Weakening Theorems}
+
+
+
 \end{document}
