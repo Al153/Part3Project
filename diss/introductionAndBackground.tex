@@ -171,7 +171,7 @@ A single effect can be modelled by adding a strong monad to the category, as sho
     \treerule{Return}{\typerelation{\G}{v}{A}}{\typerelation{\G}{\return{v}}{\M{}{A}}} & \treerule{Bind}{\typerelation{\G}{v_1}{\M{}{A}} \s\s \typerelation{\gax}{v_2}{\M{}{B}}}{\typerelation{\G}{\doin{x}{v_1}{v_2}}{\M{}{B}}}
 \end{eqnarray}
 
-These type rules can be modelled using the "unit" natural transformation and a combination of the "join" and tensor strength natural transformations respectively. 
+These type rules can be modelled using the ``unit'' natural transformation and a combination of the ``join'' and tensor strength natural transformations respectively. 
 
 For a more precise analysis of languages with multiple effects, we can look into the algebra on the effects. A simple example of such an algebra is a partially ordered monoid. The monoid operation defines how to compose effects, and the partial order gives a sub-typing relation to make programming more intuitive with respect to if statements. A category with a strong graded monad allows us to model this algebra in a category theoretic way. It also allows us to do some effect analysis in the type system, as seen in the type rules for return and bind in equation \ref{GradedMonadTypeRules}.
 
@@ -186,7 +186,7 @@ To express polymorphism over a property $P$, the language's semantics are expand
     \treerule{Gen}{\etyperelation{\P, \a}{\G}{v}{A}}{\gpetyperelation{\elam{\a}{v}}{\all{\a}{A}}}& \treerule{Spec}{\gpetyperelation{v}{\all{\a}{A}}\s\s\wellformed{\P}{\e}}{\gpetyperelation{\eapp{v}{\e}}{A\ssub{\a}{\e}}}
 \end{eqnarray}
 
-To model these augmented type rules, we can create a category representing the semantics of the non-polymorphic language at each given context. This collection of non-polymorphic categories can be indexed by a base category which models the operations and relationships between the $P$-Environment. Morphisms in the base category between environments correspond to functors between the semantic categories for the relevant environments. These functors can then be used to construct the semantics of polymorphic terms. Figure \ref{IndexDiagram} demonstrates this construction.
+To model these augmented type rules, we can create a category representing the semantics (an S-Category) of the non-polymorphic language at each given context. This collection of non-polymorphic categories can be indexed by a base category which models the operations and relationships between the $P$-Environment. Morphisms in the base category between environments correspond to re-indexing functors between the S-categories for the relevant environments. These functors, and a right adjoint for the re-indexing functor corresponding to $\p$ morphism can then be used to construct the semantics of polymorphic terms. Figure \ref{IndexDiagram} demonstrates this construction.
 
 In this dissertation, I shall show how these category theoretic building blocks can be put together to give the class of categories that can model polymorphic effect systems.
 
@@ -246,9 +246,9 @@ In this dissertation, I shall show how these category theoretic building blocks 
         %Draw the bracket
 
         \draw [decoration={brace,amplitude=8pt},decorate] ($(s3)+(10em,1ex)$) -- ($(s0)+(10em,-1ex)$);
-        \node[text width=20mm] (Label) at (12,5){S-Categories for each effect environment};
+        \node[text width=20mm] (Label) at (14,5){S-Categories for each effect environment};
     \end{tikzpicture}
-    \caption{Diagram of the structure of an indexed category for modelling a polymorphic language.}
+    \caption{Diagram of the structure of an indexed category for modelling a polymorphic language. Solid arrows represent functors and dashed arrows represent internal morphisms. The left hand category is the base category.}
 \end{figure}
 
 \chapter{Required Category Theory}\label{CategoryTheoryRequirements}
@@ -347,12 +347,12 @@ A natural transformation $\theta$ between to functors $F, G: \C \rightarrow \DC$
 
 \section{Monad}
 
-A monad is famously "a monoid on the category of endofunctors". In less opaque terms, a monad is:
+A monad is famously ``a monoid on the category of endofunctors''. In less opaque terms, a monad is:
 
 \begin{itemize}
     \item A functor from $\C$ onto itself. (An endofunctor) $T: \C \rightarrow C$
-    \item A "unit" natural transformation $\point{A}: A\rightarrow T(A)$
-    \item A "join" natural transformation $\mu_{A}: T(T(A)) \rightarrow T(A)$
+    \item A ``unit'' natural transformation $\point{A}: A\rightarrow T(A)$
+    \item A ``join'' natural transformation $\mu_{A}: T(T(A)) \rightarrow T(A)$
 \end{itemize}
 
 Such that the following diagrams commute:
@@ -407,7 +407,7 @@ Such that the following diagrams commute.:
 
 
 \section{Tensor Strength}
-Tensorial strength over a graded monad gives us the tools necessary to manipulate monadic operations in an intuitive way. A monad with tensor strength is referred to as "strong". Tensorial strength consists of a natural transformation:
+Tensorial strength over a graded monad gives us the tools necessary to manipulate monadic operations in an intuitive way. A monad with tensor strength is referred to as ``strong''. Tensorial strength consists of a natural transformation:
 
 \begin{align}
     \tstrength{\e}{A}{B}: A \times \teb \rightarrow \T{\e}{(A \times B)}
@@ -563,13 +563,7 @@ We can then use $\epsilon$ and $\eta$ to form a natural isomorphism between morp
 \end{align}
 
 \section{Strict Indexed Category}
-The final piece of category theory required to understand this dissertation is the concept of a strictly indexed Category.
-
-A strict indexed category is a functor from a base category into a target category of categories, such as the category of cartesian closed categories.
-
-Objects in the base category are mapped to categories in the target category. Morphisms between objects in the base category are mapped to functors between categories in the target category.
-
-For example, we may use the the case of cartesian closed categories indexed by a pre-order:
+The final piece of category theory required to understand this dissertation is the concept of a strict indexed Category. A strict indexed category is a functor from a base category into a target category of categories, such as the category of cartesian closed categories. Objects in the base category are mapped to categories in the target category. Morphisms between objects in the base category are mapped to functors between categories in the target category. For example, we may use the the case of cartesian closed categories indexed by a pre-order:
 
 \begin{align}
     I: \mathbb{P} & \rightarrow \textit{CCCat}\qt{The indexing functor} \\
@@ -752,8 +746,7 @@ Finally, we can derive the a well-formed-ness of type-environments,   $\oke{\P}{
 
 
 \subsection{Type Rules}
-We define a fairly standard set of type rules on the language. \todo{stack these horizontally to reduce the vertical space.}
-
+We define a fairly standard set of type rules on the language.
 
 \[
     \treerule{Const}{\oke{\P}{\G}\s\s\wellformed{\P}{A}}{\gpetyperelation{\const{A}}{A}} 
@@ -798,16 +791,12 @@ Only the type rule \texttt{Weaken} adds terms to the environment from its precon
 \chapter{Semantics for EC in an S-Category}
 As hinted at previously, we can interpret the Effect Calculus in a CCC with a strong graded monad and co-products. A further requirement is the appropriate sub-effecting natural transformations. For each instance of $\e_1 \subeffect \e_2$, there exists a natural transformation $\db{\e_1\subeffect\e2}: \T{\e_1}{}\rightarrow\T{\e_2}{}$ such that it has the following interactions with the graded monad:
 
-\todo{Put these horizontal to each other.}
-
-\subsection{Sub-Effecting and Tensor Strength}
 \begin{tikzcd}[ampersand replacement=\&]
     A \times \T{\e_1}{B} \arrow [r, "\Id{A} \times \dse{\e_1}{\e_2}_B"] \arrow [d, "\tstrength{\e_1}{A}{B}"] \&
     A \times \T{\e_2}{B} \arrow [d, "\tstrength{\e_2}{A}{B}"] \\
     \T{\e_1}{(A \times B)} \arrow [r, "\dse{\e_1}{\e_2}_{ A \times B}"] \&
     \T{\e_2}{(A \times B)} 
-\end{tikzcd}
-
+\end{tikzcd}\qquad%
 \begin{tikzcd}[ampersand replacement=\&]
     \T{\e_1}{\T{\e_2}{}} 
     \arrow [rr, "\T{\e_1}{\deno{\e_2\subeffect\e_2'}
@@ -836,19 +825,27 @@ In this chapter, I shall describe the category structure required to interpret a
 
 
 \section{Required Category Structure}
+In order to model the polymorphism of PEC, we need to now look at an indexed category. This consists of a base category, $\C$ in which we can interpret the possible effect-environments in, and a mapping from objects in the base category to S-Categories in the category of S-closed categories. This functor shall be denoted as $\C(-)$ and the induced categories $\C(I)$ shall be called ``fibres''. The term ``S-closed'' indicates that all functors within this category preserve the properties of S-categories. \todo{Are these ever fully explained?}. Thus, each morphism $\theta: \deno{\P'}\rightarrow\deno{\P}$ in $\C$ should induce as S-closed, re-indexing functor $\theta\star: \C(I)\rightarrow(I')$ between the fibres.
 
+The essential idea from this point on is that for each relation $\wellformed{\texttt{Env}}{\texttt{Conclusion}}$ should have a denotation that is an object or morphism in a category. For example, $\deno{\typerelation{\P}{\e}{\effect}}$ is a morphism in the base category, $\deno{\typerelation{\P}{A}{\type}}$ is an object in the fibre (S-category) induced by $\P$, and $\deno{\gpetyperelation{v}{A}}$ is morphism between the objects which denote $\G$ and $A$ in the fibre induced by $\P$.
+
+In order to form denotations of well formed effects, $\e$, we need specific objects to exist in the base category $\C$. Firstly, there should exist an object, $U$, indicating the kind of effects. To denote effect-variable-environments, essentially a list of variables, we need finite products on $U$, that is $\C$ should have a terminal object, $\1$ and binary products. We can form finite products as so: $U^0 = \1$ and $U^{n+1} = U^n\times U$. From now on, I shall use $I$ to mean $U^n$ for some $n$.
+
+There is also a requirement that the indexed category can model ground effects, types, and terms. In order to do this, it should have a base-category morphism $\deno{e}: \C(\1, U)$ for each ground effect $e$. Furthermore, each fibre should contain and object $\deno{\g}$ for each ground-type $\g$. Finally, for each constant, $\const{A}$, there should exist a morphism in each fibre: $\deno{\const{A}}: \1 \rightarrow A$. These last two requirements are satisfied by the fibres all being S-categories.
+
+Next up, there needs to be a monoidal operator $\Mul: \ciu \times \ciu \rightarrow \ciu$. $\Mul$ should be natural, which means: $\Mul(f, g)\after\theta = \Mul(f\after\theta, g\after\theta)$. Secondly, $\Mul$ should preserve the operation of the multiplication of ground effects. That is, $\Mul(\deno{e_1},\deno{e_2}) = \deno{e_1\dot e_2}$ where $e_1, e_2$ are ground effects.
+
+Our penultimate requirement is that the re-indexing functor  induced by $\p: I\times U\rightarrow U$ (that is $\pstar: \C(I) \rightarrow \C(I\times U)$) has a right adjoint, $\allI: \C(I\times U) \rightarrow \C(I)$. As the reader might be able to guess, this functor allows us to interpret quantification over effects.
+
+Finally, $\allI$ should satisfy the Beck-Chevalley condition \todo{Reference}. That is $\theta\star\after\allI = \allII\after(\theta\times\Id{U})\star$. This allows us to commute the re-indexing functors with the quantification functor.
 
 \section{Road Map}
-\todo{Diagram}.
-The first pair of theorems is effect-substitution theorem on effects. These theorems show that substitutions of effects have well-behaved and easily defined action upon the denotations of effects.
+In figure \ref{RoadMap}, one can see a diagram of the collection of theorems that need to be proved to establish the $\beta\eta$-equivalence soundness of a semantics for PEC.
 
-Using these theorems, we can then move on to characterize the action of effect-substitutions and effect-environment-weakening on the denotations of types and type-environments.
 
-Using the above, we can characterize the action of effect-substitutions and effect-environment weakening on the denotations of terms.
+The first pair of theorems is effect-substitution theorem on effects. These theorems show that substitutions of effects have well-behaved and easily defined action upon the denotations of effects. Using these theorems, we can then move on to characterize the action of effect-substitutions and effect-environment-weakening on the denotations of types and type-environments. From this, we can also look at the action of weakening and substituting effect environments on the sub-typing between types.
 
-From this we can characterize the action of effect-weakening on term-substitutions and term weakenings. This gives us the means to prove the substitution and weakening theorems for typing environments.
-
-The substitution and weakening theorems allow us to easily find the denotation of a substituted term, simply by pre-composing the term before substitution with the denotation of the substitution or the weakening.
+The next step is to use these substitution theorems to formalise the action of substitution and weakening of the effect environments on terms. This then allows us to find denotations for the weakening of term-substitutions and type environment weakening, which set us up to prove the typical weakening and substitution theorems upon term-variables and type environments. 
 
 Separately, we prove that all derivable denotations for a typing relation instance, $\gpetyperelation{v}{A}$ have the same denotation. This is important, since sub-typing allows us to find multiple distinct typing derivations for terms, which initially look like they may have distinct denotations. Using a reduction function to transform typing derivations into a unique form, I shall prove that all typing derivations yield equal denotations.
 
@@ -927,7 +924,42 @@ This collection of theorems finally allows us to complete all cases of the $\bet
 
 
 \section{Denotations}
+We are now equipped to define the denotations of structures in the language. Firstly, we shall define the denotation of the well-formed-ness relation on effects. As stated earlier, the denotation of an effect is a morphism $\deno{\typerelation{\P}{\e}{\effect}}$ in $\C$.
 
+\[
+    \deno{\typerelation{\P}{e}{\effect}} = \deno{\e} \after \term{I}: \rightarrow U
+    \quad\quad
+    \deno{\typerelation{\P,\a}{\a}{\effect}} = \pp: I\times U \rightarrow U
+\]\[
+    \deno{\typerelation{\P, \b}{\a}{\effect}} = \deno{\typerelation{\P}{\a}{\effect}}\after\p: I\times U\rightarrow U
+\]\[
+    \deno{\typerelation{\P}{\e_1\dot \e_2}{\effect}} = \Mul(\deno{\typerelation{\P}{\e_2}{\effect}},\deno{\typerelation{\P}{\e_1}{\effect}}): I \rightarrow U
+\]
+
+Using these denotations, we are now equipped to define the denotations of types. As stated above, types that are well formed in $\P$ are denoted by objects in the fibre category $\C(I)$ given by the denotation of $\P$. (\todo{Have I explained that $\deno{\P} = I$?}) 
+
+Since the fibre category $\C(I)$ is S-Closed, it has objects for all ground types, a terminal object, graded monad $\T{}{}$, exponentials, products, and co-product over $\1+\1$.
+
+\[
+    \deno{\typerelation{\P}{\U}{\type}} = \1
+    \quad\quad
+    \deno{\typerelation{\P}{\B}{\type}} = \1+\1
+    \quad\quad
+    \deno{\typerelation{\P}{\g}{\type}} = \deno{\g}
+\] 
+
+\[
+    \deno{\typerelation{\P}{\ab}{\type}} = (\deno{\typerelation{\P}{B}{\type}})^{(\deno{\typerelation{\P}{A}{\type}})}
+\]
+
+\[
+    \deno{\typerelation{\P}{\mea}{\type}} =\T{\deno{\typerelation{\P}{\e}{\effect}}}{\deno{\typerelation{\P}{A}{\type}}}
+    \quad\quad
+    \deno{\typerelation{\P}{\all{\a}{A}}{\type}} =\allI(\deno{\typerelation{\P,\a}{A}{\type}})
+\]
+
+
+\todo{Term Denotations}
 \section{Substitution and Weakening Theorems}
 
 
