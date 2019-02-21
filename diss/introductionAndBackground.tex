@@ -4,7 +4,10 @@
 \input{../proofs/header.tex}
 
 \usepackage{tikz}
-\usetikzlibrary{arrows}
+
+\usetikzlibrary{shapes.geometric,fit}
+\usetikzlibrary{arrows,automata,positioning}
+\usetikzlibrary{decorations.pathreplacing,calc}
 
 
 \begin{document}
@@ -183,10 +186,70 @@ To express polymorphism over a property $P$, the language's semantics are expand
     \treerule{Gen}{\etyperelation{\P, \a}{\G}{v}{A}}{\gpetyperelation{\elam{\a}{v}}{\all{\a}{A}}}& \treerule{Spec}{\gpetyperelation{v}{\all{\a}{A}}\s\s\wellformed{\P}{\e}}{\gpetyperelation{\eapp{v}{\e}}{A\ssub{\a}{\e}}}
 \end{eqnarray}
 
-To model these augmented type rules, we can create a category representing the semantics of the non-polymorphic language at each given context. This collection of non-polymorphic categories can be indexed by a base category which models the operations and relationships between the $P$-Environment. Morphisms in the base category between environments correspond to functors between the semantic categories for the relevant environments. These functors can then be used to construct the semantics of polymorphic terms. \todo{Index diagram}
+To model these augmented type rules, we can create a category representing the semantics of the non-polymorphic language at each given context. This collection of non-polymorphic categories can be indexed by a base category which models the operations and relationships between the $P$-Environment. Morphisms in the base category between environments correspond to functors between the semantic categories for the relevant environments. These functors can then be used to construct the semantics of polymorphic terms. Figure \ref{IndexDiagram} demonstrates this construction.
 
 In this dissertation, I shall show how these category theoretic building blocks can be put together to give the class of categories that can model polymorphic effect systems.
 
+\begin{figure}[h!]\label{IndexDiagram}
+    \begin{tikzpicture}[->,>=stealth']]
+        % Draw the env objects
+        \foreach \y[count=\c,evaluate={\yi=int(\c-1)}] in {3, 4, 5, 6}{
+            \node[fill,circle,inner sep=2pt,label=left:{\small $I_\yi$}] (d\yi) at (0,\y) {};
+        }
+
+        % draw the ... above the env objects
+        \foreach \y[count=\c,evaluate={\yi=int(\c-1)}] in {7, 7.5, 8}{
+            \node[fill, circle, inner sep=1pt] (dd\yi) at (0,\y){};
+        }
+        % Draw the index category
+        \node[fit=(d0) (d1) (d2) (d3) (dd0) (dd1) (dd2),ellipse,draw,minimum width=2cm] {};
+
+        %draw the s-category stack
+        \foreach \y[count=\c,evaluate={\yi=int(\c-1)}] in {2, 4, 6, 8}{
+            \node[circle, draw, inner sep=1pt, fill, label=above:{$\G$}] (g\yi) at (7,\y){};
+            \node[circle, draw, inner sep=1pt, fill, label=above:{$A$}] (a\yi) at (9,\y){};
+            \draw[->, dashed](g\yi) to[bend right=5] node[below]{\tiny $\deno{\etyperelation{\P_\yi}{\G}{v}{A}}$} (a\yi);
+            \node[ellipse, draw, minimum width=5cm, minimum height=15mm,label=right:$S_\yi$] (s\yi) at (8,\y){};
+        }
+
+        % Hidden ellipse to draw functors to
+        \node[ellipse, minimum width=5cm, minimum height=15mm] (s4) at (8,10){};
+
+        %Draw the ... for the s-category stack
+        \foreach \y[count=\c,evaluate={\yi=int(\c-1)}] in {9.5, 10, 10.5}{
+            \node[fill, circle, inner sep=1pt] (p\yi) at (8, \y){};
+        }
+
+        % Draw index arrows
+        \foreach \i in {0, 1, 2, 3}{
+            \draw[->] (d\i) to (s\i);
+        }
+
+        % draw the re-indexing functors
+
+        \foreach \source[count=\dest] in {0, 1, 2, 3}{
+            \draw[->](s\source.north west) to[bend left=10] node[left]{$\pstar$} (s\dest.south west);
+        }
+
+        % Draw the quantification functors
+        \foreach \dest[count=\source] in {0, 1, 2, 3}{
+            \draw[->] 
+            (s\source.south east) to[bend left=10] node[right]{$\forall_{I_\dest}$} (s\dest.north east);
+        }
+
+        % Draw the internal morphisms in base category
+        \foreach \dest[count=\source] in {0, 1, 2}{
+            \draw[dashed,->]
+            (d\source) to[bend right=10] node[right]{$\p$} (d\dest);
+        }
+
+        %Draw the bracket
+
+        \draw [decoration={brace,amplitude=8pt},decorate] ($(s3)+(10em,1ex)$) -- ($(s0)+(10em,-1ex)$);
+        \node[text width=20mm] (Label) at (12,5){S-Categories for each effect environment};
+    \end{tikzpicture}
+    \caption{Diagram of the structure of an indexed category for modelling a polymorphic language.}
+\end{figure}
 
 \chapter{Required Category Theory}\label{CategoryTheoryRequirements}
 
@@ -791,19 +854,19 @@ Separately, we prove that all derivable denotations for a typing relation instan
 
 This collection of theorems finally allows us to complete all cases of the $\beta\eta$-equivalence soundness theorem.
 
-\begin{figure}[h!]\begin{tikzpicture}[->,>=stealth',shorten >=1pt,auto,node distance=3cm,
+\begin{figure}[h!]\label{RoadMap}\begin{tikzpicture}[->,>=stealth',shorten >=1pt,auto,node distance=3cm,
     thick,main node/.style={rectangle,fill=blue!20,draw,
     font=\sffamily\small\bfseries,minimum size=15mm}]
 
-    \node[main node,text width=20mm] (IndexCategory) {Indexed Category and Adjunction};
-    \node[main node,text width=20mm] (MulNaturality) [below of=IndexCategory] {Naturality of Mul Operator};
+    \node[main node,text width=20mm, fill=red] (IndexCategory) {Indexed Category and Adjunction};
+    \node[main node,text width=20mm, fill=red] (MulNaturality) [below of=IndexCategory] {Naturality of Mul Operator};
 
-    \node[main node,text width=20mm] (BeckChevalley) [left of=MulNaturality]{Beck-Chevalley Condition};
-    \node[main node,text width=20mm](SClosure) [right of=MulNaturality]{S-Closure of Re-indexing};
+    \node[main node,text width=20mm, fill=red] (BeckChevalley) [left of=MulNaturality]{Beck-Chevalley Condition};
+    \node[main node,text width=20mm, fill=red](SClosure) [right of=MulNaturality]{S-Closure of Re-indexing};
 
     \node[main node, text width=20mm](EffectWeakeningEffects) [below left of=MulNaturality]{Effect Weakening on Effects};
 
-    \node[main node, text width=20mm](EffectSubEffects) [below right of=MulNaturality]{Effect Weakening on Effects};
+    \node[main node, text width=20mm](EffectSubEffects) [below right of=MulNaturality]{Effect Substitution on Effects};
 
     \node[main node, text width=20mm](EffectWeakeningTypes)[below of=EffectWeakeningEffects]{Effect Weakening on Types};
 
@@ -828,8 +891,38 @@ This collection of theorems finally allows us to complete all cases of the $\bet
     \node[main node, text width=20mm](UniqueDenotations)[below left of=TermSubstitution]{Unique Denotations};
 
     \node[main node, text width=20mm](Soundness)[below of=UniqueDenotations]{Soundness};
+
+    \draw [->] (IndexCategory) edge (BeckChevalley) (IndexCategory) edge (MulNaturality) (IndexCategory) edge (SClosure);
+    \draw [->] (MulNaturality) edge (EffectWeakeningEffects) (MulNaturality) edge (EffectSubEffects);
+
+    
+    \draw [->] (EffectWeakeningEffects) edge (EffectWeakeningTypes) (EffectSubEffects) edge (EffectSubTypes);
+
+    \draw [->] (EffectWeakeningTypes) edge (EffectWeakeningSubtyping) (EffectSubTypes) edge (EffectSubSubtyping);
+
+    
+    \draw [->] (EffectWeakeningSubtyping) edge (EffectWeakeningTerms) (EffectSubSubtyping) edge (EffectSubTerms);
+
+
+    \draw [->] (EffectWeakeningTypes) edge (EffectWeakeningTerms) (EffectSubTypes) edge (EffectSubTerms);
+
+    \draw [->] (EffectWeakeningTerms) edge (EffectWeakeningSubstitution) (EffectWeakeningTerms) edge (EffectWeakeningWeakening);
+
+    \draw [->] (EffectWeakeningWeakening) edge (TermWeakening) (EffectWeakeningSubstitution) edge (TermSubstitution);
+
+    \draw [->] (EffectSubTerms) edge [bend left=40] (TermSubstitution);
+    \draw [->] 
+        (BeckChevalley) edge [bend right=30] (EffectWeakeningTypes)
+        (SClosure) edge [bend right=20] (EffectWeakeningTypes)
+        (BeckChevalley) edge [bend left=20]  (EffectSubTypes)
+        (SClosure) edge [bend left=30] (EffectSubTypes);
+    
+
+    \draw [->] (TermWeakening) edge (UniqueDenotations) (TermSubstitution) edge (UniqueDenotations) (TermWeakening) edge [bend right=20] (Soundness)
+    (TermSubstitution) edge [bend left=20] (Soundness)
+    (UniqueDenotations) edge (Soundness);
   \end{tikzpicture}
-\caption{A road map of the proof dependencies}
+\caption{A road map of the proof dependencies. Assumptions in red, theorems in blue}
 \end{figure}
 
 
