@@ -959,7 +959,82 @@ Since the fibre category $\C(I)$ is S-Closed, it has objects for all ground type
 \]
 
 
-\todo{Term Denotations}
+By using the terminal objects and products present in each fibre, we can now derive denotations of type-environments. $\deno{\oke{\P}{\G}}$ should be an object in the fibre induced by $\P$, $\C(I)$.
+
+\[
+    \deno{\wellformedok{\P}{\nil}} = \1
+    \quad\quad
+    \deno{\wellformedok{\P}{\gax}} = (\deno{\wellformedok{\P}{\G}} \times \deno{\typerelation{\P}{A}{\type}})
+\]
+
+\todo{Introduce the subtyping relation up above.}
+Another construction that is important is the denotation of sub-typing. For each instance of the subtyping relation in $\P$, $A\subtypep B$, there exists a denotation in the fibre induced by $\P$. $\deno{A\subtypep B} \in\C(I)(A, B)$. Since the fibres are S-closed, the ground-instances of the sub-typing relation exist in each fibre anyway.
+
+
+\[
+    \deno{\g_1\subtypep \g_2} = \deno{\g_1\subtypeg \g_2}
+    \quad
+    \deno{\ab \subtypep \fntype{A'}{B'}} = \deno{B\subtypep B'}^{A'}\after B^{\deno{A'\subtypep A}}
+\]
+
+\[
+    \deno{\M{\e_1}{A}\subtypep\M{\e_2}{B}} = \deno{\e_1\subeffectp\e_2}\after\T{\e_1}{\deno{A\subtypep B}}
+    \quad    
+    \deno{\all{\a}{A}\subtypep\all{\a}{B}} = \allI{\deno{A\subtypepa B}}
+\]
+
+This finally gives us the ability to express the denotations of well-typed terms in an effect environment, $\P$ as morphisms in the fibre induced by $\P$, $\C(I)$.  Writing $\G_I$ and $A_I$ for $\deno{\wellformedok{\P}{\G}}$ and $\deno{\typerelation{\P}{A}{\type}}$, we can derive $\deno{\gpetyperelation{v}{A}}$ as a morphism in $\C(I)(\G_I, A_I)$.
+
+Since each fibre is an S-category, for each ground constant, $\const{A}$, there exists $c: \1 \rightarrow A_I$ in $\C(I)$.
+
+\todo{Make these more readable/fix spacing}
+\[
+    \treerule{Unit}{\wellformedok{\P}{\G}}{\deno{\etyperelation{\P}{\G}{\u}{\U}} = \term{\G} : \G_I \rightarrow \1}
+    \quad
+    \treerule{Const}{\wellformedok{\P}{\G}}{\deno{\etyperelation{\P}{\G}{\const{A}}{A}} = \deno{\const{A}} \after \term{\G} : \G \rightarrow \deno{A}}
+\]
+
+\[
+    \treerule{True}{\wellformedok{\P}{\G}}{\deno{\etyperelation{\P}{\G}{\t}{\B}} = \inl \after \term{\G} : \G \rightarrow \deno{\B} = \1+\1}
+    \quad
+    \treerule{False}{\wellformedok{\P}{\G}}{\deno{\etyperelation{\P}{\G}{\f}{\B}} = \inr \after \term{\G} : \G \rightarrow \deno{\B} = \1+\1}
+\]
+
+\[
+    \treerule{Var}{\wellformedok{\P}{\G}}{\deno{\etyperelation{\P}{\gax}{x}{A}} = \pp: \G \times A \rightarrow A}
+    \quad    
+    \treerule{Weaken}{f = \deno{\gpetyperelation{x}{A}}: \G \rightarrow A}{\deno{\etyperelation{\P}{\gby}{x}{A}} = f \after \p: \G \times B \rightarrow A}
+\]
+
+\[
+    \treerule{Lambda}{f = \deno{\etyperelation{\P}{\gax}{v}{B}} : \G \times A \rightarrow B}{\deno{\etyperelation{\P}{\G}{\lam{x}{A}{v}}{\ab}} = \cur{f} : \G \rightarrow (B)^A}
+\]
+
+\[
+    \treerule{Subtype}{f = \deno{\etyperelation{\P}{\G}{v}{A}} : \G \rightarrow A\s\s g = \deno{A \subtypep B}}{\deno{\etyperelation{\P}{\G}{v}{B}} = g \after f : \G \rightarrow B}
+    \quad 
+    \treerule{Return}{f = \deno{\etyperelation{\P}{\G}{v}{A}}}{\deno{\etyperelation{\P}{\G}{\return{v}}{\moa}} = \point{A} \after f}   
+\]
+
+\[
+    \treerule{If}{f = \deno{\etyperelation{\P}{\G}{v}{\B}}: \G\rightarrow\1+\1 \s\s g = \deno{\etyperelation{\P}{\G}{v_1}{\mea}}\s\s h = \deno{\etyperelation{\P}{\G}{v_2}{\mea}}}{\deno{{\etyperelation{\P}{\G}{\ifthenelse{\e}{A}{v}{v_1}{v_2}}{\mea}}} = \app\after((\fld{\cur{g\after\pp}}{\cur{h\after\pp}}\after f)\times \idg)\after \diag{\G} : \G \rightarrow \tea}    
+\]
+
+\[
+    \treerule{Bind}{f = \deno{\etyperelation{\P}{\G}{v_1}{\M{\e_1}{A}} : \G \rightarrow \T{\e_1}{A}\s\s g = \deno{\etyperelation{\P}{\gax}{v_2}{\M{\e_2}{B}}}}: \G \times A \rightarrow \T{\e_2}{B}}{\deno{\etyperelation{\P}{\G}{\doin{x}{v_1}{v_2}}{\M{\e_1 \dot \e_2}{B}}} = \bind{\e_1}{\e_2}{B} \after \T{\e_1}{g} \after \tstrength{\G}{A}{\e_1} \after \pr{\idg}{f}: \G \rightarrow \T{\e_1 \dot \e_2}{B}}  
+\]
+
+\[
+    \treerule{Apply}{f = \deno{\gpetyperelation{v_1}{\ab}}: \G \rightarrow (B)^{A} \s\s g=\deno{\gpetyperelation{v_2}{A}}: \G \rightarrow A}{\deno{\gpetyperelation{\apply{v_1}{v_2}}{\b}}= \app\after\pr{f}{g}: \G \rightarrow B }
+\]
+
+\[
+    \treerule{Effect-Lambda}{f = \deno{\etyperelation{\P,\a}{\G}{v}{A}}: \ciuw(\G, A)}{\deno{\gpetyperelation{\elam{\a}{A}}{\all{\e}{A}}} = \bar{f}: \C(I)(\G, \allI(A))}    
+    \quad
+    \treerule{Effect-App}{g=\deno{\gpetyperelation{v}{\all{\a}{A}}}: \C(I)(\G, \allI(A))\s\s h = \deno{\typerelation{\P}{\e}{\effect}}: \ciu}{\deno{\gpetyperelation{\eapp{v}{\e}}{A\ssub{\a}{\e}}} = \pr{\Id{I}}{h}\star(\e_{\deno{\typerelation{\P,\b}{A\ssub{\a}{\b}}{\type}}})\after g: \C(I)(\G, A\ssub{\a}{\e})}
+\]
+
+
 \section{Substitution and Weakening Theorems}
 
 
