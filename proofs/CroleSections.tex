@@ -199,35 +199,48 @@ Where $\e_A: \ciuw(\pstar\allI A \rightarrow A)$ is the co-unit of the adjunctio
 
 \newcommand\naturalityLemmas[0]{
     Here are some simple corollaries of the adjunction between $\pstar$ and $\allI$.
-
-\subsection{Naturality}
-By the definition of an adjunction:
-
-\begin{equation}
-    \bar{f\after\pstar(n)} = \bar{f}\after n
-\end{equation}
-
-\subsection{$\bar{(-)}$ and Re-indexing Functors}
-
-\todo{Why does this occur? it comes from page 222 of Crole?}
-\begin{align}
-    \theta\star(\bar{f}) & = \theta\star(\allI(f)\after\eta_A)\\
-    & = \theta\star(\allI(f))\after\theta\star(\eta_A)\\
-    & = \theta\star(\allI(f))\after\eta_{(\theta\times \Id{U})\star A}\qt{\todo{Not sure how to derive this step}}\\
-    & = \allIU((\theta\times\Id{U})\star(f))\after\eta_{(\theta\times \Id{U})\star A}\qt{Beck-Chevalley}\\
-    &= \bar{(\theta\times\Id{U})\star(f))\after\epsilon_{(\theta\times\Id{U})\star A}}\after\eta_{(\theta\times \Id{U})\star A}
-     \\
-     &= \bar{(\theta\times\Id{U})\star(f))\after\epsilon_{(\theta\times\Id{U})\star A}\after\pstar\eta_{(\theta\times \Id{U})\star A}}\\
-     & = \bar{(\theta\times\Id{U})\star(f))}\qt{By adjunction}
-\end{align}
-
-\subsection{$\hat{(-)}$ and Re-Indexing Functors}
-\begin{align}
-    \theta\star(\pr{\Id{I}}{\rho}\star(\widehat{m})) &= (\pr{\Id{I}}{\rho}\after\theta)\star(\widehat{m})\\
-    & = ((\theta\times\Id{U})\after\pr{\Id{I}}{\rho})\star(\widehat{m})\\
-    & = \pr{\Id{I}}{\rho\after\theta}\star(\theta\times\Id{U})\star(\widehat{m}) \\
-    & = \pr{\Id{I}}{\theta\star\rho}\star(\theta\star(\widehat{m}))
-\end{align}
+    
+    \subsection{Naturality}
+    By the definition of an adjunction:
+    
+    \begin{equation}
+        \bar{f\after\pstar(n)} = \bar{f}\after n
+    \end{equation}
+    
+    \subsection{$\bar{(-)}$ and Re-indexing Functors}
+    By assuming the Beck-Chevalley condition that:
+    
+    \begin{equation}
+        \bar{(\theta\times\Id{U})\star(\counit{})} = \Id{}: \theta\star\after\allI \rightarrow \allII\after(\theta\times\Id{U})\star
+    \end{equation}
+    
+    We then have:
+    
+    \begin{align}
+        \theta\star\unit{A}:\quad&\theta\star A \rightarrow \theta\star\after\allI\after\pstar A\\
+        \theta\star\unit{} =& \bar{(\theta\times\Id{U})\star(\counit{\pstar})}\after\theta\star\unit{}\\
+        =& (\allII\after(\theta\times\Id{U})\star)(\counit{\pstar})\after\unit{(\allII\after(\theta\times\Id{U})\star)\after\pstar}\after\theta\star\unit{}\\
+        = & (\allII\after(\theta\times\Id{U})\star)(\counit{\pstar})\after\unit{\theta\star\after\allI\after\pstar}\after\theta\star\unit{}\\
+        = & (\allII\after(\theta\times\Id{U})\star)(\counit{\pstar}) \after(\theta\star\after\allI\after\pstar)\unit{} \after\unit{(\theta\times\Id{U})\star}\\
+        = & (\theta\star\after\allI)(\counit{\pstar}
+        \after\pstar\unit{})\after\unit{(\theta\times\Id{U})\star}\\
+        = & (\theta\star\after\allI)(\Id{})\after\unit{(\theta\times\Id{U})\star}\\
+        = & \unit{(\theta\times\Id{U})\star}
+    \end{align}
+    \begin{align}
+        \theta\star(\bar{f}) & = \theta\star(\allI(f)\after\eta_A)\\
+        & = \theta\star(\allI(f))\after\theta\star(\eta_A)\\
+        & =  (\allII\after(\theta\times\Id{U})\star)f \after\unit{(\theta\times\Id{U})\star A}\\
+        & = \bar{(\theta\times\Id{U})\star f}\\
+    \end{align}
+    
+    \subsection{$\hat{(-)}$ and Re-Indexing Functors}
+    \begin{align}
+        \theta\star(\pr{\Id{I}}{\rho}\star(\widehat{m})) &= (\pr{\Id{I}}{\rho}\after\theta)\star(\widehat{m})\\
+        & = ((\theta\times\Id{U})\after\pr{\Id{I}}{\rho})\star(\widehat{m})\\
+        & = \pr{\Id{I}}{\rho\after\theta}\star(\theta\times\Id{U})\star(\widehat{m}) \\
+        & = \pr{\Id{I}}{\theta\star\rho}\star(\theta\star(\widehat{m}))
+    \end{align}
 }
 \newcommand\effectDenotations[0]{
     \section{Effects}
