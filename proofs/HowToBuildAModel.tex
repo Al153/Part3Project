@@ -400,15 +400,14 @@ For a function $\theta: E^m \rightarrow E^n$ , the re-indexing functor $\theta\s
 \end{align}
 
 \subsection{Quantification}
-
 We need to define $\allEn: [E^{n+1}, \C]\rightarrow[E^n, \C]$
 
 So
 \begin{align}
-    (\allEn A)\env =&\quad A(\env, \bot)\\
+    (\allEn A)\env =&\quad \Pi_{\e\in E} A(\env, \e)\\
     m:&\quad A\rightarrow B\\
     (\allEn m):&\quad \allEn A\rightarrow \allEn B\\
-    (\allEn m)\env =&\quad m(\env, \bot)\\
+    (\allEn m)\env =&\Pi_{\e\in E} m(\env, \e)\\
 \end{align}
 
 \subsection{Adjunction}
@@ -419,20 +418,18 @@ With unit:
 
 \begin{align}
     \unit{A}:&\quad A \rightarrow \allEn\pstar A\\
-    \unit{A}(\env)=&\quad\Id{A\env}
+    \unit{A}(\env)=&\quad\finpr{\Id{A(\env,e)}}{\e\in E}
 \end{align}
 
-Since $(\allEn\pstar A)\env = (\pstar A)(\env, \bot) = A\env$, so $A = \allEn\pstar A$
 
 And co-unit
 
 
 \begin{align}
     \counit{B} : &\quad \pstar\allEn B \rightarrow B\\
-    \counit{B}(\env, \e_{n+1}) =&\quad \db{(\env, \bot)\subeffectz (\env, \e_{n+1})}_B
+    \counit{B}(\env, \e) =&\quad \pi_\e : \Pi_{e\in E}B(\env, \e)\rightarrow \Pi_{e\in E}B(\env, \e)
 \end{align}
 
-Which uses the point-wise $E^n$ sub-effect natural transformation.
 
 We then define the natural bijection as so:
 
@@ -443,26 +440,23 @@ We then define the natural bijection as so:
 \begin{align}
     m:&\quad \pstar A \rightarrow B\\
     \bar{m}:&\quad A\rightarrow \allEn B\\
-    \bar{m}(\env) =&\quad m(\env, \bot)
+    \bar{m}(\env) =&\quad \finpr{m(\env, \e)}{e\in E}
 \end{align}
 
 
 \begin{align}
     n:&\quad A \rightarrow \allEn B\\
     \widehat{n}:&\quad \pstar A\rightarrow B\\
-    \widehat{n}(\env, \e_{n+1}) =&\quad \db{(\env, \bot)\subeffectz (\env, \e_{n+1})}_B\after n(\env)
+    \widehat{n}(\env, \e_{n+1}) =&\quad\pi_\e\after g(\env)
 \end{align}
 
 \subsubsection{This is an Adjunction}
-
 For any $g: \pstar A \rightarrow B$,
 
 \begin{align}
-    (\counit{B}\after\pstar(\bar{g}))(\env, \e_{n+1}) & = \db{(\env, \bot)\subeffectz (\env, \e_{n+1})}_{B} \after g(\env, \bot)\\
-    &= g(\env, \e_{n+1})\qt{By the limit.}
+    (\counit{B}\after\pstar(\bar{g}))(\env, \e_{n+1}) & = \pi_{\e_{n+1}}\after\finpr{g(\env, \e')}{\e'\in E}\\
+    &= g(\env, \e_{n+1})
 \end{align}
-
-Since $g(\env, \bot)$ is the limit of $g(\env, -)$
 
 \subsection{Beck-Chevalley Condition}
 
@@ -470,11 +464,21 @@ For $\theta: E^m \rightarrow E^n$:
 \begin{align}
     ((\theta\star\after\allEn)A)\env &= \theta\star(\allEn A)\env\\
     &= (\allEn A)(\theta(\env))\\
-    &= A(\theta(\env), \bot)\\
-    &= A((\theta\times\Id{E})(\env, \bot))\\
-    &= ((\theta\times\Id{E})\star A)(\env, \bot)\\
+    &= \Pi_{\e\in E}(A(\theta(\env), \e))\\
+    &= \Pi_{\e\in E}(((\theta\times \Id{U})\star A)(\env, \e))\\
     &= \allEm((\theta\times\Id{E})\star A)\env\\
     &= ((\allEm\after(\theta\times\Id{E})\star)A)\env
+\end{align}
+
+And $\bar{(\theta\times\Id{U})\star \counit{}} = \Id{\theta\star\after\allI}$.
+
+\begin{align}
+    \bar{(\theta\times\Id{U})\star \counit{A}} \ev  & = \finpr{(\theta\times\Id{U})\star\counit{A}(\ev, \e)}{\e\in E}\\
+    & = \finpr{\counit{A}(\theta\ev, \e)}{e\in E}\\
+    & = \finpr{\pi_\e}{\e\in E}: \Pi_{\e\in E}A(\theta\ev, \e) \rightarrow \Pi_{\e\in E}A(\theta\ev, \e)\\
+    & = \Id{\Pi_{\e\in E}A(\theta\ev, \e)}\\
+    & = \Id{\allII\after(\theta\times\Id{U})\star A}\ev\\
+    & = \Id{\theta\star\after\allI}
 \end{align}
 
 \end{document}
