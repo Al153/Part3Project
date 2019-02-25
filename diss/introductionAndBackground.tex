@@ -253,7 +253,7 @@ In this dissertation, I shall show how these category theoretic building blocks 
 
 \chapter{Required Category Theory}\label{CategoryTheoryRequirements}
 
-Before going further, it is necessary to assert a common level of category theory knowledge. This section is not intended as a tutorial but as a to jog the memory of the reader, and briefly introduce some new concepts.
+Before going further, it is necessary to assert a common level of category theory knowledge. This section is not intended as a tutorial but to jog the memory of the reader, and briefly introduce some new concepts.
 
 \section{Cartesian Closed Category}\label{CCC}
 
@@ -571,28 +571,6 @@ The final piece of category theory required to understand this dissertation is t
     A \leq B & \mapsto (A \leq B)\star: \C \rightarrow \DC\qt{Morphisms are mapped to functors preserving CCC properties.}
 \end{align}
 
-\section{Limits}
-A limit is a generalisation of concepts such as terminal objects, products, and pullbacks. Co-products and initial objects are examples of co-limits.
-
-
-For a diagram $D$ in $\C$, we define a cone of $D$ to be an instance of $D$, accompanied by another object $X$ and a collection of morphisms $\vec{\phi}$ completing the diagram. If one imagines the diagram as a 2-dimensional shape in C with its morphisms as edges, the object $X$ above the plane forms a cone shape.
-
-\begin{tikzcd}
-    & X \arrow{dd}{\phi_1} \arrow{lddd}{\phi_2} \arrow{rddd}{\phi_3} &\\
-    \\
-    & \arrow{ld}{d_1}    D_1 & \\
-    D_2 \arrow{rr}{d_2}& & D_3 \arrow{lu}{d_3}
-\end{tikzcd}
-
-A limit of the diagram is a least-cone. That is, it is a cone object $L$ with morphisms $\vec{\psi}$ such that any other cone $X$ can be factored into a unique morphism $l$ to $L$ and the cone formed by $L$.
-
-\begin{tikzcd}
-    &  &X \arrow[dotted]{ld}{l}\arrow{lddd}{\phi_1} \arrow[bend right]{lldddd}{\phi_2} \arrow{dddd}{\phi_3} \\
-    & L \arrow{dd}{\psi_1} \arrow{lddd}{\psi_2} \arrow{rddd}{\psi_3} &\\
-    \\
-    & \arrow{ld}{d_1}    D_1 & \\
-    D_2 \arrow{rr}{d_2}& & D_3 \arrow{lu}{d_3}
-\end{tikzcd}
 
 \chapter{The Polymorphic-Effect-Calculus}
 In this chapter I'll be introducing the monadic, effect-ful language used in the rest of the dissertation, known from now on as the Effect Calculus (EC). Then I shall introduce polymorphic terms to the EC which yield the Polymorphic Effect Calculus (PEC).
@@ -654,7 +632,7 @@ Where $E_\P$ is the closure of $E\cup \left\{\a\mid\a\in\P\right\}$ under $\dotp
     \treerule{}{\e_3 = \e_1\dot\e_2}{\e_3 = \e_1\dotp\e_2}
 \end{equation} 
 
-For variable-free terms and is defined symbolically for variable containing terms. Further more, we also define the sub-effecting relation in terms of its variables and the ground relation.
+For variable-free terms and is defined symbolically for variable-containing terms. Further more, we also define the sub-effecting relation in terms of its variables and the ground relation.
 
 \begin{equation}
     \e_1 \subeffectp \e_2 \Leftrightarrow \forall \si\downarrow. \e_1\sub{\si\downarrow} \subeffect \e_2\sub{\si\downarrow}
@@ -692,7 +670,7 @@ The $\ok{}$ predicate on effect environments asserts that the effect environment
     \treerule{A}{\ok{\P} \s\s \a\notin \P}{\ok{\P, \a}}
 \]
 
-Using this, we can define the well-formed-ness relation on effects, $\wellformed{\P}{\e}$. In short, this relation ensures that effects don't reference variables that are not in the effect environment.
+Using this, we can define the well-formed-ness relation on effects, $\wellformed{\P}{\e}$. In short, this relation ensures that effects do not reference variables that are not in the effect environment.
 
 \[
     \treerule{Ground}{\ok{\P}}{\wellformed{\P}{e}}
@@ -877,9 +855,9 @@ This collection of theorems finally allows us to complete all cases of the $\bet
 
     \node[main node, text width=20mm](EffectSubTerms)[below of=EffectSubTypes]{Effect Substitution on Terms};
 
-    \node[main node, text width=20mm](EffectWeakeningSubtyping)[left of=EffectWeakeningTerms]{Effect Weakening on Sub-typing};
+    \node[main node, text width=20mm](EffectWeakeningSubTyping)[left of=EffectWeakeningTerms]{Effect Weakening on Sub-typing};
 
-    \node[main node, text width=20mm](EffectSubSubtyping)[right of=EffectSubTerms]{Effect Substitution on Sub-typing};
+    \node[main node, text width=20mm](EffectSubSubTyping)[right of=EffectSubTerms]{Effect Substitution on Sub-typing};
 
     \node[main node, text width=20mm](EffectWeakeningWeakening)[below of=EffectWeakeningTerms]{Effect Weakening on Term Weakening};
 
@@ -899,10 +877,10 @@ This collection of theorems finally allows us to complete all cases of the $\bet
     
     \draw [->] (EffectWeakeningEffects) edge (EffectWeakeningTypes) (EffectSubEffects) edge (EffectSubTypes);
 
-    \draw [->] (EffectWeakeningTypes) edge (EffectWeakeningSubtyping) (EffectSubTypes) edge (EffectSubSubtyping);
+    \draw [->] (EffectWeakeningTypes) edge (EffectWeakeningSubTyping) (EffectSubTypes) edge (EffectSubSubTyping);
 
     
-    \draw [->] (EffectWeakeningSubtyping) edge (EffectWeakeningTerms) (EffectSubSubtyping) edge (EffectSubTerms);
+    \draw [->] (EffectWeakeningSubTyping) edge (EffectWeakeningTerms) (EffectSubSubTyping) edge (EffectSubTerms);
 
 
     \draw [->] (EffectWeakeningTypes) edge (EffectWeakeningTerms) (EffectSubTypes) edge (EffectSubTerms);
@@ -972,7 +950,7 @@ By using the terminal objects and products present in each fibre, we can now der
 \]
 
 \todo{Introduce the subtyping relation up above.}
-Another construction that is important is the denotation of sub-typing. For each instance of the subtyping relation in $\P$, $A\subtypep B$, there exists a denotation in the fibre induced by $\P$. $\deno{A\subtypep B} \in\C(I)(A, B)$. Since the fibres are S-closed, the ground-instances of the sub-typing relation exist in each fibre anyway.
+Another construction that is important is the denotation of sub-typing. For each instance of the sub-typing relation in $\P$, $A\subtypep B$, there exists a denotation in the fibre induced by $\P$. $\deno{A\subtypep B} \in\C(I)(A, B)$. Since the fibres are S-closed, the ground-instances of the sub-typing relation exist in each fibre anyway.
 
 
 \[
@@ -1034,7 +1012,9 @@ Since each fibre is an S-category, for each ground constant, $\const{A}$, there 
 
 \[
     \treerule{Effect-Lambda}{f = \deno{\etyperelation{\P,\a}{\G}{v}{A}}: \ciuw(\G, A)}{\deno{\gpetyperelation{\elam{\a}{A}}{\all{\e}{A}}} = \bar{f}: \C(I)(\G, \allI(A))}    
-    \quad
+\] 
+
+\[
     \treerule{Effect-App}{g=\deno{\gpetyperelation{v}{\all{\a}{A}}}: \C(I)(\G, \allI(A))\s\s h = \deno{\typerelation{\P}{\e}{\effect}}: \ciu}{\deno{\gpetyperelation{\eapp{v}{\e}}{A\ssub{\a}{\e}}} = \pr{\Id{I}}{h}\star(\e_{\deno{\typerelation{\P,\b}{A\ssub{\a}{\b}}{\type}}})\after g: \C(I)(\G, A\ssub{\a}{\e})}
 \]
 
