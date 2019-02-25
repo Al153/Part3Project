@@ -1020,7 +1020,176 @@ Since each fibre is an S-category, for each ground constant, $\const{A}$, there 
 
 
 \section{Substitution and Weakening Theorems}
+\todo{Needs an introduction to what substitutions and weakenings are}
+
+\begin{itemize}
+    \item Substitution - Simultaneous substitution of variables to expressions that are well formed in another environment
+    \item Weakening is a kind of subtyping on environments.
+\end{itemize}
+
+The main families of theorems to prove in this project are weakening and substitution theorems. They come in two flavours: weakening and substitution of the effect variable environment and weakening and substitution of the typing environment. Each of the families consists of proofs that changes to the environment used for well-formed-ness and typing, when such changes have well defined morphisms, have well defined actions on the categorical structures representing the well-formed-ness and typing relations.
+
+The first family is that of weakening and substitution of the effect environment. Weakenings are a relation between effect-environments $\wrel{\w}{\P'}{\P}$, that are defined as so:
+
+\[
+    \treerule{Id}{\ok{\P}}{\wrel{\i}{\P}{\P}}
+    \quad
+    \treerule{Project}{\wrel{\w}{\P'}{\P}}{\wrel{\w\pi}{(\P', \a)}{\P}}
+    \quad
+    \treerule{Extend}{\wrel{\w}{\P'}{\P}}{\wrel{\w\x}{(\P', \a)}{(\P, \a)}}
+\]
+
+With inductively defined denotations: 
+
+\[
+    \deno{\wrel{\i}{\P}{\P}} = \Id{I}: I \rightarrow I
+    \quad
+    \deno{\wrel{w\pi}{\P',\a}{\P}} = \deno{\wrelw{\P'}{\P}}\after \p: I'\times U\rightarrow I
+    \quad
+    \deno{\wrel{w\x}{\P',\a}{\P,\a}} = (\deno{\wrelw{\P'}{\P}}\times \Id{U}): I'\times U\rightarrow I\times U
+\]
+
+Substitutions are also an inductively defined relation between effect-environments, with inductively defined denotations. Substitutions may be represented as a snoc-list of variable-effect pairs.
+
+\[
+    \si \gens \nil \mid \si, \a \setto \e    
+\]
+
+The substitution relation between effect environments is defined as so:
+
+\[
+    \treerule{Nil}{\ok{\P'}}{\typerelation{\P'}{\nil}{\nil}}
+    \quad\quad
+    \treerule{Extend}{\typerelation{\P'}{\si}{\P}\s\s\wellformed{\P'}{\e}\s\s\a\notin\P}{\typerelation{\P'}{\si, \a \setto\e}{(\P, \a)}}
+\]
+
+The denotations of substitutions, $\deno{\typerelation{\P'}{\si}{\P}}: \cii$, are defined as so:
+
+\[
+    \deno{\typerelation{\P'}{\nil}{\nil}} = \term{I}: \C(I', \1)
+    \quad\quad
+    \deno{\typerelation{\P'}{(\si, \a\setto\e)}{\P,\a}} = \pr{\deno{\typerelation{\P'}{\si}{\P}}}{\deno{\typerelation{\P}{\e}{\effect}}}: \C(I', I\times U)
+\]
+
+We can also define the action of substitutions on effects.
+
+\begin{align}
+    \si(e) & = e \\
+    \si(\e_1\dot\e_2) & = (\si(\e_1))\dot(\si(\e_2))\\
+    \nil(\a) & = \a\\
+    (\si, \b\setto \e)(\a) & = \si(\a) \\
+    (\si, \a\setto \e)(\a) & =\e
+\end{align}.
+
+The substitution theorem on effects is the proposition that if $\wellformed{\P}{\e}$ and $\typerelation{\P'}{\si}{\P}$ then $\wellformed{\P'}{\si(\e)}$ and, writing $\si$ for $\deno{\typerelation{\P'}{\si}{\P}}$,  $\deno{\wellformed{\P'}{\si(\e)}} = \deno{\wellformed{\P}{\si}}\after\si$. 
+
+\proof
+
+The proof of this depends on the naturality of $\Mul$ and inversion to narrow down case splitting on the structure of the effect environments.
+\todo{Pick a pair of cases}
+
+The weakening theorem proceeds similarly. If $\wellformed{\P}{\e}$ and $\wrelw{\P'}{\P}$ then $\wellformed{\P'}{\w}$ and, writing $\w$ for $\deno{\wrelw{\P'}{\P}}$,  $\deno{\wellformed{\P'}{\e}} = \deno{\wellformed{\P}{\si}}\after\w$.
+
+\proof
+This proof also depends on the naturality of $\Mul$ and case splitting on the structure of $\w$.
+
+\todo{Pick a pair of cases}.
 
 
+We can then move on to state and prove the weakening and substitution theorems on types, sub-typing, and type environments. The general structure of these theorems, as well as later, is that when we want to quantify the effect of a morphism $\theta: I' \rightarrow I$ between objects in the base category on structure in the fibres $\C(I)$, we should simply apply the associated re-indexing functor $\theta\star: \C(I) \rightarrow \C(I')$ to the structure. The proof of the soundness of this operation is driven by the S-closure of the re-indexing functor.
+
+Specifically, effect substitutions have the following actions on types, and type-environments:
+
+\begin{align*}
+    \g\sub{\si} &= \g \\
+    (\fntype{A}{B})\sub{\si} &= \fntype{(A\sub{\si})}{(B\sub{\si})} \\
+    (\M{\e}{A})\ssi &= \M{\si(\e)}{(A\ssi)}\\
+    (\all{\a}{A})\ssi &= \all{\a}{(A\ssi)}\qt{If $\a\#\si$}
+\end{align*}
+
+\begin{align*}
+    \nil\ssi & = \nil \\
+    (\gax)\ssi &= (\G\ssi, x:(A\ssi))\\
+\end{align*}
+
+The specific effect-substitution theorem on types is if $\wellformed{\P}{A}$ and $\typerelation{\P'}{\si}{\P}$, then $\wellformed{\P'}{A\ssi}$ and $\deno{\wellformed{\P'}{A\ssi}} = \si\star\deno{\wellformed{\P}{A}}$.
+
+
+
+\proof By S-closure of $\si\star$ and the Beck-Chevalley Condition.
+\todo{Pick Cases (Quantification?)}
+
+Similarly, the effect-substitution theorem on type environments is that if $\wellformedok{\P}{\G}$, then $\wellformedok{\P'}{\G\ssi}$ and $\deno{\wellformedok{\P'}{\G\ssi}} = \si\star\deno{\wellformedok{\P}{\G}}$.
+
+\proof By S-closure of $\si\star$.
+\todo{Give the same cases?}
+
+The effect-weakening theorem on types and type environments is also very similar. If $\wrelw{\P'}{\P}$ then $\wellformed{\P}{A}$ implies $\wellformed{\P'}{A} \wedge \deno{\wellformed{\P'}{A}} = \w\star\deno{\wellformed{\P}{A}}$ and $\wellformedok{\P}{\G}$ then $\deno{\wellformedok{\P'}{\G}} = \w\star\deno{\wellformedok{\P}{\G}}$
+
+\proof
+Similarly making use of S-closure and the Beck-Chevalley Condition.
+
+\todo{Quantification case for types}.
+
+The proof for type environments follows the same steps as effect-substitution proof.
+
+
+Next we shall consider the action of weakening and substitution on sub-typing relations. If $A \subtypep B$ and $\typerelation{\P'}{\si}{\P}$, then $A\ssi\subtypepp B\ssi$ and $\deno{A\ssi\subtypepp B\ssi} = \ssi\star\deno{A\subtypep B}$.
+
+\proof
+By rule induction over the definition of the subtype relation, making use of S-closure and the effect-substitution theorem on types.
+
+\todo{Give case of function types}.
+
+Similarly, if If $A \subtypep B$ and $\wrelw{\P'}{\P}$, then $A \subtypepp B$ and $\deno{A\subtypepp B} = \w\star\deno{A\subtypep B}$.
+
+\proof
+The cases hold the same as in the corresponding substitution theorem.
+
+
+We are now a point to define and prove the effect weakening and substitution theorems on terms. Following the intuition above that changes of index object should be modelled by applying the re-indexing functor to the morphisms denoting the terms.
+
+\begin{align*}
+    x\ssi & = x \\
+    \const{A}\ssi & = \const{(A\ssi)} \\
+    (\lam{x}{A}{v})\ssi &= \lam{x}{(A\ssi)}{(v\ssi)}\\
+    (\pifthenelse{A}{v}{v_1}{v_2})\ssi &= \pifthenelse{(A\ssi)}{v\ssi}{v_1\ssi}{v_2\ssi}\\
+    (\apply{v_1}{v_2})\ssi&= \apply{(v_1\ssi)}{v_2\ssi}\\
+    (\doin{x}{v_1}{v_2})\ssi&= \doin{x}{(v_1\ssi)}{(v_2\ssi)}\\
+    (\elam{\a}{v})\ssi & = \elam{\a}{(v\ssi)}\qt{If $\a\#\si$}\\
+    (\eapp{v}{\e})\ssi & = \eapp{(v\ssi)}{\si(\e)}\\
+\end{align*}
+
+The substitution theorem is defined as so: if  $\typerelation{\P'}{\si}{\P}$ and $\gpetyperelation{v}{A}$ then $\etyperelation{\P'}{\G\ssi}{v\ssi}{A\ssi}$ and $\deno{\etyperelation{\P'}{\G\ssi}{v\ssi}{A\ssi}} = \si\star\deno{\gpetyperelation{v}{A}}$.
+
+\proof
+This proof makes use of the previous effect-substitution theorems, and the adjunction of quantification and the re-indexing functor of projection.
+\todo{Pick cases: Effect Application, Effect-Lambda, any more?}
+
+Similarly, we can derive the weakening theorem on terms. If $\wrelw{\P'}{\P}$ and $\gpetyperelation{v}{A}$ then $\etyperelation{\P'}{\G}{v}{A}$ and $\deno{\etyperelation{\P'}{\G}{v}{A}} = \w\star(\deno{\gpetyperelation{v}{A}})$.
+
+\proof
+Follows in a similar fashion to that of the substitution theorem. \todo{Case Subtyping}.
+
+
+Now we are at a point to start considering weakenings and substitution of the typing environment. 
+
+Type environment weakenings are inductively defined with respect to an effect environment.
+
+
+\[
+    \treerule{Id}{\wellformedok{\P}{\G}}{\pewrel{\i}{\G}{\G}}
+    \quad  
+    \treerule{Project}{\pewrel{\w}{\G'}{\G}\s\s x \notin \dom{\G'}}{\pewrel{\w \pi}{\G, x: A}{\G}}
+    \quad
+    \treerule{Extend}{\pewrel{\w}{\G'}{\G}\s\s x \notin \dom{\G'}\s\s A \subtype B}{\pewrel{w \x}{\G', x: A}{\G, x: B}}
+\]
+
+With denotations defined as morphisms in $\C(I)$
+
+
+
+
+\todo{Include Beck-Chevalley results (naturality)}
 
 \end{document}

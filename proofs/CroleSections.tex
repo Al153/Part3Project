@@ -2825,6 +2825,25 @@ and
     For each type relation instance $\gpetyperelation{v}{A}$ there exists a unique reduced derivation of the relation instance. For all derivations $\D$, $\D'$ of the type relation instance, $\deno{\D} = \deno{\reduce{\D}} = \deno{\reduce{\D'}} = \deno{\D'} $, hence the denotation $\deno{\gpetyperelation{v}{A}}$ is unique.
 }
 
+\newcommand{\termWeakeningDenotations}[1]{
+    For each instance of the type-environment weakening relation, define a morphism $\deno{\pewrel{\w}{\G'}{\G}}: \G' \rightarrow \G \in #1$
+
+\begin{itemize}
+    \item $\deno{\pewrel{\i}{\G}{\G}} = \idg: \G \rightarrow \G \in \C(I)$
+    \item $\deno{\pewrel{\w\pi}{\G', ax}{\G}} = \deno{\pewrel{\w}{\G'}{\G}}\after\p: \G'\times A \rightarrow \G$
+    \item $\deno{\pewrel{\w\x}{\G', x: A}{\G, x: B}} = \deno{\pewrel{\w}{\G'}{\G}}\times \deno{A\subtypep B}: \G'\times A \rightarrow \G\times B$
+\end{itemize}
+}
+
+\newcommand{\termSubstitutionDenotations}[1]{
+    For each instance onf the effect-environment substitution relation, define a denotation morphism: $\deno{\etyperelation{\P}{\G'}{\si}{\G}}: \G' \rightarrow \in #1$
+
+\begin{itemize}
+    \item $\deno{\etyperelation{\P}{\G'}{\nil}{\nil}} = \term{\G'}: \G' \rightarrow \1$
+    \item $\deno{\etyperelation{\P}{\G'}{(\si, x \setto v)}{\gax}} = \pr{\deno{\etyperelation{\P}{\G'}{\G}}}{\deno{\etyperelation{\P}{\G'}{v}{A}}}: \G' \rightarrow \G\times \1$
+\end{itemize}
+}
+
 \newcommand\soundnessproof[0]{
     
 If $\\eberelation{\P}{v}{v'}{A}$ then $\gdenoequality{v}{v'}{A}$

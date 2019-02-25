@@ -41,15 +41,15 @@
 
     \subsection{Action of Effect Substitution on Types}
 
-    Define the action of applying an effect substitution, $\si$ to a type $\tau$ as:
+    Define the action of applying an effect substitution, $\si$ to a type $A$ as:
 
-    $$\tau\sub{\si}$$
+    $$A\sub{\si}$$
 
     Defined as so
 
     \begin{align}
         \g\sub{\si} &= \g \\
-        (\lamtype{A}{\e}{B})\sub{\si} &= \lamtype{(A\sub{\si})}{\si(\e)}{(B\sub{\si})} \\
+        (\fntype{A}{B})\sub{\si} &= \fntype{(A\sub{\si})}{(B\sub{\si})} \\
         (\M{\e}{A})\ssi &= \M{\si(\e)}{(A\ssi)}\\
         (\all{\a}{A})\ssi &= \all{\a}{(A\ssi)}\qt{If $\a\#\si$}
     \end{align}
@@ -76,10 +76,10 @@
     \begin{align}
         x\ssi & = x \\
         \const{A}\ssi & = \const{(A\ssi)} \\
-        (\lam{x}{A}{C})\ssi &= \lam{x}{(A\ssi)}{(C\ssi)}\\
-        (\ifthenelse{\e}{A}{v}{C_1}{C_2})\ssi &= \ifthenelse{\si(\e)}{(A\ssi)}{v\ssi}{C_1\ssi}{C_2\ssi}\\
+        (\lam{x}{A}{v})\ssi &= \lam{x}{(A\ssi)}{(v\ssi)}\\
+        (\pifthenelse{A}{v}{v_1}{v_2})\ssi &= \pifthenelse{(A\ssi)}{v\ssi}{v_1\ssi}{v_2\ssi}\\
         (\apply{v_1}{v_2})\ssi&= \apply{(v_1\ssi)}{v_2\ssi}\\
-        (\doin{x}{C_1}{C_2})&= \doin{x}{(C_1\ssi)}{(C_2\ssi)}\\
+        (\doin{x}{v_1}{v_2})\ssi&= \doin{x}{(v_1\ssi)}{(v_2\ssi)}\\
         (\elam{\a}{v})\ssi & = \elam{\a}{(v\ssi)}\qt{If $\a\#\si$}\\
         (\eapp{v}{\e})\ssi & = \eapp{(v\ssi)}{\si(\e)}\\
     \end{align}
@@ -427,10 +427,10 @@ If $\wellformed{\P}{\e}$, let the single substitution $\typerelation{\P}{\ssub{\
             x\sub{\si,x\setto v} & = v \\
             x\sub{\si,x'\setto v'} & = x\ssi\qt{If }x \neq x'\\
             \const{A}\ssi & = \const{A} \\
-            (\lam{x}{A}{C})\ssi &= \lam{x}{A}{(C\ssi)}\qt{If }x\#\si\\
-            (\ifthenelse{\e}{A}{v}{C_1}{C_2})\ssi &= \ifthenelse{\e}{A}{v\ssi}{C_1\ssi}{C_2\ssi}\\
+            (\lam{x}{A}{v})\ssi &= \lam{x}{A}{(v\ssi)}\qt{If }x\#\si\\
+            (\pifthenelse{A}{v}{v_1}{v_2})\ssi &= \pifthenelse{A}{v\ssi}{v_1\ssi}{v_2\ssi}\\
             (\apply{v_1}{v_2})\ssi&= \apply{(v_1\ssi)}{v_2\ssi}\\
-            (\doin{x}{C_1}{C_2})&= \doin{x}{(C_1\ssi)}{(C_2\ssi)}\qt{If } x\#\si\\
+            (\doin{x}{v_1}{v_2})&= \doin{x}{(v_1\ssi)}{(v_2\ssi)}\qt{If } x\#\si\\
             (\elam{\a}{v})\ssi & = \elam{\a}{(v\ssi)}\\
             (\eapp{v}{\e})\ssi & = \eapp{(v\ssi)}{\e}\\
         \end{align}
