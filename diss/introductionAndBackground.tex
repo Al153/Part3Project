@@ -837,7 +837,11 @@ Next up, there needs to be a monoidal operator $\Mul: \ciu \times \ciu \rightarr
 
 Our penultimate requirement is that the re-indexing functor  induced by $\p: I\times U\rightarrow U$ (that is $\pstar: \C(I) \rightarrow \C(I\times U)$) has a right adjoint, $\allI: \C(I\times U) \rightarrow \C(I)$. As the reader might be able to guess, this functor allows us to interpret quantification over effects.
 
-Finally, $\allI$ should satisfy the Beck-Chevalley condition \todo{Reference}. That is $\theta\star\after\allI = \allII\after(\theta\times\Id{U})\star$. This allows us to commute the re-indexing functors with the quantification functor.
+Finally, $\allI$ should satisfy the Beck-Chevalley condition \todo{Reference}. That is $\theta\star\after\allI = \allII\after(\theta\times\Id{U})\star$, and the natural transformation $\bar{(\theta\times\Id{U})\star(\counit{})}$ between these functors is equal to the identity natural transformation. This allows us to commute the re-indexing functors with the quantification functor.
+
+\begin{align}
+    \bar{(\theta\times\Id{U})\star(\counit{})} = \Id{}: \theta\star\after\allI \rightarrow \allII\after(\theta\times\Id{U})\star\in \C(I')
+\end{align}
 
 \section{Road Map}
 In figure \ref{RoadMap}, one can see a diagram of the collection of theorems that need to be proved to establish the $\beta\eta$-equivalence soundness of a semantics for PEC.
