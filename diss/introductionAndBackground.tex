@@ -1172,9 +1172,7 @@ Similarly, we can derive the weakening theorem on terms. If $\wrelw{\P'}{\P}$ an
 Follows in a similar fashion to that of the substitution theorem. \todo{Case Subtyping}.
 
 
-Now we are at a point to start considering weakenings and substitution of the typing environment. 
-
-Type environment weakenings are inductively defined with respect to an effect environment.
+Now we are at a point to start considering weakenings and substitution of the typing environment. Type environment weakenings are inductively defined with respect to an effect environment.
 
 
 \[
@@ -1185,9 +1183,44 @@ Type environment weakenings are inductively defined with respect to an effect en
     \treerule{Extend}{\pewrel{\w}{\G'}{\G}\s\s x \notin \dom{\G'}\s\s A \subtype B}{\pewrel{w \x}{\G', x: A}{\G, x: B}}
 \]
 
-With denotations defined as morphisms in $\C(I)$
+With denotations defined as morphisms in a fibre: $\deno{\pewrel{\w}{\G'}{\G}}: \G' \rightarrow \G \in \C(I)$.
+
+\[
+    \deno{\pewrel{\i}{\G}{\G}} = \idg: \G \rightarrow \G \in \C(I)
+    \quad
+    \deno{\pewrel{\w\pi}{\G', ax}{\G}} = \deno{\pewrel{\w}{\G'}{\G}}\after\p: \G'\times A \rightarrow \G
+\]
+
+\[
+    \deno{\pewrel{\w\x}{\G', x: A}{\G, x: B}} = \deno{\pewrel{\w}{\G'}{\G}}\times \deno{A\subtypep B}: \G'\times A \rightarrow \G\times B
+\]
+
+Type-environment substitutions are also derived inductively with respect to a effect environment.
 
 
+\[
+    \treerule{Nil}{\wellformedok{\P}{\G'}}{\etyperelation{\P}{\G'}{\nil}{\nil}}
+    \quad
+    \treerule{Extend}{
+        \etyperelation{\P}{\G'}{\si}{\G}
+        \s\s
+        x\notin\dom{\G}
+        \s\s
+        \etyperelation{\P}{\G'}{v}{A}
+    }{
+        \etyperelation{\P}{\G'}{(\si, x \setto v)}{(\gax)}
+    }
+\]
+
+With denotations defined as morphisms in the appropriate fibre category: $\deno{\etyperelation{\P}{\G'}{\si}{\G}}: \G' \rightarrow \in \C(I)$
+
+\[
+    \deno{\etyperelation{\P}{\G'}{\nil}{\nil}} = \term{\G'}: \G' \rightarrow \1
+    \quad
+    \deno{\etyperelation{\P}{\G'}{(\si, x \setto v)}{\gax}} = \pr{\deno{\etyperelation{\P}{\G'}{\G}}}{\deno{\etyperelation{\P}{\G'}{v}{A}}}: \G' \rightarrow \G\times \1
+\]
+
+\todo{Explain weakening theorem on these}
 
 
 \todo{Include Beck-Chevalley results (naturality)}
