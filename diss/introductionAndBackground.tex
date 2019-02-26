@@ -885,7 +885,7 @@ This collection of theorems finally allows us to complete all cases of the $\bet
 
     \draw [->] (EffectWeakeningTypes) edge (EffectWeakeningTerms) (EffectSubTypes) edge (EffectSubTerms);
 
-    \draw [->] (EffectWeakeningTerms) edge (EffectWeakeningSubstitution) (EffectWeakeningTerms) edge (EffectWeakeningWeakening);
+    \draw [->] (EffectWeakeningTerms) edge (EffectWeakeningSubstitution) (EffectWeakeningSubTyping) edge (EffectWeakeningWeakening);
 
     \draw [->] (EffectWeakeningWeakening) edge (TermWeakening) (EffectWeakeningSubstitution) edge (TermSubstitution);
 
@@ -1021,6 +1021,7 @@ Since each fibre is an S-category, for each ground constant, $\const{A}$, there 
 
 \section{Substitution and Weakening Theorems}
 \todo{Needs an introduction to what substitutions and weakenings are}
+\todo{This section is very terse so far. needs a lot of filling out still}
 
 \begin{itemize}
     \item Substitution - Simultaneous substitution of variables to expressions that are well formed in another environment
@@ -1221,6 +1222,82 @@ With denotations defined as morphisms in the appropriate fibre category: $\deno{
 \]
 
 \todo{Explain weakening theorem on these}
+
+Firstly, we must consider the action of effect weakenings on these morphisms. The weakening theorem on term-environment weakenings is as so: if $\wrel{\w_1}{\P'}{\P}$ and $\pewrel{\w}{\G'}{\G}$ then $\ewrel{\P'}{\w}{\G'}{G}$ and $\deno{\ewrel{\P'}{\w}{\G'}{\G}} = \w_1\star\deno{\pewrel{\w}{\G'}{\G}}$.
+
+\proof
+By induction on the derivation of $\w$. making use of weakening on types, type environments, and sub-typing.
+\todo{Pick some cases.}
+
+
+Secondly, we can form the weakening theorem on term-environment substitutions. If $\etyperelation{\P}{\G'}{\si}{\G}$ and $\wrelw{\P'}{\P}$ then $\etyperelation{\P'}{\G'}{\si}{\G}$ and $\deno{\etyperelation{\P'}{\G'}{\si}{\G}} = \w\star\deno{\etyperelation{\P}{\G'}{\si}{\G}}$
+\proof
+By induction on the definition of $\si$, making use of the weakening on terms, types, and type environments.
+\todo{Both cases.}
+
+\todo{Be careful about denotations of derivations.}
+\todo{Show cases that make use of the above therorems}
+
+Now we can move onto the term substitution and weakening theorems. These theorems are the final step before we prove that all denotations for a typing relation are equivalent and then move onto soundness.
+
+The term-weakening theorem states  that if $\pewrel{\w}{\G'}{\G}$ and $\D$ is a derivation of $\gpetyperelation{v}{A}$ then we can derive $\D'$, a derivation of $\etyperelation{\P}{\G'}{v}{A}$ with denotation $\D' = \D\after\w$.
+
+\proof
+By induction on the derivation of $\D$. Making use of the weakening of effect environments on term weakenings.
+\todo{Cases, including polymorphic gen case which makes use of weakening from theorem above. Maybe pick the If case too as a more complex case?}
+
+
+The term-substitution theorem states that if $\etyperelation{\P}{\G'}{\si}{\G}$ and $\D$ is a derivation of $\gpetyperelation{v}{A}$, then we can construct $\D'$ deriving $\etyperelation{\P}{\G'}{v\ssi}{A}$ with denotation $\D' = \D \after \si$.
+
+\proof
+By induction on the derivation $\D$, making use of weakening of term substitutions.
+\todo{Pick some cases}
+
+\section{Uniqueness of Denotations}
+
+Up until this point we have hat to be careful about the implicit typing derivation for every term denotation $\deno{\gpetyperelation{v}{A}}$. We are now equipped with the tools to prove that all derivations of the same typing relation instance $\gpetyperelation{v}{A}$ induce the same denotation. This allows us to no-longer worry about the equality of denotations, which will be helpful in the soundness proof.
+
+To prove that all typing denotations have the same denotation, I shall first introduce the concept of a \textit{reduced} typing derivation that is unique to each term and type in each typing environment. Next, I shall present a function, $\reduce$, which recursively maps  typing derivations to their reduced equivalent. I shall also prove that this function preserves the denotation of the derivations. That is $\deno{\gpetyperelation{v}{A}} = \deno{\reduce(\gpetyperelation{v}{A})}$. Hence, we can conclude, since all derivations for a typing relation instance reduce to the same unique typing derivation, and that the reduction function preserves the denotations, that all derivations of a typing derivation have the same denotation.
+
+The need for reduced typing derivations comes about because of sub-typing. The sub-typing rule can be inserted into different places in a derivation to derive the same typing relation. Hence, the reduction function focuses on only placing sub-typing rule instances in specific places. In particular, we shall only allow the sub-typing rule to occur at the root of the derivation or above instances of the if-rule and apply-rule in reduced derivations. This has the effect of only introducing sub-typing rule uses when it is necessary maintain syntactic-correctness.
+
+These reduced derivations are unique.
+\proof
+By induction on term structure.
+\todo{Cases (in particular, Apply)}
+\todo{Point out that we don't have a case for subtyping as it's not a syntactic feature.}
+
+
+The $\reduce$ function maps each derivation to its reduced equivalent. It shall do this by pushing sub-typing rules from the leaves of the derivation tree down towards the root of the tree. The function case splits on the root of the tree and works up recursively. Some cases of the function are given below. \todo{These cases}.
+
+The $\reduce$ function preserves denotations.
+In other words, if the derivation $\D'$ is the result of applying  reduce to $\D$ then the denotations of the derivations are equal. That is $\D' = \reduce(\D) \implies \D' = \D$.
+
+\proof
+By induction over the structure of $\D$, making use of the substitution and weakening theorems. (\todo{How? more specificity})
+\todo{Pick cases (Apply, polymorphism gen rule)}
+\begin{figure}[h!]
+\begin{equation}
+    \treerule{Lambda}{
+        \treerule{Sub-Type}{
+            \etyperelation{\P}{\gax}{v}{B}
+            \s\s
+            B \subtypep B'
+        }{
+            \etyperelation{\P}{\gax}{v}{B'}
+        }
+    }{\gpetyperelation{\lam{x}{A}{v}}{\fntype{A}{B'}}}
+\end{equation}
+
+\begin{equation}
+    \treerule{Sub-Type}{    \treerule{Lambda}{
+            \etyperelation{\P}{\gax}{v}{B}
+    }{\gpetyperelation{\lam{x}{A}{v}}{\fntype{A}{B}}}
+    \s\s \ab \subtype \fntype{A}{B'}}
+    {\gpetyperelation{\lam{x}{A}{v}}{\fntype{A}{B'}}}
+\end{equation}
+    \caption{Two derivations of the same type-relation. The second derivation is reduced.}
+\end{figure}
 
 
 \todo{Include Beck-Chevalley results (naturality)}
