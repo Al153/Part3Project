@@ -1,7 +1,16 @@
 \documentclass{Report}
 \usepackage{framed}
 
+
+
 \input{../proofs/header.tex}
+
+%Theorems
+\usepackage[utf8]{inputenc}
+\usepackage[english]{babel}
+\newtheorem{theorem}{Theorem}[section]
+\newtheorem{corollary}{Corollary}[theorem]
+\newtheorem{lemma}[theorem]{Lemma}
 
 \usepackage{tikz}
 
@@ -338,12 +347,22 @@ that preserves the category properties of composition and identity.
 
 \section{Natural Transformations}
 
-A natural transformation $\theta$ between to functors $F, G: \C \rightarrow \DC$ is a collection of morphisms, indexed by objects in $\C$ with  $\theta_A: F(A) \rightarrow G(A)$ such that following diagram commutes for each $f: A \rightarrow B \in \C$
+A natural transformation $\theta$ between to functors $F, G: \C \rightarrow \DC$ is a collection of morphisms, indexed by objects in $\C$ with  $\theta_A: F(A) \rightarrow G(A)$ such that diagram in figure \ref{Naturality} commutes for each $f: A \rightarrow B \in \C$.
 
-\begin{tikzcd}
-    F(A) \arrow{r}{\theta_A} \arrow{d}{F(f)}  & G(A) \arrow{d}{G(f)}\\
-    F(B) \arrow{r}{\theta_B}& G(B)\\ 
-\end{tikzcd}
+\begin{figure}
+    \centering
+    \begin{minipage}{0.45\textwidth}
+        \label{Naturality}
+        \centering
+        \begin{tikzcd}
+            F(A) \arrow{r}{\theta_A} \arrow{d}{F(f)}  & G(A) \arrow{d}{G(f)}\\
+            F(B) \arrow{r}{\theta_B}& G(B)\\ 
+        \end{tikzcd}
+        \caption{Naturality of a natural transformation}
+    \end{minipage}\hfill
+\end{figure}
+
+
 
 \section{Monad}
 
@@ -355,20 +374,30 @@ A monad is famously ``a monoid on the category of endofunctors''. In less opaque
     \item A ``join'' natural transformation $\mu_{A}: T(T(A)) \rightarrow T(A)$
 \end{itemize}
 
-Such that the following diagrams commute:
-
-\subsection{Associativity}
-\begin{tikzcd}
-    T(T(T(A)) \arrow{r}{\mu_{T(A)}} \arrow{d}{T(\mu_{A})} & T(T(A)) \arrow{d}{\mu_A} \\
-    T(T(A)) \arrow{r}{\mu_A} & T(A)    
-\end{tikzcd}
+Such that the diagrams in figures \ref{MonadAssociativity}, \ref{MonadUnits} commute.
 
 
-\subsection{Left and Right Unit}
-\begin{tikzcd}
-    T(A) \arrow{r}{\point{T(A)}} \arrow{d}{T(\point{A})} \arrow[equal]{rd} & T(T(A)) \arrow{d}{\mu_A}\\
-    T(T(A)) \arrow{r}{\mu_A} & T(A)
-\end{tikzcd}
+\begin{figure}
+    \centering
+    \begin{minipage}{0.45\textwidth}
+        \label{MonadAssociativity}
+        \centering
+        \begin{tikzcd}
+            T(T(T(A)) \arrow{r}{\mu_{T(A)}} \arrow{d}{T(\mu_{A})} & T(T(A)) \arrow{d}{\mu_A} \\
+            T(T(A)) \arrow{r}{\mu_A} & T(A)    
+        \end{tikzcd}        \caption{Monad Associativity Laws}
+    \end{minipage}\hfill
+    \begin{minipage}{0.45\textwidth}
+        \centering
+        \label{MonadUnits}
+        \begin{tikzcd}
+            T(A) \arrow{r}{\point{T(A)}} \arrow{d}{T(\point{A})} \arrow[equal]{rd} & T(T(A)) \arrow{d}{\mu_A}\\
+            T(T(A)) \arrow{r}{\mu_A} & T(A)
+        \end{tikzcd}
+        \caption{Monad Left- and Right-Unit laws}
+    \end{minipage}
+\end{figure}
+
 
 
 
@@ -381,29 +410,40 @@ A graded monad is a generalisation of a monad to be indexed by a monoidal algebr
     \item A join natural transformation: $\bind{\e_1}{\e_2}{}: \T{\e_1}{\T{\e_2}{}} \rightarrow \T{\e_1 \dot \e_2}{}$
 \end{itemize}
 
-Such that the following diagrams commute.:
-\subsection{Left and Right  Units}
-    \begin{tikzcd}[ampersand replacement=\&]
-        \tea
-         \arrow[equal]{rd} 
-         \arrow[r, "\T{\e}{\point{A}}"]
-         \arrow{d}{\point{\tea}}
-        \& 
-        \T{\e}{\T{\1}{A}} 
-            \arrow[d, "\bind{\e}{\1}{A}"] \\
-            \T{\1}{\T{\e}{A}}
-                 \arrow{r}{\bind{\1}{\e}{A}}
-        \& 
-        \tea
-    \end{tikzcd}
+Such that the diagrams in figures \ref{GradedMonadAssociativity}, \ref{GradedMonadTypeRules} commute.
 
-\subsection{Associativity}
-\begin{tikzcd}[ampersand replacement=\&]
-    \T{\e_1}{\T{\e_2}{\T{\e_3}{A}}} 
-    \arrow [r, "\bind{\e_1}{\e_2}{\T{\e_3}{A}}"]
-    \arrow [d, "\T{\e_1}{\bind{\e_2}{\e_3}{A}}"] \& \T{\e_1 \dot \e_2}{\T{\e_3} A} \arrow [d, "\bind{\e_1 \dot \e_2}{\e_3}{A}"] \\
-    \T{\e_1}{\T{\e_2 \dot \e_3}{A}} \arrow [r, "\bind{\e_1}{\e_2 \dot \e_3}{A}"] \& \T{\e_1 \dot \e_2 \dot \e_3}{A}    
-\end{tikzcd}
+
+\begin{figure}
+    \centering
+    \begin{minipage}{0.45\textwidth}
+        \label{GradedMonadAssociativity}
+        \centering
+        \begin{tikzcd}[ampersand replacement=\&]
+            \T{\e_1}{\T{\e_2}{\T{\e_3}{A}}} 
+            \arrow [r, "\bind{\e_1}{\e_2}{\T{\e_3}{A}}"]
+            \arrow [d, "\T{\e_1}{\bind{\e_2}{\e_3}{A}}"] \& \T{\e_1 \dot \e_2}{\T{\e_3} A} \arrow [d, "\bind{\e_1 \dot \e_2}{\e_3}{A}"] \\
+            \T{\e_1}{\T{\e_2 \dot \e_3}{A}} \arrow [r, "\bind{\e_1}{\e_2 \dot \e_3}{A}"] \& \T{\e_1 \dot \e_2 \dot \e_3}{A}    
+        \end{tikzcd}
+        \caption{Associativity of a graded monad}
+    \end{minipage}\hfill
+    \begin{minipage}{0.45\textwidth}
+        \centering
+        \begin{tikzcd}[ampersand replacement=\&]
+            \tea
+             \arrow[equal]{rd} 
+             \arrow[r, "\T{\e}{\point{A}}"]
+             \arrow{d}{\point{\tea}}
+            \& 
+            \T{\e}{\T{\1}{A}} 
+                \arrow[d, "\bind{\e}{\1}{A}"] \\
+                \T{\1}{\T{\e}{A}}
+                     \arrow{r}{\bind{\1}{\e}{A}}
+            \& 
+            \tea
+        \end{tikzcd}
+        \caption{Left- and Right- Units of a graded monad}
+    \end{minipage}
+\end{figure}
 
 
 \section{Tensor Strength}
@@ -413,122 +453,123 @@ Tensorial strength over a graded monad gives us the tools necessary to manipulat
     \tstrength{\e}{A}{B}: A \times \teb \rightarrow \T{\e}{(A \times B)}
 \end{align}
 
-Such that the following diagrams commute:
-\subsection{Left Naturality}
-\begin{tikzcd}[ampersand replacement=\&]
-    A \times \teb \arrow [r, "\Id{A} \times \T{\e}{f}"] \arrow [d, "\tstrength{\e}{A}{B}"]\&
-    A \times \T{\e}{B'} \arrow [d, "\tstrength{\e}{A}{B'}"]\\
-    \T{\e}{(A \times B)} \arrow [r, "\T{e}{(\Id{A} \times f)}"] \&
-    \T{\e}{(A \times B')}
-\end{tikzcd}
+Which has well defined interactions with the graded monad morphisms and the product-reordering natural transformation $\alpha_{A, B, C} = \pr{\p\after\p}{\pr{\pp\after\p}{\pp}}: ((A \times B) \times C) \rightarrow (A \times (B \times C))$, as seen in figures \ref{TensorStrengthLeftNaturality}, \ref{TensorStrengthRightNaturality}, \ref{TensorStrengthUnitorLaw}, \ref{TensorStengthJoin}, \ref{TensorStrengthPoint}, \ref{TensorStrengthAlpha}.
 
-\subsection{Right Naturality}
-
-\begin{tikzcd}[ampersand replacement=\&]
-    A \times \teb  \arrow [r, "f \times \Id{\teb}"] \arrow [d, "\tstrength{\e}{A}{B}"]  \&
-    A' \times \teb \arrow [d, "\tstrength {\e} {A'}{B}"]\\
-    \T{\e}{(A \times B)} \arrow [r, "\T{\e}{(f \times \Id{B})}"]\&
-    \T{\e}{(A' \times B)}
-\end{tikzcd}
-
-\subsection{Unitor Law}
-\begin{tikzcd}[ampersand replacement=\&]
-    \1 \times \tea 
-    \arrow [r, "\tstrength{\e}{\1}{A}"]
-    \arrow [rd, "\lambda_{\tea}"]
-    \& 
-    \T{\e}{(\1 \times A)}
-    \arrow [d, "\T{\e}{(\lambda_A)}"]
-    \\
-    \&
-    \tea
-\end{tikzcd}
-Where $\lambda: \terminal \times \Id{} \rightarrow \Id{}$ is the left-unitor.
-($\lambda = \pp$)
-
-\paragraph{Tensor Strength and Projection}
-Due to the left-unitor law, we can develop a new law for the commutativity of $\pp$ with $\tstrength{}{}{}$
-
-    $$\pi_{2, A, B} = \pi_{2, \1, B} \after (\term{A} \times \Id{B})$$
-
-    And $\pi_{2, \1}$ is the left unitor, so by tensorial strength:
-    
-    \begin{equation}
-        \begin{split}
-            \T{\e}{\pp} \after \tstrength{\e}{A}{B} & = \T{\e}{\pi_{2, \1, B}} \after \T{\e}{(\term{A} \times \Id{B})} \after \tstrength{\e}{A}{B} \\
-            & = \T{\e}{\pi_{2, 1, B}} \after \tstrength{\e}{\1}{B} \after (\term{A} \times \Id{B}) \\
-            & = \pi_{2,1,B} \after (\term{A} \times \Id{B}) \\
-            & = \pp
-        \end{split}
-    \end{equation}
-
-So the following commutes:
-
-\begin{tikzcd}[ampersand replacement=\&]
-    A \times \teb 
-    \arrow [r, "\tstrength{\e}{A}{B}"]
-    \arrow [rd, "\pp"]
-    \& 
-    \T{\e}{(A \times B)}
-    \arrow [d, "\T{\e}{\pp}"]
-    \\
-    \&
-    \teb
-\end{tikzcd}
+\begin{figure}
+    \centering
+    \begin{minipage}{0.45\textwidth}
+        \label{TensorStrengthLeftNaturality}
+        \centering
+        \begin{tikzcd}[ampersand replacement=\&]
+            A \times \teb  \arrow [r, "f \times \Id{\teb}"] \arrow [d, "\tstrength{\e}{A}{B}"]  \&
+            A' \times \teb \arrow [d, "\tstrength {\e} {A'}{B}"]\\
+            \T{\e}{(A \times B)} \arrow [r, "\T{\e}{(f \times \Id{B})}"]\&
+            \T{\e}{(A' \times B)}
+            \end{tikzcd}
+            \caption{Left Naturality of Graded Tensor Strength}
+    \end{minipage}
+    \hfill
+    \begin{minipage}{0.45\textwidth}
+        \label{TensorStrengthRightNaturality}
+        \centering
+        \begin{tikzcd}[ampersand replacement=\&]
+            A \times \teb \arrow [r, "\Id{A} \times \T{\e}{f}"] \arrow [d, "\tstrength{\e}{A}{B}"]\&
+            A \times \T{\e}{B'} \arrow [d, "\tstrength{\e}{A}{B'}"]\\
+            \T{\e}{(A \times B)} \arrow [r, "\T{e}{(\Id{A} \times f)}"] \&
+            \T{\e}{(A \times B')}
+        \end{tikzcd}
+        \caption{Right Naturality of Graded Tensor Strength}
+    \end{minipage} 
+\end{figure}
 
 
-\subsection{Commutativity with Join}
-\begin{tikzcd}[ampersand replacement=\&]
-    A \times \T{\e_1}{\T{\e_2}{B}} 
-    \arrow [r, "\tstrength{\e_1}{A}{\T{\e_2}{B}}"]
-    \arrow [dr, "\Id{A} \times \bind{\e_1}{\e_2}{B}"]
-    \& 
-    \T{\e_1}{(A \times \T{\e_2}{B})} 
-    \arrow [r, "\T{\e_1}{\tstrength{\e_2}{A}{B}}"]
-    \& 
-    \T{\e_1}{\T{\e_2}{(A \times B)}} 
-    \arrow [d, "\bind{\e_1}{\e_2}{A \times B}"]
-    \\
-    \&
-    A \times \T{\e_1 \dot \e_2}{B}  
-    \arrow [r, "\tstrength{\e_1 \dot \e_2}{A}{B}"] 
-    \&
-    \T{\e_1 \dot \e_2}({A \times B)}
-\end{tikzcd}
+\begin{figure}
+    \centering
+    \begin{minipage}{0.45\textwidth}
+        \label{TensorStrengthUnitorLaw}
+    \begin{tikzcd}[ampersand replacement=\&]
+        A \times \teb 
+        \arrow [r, "\tstrength{\e}{A}{B}"]
+        \arrow [rd, "\pp"]
+        \& 
+        \T{\e}{(A \times B)}
+        \arrow [d, "\T{\e}{\pp}"]
+        \\
+        \&
+        \teb
+    \end{tikzcd}
+    \caption{Tensor Strength Unitor Law}
+    \end{minipage}
+    \quad
+    \centering
+    \begin{minipage}{0.45\textwidth}
+        \label{TensorStengthJoin}
+        \begin{tikzcd}[ampersand replacement=\&]
+            A \times \T{\e_1}{\T{\e_2}{B}} 
+            \arrow [r, "\tstrength{\e_1}{A}{\T{\e_2}{B}}"]
+            \arrow [dr, "\Id{A} \times \bind{\e_1}{\e_2}{B}"]
+            \& 
+            \T{\e_1}{(A \times \T{\e_2}{B})} 
+            \arrow [r, "\T{\e_1}{\tstrength{\e_2}{A}{B}}"]
+            \& 
+            \T{\e_1}{\T{\e_2}{(A \times B)}} 
+            \arrow [d, "\bind{\e_1}{\e_2}{A \times B}"]
+            \\
+            \&
+            A \times \T{\e_1 \dot \e_2}{B}  
+            \arrow [r, "\tstrength{\e_1 \dot \e_2}{A}{B}"] 
+            \&
+            \T{\e_1 \dot \e_2}({A \times B)}
+        \end{tikzcd}
+        \caption{How the tensor strength natural transformation commutes with the join natural transformation }
+    \end{minipage}
 
-\section{Commutativity with Unit}
+    \quad
+    \begin{minipage}{0.45\textwidth}
+        \label{TensorStrengthPoint}
+        \begin{tikzcd}[ampersand replacement=\&]
+            A \times B
+            \arrow [r, "\Id{A} \times \point{B}"]
+            \arrow [rd, "\point{A \times B}"]
+            \&
+            A \times \tob 
+            \arrow [d, "\tstrength{\1}{A}{B}"]
+            \\
+            \&
+            \T{\1}{(A \times B)}
+        \end{tikzcd}
+        \caption{How the tensor strength natural transformation commutes with the unit natural transformation}
+    \end{minipage}
+\end{figure}
 
-\begin{tikzcd}[ampersand replacement=\&]
-    A \times B
-    \arrow [r, "\Id{A} \times \point{B}"]
-    \arrow [rd, "\point{A \times B}"]
-    \&
-    A \times \tob 
-    \arrow [d, "\tstrength{\1}{A}{B}"]
-    \\
-    \&
-    \T{\1}{(A \times B)}
-\end{tikzcd}
-
-\section{Commutativity with $\alpha$}
-Let $\alpha_{A, B, C} = \pr{\p\after\p}{\pr{\pp\after\p}{\pp}}: ((A \times B) \times C) \rightarrow (A \times (B \times C))$
 
 
-\begin{tikzcd}[ampersand replacement=\&]
-    (A\times B)\times \T{\e}{C} 
-    \arrow [rr, "\tstrength{\e}{(A\times B)}{C}"]
-    \arrow [d, "\alpha_{A, B, \T{\e}{C}}"]
-    \& \& \T{\e}{((A \times B)\times C)}
-    \arrow [d, "\T{\e}{\alpha_{A, B, C}}"]
-    \\
-    A \times (B \times \T{\e}{C}) 
-    \arrow [r, "\Id{A}\times\tstrength{\e}{B}{C}"]
-    \&
-    A\times\T{\e}{(B \times C)} 
-    \arrow [r, "\tstrength{\e}{A}{(B \times C)}"]
-    \& \T{\e}{(A \times (B \times C))}
-    \\
-\end{tikzcd}
+\begin{figure}
+    \centering
+    \begin{minipage}{0.45\textwidth}
+        \label{TensorStrengthAlpha}
+        \begin{tikzcd}[ampersand replacement=\&]
+            (A\times B)\times \T{\e}{C} 
+            \arrow [rr, "\tstrength{\e}{(A\times B)}{C}"]
+            \arrow [d, "\alpha_{A, B, \T{\e}{C}}"]
+            \& \& \T{\e}{((A \times B)\times C)}
+            \arrow [d, "\T{\e}{\alpha_{A, B, C}}"]
+            \\
+            A \times (B \times \T{\e}{C}) 
+            \arrow [r, "\Id{A}\times\tstrength{\e}{B}{C}"]
+            \&
+            A\times\T{\e}{(B \times C)} 
+            \arrow [r, "\tstrength{\e}{A}{(B \times C)}"]
+            \& \T{\e}{(A \times (B \times C))}
+            \\
+        \end{tikzcd}
+    \end{minipage}
+    \caption{Tensorial strength commutes with the reordering natural transformation.}
+\end{figure}
+
+
+
+
 
 
 \section{Adjunction}
@@ -563,7 +604,9 @@ We can then use $\epsilon$ and $\eta$ to form a natural isomorphism between morp
 \end{align}
 
 \section{Strict Indexed Category}
-The final piece of category theory required to understand this dissertation is the concept of a strict indexed Category. A strict indexed category is a functor from a base category into a target category of categories, such as the category of cartesian closed categories. Objects in the base category are mapped to categories in the target category. Morphisms between objects in the base category are mapped to functors between categories in the target category. For example, we may use the the case of cartesian closed categories indexed by a pre-order:
+
+The final piece of category theory required to understand this dissertation is the concept of a strict indexed Category. A strict indexed category is a functor from a base category into a target category of categories, such as the category of cartesian closed categories. Objects, $A$, in the base category are mapped to categories $\C(A)$, known as fibres in the target category. Morphisms between objects in the base category, $f: B\rightarrow A$, are mapped to functors, $f\star: \C(A)\rightarrow \C(B)$, between categories in the target category. 
+Due to the composition laws for functors, $\theta\star\after\phi\star = (\phi\after\theta)\star$ and $\Id{A}*(B) = B\in\obj \C(A)$. For example, we may use the the case of cartesian closed categories indexed by a pre-order:
 
 \begin{align}
     I: \mathbb{P} & \rightarrow \textit{CCCat}\qt{The indexing functor} \\
@@ -767,14 +810,23 @@ Only the type rule \texttt{Weaken} adds terms to the environment from its precon
 
 
 \chapter{Semantics for EC in an S-Category}
-As hinted at previously, we can interpret the Effect Calculus in a CCC with a strong graded monad and co-products. A further requirement is the appropriate sub-effecting natural transformations. For each instance of $\e_1 \subeffect \e_2$, there exists a natural transformation $\db{\e_1\subeffect\e2}: \T{\e_1}{}\rightarrow\T{\e_2}{}$ such that it has the following interactions with the graded monad:
+As hinted at previously, we can interpret the Effect Calculus in a CCC with a strong graded monad and co-products. A further requirement is the appropriate sub-effecting natural transformations. For each instance of $\e_1 \subeffect \e_2$, there exists a natural transformation $\db{\e_1\subeffect\e2}: \T{\e_1}{}\rightarrow\T{\e_2}{}$ such that it has interactions with the graded monad as specified in figures \ref{SubeffectTensorStrength}, \ref{SubeffectBind}. We shall call a category fulfilling these properties an S-Category (Semantic Category).   
 
-\begin{tikzcd}[ampersand replacement=\&]
-    A \times \T{\e_1}{B} \arrow [r, "\Id{A} \times \dse{\e_1}{\e_2}_B"] \arrow [d, "\tstrength{\e_1}{A}{B}"] \&
-    A \times \T{\e_2}{B} \arrow [d, "\tstrength{\e_2}{A}{B}"] \\
-    \T{\e_1}{(A \times B)} \arrow [r, "\dse{\e_1}{\e_2}_{ A \times B}"] \&
-    \T{\e_2}{(A \times B)} 
-\end{tikzcd}\qquad%
+
+
+\begin{figure}
+\centering
+\begin{minipage}{0.45\textwidth}\label{SubeffectTensorStrength}
+    \begin{tikzcd}[ampersand replacement=\&]
+        A \times \T{\e_1}{B} \arrow [r, "\Id{A} \times \dse{\e_1}{\e_2}_B"] \arrow [d, "\tstrength{\e_1}{A}{B}"] \&
+        A \times \T{\e_2}{B} \arrow [d, "\tstrength{\e_2}{A}{B}"] \\
+        \T{\e_1}{(A \times B)} \arrow [r, "\dse{\e_1}{\e_2}_{ A \times B}"] \&
+        \T{\e_2}{(A \times B)} 
+    \end{tikzcd}\qquad
+    \caption{The interaction of the sub-effect natural transformation with the tensor strength natural transformation.}
+\end{minipage}  
+\quad
+\begin{minipage}{0.45\textwidth}\label{SubeffectBind}
 \begin{tikzcd}[ampersand replacement=\&]
     \T{\e_1}{\T{\e_2}{}} 
     \arrow [rr, "\T{\e_1}{\deno{\e_2\subeffect\e_2'}
@@ -793,12 +845,19 @@ As hinted at previously, we can interpret the Effect Calculus in a CCC with a st
      \& \&
     \T{\e_1'\dot\e_2'}{}
 \end{tikzcd}
+\caption{The interaction of the sub-effect natural transformation with the graded monad  bind natural transformation.}
+\end{minipage}  
+\end{figure}
 
-We shall call a category fulfilling these properties an S-Category (Semantic Category).
+
+
+
 
 \todo{This has been very vague as I want to save words on the non-polymorphic stuff.}
 
 \chapter{Semantics For PEC in an Indexed Category}
+
+
 In this chapter, I shall describe the category structure required to interpret an instance of the PEC. I shall then present denotations of each type of structure in the language, such as types, effects, terms, substitutions, and environment weakenings. Finally, I shall provide outlines and interesting cases of the proofs of the lemmas leading up to and including soundness of $\beta\eta$-conversion.
 
 
@@ -1020,17 +1079,27 @@ Since each fibre is an S-category, for each ground constant, $\const{A}$, there 
 
 
 \section{Substitution and Weakening Theorems}
+
+In this section, I shall introduce and prove a series of utility theorems, which will help us prove cases in future theorems. These weakening and substitution theorems are concerned with a change-in-environment of typing derivations and their associated denotations. If $\gpetyperelation{v}{A}$, then it should be the case that $\etyperelation{\P}{\gax}{v}{A}$. We also want to know what happens to the denotation when we change the type environment in this way. In this section, I shall introduce the tools for manipulating the type and effect environments in this way.
+
+Substitutions and weakenings are two distinct ways of manipulating an effect or typing environment. Weakening acts as a kind of sub-typing of the environment. If we insert fresh variables into an environment, then any expression that was typeable under the previous environment should also be typeable under the the new environment. This change of environment should also have a predictable effect on the denotations of any expressions to which it is applied.
+
+Substitution considers what happens when we simultaneously replace all variables in one expression, that is typeable under an environment, with expressions that are well formed under another environment. The resulting substituted expression should be typeable under the new environment, and the denotation of the new expression should be composed from the denotation of the old relation and the denotations of the expressions that replace the variables. 
+
+As we go on, I shall define and state the denotations of specific substitutions and weakenings, upon both the effect environment and the typing environment.
+
 \todo{Needs an introduction to what substitutions and weakenings are}
 \todo{This section is very terse so far. needs a lot of filling out still}
 
 \begin{itemize}
     \item Substitution - Simultaneous substitution of variables to expressions that are well formed in another environment
-    \item Weakening is a kind of subtyping on environments.
+    \item Weakening is a kind of sub-typing on environments.
 \end{itemize}
 
-The main families of theorems to prove in this project are weakening and substitution theorems. They come in two flavours: weakening and substitution of the effect variable environment and weakening and substitution of the typing environment. Each of the families consists of proofs that changes to the environment used for well-formed-ness and typing, when such changes have well defined morphisms, have well defined actions on the categorical structures representing the well-formed-ness and typing relations.
+In this dissertation, substitutions and weakenings come in two  flavours: weakening and substitution of the effect-variable environment and weakening and substitution of the typing environment. For each of these there is a family of theorems defining the effects of the applying a substitution and weakening to the various language structures and their denotations, such as well-formed-ness and typing relations.
 
-The first family is that of weakening and substitution of the effect environment. Weakenings are a relation between effect-environments $\wrel{\w}{\P'}{\P}$, that are defined as so:
+
+The first family of theorems is that of weakening and substitution of the effect environment. Weakenings are a relation between effect-environments $\wrel{\w}{\P'}{\P}$, that are defined as so:
 
 \[
     \treerule{Id}{\ok{\P}}{\wrel{\i}{\P}{\P}}
@@ -1046,8 +1115,10 @@ With inductively defined denotations:
     \deno{\wrel{\i}{\P}{\P}} = \Id{I}: I \rightarrow I
     \quad
     \deno{\wrel{w\pi}{\P',\a}{\P}} = \deno{\wrelw{\P'}{\P}}\after \p: I'\times U\rightarrow I
-    \quad
-    \deno{\wrel{w\x}{\P',\a}{\P,\a}} = (\deno{\wrelw{\P'}{\P}}\times \Id{U}): I'\times U\rightarrow I\times U
+\]
+
+\[
+    \deno{\wrel{w\x}{\P',\a}{\P,\a}} = (\deno{\wrelw{\P'}{\P}}\times \Id{U}): I'\times U\rightarrow I\times U    
 \]
 
 Substitutions are also an inductively defined relation between effect-environments, with inductively defined denotations. Substitutions may be represented as a snoc-list of variable-effect pairs.
@@ -1081,20 +1152,28 @@ We can also define the action of substitutions on effects.
     (\si, \b\setto \e)(\a) & = \si(\a) \\
     (\si, \a\setto \e)(\a) & =\e
 \end{align}.
+\begin{theorem}[Effect Substitution on Effects]
+    The substitution theorem on effects is the proposition that if $\wellformed{\P}{\e}$ and $\typerelation{\P'}{\si}{\P}$ then $\wellformed{\P'}{\si(\e)}$ and, writing $\si$ for $\deno{\typerelation{\P'}{\si}{\P}}$,  $\deno{\wellformed{\P'}{\si(\e)}} = \deno{\wellformed{\P}{\si}}\after\si$. 
+\end{theorem}
 
-The substitution theorem on effects is the proposition that if $\wellformed{\P}{\e}$ and $\typerelation{\P'}{\si}{\P}$ then $\wellformed{\P'}{\si(\e)}$ and, writing $\si$ for $\deno{\typerelation{\P'}{\si}{\P}}$,  $\deno{\wellformed{\P'}{\si(\e)}} = \deno{\wellformed{\P}{\si}}\after\si$. 
 
-\proof
-
-The proof of this depends on the naturality of $\Mul$ and inversion to narrow down case splitting on the structure of the effect environments.
+\begin{proof}
+    The proof of this depends on the naturality of $\Mul$ and inversion to narrow down case splitting on the structure of the effect environments.
 \todo{Pick a pair of cases}
+\end{proof}
 
-The weakening theorem proceeds similarly. If $\wellformed{\P}{\e}$ and $\wrelw{\P'}{\P}$ then $\wellformed{\P'}{\w}$ and, writing $\w$ for $\deno{\wrelw{\P'}{\P}}$,  $\deno{\wellformed{\P'}{\e}} = \deno{\wellformed{\P}{\si}}\after\w$.
 
-\proof
-This proof also depends on the naturality of $\Mul$ and case splitting on the structure of $\w$.
+\begin{theorem}[Effect Weakening on Effects]
+    The weakening theorem proceeds similarly. If $\wellformed{\P}{\e}$ and $\wrelw{\P'}{\P}$ then $\wellformed{\P'}{\w}$ and, writing $\w$ for $\deno{\wrelw{\P'}{\P}}$,  $\deno{\wellformed{\P'}{\e}} = \deno{\wellformed{\P}{\si}}\after\w$.
 
-\todo{Pick a pair of cases}.
+\end{theorem}
+
+\begin{proof}
+    This proof also depends on the naturality of $\Mul$ and case splitting on the structure of $\w$.
+    \todo{Pick a pair of cases}.
+\end{proof}
+
+
 
 
 We can then move on to state and prove the weakening and substitution theorems on types, sub-typing, and type environments. The general structure of these theorems, as well as later, is that when we want to quantify the effect of a morphism $\theta: I' \rightarrow I$ between objects in the base category on structure in the fibres $\C(I)$, we should simply apply the associated re-indexing functor $\theta\star: \C(I) \rightarrow \C(I')$ to the structure. The proof of the soundness of this operation is driven by the S-closure of the re-indexing functor.
@@ -1113,42 +1192,75 @@ Specifically, effect substitutions have the following actions on types, and type
     (\gax)\ssi &= (\G\ssi, x:(A\ssi))\\
 \end{align*}
 
-The specific effect-substitution theorem on types is if $\wellformed{\P}{A}$ and $\typerelation{\P'}{\si}{\P}$, then $\wellformed{\P'}{A\ssi}$ and $\deno{\wellformed{\P'}{A\ssi}} = \si\star\deno{\wellformed{\P}{A}}$.
 
+\begin{theorem}[Effect Substitution on Types]
+    The specific effect-substitution theorem on types is if $\wellformed{\P}{A}$ and $\typerelation{\P'}{\si}{\P}$, then $\wellformed{\P'}{A\ssi}$ and $\deno{\wellformed{\P'}{A\ssi}} = \si\star\deno{\wellformed{\P}{A}}$.
+\end{theorem}
 
+\begin{proof}
+    By S-closure of $\si\star$ and the Beck-Chevalley Condition.
+    \todo{Pick Cases (Quantification?)}
+\end{proof}
 
-\proof By S-closure of $\si\star$ and the Beck-Chevalley Condition.
-\todo{Pick Cases (Quantification?)}
+\begin{theorem}[Effect Substitution on Type Environments]
+    Similarly, the effect-substitution theorem on type environments is that if $\wellformedok{\P}{\G}$, then $\wellformedok{\P'}{\G\ssi}$ and $\deno{\wellformedok{\P'}{\G\ssi}} = \si\star\deno{\wellformedok{\P}{\G}}$.
+\end{theorem}
 
-Similarly, the effect-substitution theorem on type environments is that if $\wellformedok{\P}{\G}$, then $\wellformedok{\P'}{\G\ssi}$ and $\deno{\wellformedok{\P'}{\G\ssi}} = \si\star\deno{\wellformedok{\P}{\G}}$.
-
-\proof By S-closure of $\si\star$.
+\begin{proof}
+    By S-closure of $\si\star$.
 \todo{Give the same cases?}
-
-The effect-weakening theorem on types and type environments is also very similar. If $\wrelw{\P'}{\P}$ then $\wellformed{\P}{A}$ implies $\wellformed{\P'}{A} \wedge \deno{\wellformed{\P'}{A}} = \w\star\deno{\wellformed{\P}{A}}$ and $\wellformedok{\P}{\G}$ then $\deno{\wellformedok{\P'}{\G}} = \w\star\deno{\wellformedok{\P}{\G}}$
-
-\proof
-Similarly making use of S-closure and the Beck-Chevalley Condition.
-
-\todo{Quantification case for types}.
-
-The proof for type environments follows the same steps as effect-substitution proof.
+\end{proof}
 
 
-Next we shall consider the action of weakening and substitution on sub-typing relations. If $A \subtypep B$ and $\typerelation{\P'}{\si}{\P}$, then $A\ssi\subtypepp B\ssi$ and $\deno{A\ssi\subtypepp B\ssi} = \ssi\star\deno{A\subtypep B}$.
+The effect-weakening theorem on types and type environments is also very similar.
 
-\proof
-By rule induction over the definition of the subtype relation, making use of S-closure and the effect-substitution theorem on types.
+\begin{theorem}]Effect Weakening on Types]
+    If $\wrelw{\P'}{\P}$ then $\wellformed{\P}{A}$ implies $\wellformed{\P'}{A} \wedge \deno{\wellformed{\P'}{A}} = \w\star\deno{\wellformed{\P}{A}}$ and $\wellformedok{\P}{\G}$ then $\deno{\wellformedok{\P'}{\G}} = \w\star\deno{\wellformedok{\P}{\G}}$
+
+\end{theorem}
+
+\begin{proof}
+    Similarly making use of S-closure and the Beck-Chevalley Condition.
+
+    \todo{Quantification case for types}.
+
+    The proof for type environments follows the same steps as effect-substitution proof.
+
+\end{proof}
+
+
+
+
+
+
+Next we shall consider the action of weakening and substitution on sub-typing relations. 
+
+\begin{theorem}[Effect Substitution on Sub-typing]
+    If $A \subtypep B$ and $\typerelation{\P'}{\si}{\P}$, then $A\ssi\subtypepp B\ssi$ and $\deno{A\ssi\subtypepp B\ssi} = \ssi\star\deno{A\subtypep B}$.
+\end{theorem}
+
+\begin{proof}
+    By rule induction over the definition of the subtype relation, making use of S-closure and the effect-substitution theorem on types.
 
 \todo{Give case of function types}.
-
-Similarly, if If $A \subtypep B$ and $\wrelw{\P'}{\P}$, then $A \subtypepp B$ and $\deno{A\subtypepp B} = \w\star\deno{A\subtypep B}$.
-
-\proof
-The cases hold the same as in the corresponding substitution theorem.
+\end{proof}
 
 
-We are now a point to define and prove the effect weakening and substitution theorems on terms. Following the intuition above that changes of index object should be modelled by applying the re-indexing functor to the morphisms denoting the terms.
+Similarly we can form the symmetrical weakening theorem.
+
+\begin{theorem}[Effect Weakening on Subtyping]
+    If $A \subtypep B$ and $\wrelw{\P'}{\P}$, then $A \subtypepp B$ and $\deno{A\subtypepp B} = \w\star\deno{A\subtypep B}$.
+\end{theorem}
+
+
+
+\begin{proof}
+    The cases hold the same as in the corresponding substitution theorem.
+\end{proof}
+
+
+
+We are now a point to define and prove the effect weakening and substitution theorems on terms. Following the intuition above that changes of index object should be modelled by applying the re-indexing functor to the morphisms denoting the terms, we can construct the theorems. Firstly, we must define the operation of effect substitutions on terms.
 
 \begin{align*}
     x\ssi & = x \\
@@ -1161,16 +1273,30 @@ We are now a point to define and prove the effect weakening and substitution the
     (\eapp{v}{\e})\ssi & = \eapp{(v\ssi)}{\si(\e)}\\
 \end{align*}
 
-The substitution theorem is defined as so: if  $\typerelation{\P'}{\si}{\P}$ and $\gpetyperelation{v}{A}$ then $\etyperelation{\P'}{\G\ssi}{v\ssi}{A\ssi}$ and $\deno{\etyperelation{\P'}{\G\ssi}{v\ssi}{A\ssi}} = \si\star\deno{\gpetyperelation{v}{A}}$.
+The substitution theorem is defined as so:
 
-\proof
-This proof makes use of the previous effect-substitution theorems, and the adjunction of quantification and the re-indexing functor of projection.
+\begin{theorem}[Effect Substitution on Terms]
+    if  $\typerelation{\P'}{\si}{\P}$ and $\gpetyperelation{v}{A}$ then $\etyperelation{\P'}{\G\ssi}{v\ssi}{A\ssi}$ and $\deno{\etyperelation{\P'}{\G\ssi}{v\ssi}{A\ssi}} = \si\star\deno{\gpetyperelation{v}{A}}$.
+\end{theorem}
+
+
+\begin{proof}
+    This proof makes use of the previous effect-substitution theorems, and the adjunction of quantification and the re-indexing functor of projection.
 \todo{Pick cases: Effect Application, Effect-Lambda, any more?}
+\end{proof}
 
-Similarly, we can derive the weakening theorem on terms. If $\wrelw{\P'}{\P}$ and $\gpetyperelation{v}{A}$ then $\etyperelation{\P'}{\G}{v}{A}$ and $\deno{\etyperelation{\P'}{\G}{v}{A}} = \w\star(\deno{\gpetyperelation{v}{A}})$.
 
-\proof
-Follows in a similar fashion to that of the substitution theorem. \todo{Case Subtyping}.
+Similarly, we can derive the weakening theorem on terms. 
+\begin{theorem}[Effect Weakening on Terms]
+    If $\wrelw{\P'}{\P}$ and $\gpetyperelation{v}{A}$ then $\etyperelation{\P'}{\G}{v}{A}$ and $\deno{\etyperelation{\P'}{\G}{v}{A}} = \w\star(\deno{\gpetyperelation{v}{A}})$.
+
+\end{theorem}
+
+\begin{proof}
+    Follows in a similar fashion to that of the substitution theorem. \todo{Case Subtyping}.
+\end{proof}
+
+
 
 
 Now we are at a point to start considering weakenings and substitution of the typing environment. Type environment weakenings are inductively defined with respect to an effect environment.
@@ -1223,35 +1349,65 @@ With denotations defined as morphisms in the appropriate fibre category: $\deno{
 
 \todo{Explain weakening theorem on these}
 
-Firstly, we must consider the action of effect weakenings on these morphisms. The weakening theorem on term-environment weakenings is as so: if $\wrel{\w_1}{\P'}{\P}$ and $\pewrel{\w}{\G'}{\G}$ then $\ewrel{\P'}{\w}{\G'}{G}$ and $\deno{\ewrel{\P'}{\w}{\G'}{\G}} = \w_1\star\deno{\pewrel{\w}{\G'}{\G}}$.
+Firstly, we must consider the action of effect weakenings on these morphisms. The weakening theorem on term-environment weakenings is as so:
 
-\proof
-By induction on the derivation of $\w$. making use of weakening on types, type environments, and sub-typing.
+
+\begin{theorem}[Effect Weakening on Term Weakening]
+    If $\wrel{\w_1}{\P'}{\P}$ and $\pewrel{\w}{\G'}{\G}$ then $\ewrel{\P'}{\w}{\G'}{G}$ and $\deno{\ewrel{\P'}{\w}{\G'}{\G}} = \w_1\star\deno{\pewrel{\w}{\G'}{\G}}$.
+\end{theorem}
+
+\begin{proof}
+    By induction on the derivation of $\w$. making use of weakening on types, type environments, and sub-typing.
 \todo{Pick some cases.}
+\end{proof}
 
 
-Secondly, we can form the weakening theorem on term-environment substitutions. If $\etyperelation{\P}{\G'}{\si}{\G}$ and $\wrelw{\P'}{\P}$ then $\etyperelation{\P'}{\G'}{\si}{\G}$ and $\deno{\etyperelation{\P'}{\G'}{\si}{\G}} = \w\star\deno{\etyperelation{\P}{\G'}{\si}{\G}}$
-\proof
-By induction on the definition of $\si$, making use of the weakening on terms, types, and type environments.
+Secondly, we can form the weakening theorem on term-environment substitutions.
+
+
+\begin{theorem}[Effect Weakening on Term Substitution]
+    If $\etyperelation{\P}{\G'}{\si}{\G}$ and $\wrelw{\P'}{\P}$ then $\etyperelation{\P'}{\G'}{\si}{\G}$ and $\deno{\etyperelation{\P'}{\G'}{\si}{\G}} = \w\star\deno{\etyperelation{\P}{\G'}{\si}{\G}}$
+\end{theorem}
+
+\begin{proof}
+    By induction on the definition of $\si$, making use of the weakening on terms, types, and type environments.
 \todo{Both cases.}
+\end{proof}
+
 
 \todo{Be careful about denotations of derivations.}
 \todo{Show cases that make use of the above therorems}
 
 Now we can move onto the term substitution and weakening theorems. These theorems are the final step before we prove that all denotations for a typing relation are equivalent and then move onto soundness.
+\todo{Finish this sentence}
+These theorems show that we can construct
 
-The term-weakening theorem states  that if $\pewrel{\w}{\G'}{\G}$ and $\D$ is a derivation of $\gpetyperelation{v}{A}$ then we can derive $\D'$, a derivation of $\etyperelation{\P}{\G'}{v}{A}$ with denotation $\D' = \D\after\w$.
+The term-weakening theorem is as so: 
 
-\proof
-By induction on the derivation of $\D$. Making use of the weakening of effect environments on term weakenings.
+\begin{theorem}[Term Weakening]
+    If $\pewrel{\w}{\G'}{\G}$ and $\D$ is a derivation of $\gpetyperelation{v}{A}$ then we can derive $\D'$, a derivation of $\etyperelation{\P}{\G'}{v}{A}$ with denotation $\D' = \D\after\w$.
+\end{theorem}
+
+
+\begin{proof}
+    By induction on the derivation of $\D$. Making use of the weakening of effect environments on term weakenings.
 \todo{Cases, including polymorphic gen case which makes use of weakening from theorem above. Maybe pick the If case too as a more complex case?}
+\end{proof}
 
 
-The term-substitution theorem states that if $\etyperelation{\P}{\G'}{\si}{\G}$ and $\D$ is a derivation of $\gpetyperelation{v}{A}$, then we can construct $\D'$ deriving $\etyperelation{\P}{\G'}{v\ssi}{A}$ with denotation $\D' = \D \after \si$.
 
-\proof
-By induction on the derivation $\D$, making use of weakening of term substitutions.
+The term-substitution theorem is formed similarly: 
+
+\begin{theorem}[Term Substitution]
+    If $\etyperelation{\P}{\G'}{\si}{\G}$ and $\D$ is a derivation of $\gpetyperelation{v}{A}$, then we can construct $\D'$ deriving $\etyperelation{\P}{\G'}{v\ssi}{A}$ with denotation $\D' = \D \after \si$.
+\end{theorem}
+
+
+\begin{proof}
+    By induction on the derivation $\D$, making use of weakening of term substitutions.
 \todo{Pick some cases}
+\end{proof}
+
 
 \section{Uniqueness of Denotations}
 
@@ -1261,20 +1417,28 @@ To prove that all typing denotations have the same denotation, I shall first int
 
 The need for reduced typing derivations comes about because of sub-typing. The sub-typing rule can be inserted into different places in a derivation to derive the same typing relation. Hence, the reduction function focuses on only placing sub-typing rule instances in specific places. In particular, we shall only allow the sub-typing rule to occur at the root of the derivation or above instances of the if-rule and apply-rule in reduced derivations. This has the effect of only introducing sub-typing rule uses when it is necessary maintain syntactic-correctness.
 
-These reduced derivations are unique.
-\proof
-By induction on term structure.
+\begin{theorem}[Uniqueness of reduced Derivations]
+    These reduced derivations are unique.    
+\end{theorem}
+
+\begin{proof}
+    By induction on term structure.
 \todo{Cases (in particular, Apply)}
 \todo{Point out that we don't have a case for subtyping as it's not a syntactic feature.}
+\end{proof}
 
 
 The $\reduce$ function maps each derivation to its reduced equivalent. It shall do this by pushing sub-typing rules from the leaves of the derivation tree down towards the root of the tree. The function case splits on the root of the tree and works up recursively. Some cases of the function are given below. \todo{These cases}.
 
-The $\reduce$ function preserves denotations.
-In other words, if the derivation $\D'$ is the result of applying  reduce to $\D$ then the denotations of the derivations are equal. That is $\D' = \reduce(\D) \implies \D' = \D$.
+\begin{theorem}[Reduction preserves denotations]
+   If the derivation $\D'$ is the result of applying  reduce to $\D$ then the denotations of the derivations are equal. That is $\D' = \reduce(\D) \implies \D' = \D$.
+\end{theorem}
 
-\proof
-By induction over the structure of $\D$, making use of the substitution and weakening theorems. (\todo{How? more specificity})
+
+\begin{proof}
+    By induction over the structure of $\D$, making use of the substitution and weakening theorems. (\todo{How? more specificity})
+\end{proof}
+
 \todo{Pick cases (Apply, polymorphism gen rule)}
 \begin{figure}[h!]
 \begin{equation}
@@ -1305,20 +1469,108 @@ We are now at a stage where we can state and prove the most important theorem fo
 The $\beta\eta$-equivalence relation is a rule based relation with three main flavours of rules. Firstly, there are the $\beta\eta$-reductions which formalise how we expect the program to execute given an appropriate implementation. We give a $\beta\eta$-reduction for each term transition, such as the application of lambda terms or the execution of an if-expression. Secondly, there are congruences, formalise how the reduction of sub-expressions affects the rest of the expression in a compositional way. Finally, we extend this relation into an equivalence relation by closing it under transitivity, reflexivity and symmetry.
 
 \todo{Figure with the beta-eta-reductions}
-\todo{Figure with congruences}
-\todo{Figure with the equivalence relations}
 
-Now we can state the $\beta\eta$-soundness theorem. If $\gpeberelation{v_1}{v_2}{A}$, then $\gpetyperelation{v_1}{A}$, $\gpetyperelation{v_2}{A}$, and $\deno{\gpetyperelation{v_1}{A}} = \deno{\gpetyperelation{v_2}{A}}$.
+\begin{figure}[h!]\label{BetaEtaReductions}
+    \[
+        \treerule{Lambda-Beta}{\etyperelation{\P}{\gax}{v_2}{B}\s\s \gpetyperelation{v_1}{A}}{\gpeberelation{\apply{(\lam{x}{A}{v_1})}{v_2} }{ v_1\ssub{x}{v_2}}{B}}
+        \quad
+        \treerule{Lambda-Eta}{\gpetyperelation{v}{\ab}}{\gpeberelation{\lam{x}{A}{(\apply{v}{x}})}{v}{\ab}}
+    \]
 
-\proof
-By rule induction on the definition of $\beta\eta$-equivalence, making use of monad laws for monadic cases, the adjunction for effect-polymorphic cases, the co-product for if-expressions, and the CCC property of S-categories for the lambda-term $\beta\eta$-reductions.
+    \[
+        \treerule{Left Unit}{\gpetyperelation{v_1}{A} \s\s \etyperelation{\P}{\gax}{v_2}{\meb}}{\gpeberelation{\doin{x}{\return{v_1}}{v_2}}{v_2\ssub{x}{v_1}}{\meb}}
+        \quad
+        \treerule{Right Unit}{\gpetyperelation{v}{\mea}}{\gpeberelation{\doin{x}{v}{\return{x}} }{v}{\mea}}
+    \]
 
+    \[
+        \treerule{Associativity}{\gpetyperelation{v_1}{\M{\e_1}{A}} \s\s \etyperelation{\P}{\gax}{v_2}{\M{\e_2}{B}}\s\s \etyperelation{\P}{\gby}{v_3}{\M{\e_3}{C}}}{
+            \gpeberelation{\doin{x}{v_1}{(\doin{y}{v_2}{v_3})}}{\doin{y}{(\doin{x}{v_1}{v_2})}{v_3}}{\M{\e_1 \dot \e_2 \dot \e_3}{C}}
+        }
+    \]
+
+    \[
+        \treerule{Unit}{\gpetyperelation{v}{\U}}{\gpeberelation{v}{\u}{\U}}
+    \]
+
+    \[
+        \treerule{if-true}{\gpetyperelation{v_1}{A}\s\s\gpetyperelation{v_2}{A}}{\gpeberelation{\pifthenelse{A}{\t}{v_1}{v_2}}{v_1}{A}}
+        \quad
+        \treerule{if-false}{\gpetyperelation{v_2}{A}\s\s\gpetyperelation{v_1}{A}}{\gpeberelation{\pifthenelse{A}{\f}{v_1}{v_2}}{v_2}{A}}    
+    \]
+
+    \[
+        \treerule{If-Eta}{\etyperelation{\P}{\G, x: \B}{v_2}{A}\s\s\gpetyperelation{v_1}{\B}}{\gpeberelation{\pifthenelse{A}{v_1}{v_2\ssub{x}{\t}}{v_2\ssub{x}{\f}}}{v_2\ssub{x}{v_1}}{A}}
+    \]
+
+    \[
+        \treerule{Effect-beta}{\wellformed{\P}{\e}\s\s\etyperelation{\P, \a}{\G}{v}{A}}{\gpeberelation{\eapp{(\elam{\a}{v}}{\e})}{v\ssub{\a}{\e}}{A\ssub{\a}{\e}}}
+        \quad 
+        \treerule{Effect-eta}{\etyperelation{\P}{\G}{v}{\all{\a}{A}}}{\gpeberelation{\elam{\a}{(\eapp{v}{\a})}}{v}{\all{\a}{A}}}
+    \]
+    \caption{The $\beta\eta$-reduction rules for PEC}
+\end{figure}
+
+\begin{figure}[h!]\label{BetaEtaCongruence}
+    \[
+        \treerule{Effect-Abs}{\eberelation{\P, \a}{\G}{v_1}{v_2}{A}}{\gpeberelation{\elam{\a}{v_1}}{\elam{\a}{v_2}}{\all{\a}{A}}}
+        \quad
+        \treerule{Effect-Apply}{\gpeberelation{v_1}{v_2}{\all{\a}{A}}\s\s\wellformed{\P}{\e}}{\gpeberelation{\eapp{v_1}{\e}}{\eapp{v_2}{\e}}{A\ssub{\a}{\e}}}
+    \]
+
+    \[
+        \treerule{Lambda}{\eberelation{\P}{\gax}{v_1}{v_2}{B}}{\gpeberelation{\lam{x}{A}{v_1}}{\lam{x}{A}{v_2}}{\ab}}
+        \quad
+        \treerule{Return}{\gpeberelation{v_1}{v_2}{A}}{\gpeberelation{\return{v_1}}{\return{v_2}}{\moa}}
+    \]
+
+    \[
+        \treerule{Apply}{\gpeberelation{v_1}{v_1'}{\ab}\s\s\gpeberelation{v_2}{v_2'}{A}}{\gpeberelation{\apply{v_1}{v_2}}{\apply{v_1'}{v_2'}}{B}}
+        \quad   
+        \treerule{Bind}{\gpeberelation{v_1}{v_1'}{\M{\e_1}{A}} \s\s \eberelation{\P}{\gax}{v_2}{v_2'}{\M{\e_2}{B}}}{\gpeberelation{\doin{x}{v_1}{v_2}}{\doin{c}{v_1'}{v_2'}}{\M{\e_1 \dot \e_2}{B}}} 
+    \]
+
+    \[
+        \treerule{If}{\gpeberelation{v}{v'}{\B} \s\s \gpeberelation{v_1}{v_1'}{A}\s\s\gpeberelation{v_2}{v_2'}{A}}{\gpeberelation{\pifthenelse{A}{v}{v_1}{v_2}}{\pifthenelse{A}{v}{v_1'}{v_2'}}{A}}
+        \quad    
+        \treerule{Subtype}{\gpeberelation{v}{v'}{A} \s\s A \subtypep B}{\gpeberelation{v}{v'}{B}}
+    \]
+    \caption{The congruence rules for PEC}
+\end{figure}
+
+\begin{figure}
+    \[
+        \treerule{Reflexive}{\gpetyperelation{v}{A}}{\gpeberelation{v}{v}{A}}
+        \quad
+        \treerule{Symmetric}{\gpeberelation{v_1}{v_2}{A}}{\gpeberelation{v_2}{v_1}{A}}
+    \]
+
+    \[
+        \treerule{Transitive}{\gpeberelation{v_1}{v_2}{A}\s\s\gpeberelation{v_2}{v_3}{A}}{\gpeberelation{v_1}{v_3}{A}}
+    \]
+    \caption{Rules expanding the $\beta\eta$-reduction and congruence relation to an equivalence relation}
+\end{figure}
+
+
+Now we can state the $\beta\eta$-soundness theorem. 
+
+\begin{theorem}[Soundness]
+    If $\gpeberelation{v_1}{v_2}{A}$, then $\gpetyperelation{v_1}{A}$, $\gpetyperelation{v_2}{A}$, and $\deno{\gpetyperelation{v_1}{A}} = \deno{\gpetyperelation{v_2}{A}}$.
+\end{theorem}
+
+
+\begin{proof}
+    By rule induction on the definition of $\beta\eta$-equivalence, making use of monad laws for monadic cases, the adjunction for effect-polymorphic cases, the co-product for if-expressions, and the CCC property of S-categories for the lambda-term $\beta\eta$-reductions.
+    
 \todo{Cases. How many?}
+
+\end{proof}
+
 
 This completes the proof of soundness for this semantics.
 
 \chapter{Instantiating a Model of PEC}
-Now we have proved that we can form a model of PEC in an appropriate indexed S-category, it remains to show that it is feasible to construct such an indexed category. There exist $\set$-based models for the semantics of effectful languages with a graded monad, such as the Effect Calculus \todo{A reference for this}. More specifically, it is possible to treat $\set$ as an S-category. Hence, I shall use a $\set$ based S-category as a starting point. In this section, I shall demonstrate how to construct an strictly indexed S-category which can model the PEC from such an S-category.
+Now we have proved that we can form a model of PEC in an appropriate indexed S-category, it remains to show that it is feasible to construct such an indexed category. There exist $\set$-based models for the semantics of effect-ful languages with a graded monad, such as the Effect Calculus \todo{A reference for this}. More specifically, it is possible to treat $\set$ as an S-category. Hence, I shall use a $\set$ based S-category as a starting point. In this section, I shall demonstrate how to construct an strictly indexed S-category which can model the PEC from such an S-category.
 
 Let $\C$ be an S-category formed from $\set$.(\todo{Is this correct parlance?}) That is, $\C$ contains a graded monad $\Tz{}{}, \bindz{}{}{}, \pointz{}, \tstrengthz{}{}{}$, is cartesian closed, has a co-product on the terminal object $\1 = \left\{\star\right\}$, has sub-typing functions $\deno{A\subtypeg B}: A \rightarrow B$ for each instance of the ground sub-typing relation, and has natural transformations $\deno{\e_1 \subeffectz \e_2}: \Tz{\e_1}{} \rightarrow \Tz{\e_2}{}$. Since $\C$ is a model for the EC, it is graded by a pre-ordered monoid on ground effects: $(E, \subeffectz, \1, \dot)$. I have indexed each of these S-category properties with $0$ to indicate that they occur in the bottom category $\C$, induced by the empty effect environment.
 
@@ -1459,7 +1711,5 @@ Hence we have proof that our construction is indeed a valid indexed S-category.
 
 
 
-\todo{Include composition of index functors?}
-\todo{Include Beck-Chevalley results (naturality)}
 
 \end{document}
