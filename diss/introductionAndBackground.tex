@@ -672,8 +672,7 @@ For example, by instantiating the language with the appropriate constants, groun
       \end{lstlisting}
 \end{framed}
 
-\todo{This is very vague so far. I don't want to get too bogged down in the semantics of the Effect Calculus though}
-A full derivation and proof of soundness of the semantics of the Effect Calculus can be found online \todo{Link} as it is too long to include here and many of the concepts will be repeated in the rest of this dissertation anyway. The categorical semantics of the Effect Calculus require a CCC with a strong graded monad, sub-typing morphisms, sub-effecting natural transformations, and a co-product on the terminal object. These features allow us to prove the soundness of the effect-calculus semantics.
+Already, we can see where having effect polymorphism in the language would be useful. We could make the first example \todo{Add references} into a more general procedure that prompts a user to confirm any I-O action.
 
 \section{Polymorphic Effect Calculus}
 Next, we shall consider the Effect Calculus extended with terms to allow System-F style polymorphism over effects.
@@ -846,7 +845,19 @@ Only the type rule \texttt{Weaken} adds terms to the environment from its precon
 
 
 \chapter{Semantics for EC in an S-Category}
-As hinted at previously, we can interpret the Effect Calculus in a CCC with a strong graded monad and co-products. A further requirement is the appropriate sub-effecting natural transformations. For each instance of $\e_1 \subeffect \e_2$, there exists a natural transformation $\db{\e_1\subeffect\e2}: \T{\e_1}{}\rightarrow\T{\e_2}{}$ such that it has interactions with the graded monad as specified in figures \ref{SubeffectTensorStrength}, \ref{SubeffectBind}. We shall call a category fulfilling these properties an S-Category (Semantic Category).   
+
+As suggested in \todo{Reference to intro}, since EC contains multiple effects, STLC terms, and if-expressions, we should be able interpret its semantics in a cartesian closed category with an appropriate strong graded monad. With the addition of some extra category structure to handle sub-typing, which I shall explain shortly, it is indeed possible to interpret EC. This section contains a fairly high-level treatment of the semantics of as the concepts are a sub-set of the semantics of PEC, which I shall explain in more detail later.
+
+\todo{
+    Denotational semantics-es for similar languages have been presented before - references?
+}
+
+In order to correctly model a given instantiation of EC, that is an EC with a collection of effects, constants, and ground types, there should be a collection of objects in the category to represent the ground types. There should also be a point morphism (a morphism from the terminal object to the appropriate type) for each constant.
+
+In addition to the previously stated requirements, we shall also require the category, $\C$, to be able to model sub-typing and sub-effecting. For each instance of the ground sub-typing relation, $A \subtypeg B$, there should exist a morphism between the objects representing the ground types $A$ and $B$. A further requirement is that $\C$ has a collection of sub-effecting natural transformations. For each instance of $\e_1 \subeffect \e_2$, there exists a natural transformation $\db{\e_1\subeffect\e2}: \T{\e_1}{}\rightarrow\T{\e_2}{}$ such that it has interactions with the graded monad as specified in figures \ref{SubeffectTensorStrength}, \ref{SubeffectBind}. We can now define morphisms for all forms of sub-typing by constructions following the derivation tree for sub-typing. For more detail, one can look at section \todo{Ref} in the semantics of PEC for the same construction on PEC. We shall call a category that fulfills these properties of having a strong graded monad, CCC, ground objects and points, sub-effect natural transformations and a co-product an S-Category (Semantic Category).   
+
+\todo{This is very vague so far. I don't want to get too bogged down in the semantics of the Effect Calculus though}
+A full derivation and proof of soundness of the semantics of the Effect Calculus can be found online \todo{Link} as it is too long to include here and many of the concepts will be repeated in the rest of this dissertation anyway. The categorical semantics of the Effect Calculus require an S-category both in order to simply model all of the features of EC and requires the various commutivity diagrams in order to manipulate the expressions encountered when proving properties of the semantics.
 
 
 
@@ -898,7 +909,7 @@ In this chapter, I shall describe the category structure required to interpret a
 
 
 \section{Required Category Structure}
-In order to model the polymorphism of PEC, we need to now look at an indexed category. This consists of a base category, $\C$ in which we can interpret the possible effect-environments in, and a mapping from objects in the base category to S-Categories in the category of S-closed categories. This functor shall be denoted as $\C(-)$ and the induced categories $\C(I)$ shall be called ``fibres''. The term ``S-closed'' indicates that all functors within this category preserve the properties of S-categories. \todo{Are these ever fully explained?}. Thus, each morphism $\theta: \deno{\P'}\rightarrow\deno{\P}$ in $\C$ should induce as S-closed, re-indexing functor $\theta\star: \C(I)\rightarrow(I')$ between the fibres.
+In order to model the polymorphism of PEC, we need to now look at an indexed category. This consists of a base category, $\C$ in which we can interpret the possible effect-environments in, and a mapping from objects in the base category to S-Categories in the category of S-closed categories. This functor shall be denoted as $\C(-)$ and the induced categories $\C(\deno{\P})$ shall be called ``fibres''. A further notational short-hand I shall use, inheriting from R. L. Crole \todo{Reference}, is to write $I$ for the denotation of $\P$. The term ``S-closed'' indicates that all functors derived from $\C$ within this category preserve the properties of S-categories, which are explained in section \todo{Ref}. A functor $F$ preserves the properties of S-categories if it preserves each of the features within an S-category. For example $F(X\times Y) = (FX)\times (FY)$. For a full list of properties that an S-closed functor should preserve, please see appendix \todo{Link/reference}. Thus, each morphism $\theta: \deno{\P'}\rightarrow\deno{\P}$ in $\C$ should induce as S-closed, re-indexing functor $\theta\star: \C(I)\rightarrow\C(I')$ between the fibres.
 
 The essential idea from this point on is that for each relation $\wellformed{\texttt{Env}}{\texttt{Conclusion}}$ should have a denotation that is an object or morphism in a category. For example, $\deno{\typerelation{\P}{\e}{\effect}}$ is a morphism in the base category, $\deno{\typerelation{\P}{A}{\type}}$ is an object in the fibre (S-category) induced by $\P$, and $\deno{\gpetyperelation{v}{A}}$ is morphism between the objects which denote $\G$ and $A$ in the fibre induced by $\P$.
 
