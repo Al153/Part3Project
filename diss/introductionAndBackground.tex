@@ -1,6 +1,10 @@
 \documentclass{Report}
 \usepackage{framed}
 
+\usepackage{listings}
+
+
+
 
 
 \input{../proofs/header.tex}
@@ -195,7 +199,7 @@ To express polymorphism over a property $P$, the language's semantics are expand
     \treerule{Gen}{\etyperelation{\P, \a}{\G}{v}{A}}{\gpetyperelation{\elam{\a}{v}}{\all{\a}{A}}}& \treerule{Spec}{\gpetyperelation{v}{\all{\a}{A}}\s\s\wellformed{\P}{\e}}{\gpetyperelation{\eapp{v}{\e}}{A\ssub{\a}{\e}}}
 \end{eqnarray}
 
-To model these augmented type rules, we can create a category representing the semantics (an S-Category) of the non-polymorphic language at each given context. This collection of non-polymorphic categories can be indexed by a base category which models the operations and relationships between the $P$-Environment. Morphisms in the base category between environments correspond to re-indexing functors between the S-categories for the relevant environments. These functors, and a right adjoint for the re-indexing functor corresponding to $\p$ morphism can then be used to construct the semantics of polymorphic terms. Figure \ref{IndexDiagram} demonstrates this construction.
+To model these augmented type rules, we can create a category representing the semantics (a fibre) of the non-polymorphic language at each given context. This collection of non-polymorphic categories can be indexed by a base category which models the operations and relationships between the $P$-Environment. Morphisms in the base category between environments correspond to re-indexing functors between the fibres for the relevant environments. These functors, and a right adjoint for the re-indexing functor corresponding to $\p$ morphism can then be used to construct the semantics of polymorphic terms. Figure \ref{IndexDiagram} demonstrates this construction. How the fibres are derived from objects in the base category depends on the polymorphic properties of the language being modeled. For example, in the polymorphic lambda calculus (System-F) types are impredicative. That is, types can quantify over any other types, including themselves. This means that there has to be a strong coupling between the base category, which represents type-variable environments and transformations upon them and objects in the fibres, which represent types. This typically manifests in the set of objects  in each fibre being in bijection with the set of morphisms from the appropriate type-variable environment in the base category. Since, as we shall see, in effect-polymorphic languages, types quantify over effects, but effects do not quantify over themselves, we can conceptually decouple the objects in the fibres from the base category, meaning that effect-polymorphic models are simpler to define. 
 
 In this dissertation, I shall show how these category theoretic building blocks can be put together to give the class of categories that can model polymorphic effect systems.
 
@@ -255,7 +259,7 @@ In this dissertation, I shall show how these category theoretic building blocks 
         %Draw the bracket
 
         \draw [decoration={brace,amplitude=8pt},decorate] ($(s3)+(10em,1ex)$) -- ($(s0)+(10em,-1ex)$);
-        \node[text width=20mm] (Label) at (14,5){S-Categories for each effect environment};
+        \node[text width=20mm] (Label) at (14,5){Fibres for each effect environment};
     \end{tikzpicture}
     \caption{Diagram of the structure of an indexed category for modelling a polymorphic language. Solid arrows represent functors and dashed arrows represent internal morphisms. The left hand category is the base category.}
 \end{figure}
@@ -606,7 +610,7 @@ We can then use $\epsilon$ and $\eta$ to form a natural isomorphism between morp
 \section{Strict Indexed Category}
 
 The final piece of category theory required to understand this dissertation is the concept of a strict indexed Category. A strict indexed category is a functor from a base category into a target category of categories, such as the category of cartesian closed categories. Objects, $A$, in the base category are mapped to categories $\C(A)$, known as fibres in the target category. Morphisms between objects in the base category, $f: B\rightarrow A$, are mapped to functors, $f\star: \C(A)\rightarrow \C(B)$, between categories in the target category. 
-Due to the composition laws for functors, $\theta\star\after\phi\star = (\phi\after\theta)\star$ and $\Id{A}*(B) = B\in\obj \C(A)$. For example, we may use the the case of cartesian closed categories indexed by a pre-order:
+Due to the composition laws for functors, $\theta\star\after\phi\star = (\phi\after\theta)\star$ and $\Id{A}*(B) = B\in\obj \C(A)$. For example, we may use the the case of cartesian closed categories indexed by a pre-order, $\mathbb{P}$:
 
 \begin{align}
     I: \mathbb{P} & \rightarrow \textit{CCCat}\qt{The indexing functor} \\
@@ -616,7 +620,7 @@ Due to the composition laws for functors, $\theta\star\after\phi\star = (\phi\af
 
 
 \chapter{The Polymorphic-Effect-Calculus}
-In this chapter I'll be introducing the monadic, effect-ful language used in the rest of the dissertation, known from now on as the Effect Calculus (EC). Then I shall introduce polymorphic terms to the EC which yield the Polymorphic Effect Calculus (PEC).
+In this chapter I shall be introducing the monadic, effect-ful language used in the rest of the dissertation, known from now on as the Effect Calculus (EC). Then I shall introduce polymorphic terms to the EC which yield the Polymorphic Effect Calculus (PEC).
 
 \section{Effect Calculus}
 The basic effect calculus is an extension of the simply typed lambda calculus to include constants, if-statements, effects, and sub-typing.
@@ -633,8 +637,40 @@ Where $\const{A}$ is one of collection of ground constants, and $A$ ranges over 
     A, B, C ::= \g\mid \ab \mid\mea
 \end{align}
 
-Where $\g$ is from a collection of ground types, including $\U, \B$, and $\e$ ranges over pre-ordered monoid of effects: $(E, \dot, \subeffect, \1)$
+Where $\g$ is from a collection of ground types, including $\U, \B$, and $\e$ ranges over pre-ordered monoid of effects: $(E, \dot, \subeffect, \1)$.
 
+For example, by instantiating the language with the appropriate constants, ground effects, and ground types, we can write the following programs.
+
+\begin{framed}
+    \begin{lstlisting}[
+        mathescape,
+        columns=fullflexible,
+        basicstyle=\fontfamily{lmvtt}\selectfont,
+      ]
+        do $b$ <- PromptUser("Are You Sure?") in (
+            if $b$ then
+                FireMissiles
+            else
+                AbortMissiles
+        )
+    \end{lstlisting}        
+\end{framed}
+
+\todo{My - sign is getting deleted.}
+\begin{framed}
+    \begin{lstlisting}[
+        mathescape,
+        columns=fullflexible,
+        basicstyle=\fontfamily{lmvtt}\selectfont,
+      ]
+       $\lambda$ $alice$: Agent. (
+           $\lambda$ $bob$: Agent. (
+            do $amount$ <- AwaitPayment($alice$)
+            in SendPayment($bob$, $amount$)
+           )
+       )
+      \end{lstlisting}
+\end{framed}
 
 \todo{This is very vague so far. I don't want to get too bogged down in the semantics of the Effect Calculus though}
 A full derivation and proof of soundness of the semantics of the Effect Calculus can be found online \todo{Link} as it is too long to include here and many of the concepts will be repeated in the rest of this dissertation anyway. The categorical semantics of the Effect Calculus require a CCC with a strong graded monad, sub-typing morphisms, sub-effecting natural transformations, and a co-product on the terminal object. These features allow us to prove the soundness of the effect-calculus semantics.
@@ -1088,15 +1124,7 @@ Substitution considers what happens when we simultaneously replace all variables
 
 As we go on, I shall define and state the denotations of specific substitutions and weakenings, upon both the effect environment and the typing environment.
 
-\todo{Needs an introduction to what substitutions and weakenings are}
-\todo{This section is very terse so far. needs a lot of filling out still}
-
-\begin{itemize}
-    \item Substitution - Simultaneous substitution of variables to expressions that are well formed in another environment
-    \item Weakening is a kind of sub-typing on environments.
-\end{itemize}
-
-In this dissertation, substitutions and weakenings come in two  flavours: weakening and substitution of the effect-variable environment and weakening and substitution of the typing environment. For each of these there is a family of theorems defining the effects of the applying a substitution and weakening to the various language structures and their denotations, such as well-formed-ness and typing relations.
+In this dissertation, substitutions and weakenings come in two flavours: weakening and substitution of the effect-variable environment and weakening and substitution of the typing environment. For each of these there is a family of theorems defining the effects of the applying a substitution and weakening to the various language structures and their denotations, such as well-formed-ness and typing relations.
 
 
 The first family of theorems is that of weakening and substitution of the effect environment. Weakenings are a relation between effect-environments $\wrel{\w}{\P'}{\P}$, that are defined as so:
@@ -1378,9 +1406,7 @@ Secondly, we can form the weakening theorem on term-environment substitutions.
 \todo{Be careful about denotations of derivations.}
 \todo{Show cases that make use of the above therorems}
 
-Now we can move onto the term substitution and weakening theorems. These theorems are the final step before we prove that all denotations for a typing relation are equivalent and then move onto soundness.
-\todo{Finish this sentence}
-These theorems show that we can construct
+Now we can move onto the term substitution and weakening theorems. These theorems are the final step before we prove that all denotations for a typing relation are equivalent and then move onto soundness. They demonstrate that the can model the action of applying well-formed type-environment changes by pre-composing the morphisms to be acted on () with a morphism modelling the change in environment.
 
 The term-weakening theorem is as so: 
 
@@ -1612,10 +1638,15 @@ This also obeys the composition law of re-indexing functors.
     & = (\phi\after\theta)\star(A) \ev
 \end{align}
 
-The re-indexing functors are also S-closed, since all of the S-category features are proved point-wise.
+\begin{theorem}
+    The re-indexing functors are also S-closed, since all of the S-category features are proved point-wise.
+\end{theorem}
 
-\proof
-\todo{Cases: Exponential and Bind?}
+
+\begin{proof}
+    \todo{Cases: Exponential and Bind?}    
+\end{proof}
+
 
 Next, the re-indexing functor $\pstar$ should have a right-adjoint, $\allEn$. Here, we shall pick $\allEn$ to be defined as a finite product over the countable set of effects. This is possible, since types and effects are not impredicative (that is, they quantify over themselves)
 
@@ -1626,7 +1657,7 @@ Next, the re-indexing functor $\pstar$ should have a right-adjoint, $\allEn$. He
     \allEn(f)\env =&\Pi_{\e\in E}{f(\env, \e)}
 \end{align}
 
-\todo{Is the functor S-closed?}
+\todo{Is the functor S-closed? This doesn't need to be, as we never make use of the S-closed properyies. Need to express this in the requirements}
 
 
 We can now prove that $\pstar \dashv \allEn$. To do this, we need functors natural a natural bijection between morphisms in the $[E^n, \C]$ and $[E^{n+1}, \C]$.
@@ -1683,9 +1714,15 @@ So $\counit{B}\after\pstar(\bar{g}) = g$.
 Finally, we need to prove that the beck-chevalley condition holds
 For $\theta: E^m \rightarrow E^n$.
 
-Firstly, the functors $(\theta\star\after\allEn)$ and $(\allEm\after(\theta\times\Id{E})\star)$ are equal.
 
-\proof
+\begin{theorem}
+    [Beck-Chevalley condition, part I]
+    Firstly, the functors $(\theta\star\after\allEn)$ and $(\allEm\after(\theta\times\Id{E})\star)$ are equal.
+
+\end{theorem}
+
+\begin{proof}
+    
 \begin{align}
     ((\theta\star\after\allEn)A)\env &= \theta\star(\allEn A)\env\\
     &= (\allEn A)(\theta(\env))\\
@@ -1694,10 +1731,15 @@ Firstly, the functors $(\theta\star\after\allEn)$ and $(\allEm\after(\theta\time
     &= \allEm((\theta\times\Id{E})\star A)\env\\
     &= ((\allEm\after(\theta\times\Id{E})\star)A)\env
 \end{align}
+\end{proof}
 
-Secondly, the natural transformation $\bar{(\theta\times\Id{U})\star \counit{}}$ is equal to the identity natural transformation.
 
-\proof
+\begin{theorem}[Beck-Chevalley Condition, Part II]
+    Secondly, the natural transformation $\bar{(\theta\times\Id{U})\star \counit{}}$ is equal to the identity natural transformation.
+
+\end{theorem}
+
+\begin{proof}
 \begin{align}
     \bar{(\theta\times\Id{U})\star \counit{A}} \ev  & = \finpr{(\theta\times\Id{U})\star\counit{A}(\ev, \e)}{\e\in E}\\
     & = \finpr{\counit{A}(\theta\ev, \e)}{e\in E}\\
@@ -1706,8 +1748,9 @@ Secondly, the natural transformation $\bar{(\theta\times\Id{U})\star \counit{}}$
     & = \Id{\allII\after(\theta\times\Id{U})\star A}\ev\\
     & = \Id{\theta\star\after\allI}
 \end{align}
+\end{proof}
 
-Hence we have proof that our construction is indeed a valid indexed S-category.
+Hence we have proof that our construction is indeed a valid indexed S-category. Importantly, this shows that reasonable models of the PEC are possible to instantiate and that our requirements do not over-constrain potential models to the point that they are not viable for doing actual analysis.
 
 
 
