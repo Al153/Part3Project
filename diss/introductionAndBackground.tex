@@ -1572,12 +1572,44 @@ Going back to the original expression:
 
 Similarly, we can derive the weakening theorem on terms. 
 \begin{theorem}[Effect Weakening on Terms]
-    If $\wrelw{\P'}{\P}$ and $\gpetyperelation{v}{A}$ then $\etyperelation{\P'}{\G}{v}{A}$ and $\deno{\etyperelation{\P'}{\G}{v}{A}} = \w\star(\deno{\gpetyperelation{v}{A}})$.
-
+    If $\wrelw{\P'}{\P}$ and $\D$ derives $\gpetyperelation{v}{A}$ then there exists $\D'$ deriving $\etyperelation{\P'}{\G}{v}{A}$ and $\D' = \w\star\D$.
 \end{theorem}
 
 \begin{proof}
-    Follows in a similar fashion to that of the substitution theorem. \todo{Case Subtyping}.
+    \todo{Prove typing}
+    This theorem is proved in a similar fashion to the substitution theorem, and many of its cases are the same.
+
+
+    \case{Subtype}
+    If $\D$ derives $\gpetyperelation{v}{B}$ them by inversion, there exists $\D_1$ deriving $\gpetyperelation{v}{A}$, such that $ \D = \deno{A\subtypep B}\after \D_1$
+
+    
+    So, using the weakening of the sub-typing morphism, and induction, we can derive $\D'$.
+    \begin{align}
+        \w\star(\D) & = \w\star{\deno{A\subtypep B}}\after\w\star\D_1 \\
+        & = \deno{A_{I'}\subtypepp B_{I'}}\after\D_1'\qt{By induction}\\
+        & = D'
+    \end{align}
+    
+    \case{Lambda}
+    This case holds by induction and the S-closure of $\w\star$.
+
+    If $\D$ derives $\gpetyperelation{\lam{x}{A}{v}}{\ab}$ then by inversion there exists $\D_1$ deriving $\etyperelation{\P}{\gax}{v}{B}$ such that:
+    
+    \begin{equation}
+        \D = \cur{\D_1}\\
+    \end{equation}
+    
+    Using induction and S-closure, we can derive $\D'$.
+    \begin{align}
+        \w\star(\D) & = \w\star(\cur{\D_1})\\
+        & = \cur{\w\star(\D_1)}\qt{By S-closure}\\
+        & = \cur{\D_1'}\qt{By induction}\\
+        & = \D'
+    \end{align}
+
+    $$\square$$
+
 \end{proof}
 
 
@@ -1644,7 +1676,49 @@ Let us first consider the action of effect weakenings on these morphisms. The we
 
 \begin{proof}
     By induction on the derivation of $\w$. making use of weakening on types, type environments, and sub-typing.
-\todo{Pick some cases.}
+
+    \case{Id}
+    Then $\w = \i$, so its denotation is $\w = \Id{\G_I}$
+    
+    So
+    \begin{equation}
+      \w_1\star(\Id{\G_I}) = \Id{\G_{I'}} = \deno{\ewrel{\P'}{\i}{\G}{\G}}  
+    \end{equation}
+    
+    \case{Project}
+    Then $\w = \w'\pi$
+    
+    \begin{equation}
+        \treerule{Project}{\ewrel{\P}{\w'}{\G'}{\G}}{\ewrel{\P}{\w\pi}{\G',x:A}{\G}}
+    \end{equation}
+    
+    So $\w = \w'\after\p$
+    
+    Hence
+    \begin{align}
+        \w_1\star(\w) &= \w_1\star(\w')\after\w_1\star(\p)\\
+        & = \deno{\ewrel{\P'}{\w'}{\G'}{\G}}\after\p\\
+        & = \deno{\ewrel{\P'}{\w'\pi}{(\G',x:A)}{\G}}\\
+        & = \deno{\ewrel{\P'}{\w}{(\G', x:A)}{\G}}
+    \end{align}
+    
+    \case{Extend}
+    Then $\w = \w'\x$
+    
+    \begin{equation}
+        \treerule{Extend}{\ewrel{\P}{\w'}{\G'}{\G}\s\s A\subtypep B}{\ewrel{\P}{\w\x}{(\G',x:A)}{(\G, x:B)}}
+    \end{equation}
+    
+    So $\w = \w'\times\deno{A\subtypep B}$
+    
+    Hence
+    \begin{align}
+        \w_1\star(\w) &=(\w_1\star(\w')\times\w_1\star(\deno{A\subtypep B})\\
+        & = (\deno{\ewrel{\P'}{\w'}{\G'}{\G}}\times\deno{A\subtypepp B})\\
+        & = \deno{\ewrel{\P'}{\w}{(\G',x:A)}{(\G,x:B)}}
+    \end{align}
+
+    $$\square$$
 \end{proof}
 
 
@@ -1657,12 +1731,25 @@ Secondly, we can form the weakening theorem on term-environment substitutions.
 
 \begin{proof}
     By induction on the definition of $\si$, making use of the weakening on terms, types, and type environments.
-\todo{Both cases.}
+
+    \case{Nil}
+    Then $\si = \term{\G'_{I}}$, so $\w\star(\si) = \term{\G'_{I'}} = \deno{\etyperelation{\P'}{\G'}{\si}{\G}}$
+    
+    \case{Var}
+    Then $\si = (\si',x\setto v)$
+    
+    \begin{align}
+        \w\star\si & = \w*\pr{\si'}{\deno{\gpetyperelation{v}{A}}}\\
+        & = \pr{\w\star\si'}{\w\star\deno{\gpetyperelation{v}{A}}}\\
+        &=\pr{\deno{\etyperelation{\P'}{\G'}{\si'}{\G}}}{\deno{\etyperelation{\G'}{\P'}{v}{A}}}\\
+        &=\deno{\etyperelation{\P'}{\G'}{\si}{\gax}}
+    \end{align}
+
+    $$\square$$
+
 \end{proof}
 
 
-\todo{Be careful about denotations of derivations.}
-\todo{Show cases that make use of the above therorems}
 
 Now we can move onto the term substitution and weakening theorems. These theorems are the final step before we prove that all denotations for a typing relation are equivalent and then move onto soundness. They demonstrate that the can model the action of applying well-formed type-environment changes by pre-composing the morphisms to be acted on () with a morphism modelling the change in environment.
 
@@ -1672,10 +1759,97 @@ The term-weakening theorem is as so:
     If $\pewrel{\w}{\G'}{\G}$ and $\D$ is a derivation of $\gpetyperelation{v}{A}$ then we can derive $\D'$, a derivation of $\etyperelation{\P}{\G'}{v}{A}$ with denotation $\D' = \D\after\w$.
 \end{theorem}
 
+\todo{Show cases that make use of the above therorems}
 
 \begin{proof}
     By induction on the derivation of $\D$. Making use of the weakening of effect environments on term weakenings.
-\todo{Cases, including polymorphic gen case which makes use of weakening from theorem above. Maybe pick the If case too as a more complex case?}
+
+\case{Effect-Lambda}
+This case makes use of the effect-weakening of term weakenings.
+
+If $\D$ derives $\gpetyperelation{\elam{\a}{v}}{\all{\a}{A}}$, then by inversion, we have $\D_1$ such that
+
+\begin{equation}
+    \D = \treerule{Effect-Fn}{\treerule{}{\D_1}{\etyperelation{\P,\a}{\G}{v}{A}}}{\gpetyperelation{\elam{\a}{v}}{\all{\e}{A}}}
+\end{equation}
+
+By induction, we derive $\D_1'$ such that
+
+\begin{equation}
+    \D' = \treerule{Effect-Fn}{\treerule{}{\D_1'}{\etyperelation{\P,\a}{\G'}{v}{A}}}{\etyperelation{\P}{\G'}{(\elam{\a}{v})}{\all{\e}{A}}}
+\end{equation}
+
+Where 
+\begin{align}
+    \D_1' & = \D_1\after\deno{\ewrel{\P,\a}{\w}{\G'}{\G}}\\
+    & = \D_1\after\deno{\wrel{\i\pi}{\P,a}{\P}}\star(\w)\\
+    & = \D_1\after\pstar(\w)
+\end{align}
+
+Hence \begin{align}
+    \D\after\w & = \bar{\D_1}\after\w\\
+    & = \bar{\D_1\after\pstar(\w)}\\
+    & = \bar{\D_1'}\\
+    & = \D'
+\end{align}
+
+
+\case{Bind}
+This case makes use of the properties of an S-category, specifically the tensor strength on the graded monad. By inversion, we have derivations $\D_1, \D_2$ such that:
+
+
+\begin{equation}
+    \D = \treerule{Bind}{
+        \treerule{}{\D_1}{\etyperelation{\P}{\G}{v_1}{\M{\E_1}{A}}}
+        \s\s
+        \treerule{}{\D_2}{\etyperelation{\P}{\G,x: A}{v_2}{\M{\e_2}{B}}}
+    }{
+        \etyperelation{\P}{\G}{\doin{x}{v_1}{v_2}}{\M{\e_1\dot\e_2}{B}}
+    }
+\end{equation}
+
+If $\ewrel{\P}{\w}{\G'}{\G}$ then $\ewrel{\P}{\w\x}{\G',x:A}{\gax}$, so by induction, we can derive $\D_1'$, $\D_2'$ such that:
+
+\begin{equation}
+    \D' = \treerule{Bind}{
+        \treerule{}{\D_1'}{\etyperelation{\P}{\G'}{v_1}{\M{\e_1}{A}}}
+        \s\s
+        \treerule{}{\D_2'}{\etyperelation{\P}{\G',x: A}{v_2}{\M{\e_2}{B}}}
+    }{
+        \etyperelation{\P}{\G'}{\doin{x}{v_1}{v_2}}{\M{\e_1\dot\e_2}{B}}
+    }
+\end{equation}
+
+This preserves denotations:
+
+\begin{align}
+    \D' & = \bind{\e_1}{\e_2}{B}\after\T{\e_1}{\D_2'}\after\tstrength{\e_1}{\G'}{A}\after\pr{\Id{G'}}{\D_1'}\qt{By definition}\\
+    & = \bind{\e_1}{\e_2}{B}\after\T{\e_1}{(\D_2\after(\w\times\Id{A}))}\after\tstrength{\e_1}{\G'}{A}\after\pr{\Id{G'}}{\D_1\after\w}\qt{By induction on $\D_1', \D_2'$}\\
+    & = \bind{\e_1}{\e_2}{B}\after\T{\e_1}{\D_2}\after\tstrength{\e_1}{\G}{A}\after\pr{\w}{\D_1\after\w}\qt{By tensor strength}\\
+    & = \bind{\e_1}{\e_2}{B}\after\T{\e_1}{\D_2}\after\tstrength{\e_1}{\G}{A}\after\pr{\idg}{\D_1}\after\w\qt{By product property}\\
+    & = \D \qt{By definition}
+\end{align}
+
+\case{Return}
+    We have the sub-derivation $\D_1$ such that
+    \begin{equation}
+        \D = \treerule{Return}{\treerule{}{\D_1}{\gpetyperelation{v}{A}}}{\gpetyperelation{\return{v}}{\moa}}
+    \end{equation}
+
+    Hence, by induction, with $\ewrel{\P}{\w}{\G'}{\G}$, we find the derivation $\D_1'$ such that:
+    \begin{equation}
+        \D' = \treerule{Return}{\treerule{}{\D_1'}{\etyperelation{\P}{\G'}{v}{A}}}{\etyperelation{\P}{\G'}{\return{v}}{\moa}}
+    \end{equation}
+
+    This preserves denotations:
+
+    \begin{align}
+        \D' & = \point{A}\after\D_1' \qt{By definition}\\
+            & = \point{A}\after\D_1\after\w\qt{By induction of $\D_1, \D_1'$}\\
+            & = \D\after\w\qt{By Definition}
+    \end{align}
+
+    $$\square$$
 \end{proof}
 
 
@@ -1688,8 +1862,75 @@ The term-substitution theorem is formed similarly:
 
 
 \begin{proof}
-    By induction on the derivation $\D$, making use of weakening of term substitutions.
-\todo{Pick some cases}
+    \todo{More detail on these cases}
+    This proof proceeds by induction on the derivation $\D$ similarly to the term weakening theorem and making use of weakening of term substitutions.
+
+
+
+\case{Weaken}
+By inversion, $\G = \G', y:B$ and $\si = \si', y\setto v$
+and we have $\D_1$ deriving:
+
+\begin{equation}
+    \treerule{Weaken}{\treerule{}{\D_1}{\etyperelation{\P}{\G''}{x}{A}}}{\etyperelation{\P}{\G'',y: B}{x}{A}}
+\end{equation}
+
+Also by inversion of the well-formed-ness of $\etyperelation{\P}{\G'}{\si}{\G}$, we have $\etyperelation{\P}{\G'}{\si'}{\G''}$ and 
+
+\begin{equation}
+    \deno{\etyperelation{\P}{\G'}{\si}{\G}} = \pr{\deno{\etyperelation{\P}{\G'}{\si}{\G''}}}{\deno{\etyperelation{\P}{\G'}{v}{B}}}
+\end{equation}
+
+Hence by induction on $\D_1$ we have $\D_1'$ such that
+
+\begin{equation}
+    \treerule{}{\D_1'}{\etyperelation{\P}{\G'}{x\ssi}{A}}
+\end{equation}
+
+
+
+Hence
+\begin{align}
+    \D' & = \D_1' \qt{By definition}\\
+        & = \D_1\after\si'\qt{By induction}\\
+        & = \D_1\after\p\after\pr{\si'}{\deno{\etyperelation{\P}{\G'}{v}{B}}}\qt{By product property}\\
+        & = \D_1\after\p\after\si\qt{By defintion of the denotation of $\si$}\\
+        & = \D\after\si\qt{By defintion.}
+\end{align}
+
+
+\case{Lambda}
+
+By inversion, we have $\D_1$ such that
+\begin{equation}
+    \D = \treerule{Fn}{
+        \treerule{}{\D_1}{\etyperelation{\P}{\G, x:A}{v}{B}}
+    }{\etyperelation{\P}{\G}{\lam{x}{A}{v}}{\ab}}
+\end{equation}
+
+By induction of $\D_1$ we have $\D_1'$ such that
+\begin{equation}
+    \D' = \treerule{Fn}{
+        \treerule{}{\D_1'}{\etyperelation{\P}{\G', x:A}{(v\ssi)}{B}}
+    }{\etyperelation{\P}{\G}{(\lam{x}{A}{v})\ssi}{\ab}}
+\end{equation}
+By induction and the extension lemma, we have:
+\begin{equation}
+    \D_1' = \D_1\after(\si\times\Id{A})
+\end{equation}
+
+Hence:
+
+\begin{align}
+    \D' &= \cur{\D_1'}\qt{By definition}\\
+        &= \cur{\D_1\after(\si\times\Id{A})}\qt{By induction and extension lemma.}\\
+        & = \cur{\D_1}\after\si\qt{By the exponential property (Uniqueness)}\\
+        &= \D\after\si\qt{By Definition}\\
+\end{align}
+
+\todo{Single subs + extension lemma}
+
+$$\square$$
 \end{proof}
 
 
