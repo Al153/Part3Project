@@ -647,7 +647,7 @@ For example, by instantiating the language with the appropriate constants, groun
         columns=fullflexible,
         basicstyle=\fontfamily{lmvtt}\selectfont,
       ]
-        do $b$ <- PromptUser("Are You Sure?") in (
+        do $b$ <$-$ PromptUser("Are You Sure?") in (
             if $b$ then
                 FireMissiles
             else
@@ -665,7 +665,7 @@ For example, by instantiating the language with the appropriate constants, groun
       ]
        $\lambda$ $alice$: Agent. (
            $\lambda$ $bob$: Agent. (
-            do $amount$ <- AwaitPayment($alice$)
+            do $amount$ <$-$ AwaitPayment($alice$)
             in SendPayment($bob$, $amount$)
            )
        )
@@ -1024,7 +1024,7 @@ We are now equipped to define the denotations of structures in the language. Fir
     \deno{\typerelation{\P}{\e_1\dot \e_2}{\effect}} = \Mul(\deno{\typerelation{\P}{\e_2}{\effect}},\deno{\typerelation{\P}{\e_1}{\effect}}): I \rightarrow U
 \]
 
-Using these denotations, we are now equipped to define the denotations of types. As stated above, types that are well formed in $\P$ are denoted by objects in the fibre category $\C(I)$ given by the denotation of $\P$. (\todo{Have I explained that $\deno{\P} = I$?}) 
+Using these denotations, we are now equipped to define the denotations of types. As stated above, types that are well formed in $\P$ are denoted by objects in the fibre category $\C(I)$ given by the denotation of $\P$.
 
 Since the fibre category $\C(I)$ is S-Closed, it has objects for all ground types, a terminal object, graded monad $\T{}{}$, exponentials, products, and co-product over $\1+\1$.
 
@@ -1055,7 +1055,6 @@ By using the terminal objects and products present in each fibre, we can now der
     \deno{\wellformedok{\P}{\gax}} = (\deno{\wellformedok{\P}{\G}} \times \deno{\typerelation{\P}{A}{\type}})
 \]
 
-\todo{Introduce the subtyping relation up above.}
 Another construction that is important is the denotation of sub-typing. For each instance of the sub-typing relation in $\P$, $A\subtypep B$, there exists a denotation in the fibre induced by $\P$. $\deno{A\subtypep B} \in\C(I)(A, B)$. Since the fibres are S-closed, the ground-instances of the sub-typing relation exist in each fibre anyway.
 
 
@@ -1198,7 +1197,39 @@ We can also define the action of substitutions on effects.
 
 \begin{proof}
     The proof of this depends on the naturality of $\Mul$ and inversion to narrow down case splitting on the structure of the effect environments.
-\todo{Pick a pair of cases}
+
+    \case{Ground}
+    This case holds due to the terminal morphism being unique. Hence, pre-composing it with another morphism yields the terminal morphism.
+
+    \begin{align}
+        \deno{\typerelation{\P}{e}{\effect}}\after\si & = \deno{e}\after\term{I}\after\si \\
+        & = \deno{e}\after\term{I'} \\
+        & = \deno{\typerelation{\P'}{e}{\type}}\\
+    \end{align}
+
+\case{Var}
+
+Since the structure of the substitution $\si$ depends on the structure of $\P$, we can perform inversion to infer the denotation of $\si$.
+
+\begin{align}
+    \deno{\typerelation{\P,\a}{\a}{\effect}}\after\si &= \pp\after\pr{\si'}{\deno{\typerelation{\P'}{\e}{\effect}}}\qt{By inversion $\si = (\si', \a\setto\e)$}\\
+    & =\deno{\typerelation{\P'}{\e}{\effect}} \\
+    &= \deno{\typerelation{\P'}{\si'(\a)}{\effect}}\\
+\end{align}
+
+\case{Multiply}
+
+We make use of the naturality of $\Mul$ and induction upon the sub-terms.
+\begin{align}
+    \deno{\typerelation{\P}{\e_1\dot\e_2}{\type}} \after\si &=
+    \Mul(\deno{\typerelation{\P}{\e_1}{\effect}}, \deno{\typerelation{\P}{\e_2}{\effect}})\after \si \\
+    & = \Mul(\deno{\typerelation{\P}{\e_1}{\effect}}\after \si, \deno{\typerelation{\P}{\e_2}{\effect}}\after \si)\qt{By Naturality}\\
+    & = \Mul(\deno{\typerelation{\P'}{\si(\e_1)}{\effect}}, \deno{\typerelation{\P}{\si(\e_2)}{\effect}})\\
+    & = \deno{\typerelation{\P'}{\si(\e_1)\dot\si(\e_2)}{\effect}}\\
+    & = \deno{\typerelation{\P'}{\si(\e_1\dot\e_2)}{\effect}}\\
+\end{align}
+
+$$\square$$
 \end{proof}
 
 
@@ -1208,14 +1239,73 @@ We can also define the action of substitutions on effects.
 \end{theorem}
 
 \begin{proof}
-    This proof also depends on the naturality of $\Mul$ and case splitting on the structure of $\w$.
-    \todo{Pick a pair of cases}.
+    This proof also depends on the naturality of $\Mul$ and case splitting on the structure of $\w$. It is harder to use inversion on the structure of $\w$, since the structure of $\w$ does not depend as strongly on the structure of $\P$. I present here the cases for variables.
+
+    \case{Var}
+    We do a case split on $\w$.
+    \subcase{$\w = \i$}
+    Then $\P' = \P$ and $\w = \Id{I}$. So the theorem holds trivially.
+    \subcase{$\w = \w'\x$}
+    Then by the definition of its denotation:    
+    \begin{align}
+        \deno{\typerelation{\P,\a}{\a}{\effect}}\after\w &= \pp\after(\w'\times \Id{U}) \\
+        & = \pp\\
+        & = \deno{\typerelation{\P',\a}{\a}{\effect}}
+    \end{align}
+    
+    \subcase{$\w = \w'\pi$}
+    Then \begin{equation}
+        \deno{\typerelation{\P,\a}{\a}{\effect}} = \pp\after\w'\after\p
+    \end{equation}
+    
+    Where $\P' = \P,\b$ and $\wrel{\w'}{\P''}{\P}$.
+    
+    So\begin{align}
+        \pp\after\w' & = \deno{\typerelation{\P''}{\a}{\effect}}
+        \\
+        \pp\after\w'\after\p & =\deno{\typerelation{\P'',\b}{\a}{\effect}}\\
+        &= \deno{\typerelation{\P'}{\a}{\effect}}
+    \end{align}
+    
+    \case{Weaken}
+    \begin{equation}
+        \deno{\typerelation{\P,\b}{\a}{\effect}}\after\w = \deno{\typerelation{\P}{\a}{\effect}}\after\p\after\w
+    \end{equation}
+    
+    Similarly, we perform a case split on structure of $w$:
+    
+    \subcase{$\w=\i$}
+    Then $\P' = \P,\b$ so $\w=\Id{I}$
+    So $\deno{\typerelation{\P,\b}{\a}{\effect}}\after\w = \deno{\typerelation{\P'}{\a}{\effect}}$
+    
+    \subcase{$\w=\w'\p$}
+    Then $\P' = (\P'',\g)$ and $\w=\w'\after\p$
+    Where $\wrel{\w'}{\P''}{\P,\b}$.
+    So
+    \begin{align}
+        \deno{\typerelation{\P,\b}{\a}{\effect}}\after\w & = \deno{\typerelation{\P,\b}{\a}{\effect}}\after\w'\after\p\\
+        & = {\typerelation{\P''}{\a}{\effect}}\after\p\\
+        & = {\typerelation{\P'',\g}{\a}{\effect}}\\
+        & = {\typerelation{\P'}{\a}{\effect}}\\
+    \end{align}
+    
+    \subcase{$\w=\w'\x$}
+    Then $\P'=\P'',\b$ and $\wrel{\w'}{\P''}{\P}$
+    
+    So \begin{align}
+        \deno{\typerelation{\P,\b}{\a}{\effect}}\after\w &= \deno{\typerelation{\P}{\a}{\effect}}\after\p\after(\w'\times\Id{U})\\
+        &=\deno{\typerelation{\P}{\a}{\effect}}\after\w'\after\p\\
+        & = \deno{\typerelation{\P''}{\a}{\effect}}\after\p\\
+        & = \deno{\typerelation{\P'}{\a}{\effect}}\\
+    \end{align}
+
+    $$\square$$
 \end{proof}
 
 
 
 
-We can then move on to state and prove the weakening and substitution theorems on types, sub-typing, and type environments. The general structure of these theorems, as well as later, is that when we want to quantify the effect of a morphism $\theta: I' \rightarrow I$ between objects in the base category on structure in the fibres $\C(I)$, we should simply apply the associated re-indexing functor $\theta\star: \C(I) \rightarrow \C(I')$ to the structure. The proof of the soundness of this operation is driven by the S-closure of the re-indexing functor.
+We can then move on to state and prove the weakening and substitution theorems on types, sub-typing, and type environments. The general structure of these theorems, as well as the term-based theorems later, is that when we want to quantify the effect of a morphism $\theta: I' \rightarrow I$ between objects in the base category on structure in the fibres $\C(I)$, we should simply apply the associated re-indexing functor $\theta\star: \C(I) \rightarrow \C(I')$ to the structure. The proof of the soundness of this operation is driven by the S-closure of the re-indexing functor.
 
 Specifically, effect substitutions have the following actions on types, and type-environments:
 
@@ -1238,7 +1328,27 @@ Specifically, effect substitutions have the following actions on types, and type
 
 \begin{proof}
     By S-closure of $\si\star$ and the Beck-Chevalley Condition.
-    \todo{Pick Cases (Quantification?)}
+
+    \case{Monad}
+    This case makes use of the S-closure of $\si\star$. Specifically the S-closure property upon the graded monad functor $\T{}{}$: $\si\star(\T{f}{A}) = \T{f\after\si}{(\si\star A)}$.
+
+
+    \begin{align}
+        \si\star\deno{\typerelation{\P}{\mea}{\type}} & =  \si\star(\T{\deno{\typerelation{\P}{\e}{\effect}}}{\deno{\typerelation{\P}{A}{\type}}})\\
+        &= \T{\deno{\typerelation{\P}{\e}{\effect}}\after\si}{\si\star(\deno{\typerelation{\P}{A}{\type}})}\\
+        & = \deno{\typerelation{\P'}{(\mea)\ssi}{\type}}
+    \end{align}
+    \case{Quantification}
+    This case makes use of the Beck-Chevalley condition and the fact that $\deno{\typerelation{(\P', \a)}{(\si, \a\setto\a)}{(\P, \a)}} = \si\times\Id{U}$, which we can induct upon.
+        \begin{align}
+            \si\star\deno{\typerelation{\P}{\all{\a}A}{\type}} & = \si\star(\allI(\deno{\typerelation{\P,\a}{A}{\type}}))\\
+            & = \allI((\si\times\Id{U})\star\deno{\typerelation{\P,\a}{A}{\type}})\qt{By Beck-Chevalley}\\
+            & = \allI(\deno{\typerelation{\P',\a}{A\sub{\si, \a\setto\a}}{\type}})\qt{By induction}\\
+            & = \allI(\deno{\typerelation{\P',\a}{A\ssi}{\type}})\\
+            & = \deno{\typerelation{\P'}{\all{\a}{A\ssi}}{\type}}\\
+            & = \deno{\typerelation{\P'}{(\all{\a}{A})\ssi}{\type}}\\
+        \end{align}
+        $$\square$$
 \end{proof}
 
 \begin{theorem}[Effect Substitution on Type Environments]
@@ -1246,30 +1356,65 @@ Specifically, effect substitutions have the following actions on types, and type
 \end{theorem}
 
 \begin{proof}
-    By S-closure of $\si\star$.
-\todo{Give the same cases?}
+    By induction on the derivation on $\deno{\wellformedok{\P}{\G}}$ whilst making use of S-closure of the re-indexing functor.
+
+    \case{Nil}
+    We make use of the fact that S-closure means that the terminal object is preserved.
+    \begin{align}
+        \si\star\deno{\wellformedok{\P}{\nil}} &=\si\star\1\\
+        & = \1\qt{By S-closure}\\
+        &= \deno{\wellformedok{\P'}{\nil}}\\
+        &= \deno{\wellformedok{\P'}{\nil\ssi}}\\
+    \end{align}
+    
+    \case{Var}
+    S-closure means that $\si\star(A \times B) = (\si\star A)\times (\si\star B)$.
+    \begin{align}
+       \si\star\deno{\wellformedok{\P}{\gax}} &= \si\star(\deno{\wellformedok{\P}{\G}} \times \deno{\typerelation{\P}{A}{\type}}) \\
+       & = (\si\star\deno{\wellformedok{\P}{\G}} \times \si\star\deno{\typerelation{\P}{A}{\type}})\\
+        & = (\deno{\wellformedok{\P'}{\G\ssi}} \times \deno{\typerelation{\P'}{A\ssi}{\type}})\\
+        & = \deno{\wellformedok{\P'}{\G\ssi, x: A\ssi}}\\
+        & = \deno{\wellformedok{\P'}{(\gax)\ssi}}\\
+    \end{align}
+
+    $$\square$$
 \end{proof}
 
 
 The effect-weakening theorem on types and type environments is also very similar.
 
-\begin{theorem}]Effect Weakening on Types]
+\begin{theorem}[Effect Weakening on Types]
     If $\wrelw{\P'}{\P}$ then $\wellformed{\P}{A}$ implies $\wellformed{\P'}{A} \wedge \deno{\wellformed{\P'}{A}} = \w\star\deno{\wellformed{\P}{A}}$ and $\wellformedok{\P}{\G}$ then $\deno{\wellformedok{\P'}{\G}} = \w\star\deno{\wellformedok{\P}{\G}}$
-
 \end{theorem}
 
 \begin{proof}
-    Similarly making use of S-closure and the Beck-Chevalley Condition.
+   In a similar fashion, we make use of the Beck-Chevalley condition and the S-closure of $\si\star$.
 
-    \todo{Quantification case for types}.
+    \case{Quantification}
+        This case uses the Beck-Chevalley condition and the fact that $\deno{\wrel{\w\x}{(\P', \a)}{(\P,\a)}} = w\times \Id{U}$. This property is used in conjunction with induction to change the environment from $(\P, \a)$ to $(\P', \a)$.
 
+        \begin{align}
+            \w\star\deno{\typerelation{\P}{\all{\a}A}{\type}} & = \w\star(\allI(\deno{\typerelation{\P,\a}{A}{\type}}))\\
+            & = \allI((\w\times\Id{U})\star\deno{\typerelation{\P,\a}{A}{\type}})\qt{By Beck-Chevalley}\\
+            & = \allI(\deno{\typerelation{\P',\a}{A}{\type}})\qt{By induction}\\
+            & = \allI(\deno{\typerelation{\P',\a}{A}{\type}})\\
+            & = \deno{\typerelation{\P'}{\all{\a}{A}}{\type}}\\
+        \end{align}
+    
+    \case{Function}
+    This case makes use of the S-closure property that $\w\star$ preserves exponentials. Specifically $\w\star(B^A) = (\w\star B)^{(\w\star A)}$.
+    \begin{align}
+        \w\star\deno{\typerelation{\P}{\ab}{\type}} &= \w\star(\deno{\typerelation{\P}{B}{\type}}^{\deno{\typerelation{\P}{A}{\type}}})\\
+        &=\w\star(\deno{\typerelation{\P}{B}{\type}})^{\w\star(\deno{\typerelation{\P}{A}{\type}})}\\
+        & = \deno{\typerelation{\P'}{B}{\type}}^{\deno{\typerelation{\P'}{A}{\type}}}\\
+        & = \deno{\typerelation{\P'}{\ab}{\type}}\\
+    \end{align}
+
+    
     The proof for type environments follows the same steps as effect-substitution proof.
 
+    $$\square$$
 \end{proof}
-
-
-
-
 
 
 Next we shall consider the action of weakening and substitution on sub-typing relations. 
@@ -1281,7 +1426,31 @@ Next we shall consider the action of weakening and substitution on sub-typing re
 \begin{proof}
     By rule induction over the definition of the subtype relation, making use of S-closure and the effect-substitution theorem on types.
 
-\todo{Give case of function types}.
+
+\case{Ground}
+This case holds by the property of the S-closure of $\si\star$ that $\si\star$ preserves the ground-type sub-typing denotation.
+
+\begin{align}
+    \si\star(\g_1\subtypeg\g_2) &= (\g_1\subtypeg\g_2)
+\end{align}
+
+
+
+\case{Fn}
+
+This case holds by several S-closure properties of $\si\star$. $\si\star$ preserves the exponential morphisms: $\si\star(\cur{f}) = \cur{\si\star(f)}$ and $\si\star(\app) = \app$. $\si\star$ should also preserve the product morphisms: $\si\star(\p) = \p$, $\si\star(\pp) = \pp$ and $\si\star\pr{f}{g} = \pr{\si\star f}{\si\star g}$. Hence $\si\star(f \times g) = (\si\star f \times \si\star g)$.
+
+\begin{align}
+    \si\star\deno{(\ab)\subtypep\fntype{A'}{B'}} &= \si\star(\deno{B\subtypep B'}^{A'}\after B^{\deno{A'\subtypep A}})\\
+    &= \si\star(\cur{\deno{B\subtypep B'}\after\app})\after\si\star(\cur{\app\after(\Id{B}\times\deno{A'\subtypep A})})\\
+    & = \cur{\si\star(\deno{B\subtypep B'})\after\app}\after\cur{\app\after(\Id{B}\times\si\star(\deno{A'\subtypep A}))}\\
+    & = \cur{\deno{B\ssi\subtypepp B'\ssi}\after\app}\after\cur{\app\after(\Id{B\ssi}\times\deno{A'\ssi\subtypepp A\ssi})}\\
+    &= \deno{\fntype{(A\ssi)}{(B\ssi)}\subtypepp\fntype{(A'\ssi)}{(B'\ssi)}}\\
+    &= \deno{(\ab)\ssi\subtypepp(\fntype{A'}{B'})\ssi}
+\end{align}
+
+
+$$\square$$
 \end{proof}
 
 
@@ -1295,6 +1464,8 @@ Similarly we can form the symmetrical weakening theorem.
 
 \begin{proof}
     The cases hold the same as in the corresponding substitution theorem.
+
+    $$\square$$
 \end{proof}
 
 
@@ -1315,13 +1486,87 @@ We are now a point to define and prove the effect weakening and substitution the
 The substitution theorem is defined as so:
 
 \begin{theorem}[Effect Substitution on Terms]
-    if  $\typerelation{\P'}{\si}{\P}$ and $\gpetyperelation{v}{A}$ then $\etyperelation{\P'}{\G\ssi}{v\ssi}{A\ssi}$ and $\deno{\etyperelation{\P'}{\G\ssi}{v\ssi}{A\ssi}} = \si\star\deno{\gpetyperelation{v}{A}}$.
+    If $\typerelation{\P'}{\si}{\P}$ and $\D$ derives $\gpetyperelation{v}{A}$ then there exists $\D'$ deriving $\etyperelation{\P'}{\G\ssi}{v\ssi}{A\ssi}$ and $\D' = \si\star(\D)$.
 \end{theorem}
 
 
 \begin{proof}
     This proof makes use of the previous effect-substitution theorems, and the adjunction of quantification and the re-indexing functor of projection.
-\todo{Pick cases: Effect Application, Effect-Lambda, any more?}
+
+
+\case{Effect-Lambda}
+
+This case makes use of the naturality condition \todo{Needs to be introduced somewhere before + reference} and simple reductions.
+
+If $\D$ derives $\gpetyperelation{\elam{\a}{v}}{\all{\a}{A}}$ then by inversion, there exists $\D_1$ deriving  $\etyperelation{\P,\a}{\G}{v}{A}$ such that:
+
+\begin{equation}
+    \D = \bar{\D_1}\\
+\end{equation}
+
+It is also the case that:
+
+\begin{equation}
+    \si\times\Id{} = \deno{\typerelation{(\P',\a)}{(\si, \a\setto\e)}{(\P,\a)}}
+\end{equation}
+
+So
+\begin{align}
+    \si\star\D &= \si\star(\bar{\D_1})\\
+    & = \bar{(\si\times\Id{U})\star\D_1}\qt{By naturality}\\
+    & = \bar{\D_1'}\qt{By induction}\\
+    & = \D'
+\end{align}
+
+\case{Effect-Application}
+
+This is a more complex case, as it makes use of several naturality properties and the adjunction $\pstar\dashv\allI$.
+
+\todo{Missing the proof of existence of derivation}
+\todo{Explain single substitutions}
+
+By inversion, if $\D$ derives $\gpetyperelation{\eapp{v}{\e}}{A\ssub{\a}{\e}}$ then there exists $\D_1$ deriving $\gpetyperelation{v}{\all{\a}{A}}$ and $h = \deno{\typerelation{\P}{\e}{\effect}}$ such that:
+
+\begin{equation}
+    \D = \pr{\Id{\G}}{h}\star(\e_{\deno{\typerelation{\P,\b}{A\ssub{\a}{\b}}{\type}}})\after\D_1\\
+\end{equation}
+
+So, due to the substitution theorem on effects,
+\begin{equation}
+    h\after\si = \deno{\typerelation{\P}{\e}{\effect}}\after\si = \deno{\typerelation{\P'}{\si(\e)}{\effect}} = h'
+\end{equation}
+
+Hence, by applying the re-indexing functor to $\D$, we have:
+
+\begin{align}
+    \si\star{\D} & = \si\star(\pr{\Id{\G}}{h}\star(\e_{\deno{\typerelation{\P,\b}{A\ssub{\a}{\b}}{\type}}})\after\D_1)\\
+    & = (\pr{\Id{\G}}{h}\after\si)\star(\e_{\deno{\typerelation{\P,\b}{A\ssub{\a}{\b}}{\type}}})\after\si\star(\D_1)\\
+    & = ((\si\times\Id{U})\after\pr{\Id{\G}}{h\after\si})\star(\e_{\deno{\typerelation{\P,\b}{A\ssub{\a}{\b}}{\type}}})\after\D_1')\\
+    & = (\pr{\Id{\G}}{h'})\star((\si\times\Id{U})\star\e_{\deno{\typerelation{\P,\b}{A\ssub{\a}{\b}}{\type}}})\after\D_1')\\
+\end{align}
+
+Looking at the inner part of the functor application:
+Let \begin{align}
+    A & = \deno{\typerelation{\P,\b}{A\ssub{\a}{\b}}{\type}}\\
+\end{align}
+\begin{align}
+    (\si\times\Id{U})\star\e_{\deno{\typerelation{\P,\b}{A\ssub{\a}{\b}}{\type}}} &= (\si\times\Id{U})\star\e_{A}\\
+    & = (\si\times\Id{U})\star(\widehat{\Id{\allI(A)}})\\
+    & = \widehat{\bar{(\si\times\Id{U})\star(\widehat{\Id{\allI(A)}})}}\qt{By bijection}\\
+    & = \widehat{\si\star(\bar{\widehat{\Id{\allI(A)}}})}\qt{By naturality}\\
+    & = \widehat{\si\star(\Id{\allI(A)})}\qt{By bijection}\\
+    & = \widehat{\Id{\allII(A\after(\si\times\Id{U}))}}\qt{By S-Closure, naturality}\\
+    & = \widehat{\Id{\allII(A\sub{\si,\a\setto\a})}}\qt{By Substitution theorem}\\
+    & = \e_{A\ssi}
+\end{align}
+
+Going back to the original expression:
+
+\begin{align}
+    \si\star{\D} & = (\pr{\Id{\G}}{h'})\star(\e_{A\ssi})\after\D_1')\\
+    & = \D'\\
+\end{align}
+
 \end{proof}
 
 
@@ -1388,7 +1633,9 @@ With denotations defined as morphisms in the appropriate fibre category: $\deno{
 
 \todo{Explain weakening theorem on these}
 
-Firstly, we must consider the action of effect weakenings on these morphisms. The weakening theorem on term-environment weakenings is as so:
+In order to prove the quantification case of typing-environment weakening and substitution theorems on terms, as can be seen in section \todo{Reference}, it will be necessary to be able to weaken the effect environment on term-environment weakenings and substitutions
+
+Let us first consider the action of effect weakenings on these morphisms. The weakening theorem on term-environment weakenings is as so:
 
 
 \begin{theorem}[Effect Weakening on Term Weakening]

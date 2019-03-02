@@ -201,7 +201,7 @@ By induction on the derivation on $\deno{\typerelation{\P}{A}{\type}}$. Making u
 
 \case{Monad}
 \begin{align}
-    \si\star\deno{\typerelation{\P}{\mea}{\type}}\after\si & =  \si\star(\T{\deno{\typerelation{\P}{\e}{\effect}}}{\deno{\typerelation{\P}{A}{\type}}})\\
+    \si\star\deno{\typerelation{\P}{\mea}{\type}} & =  \si\star(\T{\deno{\typerelation{\P}{\e}{\effect}}}{\deno{\typerelation{\P}{A}{\type}}})\\
     &= \T{\si\star(\deno{\typerelation{\P}{\e}{\effect}})}{\si\star(\deno{\typerelation{\P}{A}{\type}})}\\
     & = \deno{\typerelation{\P'}{(\mea)\ssi}{\type}}
 \end{align}
@@ -209,7 +209,7 @@ By induction on the derivation on $\deno{\typerelation{\P}{A}{\type}}$. Making u
     \begin{align}
         \si\star\deno{\typerelation{\P}{\all{\a}A}{\type}} & = \si\star(\allI(\deno{\typerelation{\P,\a}{A}{\type}}))\\
         & = \allI((\si\times\Id{U})\star\deno{\typerelation{\P,\a}{A}{\type}})\qt{By Beck-Chevalley}\\
-        & = \allI(\deno{\typerelation{\P',\a}{A\sub{\si, \a\setto\e}}{\type}})\\
+        & = \allI(\deno{\typerelation{\P',\a}{A\sub{\si, \a\setto\a}}{\type}})\\
         & = \allI(\deno{\typerelation{\P',\a}{A\ssi}{\type}})\\
         & = \deno{\typerelation{\P'}{\all{\a}{A\ssi}}{\type}}\\
         & = \deno{\typerelation{\P'}{(\all{\a}{A})\ssi}{\type}}\\
