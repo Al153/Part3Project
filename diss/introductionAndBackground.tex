@@ -607,9 +607,11 @@ We can then use $\epsilon$ and $\eta$ to form a natural isomorphism between morp
      \epsilon\after F(g) & \mapsfrom g\\
 \end{align}
 
-\section{Strict Indexed Category}
+\section{Strict-Indexed Category}
 
-The final piece of category theory required to understand this dissertation is the concept of a strict indexed Category. A strict indexed category is a functor from a base category into a target category of categories, such as the category of cartesian closed categories. Objects, $A$, in the base category are mapped to categories $\C(A)$, known as fibres in the target category. Morphisms between objects in the base category, $f: B\rightarrow A$, are mapped to functors, $f\star: \C(A)\rightarrow \C(B)$, between categories in the target category. 
+The final piece of category theory required to understand this dissertation is the concept of a strict-indexed Category. A strict-indexed category is a functor from a base category into a target category of categories, such as the category of cartesian closed categories. Objects, $A$, in the base category are mapped to categories $\C(A)$, known as fibres in the target category. Morphisms between objects in the base category, $f: B\rightarrow A$, are mapped to functors, $f\star: \C(A)\rightarrow \C(B)$, between categories in the target category. The strict- modifier indicates that the indexing in this construction is done by a functor as opposed to the weaker pseudofunctor (weak functor) structure. Since pseudofunctors are not needed to explain anything in this project, I shall leave out their definition, though an interested reader may wish to research them further. \footnote{https://ncatlab.org/nlab/show/pseudofunctor}
+
+
 Due to the composition laws for functors, $\theta\star\after\phi\star = (\phi\after\theta)\star$ and $\Id{A}*(B) = B\in\obj \C(A)$. For example, we may use the the case of cartesian closed categories indexed by a pre-order, $\mathbb{P}$:
 
 \begin{align}
@@ -617,6 +619,8 @@ Due to the composition laws for functors, $\theta\star\after\phi\star = (\phi\af
     A \in\obj\mathbb{P} & \mapsto \C \in\textit{CCCat}\qt{Objects are mapped to categories}\\
     A \leq B & \mapsto (A \leq B)\star: \C \rightarrow \DC\qt{Morphisms are mapped to functors preserving CCC properties.}
 \end{align}
+
+
 
 
 \chapter{The Polymorphic-Effect-Calculus}
@@ -1566,7 +1570,7 @@ Going back to the original expression:
     \si\star{\D} & = (\pr{\Id{\G}}{h'})\star(\e_{A\ssi})\after\D_1')\\
     & = \D'\\
 \end{align}
-
+$$\square$$
 \end{proof}
 
 
@@ -1947,13 +1951,238 @@ The need for reduced typing derivations comes about because of sub-typing. The s
 \end{theorem}
 
 \begin{proof}
-    By induction on term structure.
-\todo{Cases (in particular, Apply)}
-\todo{Point out that we don't have a case for subtyping as it's not a syntactic feature.}
+    This proof proceeds by induction on the term structure, making use of the unique derivations of the sub-terms to show that a reduced derivation of the whole term must also be unique. There are no cases for sub-typing, as it is not a syntactic feature. As an aside, if sub-typing were a syntactic feature, such as explicit casts, then the rules for the typing relation would be entirely syntax directed, and hence we would not have the ambiguity that these theorems are required in order to solve.
+
+
+
+    \case{Bind} This case makes use of the weakening theorem on typing-environments.
+
+    Let 
+
+    \begin{equation}
+        \edeltacrule{\G}{v_1}{\e_1}{A}{\e_1'}{A'}
+    \end{equation}
+
+    \begin{equation}
+        \edeltacruleprime{\G, x:A}{v_2}{\e_2}{B}{\e_2'}{B'}
+    \end{equation}
+
+    Be the respective unique reduced type derivations of the sub-terms. By weakening, $\ewrel{\P}{\i\x}{(\G, x:A)}{(\G, x: A')}$ so if there's a derivation of $\etyperelation{\P}{(\G, x:A')}{v_2}{B}$, there's also one of $\etyperelation{\P}{\gax}{v_2}{B}$.
+
+    \begin{equation}
+        \edeltacruleprimeprime{(\G, x:A')}{v_2}{\e_2}{B}{\e_2'}{B'}
+    \end{equation}
+
+    Since the effects monoid operation is monotone, if $\e_1\subeffectp\e_1'$ and $\e_2\subeffectp\e_2'$ then $\e_1\dot\e_2 \subeffectp \e_1'\dot\e_2'$
+
+    Hence the reduced type derivation of $\gpetyperelation{\doin{x}{v_1}{v-2}}{\M{\e_1'\dot\e_2'}{B'}}$ is the following:
+
+    \todo{Make this and the other smaller}
+    \begin{equation}
+        \treerule{Type} {
+            \treerule{Bind}{
+                \edeltacrule{\G}{v_1}{\e_1}{A}{\e_1'}{A'}
+                \s\s
+                \edeltacruleprimeprime{\G, x:A'}{v_2}{\e_2}{B}{\e_2'}{B'}
+            } {
+                \gpetyperelation{\doin{x}{v_1}{v_2}}{\M{\e_1\dot\e_2}{B}}
+            }
+            \s\s
+            B\subtypep B'
+            \s\s
+            \e_1\dot\e_2\subeffectp\e_1'\dot\e_2'
+        } {
+            \gpetyperelation{\doin{x}{v_1}{v-2}}{\M{\e_1'\dot\e_2'}{B'}}
+        }
+    \end{equation}
+
+    \case{Effect-Fn}
+
+    The unique reduced derivation of $\gpetyperelation{\elam{\a}{A}}{\all{\a}{B}}$
+
+    is 
+
+    \begin{equation}
+        \treerule{Sub-type}{
+            \treerule{Effect-Fn}{
+                \treerule{}{\D}{\etyperelation{\P,\a}{\G}{v}{A}}
+            }{
+                \gpetyperelation{\elam{\a}{v}}{\all{\a}{A}}
+            }
+            \s\s
+            \all{\a}{A}\subeffectp\all{\a}{B}
+        }{
+            \gpetyperelation{\elam{\a}{B}}{\all{\a}{B}}
+        }
+    \end{equation}
+
+    Where
+    \begin{eqnarray}
+        \treerule{Sub-type}{
+            \treerule{}{\D}{\etyperelation{\P,\a}{\G}{v}{A}}
+            \s\s
+            A\subtypepa B
+        }{
+            \etyperelation{\P,\a}{\G}{v}{B}
+        }
+    \end{eqnarray}
+
+    Is the unique reduced derivation of $\etyperelation{\P,\a}{\G}{v}{B}$
+
+
+    $$\square$$
 \end{proof}
 
 
-The $\reduce$ function maps each derivation to its reduced equivalent. It shall do this by pushing sub-typing rules from the leaves of the derivation tree down towards the root of the tree. The function case splits on the root of the tree and works up recursively. Some cases of the function are given below. \todo{These cases}.
+The $\reduce$ function maps each derivation to its reduced equivalent. It shall do this by pushing sub-typing rules from the leaves of the derivation tree down towards the root of the tree. The function case splits on the root of the tree and works up recursively. Some cases of the function are given in figure \ref{ReduceFunctionCases}. 
+
+\todo{Diagram of a type-derivation tree being reduced}
+
+\begin{figure}\label{ReduceFunctionCases}
+    \begin{framed}
+        \case{Apply}
+    To find:
+    \begin{equation}
+        \reduce(\treerule{Apply}{
+            \treerule{}{\D_1}{
+                \gpetyperelation{v_1}{\ab}
+            }
+            \s\s
+            \treerule{}{\D_2}{
+                \gpetyperelation{v_2}{A}
+            }
+        }{
+            \gpetyperelation{\apply{v_1}{v_2}}{B}
+        })
+    \end{equation}
+
+    Let
+    \begin{align}
+        \treerule{Subtype}{
+            \treerule{}{\D'_1}{\gpetyperelation{v_1}{\fntype{A'}{B'}}}
+            \s\s
+            \fntype{A'}{B'}\subtypep\fntype{A}{B}
+        }{
+            \gpetyperelation{v_1}{\ab}
+        } & = \reduce(\D_1)\\
+        \treerule{Subtype}{
+            \treerule{}{\D'_2}{\gpetyperelation{v}{A'}}
+            \s\s
+            A'\subtypep A
+        } {
+            \gpetyperelation{v_1}{A}
+        } & = \reduce(\D_2)
+    \end{align}
+
+    In
+    \begin{equation}
+        \treerule{Sub-type}{
+            \treerule{Apply}{
+                \treerule{}{
+                    \D'_1
+                }{
+                    \gpetyperelation{v_1}{\fntype{A'}{B'}}
+                }
+            \s\s
+                \treerule{Sub-type}{
+                    \treerule{}{\D'_2}{\gpetyperelation{v_2}{A''}}
+                    \s\s
+                    A'' \subtypep A \subtypep A'
+                } {
+                    \gpetyperelation{v_2}{A'}
+                }
+            }{
+                \gpetyperelation{\apply{v_1}{v_2}}{B'}
+            }
+            \s\s
+            B' \subtypep B
+        }{
+            \gpetyperelation{\apply{v_1}{v_2}}{B}
+        }
+    \end{equation}
+
+
+    \case{Bind}
+
+    To find
+    \begin{equation}
+        \reduce(
+            \treerule{Bind}{
+                \treerule{}{
+                    \D_1
+                }{
+                    \gpetyperelation{v_1}{\M{\e_1}{A}}
+                }
+                \s\s
+                \treerule{}{
+                    \D_2
+                }{
+                    \etyperelation{\P}{\gax}{v_2}{\M{\e_2}{B}}
+                }
+            } {
+                \gpetyperelation{\doin{x}{v_1}{v_2}}{\M{\e_1\dot\e_2}{B}}
+            }
+        )
+    \end{equation}
+
+
+    Let \begin{equation}
+        \treerule{Sub-type}{
+            \treerule{}{\D'_1}{\gpetyperelation{v_1}{\M{\e'_1}{A'}}}
+        \s\s
+        \subeffecttree{\e_1'}{A'}{\e_1}{A}
+        }{
+            \gpetyperelation{v_1}{\M{\e_1}{A}}
+        } = \reduce(\D_1)
+    \end{equation}
+
+    Since $\ewrel{\P}{(i,\x)}{(\G, x: A')}{(\gax)}$ if $A' \subtypep A$, and by $\D_2 = \etyperelation{\P}{(\gax)}{v_2}{\M{\e_2}{B}}$, there also exists a derivation $\D_3$ of $\etyperelation{\P}{(\G, x: A')}{v_2}{\M{\e_2}{B}}$. $\D_3$ is derived from $\D_2$ simply by inserting a (Sub-type) rule below all instances of the (Var) rule.
+
+    Let \begin{equation}
+        \treerule{Sub-type}{
+            \treerule{}{\D'_3}{\etyperelation{\P}{\G, x: A'}{v_2}{\M{\e'_2}{B'}}}
+        \s\s
+        \subeffecttree{\e_1'}{B'}{\e_2}{B}
+        }{
+            \etyperelation{\P}{\G, x: A'}{v_2}{\M{\e_2}{B}}
+        } = \reduce(\D_3)
+    \end{equation}
+    
+
+    Since the effects monoid operation is monotone, if $\e_1\subeffectp\e_1'$ and $\e_2\subeffectp\e_2'$ then $\e_1\dot\e_2 \subeffectp \e_1'\dot\e_2'$
+    
+
+
+    Then the result of reduction of the whole bind expression is:
+
+
+    \begin{equation}
+        \treerule{Sub-type}{
+            \treerule{Bind}{
+                \treerule{}{
+                    \D'_1
+                }{
+                    \gpetyperelation{v_1}{\M{\e_1'}{A'}}
+                }
+                \s\s
+                \treerule{}{
+                    \D'_3
+                }{
+                    \etyperelation{\P}{\G, x: A'}{v_2}{\M{\e_2'}{B'}}
+                }
+            }{
+            \gpetyperelation{\doin{x}{v_1}{v_2}}{\M{\e_1'\dot\e_2'}{B}}
+            }
+            \s\s
+            \subeffecttree{\e_1'\dot\e_2'}{B'}{\e_1\dot\e_2}{B}
+        }{
+            \gpetyperelation{\doin{x}{v_1}{v_2}}{\M{\e_1\dot\e_2}{B}}
+        }
+    \end{equation}
+    \end{framed}
+
+    \caption{Some cases of the reduce function}
+\end{figure}
 
 \begin{theorem}[Reduction preserves denotations]
    If the derivation $\D'$ is the result of applying  reduce to $\D$ then the denotations of the derivations are equal. That is $\D' = \reduce(\D) \implies \D' = \D$.
@@ -1961,10 +2190,93 @@ The $\reduce$ function maps each derivation to its reduced equivalent. It shall 
 
 
 \begin{proof}
-    By induction over the structure of $\D$, making use of the substitution and weakening theorems. (\todo{How? more specificity})
+    We proceed by induction over the structure of $\D$, making use of the substitution and weakening theorems. We make use of the the definition of the $\reduce$ function as defined in figure \ref{ReduceFunctionCases}. We shall also use the definitions of $\D_1, \D_2 ...$ from the figue. \todo{May need to define $\D_1..$ locally.}
+    
+    \case{Apply}
+    This case makes use of the fact that composing sub-typing morphisms gives the transitive sub-typing morphism.
+        Let
+        \begin{align}
+            f & = \deno{A\subtypep A'}: A\rightarrow A' \\
+            f' & = \deno{A''\subtypep A}: A'' \rightarrow A \\
+            g & = \deno{B' \subtypep B}: B' \rightarrow B \\
+        \end{align}
+
+        Hence 
+        \begin{align}
+            \deno{\fntype{A'}{B'}\subtypep \ab} & = (g)^A \after (B')^f \\
+            & = \cur{\app\after \app}\after\cur{\app\after(\Id{}\times f)}\\
+            & = \cur {g\after\app\after(\Id{}\times f)}
+        \end{align}
+
+        Then 
+        \begin{align}
+            \D & = \app\after\pr{\D_1}{\D_2}\qt{By definition}\\
+            & = \app\after\pr{\cur {g\after\app\after(\Id{}\times f)}\after\D'_1}{f'\after\D'_2}\qt{By reductions of $\D_1, \D_2$}\\
+            & = \app\after(\cur {g\after\app\after(\Id{}\times f)}\times\Id{A})\after\pr{\D'_1}{f'\after\D'_2} \qt{Factoring out}\\
+            & = g\after\app\after(\Id{}\times f)\after\pr{\D'_1}{f'\after\D'_2}\qt{By the exponential property}\\
+            & = g\after\app\after\pr{\D'_1}{f\after f'\after \D'_2}\\
+            & = \D'\qt{By defintion}
+        \end{align}
+        
+    \case{Bind}
+
+    This is a long case that makes use of the typing-environment weakening theorem on terms.
+
+    Let \begin{align}
+        f & = \deno{A' \subtypep A}: A' \rightarrow A\\
+        g & = \deno{B' \subtypep B}: B' \rightarrow B\\
+        h_1 & = \deno{\e_1' \subeffectp \e_1} : \T{\e_1'}{} \rightarrow \T{\e_1}{} \\
+        h_2 & = \deno{\e_2'\subeffectp \e_2}:\T{\e_2'}{} \rightarrow \T{\e_2}{}\\
+        h & = \deno{\e_1'\dot\e_2'\subeffectp\e_1\dot\e_2}: \T{\e_1'\dot\e_2'}{}\rightarrow \T{\e_1\dot\e_2}{}
+    \end{align}
+
+    Due to the denotation of the weakening used to derive $\D_3$ from $\D_2$, we have 
+    \begin{equation}
+        \D_3 = \D_2\after(\idg\times f)
+    \end{equation}
+
+    And due to the reduction of $\D_3$,
+    we have 
+    \begin{equation}
+        \D_3 = h_{2, B} \after \T{\e_2'}{g}\after \D_3'
+    \end{equation}
+
+    So:
+
+    \begin{align}
+        \D &= \bind{\e_1}{\e_2}{B}\after \T{\e_1}{\D_2}\after\tstrength{\e_1}{\G}{A}\after\pr{\idg}{\D_1}\qt{By definition.}\\
+        &= \bind{\e_1}{\e_2}{B}\after \T{\e_1}{\D_2}\after\tstrength{\e_1}{\G}{A}\after\pr{\idg}{h_{1, A}\after\T{\e_1'}{f}\after\D_1'}\qt{By reduction of $\D_1$.}\\
+        &= \bind{\e_1}{\e_2}{B}\after \T{\e_1}{\D_2}\after\tstrength{\e_1}{\G}{A}\after(\idg\times h_{1, A})\after\pr{\idg}{\T{\e_1'}{f}\after\D_1'}\qt{Factor out $h_1$}\\
+        &= \bind{\e_1}{\e_2}{B}\after \T{\e_1}{\D_2}\after
+        h_{1, (\G\times A)}\after
+        \tstrength{\e_1'}{\G}{A}\after\pr{\idg}{\T{\e_1'}{f}\after\D_1'}\qt{Tensor strength and sub-effecting $h_1$}\\
+        &= \bind{\e_1}{\e_2}{B}\after 
+        h_{1, B}\after\T{\e_1'}{\D_2}\after
+        \tstrength{\e_1'}{\G}{A}\after\pr{\idg}{\T{\e_1'}{f}\after\D_1'}\qt{Naturality of $h_1$}\\
+        &= \bind{\e_1}{\e_2}{B}\after 
+        h_{1, B}\after\T{\e_1'}{\D_2}\after
+        \tstrength{\e_1'}{\G}{A}\after(\idg\times \T{\e_1'}{f})\after\pr{\idg}{\D_1'}\qt{Factor out pairing again}\\
+        &= \bind{\e_1}{\e_2}{B}\after 
+        h_{1, B}\after\T{\e_1'}{(\D_2\after(\idg\times f))}\after
+        \tstrength{\e_1'}{\G}{A'}\after\pr{\idg}{\D_1'}\qt{Tensorstrength}\\
+        &= \bind{\e_1}{\e_2}{B}\after 
+        h_{1, B}\after\T{\e_1'}{(\D_3)}\after
+        \tstrength{\e_1'}{\G}{A'}\after\pr{\idg}{\D_1'}\qt{By the definition of $\D_3$}\\
+        &= \bind{\e_1}{\e_2}{B}\after 
+        h_{1, B}\after\T{\e_1'}{(h_{2, B}\after\T{\e_2'}{g}\after \D_3')}\after
+        \tstrength{\e_1'}{\G}{A'}\after\pr{\idg}{\D_1'}\qt{By the reduction of $\D_3$}\\
+        &= \bind{\e_1}{\e_2}{B}\after 
+        h_{1, B}\after\T{\e_1'}{h_{2, B}}\after\T{\e_1'}{\T{\e_2'}{g}}\after \T{\e_1'}{\D_3'}\after
+        \tstrength{\e_1'}{\G}{A'}\after\pr{\idg}{\D_1'}\qt{Factor out the functor}\\
+        &= h_B\after\bind{\e_1'}{\e_2'}{B}\after\T{\e_1'}{\T{\e_2'}{g}}\after \T{\e_1'}{\D_3'}\after
+        \tstrength{\e_1'}{\G}{A'}\after\pr{\idg}{\D_1'}\qt{By the $\mu$ and Sub-type rule }\\
+        & = h_B\after\T{\e_1'\dot\e_2'}{g}\after\bind{\e_1'}{\e_2'}{B'}\after \T{\e_1'}{\D_3'}\after
+        \tstrength{\e_1'}{\G}{A'}\after\pr{\idg}{\D_1'}\qt{By naturality of $\bind{}{}{}$ }\\
+        & = \D' \qt{By definition}
+    \end{align}
+    $$\square$$
 \end{proof}
 
-\todo{Pick cases (Apply, polymorphism gen rule)}
 \begin{figure}[h!]
 \begin{equation}
     \treerule{Lambda}{
@@ -1991,9 +2303,8 @@ The $\reduce$ function maps each derivation to its reduced equivalent. It shall 
 \section{Soundness}
 We are now at a stage where we can state and prove the most important theorem for a denotational semantics: soundness with respect to $\beta\eta$-reductions. Soundness follows from the common sense requirement that terms that are equivalent in a given language should also have equivalent denotations. In our case, we shall introduce a $\beta\eta$-equivalence relation and then prove that equivalent terms have equal denotations.
 
-The $\beta\eta$-equivalence relation is a rule based relation with three main flavours of rules. Firstly, there are the $\beta\eta$-reductions which formalise how we expect the program to execute given an appropriate implementation. We give a $\beta\eta$-reduction for each term transition, such as the application of lambda terms or the execution of an if-expression. Secondly, there are congruences, formalise how the reduction of sub-expressions affects the rest of the expression in a compositional way. Finally, we extend this relation into an equivalence relation by closing it under transitivity, reflexivity and symmetry.
+The $\beta\eta$-equivalence relation is a rule based relation with three main flavours of rules. Firstly, as seen in figure \ref{BetaEtaReductions}, there are the $\beta\eta$-reductions which formalise how we expect the program to execute given an appropriate implementation. We give a $\beta\eta$-reduction for each term transition, such as the application of lambda terms or the execution of an if-expression. Secondly, there are congruences, seen in figure \ref{BetaEtaCongruence}, which formalise how the reduction of sub-expressions affects the rest of the expression in a compositional way. Finally, we extend this relation into an equivalence relation by closing it under transitivity, reflexivity and symmetry as seen in figure \ref{BetaEtaEquivalence}.
 
-\todo{Figure with the beta-eta-reductions}
 
 \begin{figure}[h!]\label{BetaEtaReductions}
     \[
@@ -2063,7 +2374,7 @@ The $\beta\eta$-equivalence relation is a rule based relation with three main fl
     \caption{The congruence rules for PEC}
 \end{figure}
 
-\begin{figure}
+\begin{figure}\label{BetaEtaEquivalence}
     \[
         \treerule{Reflexive}{\gpetyperelation{v}{A}}{\gpeberelation{v}{v}{A}}
         \quad
@@ -2085,9 +2396,77 @@ Now we can state the $\beta\eta$-soundness theorem.
 
 
 \begin{proof}
-    By rule induction on the definition of $\beta\eta$-equivalence, making use of monad laws for monadic cases, the adjunction for effect-polymorphic cases, the co-product for if-expressions, and the CCC property of S-categories for the lambda-term $\beta\eta$-reductions.
+    The proof proceeds by induction on the definition of the $\beta\eta$-equivalence relation.
+
+    This proof has a lot of cases and each of the $\beta\eta$-reductions makes use of many of the requirements we have placed on the indexed S-category.
+
+    I have omitted the congruence cases here as they hold through simple application of the inductive hypothesis on sub-terms. Similarly, the equivalence relation cases hold simply because equality on morphisms is an equivalence relation by definition. I shall however, give a selection of the $\beta\eta$-reductions to demonstrate the necessity of the S-category requirements.
     
 \todo{Cases. How many?}
+
+\case{Right Unit}
+This case makes use of the right-unit monad law.
+
+Let $f = \deno{\gpetyperelation{v}{\mea}}$ 
+    \begin{equation}
+    \begin{split}
+        \deno{\gpetyperelation{\doin{x}{v}{\return{x}}}{\mea}}  & = \bind{\e}{\1}{A} \after \T{\e}{(\point{A} \after \pp)} \after \tstrength{\e}{\G}{A}\after \pr{\idg}{f} \\
+        & = \T{\e}{\pp} \after \tstrength{\e}{\G}{A} \after \pr {\idg}{f} \\
+        & = \pp \after \pr{\idg}{f}\\
+        & = f
+    \end{split}
+\end{equation}
+
+\case{If-True}
+This case makes use of the co-product diagram on $\1 + \1$.
+
+Let
+\begin{align}
+    f = &\deno{\gpetyperelation{v_1}{A}}\\
+    g = &\deno{\gpetyperelation{v_2}{A}}\\
+\end{align}
+
+Then
+\begin{equation}
+    \begin{split}
+        \deno{\gpetyperelation{\pifthenelse{A}{v}{v_1}{v_2}}{A}} & = \ifMorph{\inl\after\term{\G}}{f}{g} \\
+        & = \app\after((\cur{f\after\pp}\after\term{\G})\times\idg)\after\diag{\G}\\
+        & = \app\after(\cur{f\after\pp}\times\idg)\after(\term{\G}\times\idg)\after\diag{\G}\\
+        & = f\after\pp\after\pr{\term{\G}}{\idg}\\
+        & = f \\
+        & = \deno{\gpetyperelation{v_1}{A}}\\
+    \end{split}
+\end{equation}
+
+\case{Effect-Beta}
+This case makes use of the adjunction properties of $\allI, \pstar$.
+
+let 
+\begin{align}
+    h & = \deno{\typerelation{\P}{\e}{\effect}}
+    \\
+    f & = \deno{\etyperelation{\P,\a}{\G}{v}{A}}
+    \\
+    A &= \deno{\typerelation{\P,\a}{A\ssub{\a}{\a}}{\type}}
+\end{align}
+
+Then
+
+\begin{equation}
+    \deno{\gpetyperelation{\elam{\a}{v}}{\all{\a}{A}}} = \bar{f}\\
+\end{equation}
+
+So
+\begin{align}
+    \deno{\gpetyperelation{\eapp{(\elam{\a}{v})}{\e}}{\all{\a}{A}}} & = \pr{\Id{I}}{h}\star(\e_A)\after\bar{f}\\
+    & = \pr{\Id{I}}{h}\star(\e_A)\after\pr{\Id{I}}{h}\star(\pstar(\bar{f}))\qt{Identity functor}\\
+    &= \pr{\Id{I}}{h}\star(\e_A\after\pstar(\bar{f}))\\
+    &= \pr{\Id{I}}{h}\star(f)\qt{By adjunction}\\
+    &= \deno{\gpetyperelation{v\ssub{\a}{\e}}{A\ssub{\a}{e}}}\qt{By substitution theorem}\\
+\end{align}
+
+
+$$\square$$
 
 \end{proof}
 
@@ -2144,6 +2523,8 @@ This also obeys the composition law of re-indexing functors.
 
 \begin{proof}
     \todo{Cases: Exponential and Bind?}    
+
+    $$\square$$
 \end{proof}
 
 
@@ -2230,6 +2611,8 @@ For $\theta: E^m \rightarrow E^n$.
     &= \allEm((\theta\times\Id{E})\star A)\env\\
     &= ((\allEm\after(\theta\times\Id{E})\star)A)\env
 \end{align}
+
+$$\square$$
 \end{proof}
 
 
@@ -2247,6 +2630,8 @@ For $\theta: E^m \rightarrow E^n$.
     & = \Id{\allII\after(\theta\times\Id{U})\star A}\ev\\
     & = \Id{\theta\star\after\allI}
 \end{align}
+
+$$\square$$
 \end{proof}
 
 Hence we have proof that our construction is indeed a valid indexed S-category. Importantly, this shows that reasonable models of the PEC are possible to instantiate and that our requirements do not over-constrain potential models to the point that they are not viable for doing actual analysis.
