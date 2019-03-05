@@ -935,7 +935,7 @@ Finally, $\allI$ should satisfy the Beck-Chevalley condition \todo{Reference}. T
 In figure \ref{RoadMap}, one can see a diagram of the collection of theorems that need to be proved to establish the $\beta\eta$-equivalence soundness of a semantics for PEC.
 
 
-The first pair of theorems is effect-substitution theorem on effects. These theorems show that substitutions of effects have well-behaved and easily defined action upon the denotations of effects. Using these theorems, we can then move on to characterize the action of effect-substitutions and effect-environment-weakening on the denotations of types and type-environments. From this, we can also look at the action of weakening and substituting effect environments on the sub-typing between types.
+The first pair of theorems is made up of the effect-substitution and weakening theorem on effects. These theorems show that substitutions of effects have a well-behaved and easily defined action upon the denotations of effects. Using these theorems, we can then move on to characterize the action of effect-substitutions and effect-environment-weakening on the denotations of types and type-environments. From this, we can also look at the action of weakening and substituting effect environments on the sub-typing between types.
 
 The next step is to use these substitution theorems to formalise the action of substitution and weakening of the effect environments on terms. This then allows us to find denotations for the weakening of term-substitutions and type environment weakening, which set us up to prove the typical weakening and substitution theorems upon term-variables and type environments. 
 
@@ -2485,7 +2485,7 @@ Next we shall pick our fibre-categories for non-zero values of $n$. A simple ins
 We also need to define the base category. This shall be $\Eff$, the discrete sub-category of $\set$, populated by the set of ground effects $E$ as the effect-object $U$, and its finite products.
 
 \begin{align}
-    E^0 & = \1 = \left\{\star\right\}\\
+    E^0 & = \1 = \left\{\singleton\right\}\\
     E^{n+1} &= E^n \times E
 \end{align}
 
