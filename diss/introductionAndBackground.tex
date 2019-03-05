@@ -932,6 +932,29 @@ Finally, $\allI$ should satisfy the Beck-Chevalley condition \todo{Reference}. T
     \bar{(\theta\times\Id{U})\star(\counit{})} = \Id{}: \theta\star\after\allI \rightarrow \allII\after(\theta\times\Id{U})\star\in \C(I')
 \end{align}
 
+From the beck-chevalley condition, we can derive some more naturality conditions that will become useful later.
+Using the adjunction property, we have that: $\bar{f\after\pstar(n)} = \bar{f}\after n$. Secondly, using the Beck-Chevalley condition, we can derive some non-trivial interactions between re-indexing functors and the adjunction. \todo{Reference for this? It's from a math-overflow answer} 
+    \begin{align}
+        \theta\star\unit{A}:\quad&\theta\star A \rightarrow \theta\star\after\allI\after\pstar A\\
+        \theta\star\unit{} =& \bar{(\theta\times\Id{U})\star(\counit{\pstar})}\after\theta\star\unit{}\\
+        =& (\allII\after(\theta\times\Id{U})\star)(\counit{\pstar})\after\unit{(\allII\after(\theta\times\Id{U})\star)\after\pstar}\after\theta\star\unit{}\\
+        = & (\allII\after(\theta\times\Id{U})\star)(\counit{\pstar})\after\unit{\theta\star\after\allI\after\pstar}\after\theta\star\unit{}\\
+        = & (\allII\after(\theta\times\Id{U})\star)(\counit{\pstar}) \after(\theta\star\after\allI\after\pstar)\unit{} \after\unit{(\theta\times\Id{U})\star}\\
+        = & (\theta\star\after\allI)(\counit{\pstar}
+        \after\pstar\unit{})\after\unit{(\theta\times\Id{U})\star}\\
+        = & (\theta\star\after\allI)(\Id{})\after\unit{(\theta\times\Id{U})\star}\\
+        = & \unit{(\theta\times\Id{U})\star}
+    \end{align}
+
+    Importantly, this gives us the useful naturality condition that allows us to push re-indexing functors into the adjunction terms.
+    
+    \begin{align}\label{NaturalityCondition}
+        \theta\star(\bar{f}) & = \theta\star(\allI(f)\after\eta_A)\\
+        & = \theta\star(\allI(f))\after\theta\star(\eta_A)\\
+        & =  (\allII\after(\theta\times\Id{U})\star)f \after\unit{(\theta\times\Id{U})\star A}\\
+        & = \bar{(\theta\times\Id{U})\star f}\\
+    \end{align}
+
 \section{Road Map}
 In figure \ref{RoadMap}, one can see a diagram of the collection of theorems that need to be proved to establish the $\beta\eta$-equivalence soundness of a semantics for PEC.
 
