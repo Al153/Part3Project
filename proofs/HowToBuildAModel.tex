@@ -370,6 +370,128 @@ For a function $\theta: E^m \rightarrow E^n$ , the re-indexing functor $\theta\s
     \theta\star(f)\emv =&\quad f(\theta(\emv)): A(\theta(\emv)\rightarrow B(\theta(\emv)))
 \end{align}
 
+
+
+\subsection{$\theta\star$ is S-closed.}
+
+\subsubsection{CCC}
+
+\begin{align}
+    (\theta\star(A\times B))\ev & = (A\times B)(\theta\ev)\\
+    & = (A(\theta \ev)\times B(\theta\ev))\\
+    & = (\theta\star A\times \theta\star B)\ev\\
+\end{align}
+
+\begin{align}
+    (\theta\star \p)\ev & = \p(\theta\ev)\\
+    & = \p \qt{Constant function}\\
+    & = \p\ev
+\end{align}
+
+
+\begin{align}
+    (\theta\star \pp)\ev & = \pp(\theta\ev)\\
+    & = \pp \qt{Constant function}\
+    & = \pp\ev
+\end{align}
+
+\begin{align}
+    (\theta\star\pr{f}{g})\ev & = (\pr{f}{g})(\theta\ev)\\
+    & = \pr{f(\theta\ev)}{g(\theta\ev)}\\
+    &= \pr{\theta\star f}{\theta\star g}\ev
+\end{align}
+
+\begin{align}
+    (\theta\star(A^B))\ev & = (A^B)(\theta\ev)\\
+     & = (A (\theta\ev))^{(B (\theta\ev))}\\
+     & = (\theta\star A)^{(\theta\star B)}\ev\\
+\end{align}
+
+\begin{align}
+    (\theta\star \app)\ev & = \app(\theta\ev)\\
+    & = \app \qt{Constant fn}\\
+    & = \app\ev
+\end{align}
+
+\begin{align}
+    (\theta\star\cur{f})\ev & = \cur{f}(\theta\ev)\\
+    & = \cur{f(\theta\ev)}\\
+    & = \cur{\theta\star f}
+\end{align}
+
+
+\begin{align}
+    (\theta\star \1)\ev & = \1(\theta\ev)\\
+    & = \1 \\
+    & = \1_I' \ev\\
+\end{align}
+
+\begin{align}
+    (\theta\star\term{A})\ev & = \term{A}(\theta\ev)\\
+    & = \term{A(\theta\ev)}\\
+    & = \term{\theta\star A}\ev
+\end{align}
+
+
+\subsubsection{Co-Product}
+
+\begin{align}
+    (\theta\star(\1 + \1))\ev & = (\1 + \1)(\theta\ev)\\
+    & = (\1 + \1)\qt{Constant function}\\
+    & = (\1 + \1)\ev
+\end{align}
+
+\begin{align}
+    (\theta\star\inl )\ev & = \inl(\theta\ev)\\
+    & = \inl \qt{Constant Fn}\\
+    & = \inl \ev
+\end{align}
+
+\begin{align}
+    (\theta\star\inr )\ev & = \inr(\theta\ev)\\
+    & = \inr \qt{Constant Fn}\\
+    & = \inr \ev
+\end{align}
+
+\begin{align}
+    (\theta\star [f, g])\ev & = [f, g](\theta\ev)\\
+    & = [f (\theta\ev), g(\theta\ev)]\\
+    & = [\theta\star f, \theta\star g]\ev\\
+\end{align}
+
+\subsubsection{Strong Graded Monad}
+\begin{align}
+    (\theta\star\Tn{f}{A})\ev & = \Tn{f}{A}(\theta\ev) \\
+    & = \Tz{(f(\theta\ev))}{(A(\theta\ev))}\\
+    & = (\Tm{(f\after\theta)}{\theta\star A})\ev\\
+\end{align}
+
+\begin{align}
+    (\theta\star\pointn{A})\ev & = \pointn{A}(\theta\ev) \\
+    & = \pointz{A(\theta\ev)}\\
+    & = \pointm{\theta\star A}\ev\\
+\end{align}
+
+\begin{align}
+    (\theta\star \tstrengthn{f}{A}{B})\ev & = \tstrengthn{f}{A}{B}(\theta \ev)\\
+    & = \tstrengthz{(f(\theta\ev))}{(A(\theta\ev))}{(B(\theta\ev))}\\
+    & = \tstrength{f\after\theta}{\theta\star A}{\theta\star B}\ev\\
+\end{align}
+
+\subsubsection{Sub-Effecting}
+\begin{align}
+    (\theta\star(\dsen{f}{g} A))\ev & = (\dsen{f}{g} A)(\theta \ev)\\
+    & = (\dsen{f(\theta\ev)}{g(\theta\ev)}(A(\theta\ev)))\\
+    & = (\dsem{\theta\star f}{\theta\star g} (\theta\star A)) \ev
+\end{align}
+
+\subsubsection{Ground Sub-Typing}
+\begin{align}
+    \theta\star(\deno{A\subtypeg B})\ev  & = \deno{A\subtypeg B}(\theta\ev)\\
+    & = \deno{A\subtype B} \qt{Constant Function}\\
+    & = \deno{A\subtype B} \ev\\
+\end{align}
+
 \subsection{Quantification}
 We need to define $\allEn: [E^{n+1}, \C]\rightarrow[E^n, \C]$
 
