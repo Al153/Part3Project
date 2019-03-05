@@ -2515,12 +2515,33 @@ This also obeys the composition law of re-indexing functors.
 \end{align}
 
 \begin{theorem}
-    The re-indexing functors are also S-closed, since all of the S-category features are proved point-wise.
+    The re-indexing functors are also S-closed. That is all the S-category features in $[E^n, \C]$ are preserved by $\theta\star$ in $[E^m, \C]$. For a full list of features please see appendix \todo{Reference}.
 \end{theorem}
 
 
 \begin{proof}
-    \todo{Cases: Exponential and Bind?}    
+    , since all of the S-category features are proved point-wise.
+
+    \case{Graded Monad Functor}
+    \begin{align}
+        (\theta\star\Tn{f}{A})\ev & = \Tn{f}{A}(\theta\ev) \\
+        & = \Tz{(f(\theta\ev))}{(A(\theta\ev))}\\
+        & = (\Tm{(f\after\theta)}{\theta\star A})\ev\\
+    \end{align}
+
+    \case{Terminal Object}
+    
+\begin{align}
+    (\theta\star \1)\ev & = \1(\theta\ev)\\
+    & = \1 \\
+    & = \1 \ev\\
+\end{align}
+
+\begin{align}
+    (\theta\star\term{A})\ev & = \term{A}(\theta\ev)\\
+    & = \term{A(\theta\ev)}\\
+    & = \term{\theta\star A}\ev
+\end{align}
 
     $$\square$$
 \end{proof}
@@ -2535,10 +2556,10 @@ Next, the re-indexing functor $\pstar$ should have a right-adjoint, $\allEn$. He
     \allEn(f)\env =&\Pi_{\e\in E}{f(\env, \e)}
 \end{align}
 
-\todo{Is the functor S-closed? This doesn't need to be, as we never make use of the S-closed properyies. Need to express this in the requirements}
+\todo{Need to express that the quantification functor need not be S-closed in the requirements}
 
 
-We can now prove that $\pstar \dashv \allEn$. To do this, we need functors natural a natural bijection between morphisms in the $[E^n, \C]$ and $[E^{n+1}, \C]$.
+We can now prove that $\pstar \dashv \allEn$. To do this, we need a natural bijection between morphisms in the functor categories $[E^n, \C]$ and $[E^{n+1}, \C]$.
 
 \begin{equation}
     \bar{(-)}: [E^{n+1}, \C](\pstar A, B) \rightleftharpoons [E^n,\C] (A, \allEn B): \widehat{(-)}
