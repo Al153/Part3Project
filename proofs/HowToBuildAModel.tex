@@ -76,6 +76,32 @@ Since $\C$ is complete and a CCC, and $E^n$ is small, since $E$ is small, $[E^n,
     \pr{f}{g}\ev & = \pr{f\ev}{g\ev}\\
 \end{align}
 
+\subsection{The Terminal Co-Product}
+
+We can define the co-product point-wise.
+
+\begin{align}
+    (\1 + \1)\ev & = (\1\ev + \1\ev)\\
+    & = (\1 + \1)\\
+    \inl\ev &= \inl\\
+    \inr\ev &= \inr\\
+    [f, g]\ev &= [f\ev, g\ev]\\
+\end{align}
+
+This preserves the co-product diagram.
+
+\begin{align}
+    ([f, g]\after\inl)\ev & = [f\ev, g\ev]\after \inl\\
+    & = f\ev\\
+    & \square\\
+    ([f, g]\after\inr)\ev& = [f\ev, g\ev]\after \inr\\
+    & = f\ev\\
+    & \square\\
+\end{align}
+
+Suppose $l \after \inl = f$ and $l\after \inr = g$ then $l\ev \after \inl = f\ev$ and $l\ev \after\inr = g\ev$ then by in co-product in $\C$, $l = [f\ev, g\ev]$ so $l = [f, g]$.
+
+
 \subsection{Ground Types and Terms}
 Each ground type in the non-polymorphic calculus has a fixed denotation $\deno{\g}\in\obj\C$. The ground type in the polymorphic calculus hence has a denotation represented by the constant function.
 
@@ -459,6 +485,9 @@ For a function $\theta: E^m \rightarrow E^n$ , the re-indexing functor $\theta\s
     & = [\theta\star f, \theta\star g]\ev\\
 \end{align}
 
+
+
+
 \subsubsection{Strong Graded Monad}
 \begin{align}
     (\theta\star\Tn{f}{A})\ev & = \Tn{f}{A}(\theta\ev) \\
@@ -482,7 +511,7 @@ For a function $\theta: E^m \rightarrow E^n$ , the re-indexing functor $\theta\s
 \begin{align}
     (\theta\star(\dsen{f}{g} A))\ev & = (\dsen{f}{g} A)(\theta \ev)\\
     & = (\dsen{f(\theta\ev)}{g(\theta\ev)}(A(\theta\ev)))\\
-    & = (\dsem{\theta\star f}{\theta\star g} (\theta\star A)) \ev
+    & = (\dsem{\theta\star f}{\theta\star g} (\theta\star A)) \ev\\
 \end{align}
 
 \subsubsection{Ground Sub-Typing}
