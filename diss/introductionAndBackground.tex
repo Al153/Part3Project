@@ -1556,7 +1556,7 @@ The substitution theorem is defined as so:
 
 \case{Effect-Lambda}
 
-This case makes use of the naturality condition \todo{Needs to be introduced somewhere before + reference} and simple reductions.
+This case makes use of the naturality condition \ref{NaturalityCondition} and simple reductions.
 
 If $\D$ derives $\gpetyperelation{\elam{\a}{v}}{\all{\a}{A}}$ then by inversion, there exists $\D_1$ deriving  $\etyperelation{\P,\a}{\G}{v}{A}$ such that:
 
@@ -2864,6 +2864,10 @@ $$\square$$
 \end{proof}
 
 Hence we have proof that our construction is indeed a valid indexed S-category. Importantly, this shows that reasonable models of the PEC are possible to instantiate and that our requirements do not over-constrain potential models to the point that they are not viable for doing actual analysis.
+
+\chapter{Conclusion}
+
+This dissertation has introduced a denotational semantics for polymorphic effect systems in category theory and has proved that non-trivial models capable of interpreting effect-polymorphic languages can indeed be instantiated. The final piece of the puzzle would be to find an adequate model of a given effect-polymorphic language. This means instantiating a sound model such that if the denotations of two terms are equal in the model, then the terms themselves are equal upto some property, such as $\beta\eta$-equivalence or effect behaviour. This is typically a hard problem which is not addressed in presentations of denotational semantics. \todo{Explain why}
 
 
 
