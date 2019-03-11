@@ -22,8 +22,116 @@
 \usetikzlibrary{arrows,automata,positioning}
 \usetikzlibrary{decorations.pathreplacing,calc}
 
+\newcommand\comment[1]{}
+
+
 
 \begin{document}
+
+\comment{
+I also have comments of my own. I've been reading quite slowly, so
+haven't finished yet; I will send more when I'm done. There are a few
+remarks below.
+
+I just read though your draft, and wrote up a CamCORS report for you (talk
+to DofS)
+which has two issues for you to address.  One is what we talked about
+yesterday (a next unit of work).
+The other is (quoting):
+  "The write-up.  Al gave me a draft to read at the meeting.  While the
+draft is far too long (17,000 words) many of the proofs can go into an
+appendix.  A more serious problem is the presentation style, perhaps because
+of how the proofs were done first.
+  I'll talk to Al, but the intro could be more "chatty" and the mathematical
+style clarified in terms of structure (at the moment it's very theorem-proof
+with little bigger structure).
+  Good work so far though."
+
+There's a bit of a problem (to me) with the introduction (1.2), because many
+things are done in quite some detail
+when what the reader needs is a bit of an intuitive view of what the problem
+is and where the
+rest of the document is going.  For example I put a ring sound "cur" saying
+"what's this", and only
+found out what it is in chapter 2.  Even section 1.1 "what is effect
+polymorphism" assumes missing
+text before it explaining what an effect is.
+
+I agree with this. I think the introduction goes too technical too
+quickly. The part that talks the denotational semantics of STLC should
+probably go in the background. And there definitely needs to be more on
+what effects, effect systems, etc are.
+
+The maths in Chapter 2 is fine, but it's can be a bit "brutal"
+(we do this, don't ask questions, or wonder why), e.g. section 2.8 on
+strength.  Read the
+first sentence in isolation! The critical idea that we need the operation of
+strength to be able to do various
+programming things is missing.
+
+I think strength is quite hard to motivate (given that it's essentially
+invisible to the programming language), but there should still be
+something there.
+
+E.g. section 2.7 assumes a "monoidal
+algebra".
+
+There should be a definition of preordered monoid somewhere!
+
+E.g. at various points you stress beta-eta, but never tell me why.  Does
+this suffice, or are there
+other reduction rules which produce equational axions?
+
+There is an axiom (associativity for bind) that doesn't really fit into
+beta or eta. So the name beta-eta equality should probably be avoided.
+
+Section 3.3.6 isn't quite proper maths -- it's not that there exists, we're
+defining or assuming that
+subtyping is trivial between base types (or perhaps saying that a set of
+base types comes along with its
+own set of subtype relationships (int < real), but perhaps this is overkill
+here.
+Then $\Phi$ is *not* a parameter.  It's more of a label.
+
+There is a typo in the (All) rule for subtyping: one of the $\P$ should be
+$\P, \a$. So $\P$ does actually do something interesting in the definition.
+
+Much of the maths lacks proper spacing.  Latex knows about (e.g.) $n + n
+\log n$ but it doesn't
+know how to format $\vdash$ ... :" as a loosely binding ternary operator in
+rules etc.  Use explicit spacing.
+(~ \quad or even \hspace{2em}).
+
+When you introduce $f*$ you should say "written", otherwise people wonder what
+it is (re-read the text
+assuming you're a newbie).  Ditto section 2.1.  The first sentence appears
+to be assuming things.
+So drop "recall that", and add "we explain these concepts below" just before
+2.1.1.
+
+You've taken hyphenation too much to heart; you don't need it in effect-ful
+(effecful) or sub-set.
+and not the final one in "polymorphic-effect-calculus" (actually you don't
+need either as it's
+a "polymorphic version of the effect calculus", but I agree that a "calculus
+with polymorphic effects"
+is also a good reading.).
+
+Section 3.1 you give syntax; but semantics?  The lambda bits we know, but
+there's no explanation of
+bind/return.  Perhaps just saying "Haskell-like semantics" and then
+explaining a bit?
+
+There definitely needs to be some explanation of what the terms from
+Moggi's language (i.e. bind and return) and mean intuitively. Similarly
+for the new constructs (even though they look a lot like System F).  I
+especially think the type system needs more explanation. Understanding
+the typing rules for bind and return is probably hard for anyone who
+hasn't seen graded monads before (i.e. almost everyone).
+}
+
+
+
 \abstract
 
 
@@ -798,7 +906,7 @@ Finally, we can derive the a well-formed-ness of type-environments,   $\oke{\P}{
     \quad
     \treerule{Fn}{A \subtypep A' \s\s B' \subtypep B }{\fntype{A'}{B'} \subtypep \ab}
     \quad
-    \treerule{All}{A\subtypep A'}{\all{\a}{A}\subtypep\all{a}{A'}}
+    \treerule{All}{A\subtypep A'}{\all{\a}{A}\subtypepa\all{a}{A'}}
     \quad
     \treerule{Effect}{A\subtypep B\s\s \e_1\subeffectp\e_2}{\M{\e_1}{A}\subtypep\M{\e_2}{B}}
 \]
@@ -2867,7 +2975,9 @@ Hence we have proof that our construction is indeed a valid indexed S-category. 
 
 \chapter{Conclusion}
 
-This dissertation has introduced a denotational semantics for polymorphic effect systems in category theory and has proved that non-trivial models capable of interpreting effect-polymorphic languages can indeed be instantiated. The final piece of the puzzle would be to find an adequate model of a given effect-polymorphic language. This means instantiating a sound model such that if the denotations of two terms are equal in the model, then the terms themselves are equal upto some property, such as $\beta\eta$-equivalence or effect behaviour. This is typically a hard problem which is not addressed in presentations of denotational semantics. \todo{Explain why}
+This dissertation has introduced a denotational semantics for polymorphic effect systems in category theory and has proved that non-trivial models capable of interpreting effect-polymorphic languages can indeed be instantiated. The final piece of the puzzle would be to find an adequate model of a given effect-polymorphic language. This means instantiating a sound model such that if the denotations of two terms are equal in the model, then the terms themselves are equal upto some property, such as $\beta\eta$-equivalence or effect behaviour. This is typically a hard problem which is not addressed in presentations of denotational semantics. \todo{Explain why}.
+
+This work forms a potential foundation for more precise analysis tools which could be used to improve compilers and interpreters in the future. A more precise analysis of programs allows more specific optimisations to be made, where they would not be considered sound under a non-polymorphic system.
 
 
 
