@@ -522,7 +522,7 @@ Such that the diagrams in figures \ref{GradedMonadAssociativity}, \ref{GradedMon
 \todo{section 2.8 on strength.  Read the first sentence in isolation! The critical idea that we need the operation of strength to be able to do various programming things is missing.
 I think strength is quite hard to motivate (given that it's essentially invisible to the programming language), but there should still be something there.
 }
-Tensorial strength over a graded monad gives us the tools necessary to manipulate monadic operations in an intuitive way. A monad with tensor strength is referred to as ``strong''. Tensorial strength consists of a natural transformation:
+Tensorial strength over a graded monad gives us the tools necessary to manipulate monadic operations in an intuitive way. A monad with tensor strength is referred to as \textit{strong}. Hence a graded monad with tensorial strength is known as a \textit{strong graded monad}. Tensorial strength consists of a natural transformation:
 
 \begin{align}
     \tstrength{\e}{A}{B}: A \times \teb \rightarrow \T{\e}{(A \times B)}
@@ -986,7 +986,7 @@ Only the type rule \texttt{Weaken} adds terms to the environment from its precon
 
 \chapter{Semantics for EC in an S-Category}
 
-As suggested in \todo{Reference to intro}, since EC contains multiple effects, STLC terms, and if-expressions, we should be able interpret its semantics in a cartesian closed category with an appropriate strong graded monad \todo{Is this defined? should put in category theory section}. With the addition of some extra category structure to handle sub-typing, which I shall explain shortly, it is indeed possible to interpret EC. This section contains a fairly high-level treatment of the semantics. This is because the concepts introduced are a subset of those required for the semantics of PEC, which I shall explain in more detail later.
+As suggested in \todo{Reference to intro}, since EC contains multiple effects, STLC terms, and if-expressions, we should be able interpret its semantics in a cartesian closed category with an appropriate strong graded monad. With the addition of some extra category structure to handle sub-typing, which I shall explain shortly, it is indeed possible to interpret EC. This section contains a fairly high-level treatment of the semantics. This is because the concepts introduced are a subset of those required for the semantics of PEC, which I shall explain in more detail later.
 
 \todo{
     Denotational semantic for similar languages have been presented before - references?
