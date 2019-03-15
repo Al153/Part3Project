@@ -984,7 +984,7 @@ If $\oke{\P}{\gax}$ then by the inversion (See figure \ref{InversionPrinciple}) 
 Only the type rule \texttt{Weaken} adds terms to the environment from its preconditions to its post-condition and it does so in an $\ok{}$ preserving way. Any type derivation tree has at least one leaf. All leaves are axioms which require $\oke{\P}{\G}$. And all non-axiom derivations preserve the $\ok{}$ property.
 
 
-\chapter{Semantics for EC in an S-Category}
+\chapter{Semantics for EC in an S-Category}\label{SCategoryIntro}
 
 As suggested in \todo{Reference to intro}, since EC contains multiple effects, STLC terms, and if-expressions, we should be able interpret its semantics in a cartesian closed category with an appropriate strong graded monad. With the addition of some extra category structure to handle sub-typing, which I shall explain shortly, it is indeed possible to interpret EC. This section contains a fairly high-level treatment of the semantics. This is because the concepts introduced are a subset of those required for the semantics of PEC, which I shall explain in more detail later.
 
@@ -994,9 +994,7 @@ As suggested in \todo{Reference to intro}, since EC contains multiple effects, S
 
 In order to correctly model a given instantiation of EC, that is an EC with a collection of effects, constants, and ground types, there should be a collection of objects in the category to represent the ground types. There should also be a point morphism (a morphism from the terminal object to the appropriate type) for each constant.
 
-In addition to the previously stated requirements, we also require the category, $\C$, to be able to model sub-typing and sub-effecting. For each instance of the ground sub-typing relation, $A \subtypeg B$, there should exist a morphism between the objects representing the ground types $A$ and $B$. A further requirement is that $\C$ has a collection of sub-effecting natural transformations. For each instance of $\e_1 \subeffect \e_2$, there exists a natural transformation $\db{\e_1\subeffect\e_2}: \T{\e_1}{}\rightarrow\T{\e_2}{}$ such that it has interactions with the graded monad as specified in figures \ref{SubeffectTensorStrength}, \ref{SubeffectBind}. We can now define morphisms for all forms of sub-typing by constructions following the derivation tree for sub-typing. For more detail, one can look at section \todo{Ref} in the semantics of PEC for the same construction on PEC. From this point onwards, we shall refer to a category that fulfills these properties of having a strong graded monad, CCC, ground objects and points, sub-effect natural transformations, and a co-product as an S-Category (Semantic Category).
-
-\todo{S-Category is a novel term.}
+In addition to the previously stated requirements, we also require the category, $\C$, to be able to model sub-typing and sub-effecting. For each instance of the ground sub-typing relation, $A \subtypeg B$, there should exist a morphism between the objects representing the ground types $A$ and $B$. A further requirement is that $\C$ has a collection of sub-effecting natural transformations. For each instance of $\e_1 \subeffect \e_2$, there exists a natural transformation $\db{\e_1\subeffect\e_2}: \T{\e_1}{}\rightarrow\T{\e_2}{}$ such that it has interactions with the graded monad as specified in figures \ref{SubeffectTensorStrength}, \ref{SubeffectBind}. We can now define morphisms for all forms of sub-typing by constructions following the derivation tree for sub-typing. For more detail, one can look at section \todo{Ref} in the semantics of PEC for the same construction on PEC. From this point onwards, I shall refer to a category that fulfills these properties of having a strong graded monad, CCC, ground objects and points, sub-effect natural transformations, and a co-product as an \textit{S-Category} (Semantic Category).
 
 \todo{This is very vague so far. I don't want to get too bogged down in the semantics of the Effect Calculus though}
 A full derivation and proof of soundness of the semantics of the Effect Calculus can be found online \todo{Link} as it is too long to include here and many of the concepts are repeated later in the remainder of this dissertation anyway. The categorical semantics of the Effect Calculus requires an S-category not only to simply model all of the features of EC but also to use the various commutivity diagrams and rules to manipulate the expressions encountered when proving properties of the semantics.
@@ -1053,9 +1051,9 @@ In this chapter, I  describe the category structure required to interpret an ins
 
 
 \section{Required Category Structure}
-In order to model the polymorphism of PEC, we need to now look at an indexed category. This consists of a base category, $\C$ in which we can interpret the possible effect environments in, and a mapping from objects in the base category to S-Categories in the category of S-closed categories. This functor is denoted from this point onwards as $\C(-)$ and the induced categories $\C(\deno{\P})$ are called ``fibres''. A further notational short-hand I use, inheriting from R. L. Crole \todo{Reference}, is to write $I$ for the denotation of $\P$. The term ``S-closed'' indicates that all functors derived from $\C$ within this category preserve the properties of S-categories, which are explained in section \todo{Ref}. A functor $F$ preserves the properties of S-categories if it preserves each of the features within an S-category. For example $F(X\times Y) = (FX)\times (FY)$. For a full list of properties that an S-closed functor should preserve, please see appendix \todo{Link/reference}. Thus, each morphism $\theta: \deno{\P'}\rightarrow\deno{\P}$ in $\C$ should induce as S-closed, re-indexing functor $\theta\star: \C(I)\rightarrow\C(I')$ between the fibres.
+In order to model the polymorphism of PEC, we need to now look at an indexed category. This consists of a base category, $\C$ in which we can interpret the possible effect environments in, and a mapping from objects in the base category to S-Categories in the category of S-closed categories. This functor is denoted from this point onwards as $\C(-)$ and the induced categories $\C(\deno{\P})$ are called ``fibres''. A further notational short-hand I use, inheriting from R. L. Crole \todo{Reference}, is to write $I$ for the denotation of $\P$. The term ``S-closed'' indicates that all functors derived from $\C$ within this category preserve the properties of S-categories, which are explained in section \ref{SCategoryIntro}. A functor $F$ preserves the properties of S-categories if it preserves each of the features within an S-category. For example $F(X\times Y) = (FX)\times (FY)$. For a full list of properties that an S-closed functor should preserve, please see appendix \todo{Link/reference}. Thus, each morphism $\theta: \deno{\P'}\rightarrow\deno{\P}$ in $\C$ should induce as S-closed, re-indexing functor $\theta\star: \C(I)\rightarrow\C(I')$ between the fibres.
 
-The essential idea from this point on is that for each relation \todo{this isn't clear} $\wellformed{\texttt{Env}}{\texttt{Conclusion}}$ should have a denotation that is an object or morphism in a category. For example, $\deno{\typerelation{\P}{\e}{\effect}}$ is a morphism in the base category, $\deno{\typerelation{\P}{A}{\type}}$ is an object in the fibre (S-category) induced by $\P$, and $\deno{\gpetyperelation{v}{A}}$ is morphism between the objects which denote $\G$ and $A$ in the fibre induced by $\P$.
+The essential idea from this point on is that we have defined several relations of the form $\wellformed{\texttt{Env}}{\texttt{Conclusion}}$, such as the type-relation $\gpetyperelation{v}{A}$, and the well-formedness relation on effects $\wellformed{\P}{\e}$. Each instance of such a relation has a denotation that is an object or morphism in a category. For example, $\deno{\typerelation{\P}{\e}{\effect}}$ is a morphism in the base category, $\deno{\typerelation{\P}{A}{\type}}$ is an object in the fibre (S-category) induced by $\P$, and $\deno{\gpetyperelation{v}{A}}$ is morphism between the objects which denote $\G$ and $A$ in the fibre induced by $\P$.
 
 In order to form denotations of well formed effects, $\e$, we need specific objects to exist in the base category $\C$. Firstly, there should exist an object, $U$, indicating the kind of effects. To denote effect variable environments, essentially a list of effect variables, we need finite products on $U$, that is $\C$ should have a terminal object, $\1$ and binary products. We can form finite products as so: $U^0 = \1$ and $U^{n+1} = U^n\times U$. From now on, I use $I$ to mean $U^n$ for some $n$.
 
@@ -1065,14 +1063,14 @@ Next up, there needs to be a monoidal operator $\Mul: \ciu \times \ciu \rightarr
 
 Our penultimate requirement is that the re-indexing functor  induced by $\p: I\times U\rightarrow I$ (that is $\pstar: \C(I) \rightarrow \C(I\times U)$) has a right adjoint, $\allI: \C(I\times U) \rightarrow \C(I)$. As the reader might be able to guess, this functor allows us to interpret quantification over effects.
 
-Finally, $\allI$ should satisfy the Beck-Chevalley condition \todo{Reference}. That is $\theta\star\after\allI = \allII\after(\theta\times\Id{U})\star$, and the natural transformation $\bar{(\theta\times\Id{U})\star(\counit{})}$ between these functors is equal to the identity natural transformation. This allows us to commute the re-indexing functors with the quantification functor.
+Finally, $\allI$ should satisfy the Beck-Chevalley condition. That is $\theta\star\after\allI = \allII\after(\theta\times\Id{U})\star$, and the natural transformation $\bar{(\theta\times\Id{U})\star(\counit{})}$ between these functors is equal to the identity natural transformation. This allows us to commute the re-indexing functors with the quantification functor.
 
 \begin{align}
     \bar{(\theta\times\Id{U})\star(\counit{})} = \Id{}: \theta\star\after\allI \rightarrow \allII\after(\theta\times\Id{U})\star\in \C(I')
 \end{align}
 
 From the Beck-Chevalley condition, we can derive some more naturality conditions that will become useful later.
-Using the adjunction property, we have that: $\bar{f\after\pstar(n)} = \bar{f}\after n$. Secondly, using the Beck-Chevalley condition, we can derive some non-trivial interactions between re-indexing functors and the adjunction. \todo{Reference for this? It's from a math-overflow answer. Do this using footnote} 
+Using the adjunction property, we have that: $\bar{f\after\pstar(n)} = \bar{f}\after n$. Secondly, using the Beck-Chevalley condition, we can derive some non-trivial interactions between re-indexing functors and the adjunction\footnote{This part of the proof comes from a stack-overflow answer: https://math.stackexchange.com/questions/188099/beck-chevalley-condition-and-maps-of-adjunctions}. 
     \begin{align}
         \theta\star\unit{A}:\quad&\theta\star A \rightarrow \theta\star\after\allI\after\pstar A\\
         \theta\star\unit{} =& \bar{(\theta\times\Id{U})\star(\counit{\pstar})}\after\theta\star\unit{}\\
@@ -1367,7 +1365,7 @@ We can also define the action of substitutions on effects.
 This definition allows us to define, in particular, the identity substitution,$\typerelation{\P}{\Id{\P}}{\P}$ and the single substitution, $\typerelation{\P}{\ssub{\a}{\e}}{\P,\a}$.
 
 
-\begin{align}
+\begin{align}\label{SpecialSubs}
     \Id{\nil} & = \nil\\
     \Id{\P,\a} & = (\Id{\P}, \a\setto\a)\\
     \ssub{\a}{\e} & = (\Id{\P}, \a\setto \e)
@@ -1375,7 +1373,7 @@ This definition allows us to define, in particular, the identity substitution,$\
 
 By inspection, we can find the denotations of these special-case substitutions to be:
 
-\begin{align}
+\begin{align}\label{SpecialSubsDenotations}
     \deno{\typerelation{\P}{\Id{\P}}{\P}} & = \Id{I}\\
     \deno{\typerelation{\P}{\ssub{\a}{\e}}{(\P,\a)}} & = \pr{\Id{I}}{\deno{\typerelation{\P}{\e}{\effect}}}
 \end{align}
@@ -1698,6 +1696,7 @@ The substitution theorem is defined as so:
 \begin{proof}
     This proof makes use of the previous effect-substitution theorems, and the adjunction of quantification and the re-indexing functor of projection.
 
+\todo{Missing the proof of existence of derivation}
 
 \case{Effect-Lambda}
 
@@ -1727,8 +1726,7 @@ So
 
 This is a more complex case, as it makes use of several naturality properties and the adjunction $\pstar\dashv\allI$.
 
-\todo{Missing the proof of existence of derivation}
-\todo{Explain single substitutions}
+
 
 By inversion, if $\D$ derives $\gpetyperelation{\eapp{v}{\e}}{A\ssub{\a}{\e}}$ then there exists $\D_1$ deriving $\gpetyperelation{v}{\all{\a}{A}}$ and $h = \deno{\typerelation{\P}{\e}{\effect}}$ such that:
 
@@ -1883,7 +1881,7 @@ We also need to explain the action of these term substitutions on terms. We defi
     (\eapp{v}{\e})\ssi & = \eapp{(v\ssi)}{\e}\\
 \end{align}
 
-In order to prove the quantification case of typing-environment weakening and substitution theorems on terms, as can be seen in section \todo{Reference}, it will be necessary to be able to weaken the effect environment on term-environment weakenings and substitutions
+In order to prove the quantification case of typing-environment weakening and substitution theorems on terms, as can be seen in the road map in figure \todo{RoadMap}, it will be necessary to be able to weaken the effect environment on term-environment weakenings and substitutions
 
 Let us first consider the action of effect weakenings on these morphisms. The weakening theorem on term-environment weakenings is as so:
 
@@ -1976,7 +1974,7 @@ As with effect substitutions, it is useful to define a couple of special substit
     \ssub{x}{v} & = (\idg, x\setto v)\\
 \end{align}
 
-By inspection, these also have simple denotations, similar to those seen in the case of effect substitutions. \todo{Reference}?.
+By inspection, these also have simple denotations, similar to those seen in the case of effect substitutions (Equation \ref{SpecialSubsDenotations}).
 
 \begin{align}
     \deno{\etyperelation{\P}{\G}{\Id{\G}}{\G}}: & \G\rightarrow\G\\
