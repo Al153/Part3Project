@@ -1061,7 +1061,7 @@ There is also a requirement that the indexed category can model ground effects, 
 
 Next up, there needs to be a monoidal operator $\Mul: \ciu \times \ciu \rightarrow \ciu$. $\Mul$ should be natural, which means: $\Mul(f, g)\after\theta = \Mul(f\after\theta, g\after\theta)$. Secondly, $\Mul$ should preserve the operation of the multiplication of ground effects. That is, $\Mul(\deno{e_1},\deno{e_2}) = \deno{e_1\dot e_2}$ where $e_1, e_2$ are ground effects.
 
-Our penultimate requirement is that the re-indexing functor  induced by $\p: I\times U\rightarrow I$ (that is $\pstar: \C(I) \rightarrow \C(I\times U)$) has a right adjoint, $\allI: \C(I\times U) \rightarrow \C(I)$. As the reader might be able to guess, this functor allows us to interpret quantification over effects.
+Our penultimate requirement is that the re-indexing functor  induced by $\p: I\times U\rightarrow I$ (that is $\pstar: \C(I) \rightarrow \C(I\times U)$) has a right adjoint, $\allI: \C(I\times U) \rightarrow \C(I)$. As the reader might be able to guess, this functor allows us to interpret quantification over effects. This right adjoint need not be S-closed.
 
 Finally, $\allI$ should satisfy the Beck-Chevalley condition. That is $\theta\star\after\allI = \allII\after(\theta\times\Id{U})\star$, and the natural transformation $\bar{(\theta\times\Id{U})\star(\counit{})}$ between these functors is equal to the identity natural transformation. This allows us to commute the re-indexing functors with the quantification functor.
 
@@ -2921,8 +2921,6 @@ Next, the re-indexing functor $\pstar$ should have a right-adjoint, $\allEn$. He
     \\ 
     \allEn(f)\env =&\Pi_{\e\in E}{f(\env, \e)}
 \end{align}
-
-\todo{Need to express that the quantification functor need not be S-closed in the requirements}
 
 
 We can now prove that $\pstar \dashv \allEn$. To do this, we need a natural bijection between morphisms in the functor categories $[E^n, \C]$ and $[E^{n+1}, \C]$.
