@@ -221,7 +221,7 @@ A single effect can be modelled by adding a strong monad to the category, as sho
                 basicstyle=\fontfamily{lmvtt}\selectfont,
               ]
               let $x$ = $5$ in (
-                do $y$ <- readInt in (
+                do $y$ $\texttt{<-}$ readInt in (
                     return $x$ + $y$
                 ) 
               );
@@ -528,7 +528,6 @@ Tensorial strength over a graded monad gives us the tools necessary to manipulat
     \tstrength{\e}{A}{B}: A \times \teb \rightarrow \T{\e}{(A \times B)}
 \end{align}
 
-\todo{Fix the references here.}
 This is required to have well defined interactions with the graded monad morphisms and the product-reordering natural transformation $\alpha_{A, B, C} = \pr{\p\after\p}{\pr{\pp\after\p}{\pp}}: ((A \times B) \times C) \rightarrow (A \times (B \times C))$, as seen in figures \ref{TensorStrengthLeftNaturality}, \ref{TensorStrengthRightNaturality}, \ref{TensorStrengthUnitorLaw}, \ref{TensorStengthJoin}, \ref{TensorStrengthPoint}, \ref{TensorStrengthAlpha}.
 
 \begin{figure}
@@ -717,18 +716,17 @@ Where $\const{A}$ is one of collection of ground constants, and $A$ ranges over 
 
 Where $\g$ is from a collection of ground types, including $\U, \B$, and $\e$ ranges over pre-ordered monoid of effects: $(E, \dot, \subeffect, \1)$.
 
-The calculus has a simple Haskell style semantics. Lambda terms when applied to a parameter substitute their bound variable for the parameter expression, as seen in figure \todo{}, if statements pick a branch once their condition is decided to be true or false, figure \todo{}, and finally the monadic effects behave in a similar way to Haskell's monad type-class. It is difficult to simply formalise an operational $\beta\eta$-reduction semantics for a monadic language without a concrete instantiation of the graded monad. Instead, the monad should obey the equational laws given in figure \todo{}.
+The calculus has a simple, Haskell style semantics. Lambda terms when applied to a parameter substitute their bound variable for the parameter expression, as seen in figure \todo{}, if statements pick a branch once their condition is decided to be true or false, figure \todo{}, and finally the monadic effects behave in a similar way to Haskell's monad type-class. It is difficult to simply formalise an operational $\beta\eta$-reduction semantics for a monadic language without a concrete instantiation of the graded monad. Instead, the monad should obey the equational laws given in figure \todo{}.
 
 For example, by instantiating the language with the appropriate constants, ground effects, and ground types, we can write the following programs.
 
-\todo{properly display \texttt{<-}}
 \begin{framed}
     \begin{lstlisting}[
         mathescape,
         columns=fullflexible,
         basicstyle=\fontfamily{lmvtt}\selectfont,
       ]
-        do $b$ <- PromptUser("Are You Sure?") in (
+        do $b$ $\texttt{<-}$ PromptUser("Are You Sure?") in (
             if $b$ then
                 FireMissiles
             else
@@ -745,7 +743,7 @@ For example, by instantiating the language with the appropriate constants, groun
       ]
        $\lambda$ $alice$: Agent. (
            $\lambda$ $bob$: Agent. (
-            do $amount$ <- AwaitPayment($alice$)
+            do $amount$ $\texttt{<-}$ AwaitPayment($alice$)
             in SendPayment($bob$, $amount$)
            )
        )
@@ -764,7 +762,7 @@ Already, we can see where having effect polymorphism in the language would be us
       $\Lambda$ $Action$: Effect. 
         $\lambda$ $ifConfirmed$: $Action$.
         $\lambda$ $ifAborted$: $Action$.
-        do $b$ <- PromptUser("Are You Sure?") in (
+        do $b$ $\texttt{<-}$ PromptUser("Are You Sure?") in (
             if $b$ then 
                 $ifConfirmed$ 
             else
