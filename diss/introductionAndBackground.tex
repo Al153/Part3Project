@@ -1,5 +1,8 @@
 \documentclass{Report}
 \input{../proofs/header.tex}
+
+
+\usepackage{graphicx}
 \newcommand\comment[1]{}
 
 
@@ -207,7 +210,31 @@ From this, we can specify what structures categories need to have in order to mo
 
 
 \todo{"There definitely needs to be some explanation of what the terms from Moggi's language (i.e. bind and return) and mean intuitively. Similarly for the new constructs (even though they look a lot like System F).  I especially think the type system needs more explanation. Understanding the typing rules for bind and return is probably hard for anyone who hasn't seen graded monads before (i.e. almost everyone)."}
-A single effect can be modelled by adding a strong monad to the category, as shown by Moggi \todo{Reference}. The monad allows us to generate a unit effect and to compose multiple instances of the effect together in a way that intuitively matches the type system of a monadic language. \todo{Maybe a good place to introduce why strength is important?}
+A single effect can be modelled by adding a strong monad to the category, as shown by Moggi \todo{Reference}. The monad allows us to generate a unit effect and to compose multiple instances of the effect together in a way that intuitively matches the type system of a monadic language. The monad needs to be strong in order to allow access to variables in the environment from within the monad an example of this can be seen in figure\ref{MonadStrengthRequirement}. 
+
+\begin{figure}
+    \begin{framed}
+        \begin{framed}
+            \begin{lstlisting}[
+                mathescape,
+                columns=fullflexible,
+                basicstyle=\fontfamily{lmvtt}\selectfont,
+              ]
+              let $x$ = $5$ in (
+                do $y$ <- readInt in (
+                    return $x$ + $y$
+                ) 
+              );
+            \end{lstlisting}
+        \end{framed}
+        
+\todo{I'm not happy at all with this explanation yet.}
+In the \texttt{return} clause, the program makes reference to variables $x$ and $y$ from the environment. Since $x$ is defined outside of the monadic \texttt{do} clause, it is not available to clauses in the body of the clause without a means to convert the type $(\G \times \T{}{A)}$ to $\T{}{(\G\times A)}$.
+    \end{framed}
+   
+\caption{Program in a monadic effectful language that requires tensor strength of the effect's monad to execute.}
+\label{MonadStrengthRequirement}
+\end{figure}
 
 \begin{eqnarray}\label{MonadTypeRules}
     \treerule{Return}{\typerelation{\G}{v}{A}}{\typerelation{\G}{\return{v}}{\M{}{A}}} & \treerule{Bind}{\typerelation{\G}{v_1}{\M{}{A}} \s\s \typerelation{\gax}{v_2}{\M{}{B}}}{\typerelation{\G}{\doin{x}{v_1}{v_2}}{\M{}{B}}}
@@ -234,7 +261,7 @@ To model these augmented type rules, we can create a category, known as a \texti
 
 In this dissertation, I show how these category theoretic building blocks can be put together to give the class of categories that can model polymorphic effect systems.
 
-\begin{figure}[h!]\label{IndexDiagram}
+\begin{figure}[h!]
     \begin{tikzpicture}[->,>=stealth']]
         % Draw the env objects
         \foreach \y[count=\c,evaluate={\yi=int(\c-1)}] in {3, 4, 5, 6}{
@@ -293,6 +320,7 @@ In this dissertation, I show how these category theoretic building blocks can be
         \node[text width=20mm] (Label) at (14,5){Fibres for each effect environment};
     \end{tikzpicture}
     \caption{Diagram of the structure of an indexed category for modelling a polymorphic language. Solid arrows represent functors and dashed arrows represent internal morphisms. The left hand category is the base category.}
+    \label{IndexDiagram}
 \end{figure}
 
 \chapter{Required Category Theory}\label{CategoryTheoryRequirements}
@@ -391,13 +419,13 @@ A natural transformation $\theta$ between to functors $F, G: \C \rightarrow \DC$
 \begin{figure}
     \centering
     \begin{minipage}{0.45\textwidth}
-        \label{Naturality}
         \centering
         \begin{tikzcd}
             F(A) \arrow{r}{\theta_A} \arrow{d}{F(f)}  & G(A) \arrow{d}{G(f)}\\
             F(B) \arrow{r}{\theta_B}& G(B)\\ 
         \end{tikzcd}
         \caption{Naturality of a natural transformation}
+        \label{Naturality}
     \end{minipage}\hfill
 \end{figure}
 
@@ -420,21 +448,22 @@ Such that the diagrams in figures \ref{MonadAssociativity}, \ref{MonadUnits} com
 \begin{figure}
     \centering
     \begin{minipage}{0.45\textwidth}
-        \label{MonadAssociativity}
         \centering
         \begin{tikzcd}
             T(T(T(A)) \arrow{r}{\mu_{T(A)}} \arrow{d}{T(\mu_{A})} & T(T(A)) \arrow{d}{\mu_A} \\
             T(T(A)) \arrow{r}{\mu_A} & T(A)    
-        \end{tikzcd}        \caption{Monad Associativity Laws}
+        \end{tikzcd}        
+        \caption{Monad Associativity Laws}
+        \label{MonadAssociativity}
     \end{minipage}\hfill
     \begin{minipage}{0.45\textwidth}
         \centering
-        \label{MonadUnits}
         \begin{tikzcd}
             T(A) \arrow{r}{\point{T(A)}} \arrow{d}{T(\point{A})} \arrow[equal]{rd} & T(T(A)) \arrow{d}{\mu_A}\\
             T(T(A)) \arrow{r}{\mu_A} & T(A)
         \end{tikzcd}
         \caption{Monad Left- and Right-Unit laws}
+        \label{MonadUnits}
     \end{minipage}
 \end{figure}
 
@@ -459,7 +488,6 @@ Such that the diagrams in figures \ref{GradedMonadAssociativity}, \ref{GradedMon
 \begin{figure}
     \centering
     \begin{minipage}{0.45\textwidth}
-        \label{GradedMonadAssociativity}
         \centering
         \begin{tikzcd}[ampersand replacement=\&]
             \T{\e_1}{\T{\e_2}{\T{\e_3}{A}}} 
@@ -468,6 +496,7 @@ Such that the diagrams in figures \ref{GradedMonadAssociativity}, \ref{GradedMon
             \T{\e_1}{\T{\e_2 \dot \e_3}{A}} \arrow [r, "\bind{\e_1}{\e_2 \dot \e_3}{A}"] \& \T{\e_1 \dot \e_2 \dot \e_3}{A}    
         \end{tikzcd}
         \caption{Associativity of a graded monad}
+        \label{GradedMonadAssociativity}
     \end{minipage}\hfill
     \begin{minipage}{0.45\textwidth}
         \centering
@@ -500,13 +529,11 @@ Tensorial strength over a graded monad gives us the tools necessary to manipulat
 \end{align}
 
 \todo{Fix the references here.}
-\todo{This is needed to have...}
-Which has well defined interactions with the graded monad morphisms and the product-reordering natural transformation $\alpha_{A, B, C} = \pr{\p\after\p}{\pr{\pp\after\p}{\pp}}: ((A \times B) \times C) \rightarrow (A \times (B \times C))$, as seen in figures \ref{TensorStrengthLeftNaturality}, \ref{TensorStrengthRightNaturality}, \ref{TensorStrengthUnitorLaw}, \ref{TensorStengthJoin}, \ref{TensorStrengthPoint}, \ref{TensorStrengthAlpha}.
+This is required to have well defined interactions with the graded monad morphisms and the product-reordering natural transformation $\alpha_{A, B, C} = \pr{\p\after\p}{\pr{\pp\after\p}{\pp}}: ((A \times B) \times C) \rightarrow (A \times (B \times C))$, as seen in figures \ref{TensorStrengthLeftNaturality}, \ref{TensorStrengthRightNaturality}, \ref{TensorStrengthUnitorLaw}, \ref{TensorStengthJoin}, \ref{TensorStrengthPoint}, \ref{TensorStrengthAlpha}.
 
 \begin{figure}
     \centering
     \begin{minipage}{0.45\textwidth}
-        \label{TensorStrengthLeftNaturality}
         \centering
         \begin{tikzcd}[ampersand replacement=\&]
             A \times \teb  \arrow [r, "f \times \Id{\teb}"] \arrow [d, "\tstrength{\e}{A}{B}"]  \&
@@ -515,10 +542,10 @@ Which has well defined interactions with the graded monad morphisms and the prod
             \T{\e}{(A' \times B)}
             \end{tikzcd}
             \caption{Left Naturality of Graded Tensor Strength}
+            \label{TensorStrengthLeftNaturality}
     \end{minipage}
     \hfill
     \begin{minipage}{0.45\textwidth}
-        \label{TensorStrengthRightNaturality}
         \centering
         \begin{tikzcd}[ampersand replacement=\&]
             A \times \teb \arrow [r, "\Id{A} \times \T{\e}{f}"] \arrow [d, "\tstrength{\e}{A}{B}"]\&
@@ -527,6 +554,7 @@ Which has well defined interactions with the graded monad morphisms and the prod
             \T{\e}{(A \times B')}
         \end{tikzcd}
         \caption{Right Naturality of Graded Tensor Strength}
+        \label{TensorStrengthRightNaturality}
     \end{minipage} 
 \end{figure}
 
@@ -534,7 +562,6 @@ Which has well defined interactions with the graded monad morphisms and the prod
 \begin{figure}
     \centering
     \begin{minipage}{0.45\textwidth}
-        \label{TensorStrengthUnitorLaw}
     \begin{tikzcd}[ampersand replacement=\&]
         A \times \teb 
         \arrow [r, "\tstrength{\e}{A}{B}"]
@@ -547,11 +574,11 @@ Which has well defined interactions with the graded monad morphisms and the prod
         \teb
     \end{tikzcd}
     \caption{Tensor Strength Unitor Law}
+    \label{TensorStrengthUnitorLaw}
     \end{minipage}
     \quad
     \centering
     \begin{minipage}{0.45\textwidth}
-        \label{TensorStengthJoin}
         \begin{tikzcd}[ampersand replacement=\&]
             A \times \T{\e_1}{\T{\e_2}{B}} 
             \arrow [r, "\tstrength{\e_1}{A}{\T{\e_2}{B}}"]
@@ -570,11 +597,11 @@ Which has well defined interactions with the graded monad morphisms and the prod
             \T{\e_1 \dot \e_2}({A \times B)}
         \end{tikzcd}
         \caption{How the tensor strength natural transformation commutes with the join natural transformation }
+        \label{TensorStengthJoin}
     \end{minipage}
 
     \quad
     \begin{minipage}{0.45\textwidth}
-        \label{TensorStrengthPoint}
         \begin{tikzcd}[ampersand replacement=\&]
             A \times B
             \arrow [r, "\Id{A} \times \point{B}"]
@@ -587,6 +614,7 @@ Which has well defined interactions with the graded monad morphisms and the prod
             \T{\1}{(A \times B)}
         \end{tikzcd}
         \caption{How the tensor strength natural transformation commutes with the unit natural transformation}
+        \label{TensorStrengthPoint}
     \end{minipage}
 \end{figure}
 
@@ -595,7 +623,6 @@ Which has well defined interactions with the graded monad morphisms and the prod
 \begin{figure}
     \centering
     \begin{minipage}{0.45\textwidth}
-        \label{TensorStrengthAlpha}
         \begin{tikzcd}[ampersand replacement=\&]
             (A\times B)\times \T{\e}{C} 
             \arrow [rr, "\tstrength{\e}{(A\times B)}{C}"]
@@ -613,6 +640,7 @@ Which has well defined interactions with the graded monad morphisms and the prod
         \end{tikzcd}
     \end{minipage}
     \caption{Tensorial strength commutes with the reordering natural transformation.}
+    \label{TensorStrengthAlpha}
 \end{figure}
 
 
@@ -675,11 +703,7 @@ In this chapter I introduce the monadic, effectful language used in the rest of 
 \todo{
     Section 3.1 you give syntax; but semantics?  The lambda bits we know, but there's no explanation of bind/return.  Perhaps just saying "Haskell-like semantics" and then explaining a bit?
     }
-The basic effect calculus is an extension of the simply typed lambda calculus to include constants, if-statements, effects, and sub-typing.
-
-\todo{Explain semantics (Lambda-Calc/Haskell style)}
-
-It has terms of the following form:
+The basic effect calculus is an extension of the simply typed lambda calculus to include constants, if-statements, effects, and sub-typing. It has terms of the following form:
 
 \begin{align}
     v ::= \const{A} \mid x\mid \t \mid\f \mid\u\mid\lam{x}{A}{v}\mid\apply{v_1}{v_2}\mid\return{v}\mid\doin{x}{v_1}{v_2}\mid\pifthenelse{A}{v}{v_1}{v_2} 
@@ -693,15 +717,18 @@ Where $\const{A}$ is one of collection of ground constants, and $A$ ranges over 
 
 Where $\g$ is from a collection of ground types, including $\U, \B$, and $\e$ ranges over pre-ordered monoid of effects: $(E, \dot, \subeffect, \1)$.
 
+The calculus has a simple Haskell style semantics. Lambda terms when applied to a parameter substitute their bound variable for the parameter expression, as seen in figure \todo{}, if statements pick a branch once their condition is decided to be true or false, figure \todo{}, and finally the monadic effects behave in a similar way to Haskell's monad type-class. It is difficult to simply formalise an operational $\beta\eta$-reduction semantics for a monadic language without a concrete instantiation of the graded monad. Instead, the monad should obey the equational laws given in figure \todo{}.
+
 For example, by instantiating the language with the appropriate constants, ground effects, and ground types, we can write the following programs.
 
+\todo{properly display \texttt{<-}}
 \begin{framed}
     \begin{lstlisting}[
         mathescape,
         columns=fullflexible,
         basicstyle=\fontfamily{lmvtt}\selectfont,
       ]
-        do $b$ <$-$ PromptUser("Are You Sure?") in (
+        do $b$ <- PromptUser("Are You Sure?") in (
             if $b$ then
                 FireMissiles
             else
@@ -718,19 +745,39 @@ For example, by instantiating the language with the appropriate constants, groun
       ]
        $\lambda$ $alice$: Agent. (
            $\lambda$ $bob$: Agent. (
-            do $amount$ <$-$ AwaitPayment($alice$)
+            do $amount$ <- AwaitPayment($alice$)
             in SendPayment($bob$, $amount$)
            )
        )
       \end{lstlisting}
 \end{framed}
 
-Already, we can see where having effect polymorphism in the language would be useful. We could make the first example \todo{Add references} into a more general procedure that prompts a user to confirm any I-O action.
+Already, we can see where having effect polymorphism in the language would be useful. We could make the first example \todo{Add references} into a more general procedure that prompts a user to confirm any I-O action, as can be seen in the extended example \todo{Reference}
+
+\todo{Put this in a figure}
+\begin{framed}
+    \begin{lstlisting}[
+        mathescape,
+        columns=fullflexible,
+        basicstyle=\fontfamily{lmvtt}\selectfont,
+      ]
+      $\Lambda$ $Action$: Effect. 
+        $\lambda$ $ifConfirmed$: $Action$.
+        $\lambda$ $ifAborted$: $Action$.
+        do $b$ <- PromptUser("Are You Sure?") in (
+            if $b$ then 
+                $ifConfirmed$ 
+            else
+                $ifAborted$
+        )
+    \end{lstlisting}        
+\end{framed}
+
 
 \section{Polymorphic Effect Calculus}
 Next, we consider the Effect Calculus extended with terms to allow System-F style polymorphism over effects.
 
-\todo{Give a similar syntext for the effects}
+\todo{Give a similar syntax for the effects}
 
 \begin{align}
     v::=\text{..}\mid\elam{\a}{v}\mid\eapp{v}{\e}
@@ -740,7 +787,11 @@ Next, we consider the Effect Calculus extended with terms to allow System-F styl
     A, B, C::=\text{...}\mid \all{\a}{A}
 \end{align}
 
-Where effects $\e$ now range over the effect pre-ordered monoid augmented with effect variables from an environment \todo{Is nil needed here} $\P = \nil, \a, \b ...$, written as $(E_\P, \dotp, \subeffectp, \1)$.
+Where effects $\e$ now range over the effect pre-ordered monoid augmented with effect variables from an environment \todo{Is nil needed here} $\P = \nil, \a, \b ...$, written as 
+\todo{make the new effect monoid more obvious}
+$(E_\P, \dotp, \subeffectp, \1)$.
+
+
 
 \section{Type System}
 \subsection{Environments}
@@ -877,7 +928,7 @@ We define a fairly standard set of type rules on the language.
 \quad
 \condtreerule{Weaken}{\etyperelation{\P}{\G}{x}{A}\s\s\wellformed{\P}{B}}{\etyperelation{\P}{\gby}{x}{A}}{x \neq y}
 \quad
-\treerule{Fn}{\etyperelation{\P}{\gax}{v}{\b}}{\etyperelation{\P}{\G}{\lam{x}{A}{v}}{\ab}}
+\treerule{Fn}{\etyperelation{\P}{\gax}{v}{B}}{\etyperelation{\P}{\G}{\lam{x}{A}{v}}{\ab}}
 \]
 \[
     \treerule{Sub}{\etyperelation{\P}{\G}{v}{A}\s\s A \subtypep B}{\etyperelation{\P}{\G}{v}{B}}
@@ -889,7 +940,7 @@ We define a fairly standard set of type rules on the language.
 \[
     \treerule{Return}{\gpetyperelation{v}{A}}{\gpetyperelation{\return{v}}{\moa}}
     \quad
-    \treerule{Apply}{\gpetyperelation{v_1}{\aeb}\s\s\gpetyperelation{v_2}{A}}{\gpetyperelation{\apply{v_1}{v_2}}{\meb}}
+    \treerule{Apply}{\gpetyperelation{v_1}{\ab}\s\s\gpetyperelation{v_2}{A}}{\gpetyperelation{\apply{v_1}{v_2}}{B}}
 \]
 \[
     \treerule{If}{\gpetyperelation{v}{\B} \s\s \gpetyperelation{v_1}{A}\s\s\gpetyperelation{v_2}{A}}{\gpetyperelation{\pifthenelse{A}{V}{v_1}{v_2}}{A}}
@@ -899,7 +950,26 @@ We define a fairly standard set of type rules on the language.
 
 \subsection{Ok Lemma} The first lemma used in this dissertation is that: If $\gpetyperelation{v}{A}$ then $\oke{\P}{\G}$.
 \paragraph{Proof}
-If $\ok{\gax}$ then by inversion $\ok{\G}$ \todo{explain the concept of inversion}.
+If $\oke{\P}{\gax}$ then by the inversion (See figure \ref{InversionPrinciple}) of the $\ok{}$ rule, we have $\oke{\P}{\G}$ 
+
+\begin{figure}
+    \begin{framed}
+        \paragraph{Inversion in Inductive Proofs}
+
+        In proofs involving assumptions with multiple inductive rules, a useful property is that of inversion. This allows us to case split over the inductive rule that generated the assumption and can allow us to infer the structure of the term.
+
+        For example, consider a theorem which assumes $\gpetyperelation{v}{A}$, then we can case split over the type rules. If $\gpetyperelation{v}{A}$ was generated by the (Apply) rule (\ref{InversionExample}), then by inspecting the rule, we can infer that there exist two sub-terms $\gpetyperelation{v_1}{\ab}$, $\gpetyperelation{v_2}{A}$ such that $v = \apply{v_1}{v_2}$. 
+
+        \begin{equation}\label{InversionExample}
+            \treerule{Apply}{\gpetyperelation{v_1}{\ab}\s\s\gpetyperelation{v_2}{A}}{\gpetyperelation{\apply{v_1}{v_2}}{B}}
+        \end{equation}
+        Then we might use the inferred sub-expressions $v_1, v_2$ to prove the theorem in this case.
+    \end{framed}
+    \caption{An explanation of the concept of inversion.}
+    \label{InversionPrinciple}
+\end{figure}
+
+
 Only the type rule \texttt{Weaken} adds terms to the environment from its preconditions to its post-condition and it does so in an $\ok{}$ preserving way. Any type derivation tree has at least one leaf. All leaves are axioms which require $\oke{\P}{\G}$. And all non-axiom derivations preserve the $\ok{}$ property.
 
 
@@ -924,7 +994,7 @@ A full derivation and proof of soundness of the semantics of the Effect Calculus
 
 \begin{figure}
 \centering
-\begin{minipage}{0.45\textwidth}\label{SubeffectTensorStrength}
+\begin{minipage}{0.45\textwidth}
     \begin{tikzcd}[ampersand replacement=\&]
         A \times \T{\e_1}{B} \arrow [r, "\Id{A} \times \dse{\e_1}{\e_2}_B"] \arrow [d, "\tstrength{\e_1}{A}{B}"] \&
         A \times \T{\e_2}{B} \arrow [d, "\tstrength{\e_2}{A}{B}"] \\
@@ -932,9 +1002,10 @@ A full derivation and proof of soundness of the semantics of the Effect Calculus
         \T{\e_2}{(A \times B)} 
     \end{tikzcd}\qquad
     \caption{The interaction of the sub-effect natural transformation with the tensor strength natural transformation.}
+    \label{SubeffectTensorStrength}
 \end{minipage}  
 \quad
-\begin{minipage}{0.45\textwidth}\label{SubeffectBind}
+\begin{minipage}{0.45\textwidth}
 \begin{tikzcd}[ampersand replacement=\&]
     \T{\e_1}{\T{\e_2}{}} 
     \arrow [rr, "\T{\e_1}{\deno{\e_2\subeffect\e_2'}
@@ -954,6 +1025,7 @@ A full derivation and proof of soundness of the semantics of the Effect Calculus
     \T{\e_1'\dot\e_2'}{}
 \end{tikzcd}
 \caption{The interaction of the sub-effect natural transformation with the graded monad  bind natural transformation.}
+\label{SubeffectBind}
 \end{minipage}  
 \end{figure}
 
@@ -1023,75 +1095,81 @@ Separately, we prove that all derivable denotations for a typing relation instan
 
 This collection of theorems finally allows us to complete all cases of the $\beta\eta$-equivalence soundness theorem.
 
-\begin{figure}[h!]\label{RoadMap}\begin{tikzpicture}[->,>=stealth',shorten >=1pt,auto,node distance=3cm,
-    thick,main node/.style={rectangle,fill=blue!20,draw,
-    font=\sffamily\small\bfseries,minimum size=15mm}]
-
-    \node[main node,text width=20mm, fill=red] (IndexCategory) {Indexed Category and Adjunction};
-    \node[main node,text width=20mm, fill=red] (MulNaturality) [below of=IndexCategory] {Naturality of Mul Operator};
-
-    \node[main node,text width=20mm, fill=red] (BeckChevalley) [left of=MulNaturality]{Beck-Chevalley Condition};
-    \node[main node,text width=20mm, fill=red](SClosure) [right of=MulNaturality]{S-Closure of Re-indexing};
-
-    \node[main node, text width=20mm](EffectWeakeningEffects) [below left of=MulNaturality]{Effect Weakening on Effects};
-
-    \node[main node, text width=20mm](EffectSubEffects) [below right of=MulNaturality]{Effect Substitution on Effects};
-
-    \node[main node, text width=20mm](EffectWeakeningTypes)[below of=EffectWeakeningEffects]{Effect Weakening on Types};
-
-    \node[main node, text width=20mm](EffectSubTypes)[below of=EffectSubEffects]{Effect Substitution on Types};
-
-    \node[main node, text width=20mm](EffectWeakeningTerms)[below of=EffectWeakeningTypes]{Effect Weakening on Terms};
-
-    \node[main node, text width=20mm](EffectSubTerms)[below of=EffectSubTypes]{Effect Substitution on Terms};
-
-    \node[main node, text width=20mm](EffectWeakeningSubTyping)[left of=EffectWeakeningTerms]{Effect Weakening on Sub-typing};
-
-    \node[main node, text width=20mm](EffectSubSubTyping)[right of=EffectSubTerms]{Effect Substitution on Sub-typing};
-
-    \node[main node, text width=20mm](EffectWeakeningWeakening)[below of=EffectWeakeningTerms]{Effect Weakening on Term Weakening};
-
-    \node[main node, text width=20mm](EffectWeakeningSubstitution)[below of=EffectSubTerms]{Effect Weakening on Term Substitution};
-
-    \node[main node, text width=20mm](TermWeakening)[below of=EffectWeakeningWeakening]{Term Weakening Theorem};
-
-    \node[main node, text width=20mm](TermSubstitution)[below of=EffectWeakeningSubstitution]{Term Substitution Theorem};
-
-    \node[main node, text width=20mm](UniqueDenotations)[below left of=TermSubstitution]{Unique Denotations};
-
-    \node[main node, text width=20mm](Soundness)[below of=UniqueDenotations]{Soundness};
-
-    \draw [->] (IndexCategory) edge (BeckChevalley) (IndexCategory) edge (MulNaturality) (IndexCategory) edge (SClosure);
-    \draw [->] (MulNaturality) edge (EffectWeakeningEffects) (MulNaturality) edge (EffectSubEffects);
-
-    
-    \draw [->] (EffectWeakeningEffects) edge (EffectWeakeningTypes) (EffectSubEffects) edge (EffectSubTypes);
-
-    \draw [->] (EffectWeakeningTypes) edge (EffectWeakeningSubTyping) (EffectSubTypes) edge (EffectSubSubTyping);
-
-    
-    \draw [->] (EffectWeakeningSubTyping) edge (EffectWeakeningTerms) (EffectSubSubTyping) edge (EffectSubTerms);
-
-
-    \draw [->] (EffectWeakeningTypes) edge (EffectWeakeningTerms) (EffectSubTypes) edge (EffectSubTerms);
-
-    \draw [->] (EffectWeakeningTerms) edge (EffectWeakeningSubstitution) (EffectWeakeningSubTyping) edge (EffectWeakeningWeakening);
-
-    \draw [->] (EffectWeakeningWeakening) edge (TermWeakening) (EffectWeakeningSubstitution) edge (TermSubstitution);
-
-    \draw [->] (EffectSubTerms) edge [bend left=40] (TermSubstitution);
-    \draw [->] 
-        (BeckChevalley) edge [bend right=30] (EffectWeakeningTypes)
-        (SClosure) edge [bend right=20] (EffectWeakeningTypes)
-        (BeckChevalley) edge [bend left=20]  (EffectSubTypes)
-        (SClosure) edge [bend left=30] (EffectSubTypes);
-    
-
-    \draw [->] (TermWeakening) edge (UniqueDenotations) (TermSubstitution) edge (UniqueDenotations) (TermWeakening) edge [bend right=20] (Soundness)
-    (TermSubstitution) edge [bend left=20] (Soundness)
-    (UniqueDenotations) edge (Soundness);
-  \end{tikzpicture}
+\begin{figure}[h!]
+    \begin{center}
+        \scalebox{0.8}{
+        \begin{tikzpicture}[->,>=stealth',shorten >=1pt,auto,node distance=3cm,
+            thick,main node/.style={rectangle,fill=blue!20,draw,
+            font=\sffamily\small\bfseries,minimum size=15mm}]
+        
+            \node[main node,text width=20mm, fill=red] (IndexCategory) {Indexed Category and Adjunction};
+            \node[main node,text width=20mm, fill=red] (MulNaturality) [below of=IndexCategory] {Naturality of Mul Operator};
+        
+            \node[main node,text width=20mm, fill=red] (BeckChevalley) [left of=MulNaturality]{Beck-Chevalley Condition};
+            \node[main node,text width=20mm, fill=red](SClosure) [right of=MulNaturality]{S-Closure of Re-indexing};
+        
+            \node[main node, text width=20mm](EffectWeakeningEffects) [below left of=MulNaturality]{Effect Weakening on Effects};
+        
+            \node[main node, text width=20mm](EffectSubEffects) [below right of=MulNaturality]{Effect Substitution on Effects};
+        
+            \node[main node, text width=20mm](EffectWeakeningTypes)[below of=EffectWeakeningEffects]{Effect Weakening on Types};
+        
+            \node[main node, text width=20mm](EffectSubTypes)[below of=EffectSubEffects]{Effect Substitution on Types};
+        
+            \node[main node, text width=20mm](EffectWeakeningTerms)[below of=EffectWeakeningTypes]{Effect Weakening on Terms};
+        
+            \node[main node, text width=20mm](EffectSubTerms)[below of=EffectSubTypes]{Effect Substitution on Terms};
+        
+            \node[main node, text width=20mm](EffectWeakeningSubTyping)[left of=EffectWeakeningTerms]{Effect Weakening on Sub-typing};
+        
+            \node[main node, text width=20mm](EffectSubSubTyping)[right of=EffectSubTerms]{Effect Substitution on Sub-typing};
+        
+            \node[main node, text width=20mm](EffectWeakeningWeakening)[below of=EffectWeakeningTerms]{Effect Weakening on Term Weakening};
+        
+            \node[main node, text width=20mm](EffectWeakeningSubstitution)[below of=EffectSubTerms]{Effect Weakening on Term Substitution};
+        
+            \node[main node, text width=20mm](TermWeakening)[below of=EffectWeakeningWeakening]{Term Weakening Theorem};
+        
+            \node[main node, text width=20mm](TermSubstitution)[below of=EffectWeakeningSubstitution]{Term Substitution Theorem};
+        
+            \node[main node, text width=20mm](UniqueDenotations)[below left of=TermSubstitution]{Unique Denotations};
+        
+            \node[main node, text width=20mm](Soundness)[below of=UniqueDenotations]{Soundness};
+        
+            \draw [->] (IndexCategory) edge (BeckChevalley) (IndexCategory) edge (MulNaturality) (IndexCategory) edge (SClosure);
+            \draw [->] (MulNaturality) edge (EffectWeakeningEffects) (MulNaturality) edge (EffectSubEffects);
+        
+            
+            \draw [->] (EffectWeakeningEffects) edge (EffectWeakeningTypes) (EffectSubEffects) edge (EffectSubTypes);
+        
+            \draw [->] (EffectWeakeningTypes) edge (EffectWeakeningSubTyping) (EffectSubTypes) edge (EffectSubSubTyping);
+        
+            
+            \draw [->] (EffectWeakeningSubTyping) edge (EffectWeakeningTerms) (EffectSubSubTyping) edge (EffectSubTerms);
+        
+        
+            \draw [->] (EffectWeakeningTypes) edge (EffectWeakeningTerms) (EffectSubTypes) edge (EffectSubTerms);
+        
+            \draw [->] (EffectWeakeningTerms) edge (EffectWeakeningSubstitution) (EffectWeakeningSubTyping) edge (EffectWeakeningWeakening);
+        
+            \draw [->] (EffectWeakeningWeakening) edge (TermWeakening) (EffectWeakeningSubstitution) edge (TermSubstitution);
+        
+            \draw [->] (EffectSubTerms) edge [bend left=40] (TermSubstitution);
+            \draw [->] 
+                (BeckChevalley) edge [bend right=30] (EffectWeakeningTypes)
+                (SClosure) edge [bend right=20] (EffectWeakeningTypes)
+                (BeckChevalley) edge [bend left=20]  (EffectSubTypes)
+                (SClosure) edge [bend left=30] (EffectSubTypes);
+            
+        
+            \draw [->] (TermWeakening) edge (UniqueDenotations) (TermSubstitution) edge (UniqueDenotations) (TermWeakening) edge [bend right=20] (Soundness)
+            (TermSubstitution) edge [bend left=20] (Soundness)
+            (UniqueDenotations) edge (Soundness);
+          \end{tikzpicture}
+    }
+    \end{center}
 \caption{A road map of the proof dependencies. Assumptions in red, theorems in blue}
+\label{RoadMap}
 \end{figure}
 
 
@@ -2189,7 +2267,7 @@ The $\reduce$ function maps each derivation to its reduced equivalent. It does t
 
 \todo{Diagram of a type-derivation tree being reduced}
 
-\begin{figure}\label{ReduceFunctionCases}
+\begin{figure}
     \begin{framed}
         \case{Apply}
     To find:
@@ -2333,6 +2411,7 @@ The $\reduce$ function maps each derivation to its reduced equivalent. It does t
     \end{framed}
 
     \caption{Some cases of the reduce function}
+    \label{ReduceFunctionCases}
 \end{figure}
 
 \begin{theorem}[Reduction preserves denotations]
@@ -2457,7 +2536,7 @@ We are now at a stage where we can state and prove the most important theorem fo
 The $\beta\eta$-equivalence relation is a rule based relation with three main flavours of rules. Firstly, as seen in figure \ref{BetaEtaReductions}, there are the $\beta\eta$-reductions which formalise how we expect the program to execute given an appropriate implementation. We give a $\beta\eta$-reduction for each term transition, such as the application of lambda terms or the execution of an if-expression. Secondly, there are congruences, seen in figure \ref{BetaEtaCongruence}, which formalise how the reduction of sub-expressions affects the rest of the expression in a compositional way. Finally, we extend this relation into an equivalence relation by closing it under transitivity, reflexivity and symmetry as seen in figure \ref{BetaEtaEquivalence}.
 
 
-\begin{figure}[h!]\label{BetaEtaReductions}
+\begin{figure}[h!]
     \[
         \treerule{Lambda-Beta}{\etyperelation{\P}{\gax}{v_2}{B}\s\s \gpetyperelation{v_1}{A}}{\gpeberelation{\apply{(\lam{x}{A}{v_1})}{v_2} }{ v_1\ssub{x}{v_2}}{B}}
         \quad
@@ -2496,9 +2575,10 @@ The $\beta\eta$-equivalence relation is a rule based relation with three main fl
         \treerule{Effect-eta}{\etyperelation{\P}{\G}{v}{\all{\a}{A}}}{\gpeberelation{\elam{\a}{(\eapp{v}{\a})}}{v}{\all{\a}{A}}}
     \]
     \caption{The $\beta\eta$-reduction rules for PEC}
+    \label{BetaEtaReductions}
 \end{figure}
 
-\begin{figure}[h!]\label{BetaEtaCongruence}
+\begin{figure}[h!]
     \[
         \treerule{Effect-Abs}{\eberelation{\P, \a}{\G}{v_1}{v_2}{A}}{\gpeberelation{\elam{\a}{v_1}}{\elam{\a}{v_2}}{\all{\a}{A}}}
         \quad
@@ -2523,9 +2603,10 @@ The $\beta\eta$-equivalence relation is a rule based relation with three main fl
         \treerule{Subtype}{\gpeberelation{v}{v'}{A} \s\s A \subtypep B}{\gpeberelation{v}{v'}{B}}
     \]
     \caption{The congruence rules for PEC}
+    \label{BetaEtaCongruence}
 \end{figure}
 
-\begin{figure}\label{BetaEtaEquivalence}
+\begin{figure}
     \[
         \treerule{Reflexive}{\gpetyperelation{v}{A}}{\gpeberelation{v}{v}{A}}
         \quad
@@ -2536,6 +2617,7 @@ The $\beta\eta$-equivalence relation is a rule based relation with three main fl
         \treerule{Transitive}{\gpeberelation{v_1}{v_2}{A}\s\s\gpeberelation{v_2}{v_3}{A}}{\gpeberelation{v_1}{v_3}{A}}
     \]
     \caption{Rules expanding the $\beta\eta$-reduction and congruence relation to an equivalence relation}
+    \label{BetaEtaEquivalence}
 \end{figure}
 
 
@@ -2645,7 +2727,7 @@ Morphisms $E^n \rightarrow E$ are functions taking $n$ ground-effect parameters 
 
 
 \begin{figure}
-    \label{HowToBuildCCC}
+    
     \begin{framed}
         \subsection{Cartesian Closed Category}
 Since $\C$ is complete \todo{This is not defined} and a CCC, and $E^n$ is small, since $E$ is small, $[E^n, \C]$ is a CCC.
@@ -2662,10 +2744,12 @@ Since $\C$ is complete \todo{This is not defined} and a CCC, and $E^n$ is small,
 \end{align}
 
 \end{framed}
+\caption{The construction of CCC features in the functor category $[E^n, \C]$}
+\label{HowToBuildCCC}
 \end{figure}
 
 \begin{figure}
-    \label{HowToBuildCoproduct}
+    
 \begin{framed}
     \subsection{The Terminal Co-Product}
 
@@ -2679,10 +2763,11 @@ We can define the co-product point-wise.
     [f, g]\ev &= [f\ev, g\ev]\\
 \end{align}
 \end{framed}
+\caption{The construction of co-product features in the functor category $[E^n, \C]$}
+\label{HowToBuildCoproduct}
 \end{figure}
 
 \begin{figure}
-    \label{HowToBuildGround}
     \begin{framed}
         \subsection{Ground Types and Terms}
         Each ground type in the non-polymorphic calculus has a fixed denotation $\deno{\g}\in\obj\C$. The ground type in the polymorphic calculus hence has a denotation represented by the constant function.
@@ -2701,11 +2786,12 @@ We can define the co-product point-wise.
             \ev\mapsto&\quad\deno{\const{A}}
         \end{align}        
     \end{framed}
+    \caption{The definition of ground types and terms in the category $[E^n, \C]$ }
+    \label{HowToBuildGround}
 \end{figure}
 
 
 \begin{figure}
-    \label{HowToBuildMonad}
     \begin{framed}
         \subsection{Strong Graded Monad}
 Given the strong graded monad $(\Tz{}{}, \pointz{}{}{}, \bindz{}{}{}, \tstrengthz{}{}{})$ on $\C$ we can construct an appropriate graded monad on $[E^n, \C]$.
@@ -2721,11 +2807,12 @@ Given the strong graded monad $(\Tz{}{}, \pointz{}{}{}, \bindz{}{}{}, \tstrength
 Through some mechanical proof and the naturality of the $\C$ strong graded monad, these morphisms are natural in their type parameters and form a strong graded monad in $[E^n, \C]$
 
     \end{framed}
+    \caption{The definition of the graded monad in the category $[E^n, C]$}
+    \label{HowToBuildMonad}
 \end{figure}
 
 
 \begin{figure}
-    \label{HowToBuildSubeffecting}
     \begin{framed}
         
         \subsection{Sub-Effecting}
@@ -2743,10 +2830,11 @@ Through some mechanical proof and the naturality of the $\C$ strong graded monad
             =&\quad \deno{f\ev\subeffectz g\ev}A\ev
         \end{align}
     \end{framed}
+    \caption{Subeffect natural transformations in the category $[E^n, \C]$}
+    \label{HowToBuildSubeffecting}
 \end{figure}
 
 \begin{figure}
-    \label{HowToBuildSubtyping}
     \begin{framed}
         
 \subsection{Sub-Typing}
@@ -2760,9 +2848,12 @@ Sub-typing in $[E^n, \C]$ holds via sub-typing in $\C$
 So the sub-typing relation $A \subtype B$ forms a morphism in $[E^n, \C]$
 
     \end{framed}
+    \caption{Definition of subtyping morphisms in the functor category $[E^n, \C]$}
+    \label{HowToBuildSubtyping}
 \end{figure}
 
-Now we need to define the required morphisms between fibres. Firstly, for any function $\theta: E^m \rightarrow E^n$ in $\Eff$, there should exist the re-indexing functor $\theta\star: [E^n, \C] \rightarrow [E^m, \C]$. A simple instantiation is the pre-composition functor.
+Now we need to define the required morphisms between fibres. Firstly, for any function 
+$\theta: E^m \rightarrow E^n$ in $\Eff$, there should exist the re-indexing functor $\theta\star: [E^n, \C] \rightarrow [E^m, \C]$. A simple instantiation is the pre-composition functor.
 
 \begin{align}
     A\in&\quad [E^n, \C]\\
