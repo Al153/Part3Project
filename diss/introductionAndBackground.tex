@@ -20,7 +20,38 @@ Much of the maths lacks proper spacing.  Latex knows about (e.g.) $n + n \log n$
 rules etc.  Use explicit spacing.
 (~ \quad or even \hspace{2em}).
 }
-\todo{Fix over-hyphenation}
+
+
+\todo{Planning Structure}
+
+\begin{itemize}
+    \item Abstract
+    \item Introduction 
+    \begin{itemize}
+        \item Intro
+        \item What is an effect?
+        \item What is effect polymorphism?
+        \item Introduction to Categorical Semantics     
+    \end{itemize}
+    \item Background \begin{itemize}
+        \item Required Category Theory
+        \item Languages and their requirements
+        \item The Effect Calculus
+        \item The Polymorphic Effect Calculus
+    \end{itemize}
+
+    \item The Semantics of PEC in an indexed category \begin{itemize}
+        \item Semantics for EC
+        \item Required Category Structure
+        \item Road Map
+        \item Denotations
+        \item Substitution and Weakening theorems
+        \item Unique Denotations
+        \item Soundness
+    \end{itemize}
+
+    \item Instantiating a model
+\end{itemize}
 
 \abstract
     
@@ -31,6 +62,11 @@ In this dissertation, I present several pieces of work. Firstly, I introduce a m
 The full proofs can be found online on my github repository (link), since due to the number of theorems and cases, the total size is well over 100 pages of definitions, theorems, and proofs.
 
 \tableofcontents
+
+
+
+
+
 
 \chapter{Introduction}
 \section{What is Effect Polymorphism?}
@@ -69,16 +105,17 @@ check[Exception](ThrowException("Not Aborted"))
 
 In this example, we are reusing the same “check” function in three different situations with three different effects in a type safe manner. Hence, “check” is polymorphic in the effect parameter it receives. To analyse this language, it would be useful to have an analysis tool that can precisely model these separate, though potentially interdependent, effects. A denotational semantics that can account for the parametric polymorphism over effects would be a step towards building such tools. \todo{Verifying/formally reasoning about?}
 
-\section{An Introduction to Categorical Semantics}
+\todo{What are effects, effect systems?}
 
-\todo{I think the introduction goes too technical too quickly. The part that talks the denotational semantics of STLC should probably go in the background. And there definitely needs to be more on what effects, effect systems, etc are.}
+\todo{STLC + Language requirements needs to be moved into the background}
+
+\section{An Introduction to Categorical Semantics}
 
 \todo{"There's a bit of a problem (to me) with the introduction (1.2), because many things are done in quite some detail when what the reader needs is a bit of an intuitive view of what the problem
 is and where the rest of the document is going."
 }
 
-In this dissertation, I describe a denotational semantics using category theory. A denotational semantics for a language is a mapping 
-\todo{Technically the denotation is the image of the mapping}, known as a denotation, $\deno{-}$, of structures in the language, such as types and terms to mathematical objects in such a way that non-trivial properties of the terms in the language correspond to other properties of the denotations of the terms.
+In this dissertation, I describe a denotational semantics using category theory. A denotational semantics for a language is a mapping, the image $\deno{X}$ of which is known as a denotation, of structures in the language, such as types and terms to mathematical objects in such a way that non-trivial properties of the terms in the language correspond to other properties of the denotations of the terms.
 
 \todo{Non-trivial, other properties - too vague}
 
@@ -95,6 +132,7 @@ When we specify a denotational semantics of a language in category theory, we lo
 
 Further more, instances of the type relation should be mapped to morphisms between the relevant objects.
 
+\todo{What is a typing relation?}
 \todo{Instance of type relation}
 
 \begin{align}
@@ -128,49 +166,14 @@ Means that the denotations $\deno{\gtyperelation{\apply{(\lam{x}{A}{v_1})}{v_2}}
 
 To prove soundness, we perform rule induction over the derivation of the $\beta\eta$-equivalence relation, such as the lambda-beta-reduction rule above. 
 
-Some of the inductive cases require us to quantify what the substitution of terms for variables, such as $\ssub{x}{v_1}$ does to the denotations of the parent term. A collection of so-called \textit{substitution} theorems allow us to quantify this action on denotations in a category-theoretic way. 
+Some of the inductive cases require us to quantify what the substitution of terms for variables, such as $\ssub{x}{v_1}$ does to the denotations of the parent term. A collection of so-called \textit{substitution} theorems allow us to quantify this action on denotations in a category-theoretic way. For example, if $\typerelation{\gax}{v_1}{B}$ and $\typerelation{\G}{v_2}{A}$ then $\deno{\typerelation{\G}{v_1\ssub{x}{v_2}}{B}}$  should be derivable from $\deno{\typerelation{\gax}{v_1}{B}}$ and  $\deno{\gtyperelation{v_2}{A}}$. 
 
 
-\todo{Get rid of this spaced out style}
-If \begin{equation}
-    \typerelation{\gax}{v_1}{B}
-\end{equation}
+A similar concept is that of environment weakening. $\gax$ can derive every typing relation that $\G$ can, if $x$ is not already in the environment $\G$. Hence, $\gax$ is an example of a typing environment that is \textit{weaker} than $\G$. A weakening theorem proves that there is a systematic way to generate the denotation of a typing relation on a term in a weaker \todo{= Larger} environment from the denotation of the same term in a stronger environment. For example, if $\G' \leq_{\text{weaker}} \G$ then $\deno{\typerelation{\G'}{v}{A}}$ should be derivable from $\deno{\typerelation{\G}{v}{A}}$.
 
-And \begin{equation}
-    \typerelation{\G}{v_2}{A}
-\end{equation}
 
-Then \begin{equation}
-    \deno{\typerelation{\G}{v_1\ssub{x}{v_2}}{B}}
-\end{equation}
 
-Should be derivable from
-
-\begin{equation}
-    \deno{\typerelation{\gax}{v_1}{B}}
-\end{equation}
-
-And  \begin{equation}
-    \deno{\gtyperelation{v_2}{A}}
-\end{equation}
-
-A similar concept is that of environment weakening. $\gax$ can derive every typing relation that $\G$ can, if $x$ is not already in the environment $\G$. Hence, $\gax$ is an example of a typing environment that is \textit{weaker} than $\G$. A weakening theorem proves that there is a systematic way to generate the denotation of a typing relation on a term in a weaker \todo{= Larger} environment from the denotation of the same term in a stronger environment.
-
-If \begin{equation}
-    \G' \leq_{\text{weaker}} \G
-\end{equation}
-
-Then
-
-\begin{equation}
-    \deno{\typerelation{\G'}{v}{A}}
-\end{equation}
-
-should be derivable from
-
-\begin{equation}
-    \deno{\typerelation{\G}{v}{A}}
-\end{equation}
+% ///////////////////// END INTRO ////////////////
 
 \subsection{Languages and Their Requirements}
 \todo{move this section until after the category theory background section?}
@@ -1881,7 +1884,7 @@ We also need to explain the action of these term substitutions on terms. We defi
     (\eapp{v}{\e})\ssi & = \eapp{(v\ssi)}{\e}\\
 \end{align}
 
-In order to prove the quantification case of typing-environment weakening and substitution theorems on terms, as can be seen in the road map in figure \todo{RoadMap}, it will be necessary to be able to weaken the effect environment on term-environment weakenings and substitutions
+In order to prove the quantification case of typing-environment weakening and substitution theorems on terms, as can be seen in the road map in figure \ref{RoadMap}, it will be necessary to be able to weaken the effect environment on term-environment weakenings and substitutions
 
 Let us first consider the action of effect weakenings on these morphisms. The weakening theorem on term-environment weakenings is as so:
 
@@ -2739,7 +2742,7 @@ Morphisms $E^n \rightarrow E$ are functions taking $n$ ground-effect parameters 
     
     \begin{framed}
         \subsection{Cartesian Closed Category}
-Since $\C$ is complete \todo{This is not defined} and a CCC, and $E^n$ is small, since $E$ is small, $[E^n, \C]$ is a CCC.
+Since $\C$ is based on $\set$ and a CCC, and , since $E$ is small, $E^n$ is small, $[E^n, \C]$ is a CCC.
 
 \begin{align}
     (A\times B)\ev & = (A\ev)\times(B\ev)\\
