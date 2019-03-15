@@ -242,7 +242,7 @@ In the \texttt{return} clause, the program makes reference to variables $x$ and 
 
 These type rules can be modelled using the ``unit'' natural transformation and a combination of the ``join'' and tensor strength natural transformations respectively. 
 
-For a more precise analysis of languages with multiple effects, we can look into the algebra on the effects. A simple example of such an algebra is a partially ordered monoid. The monoid operation defines how to compose effects, and the partial order gives a sub-typing relation to make programming more intuitive with respect to if statements. A category with a strong graded monad allows us to model this algebra in a category theoretic way. It also allows us to do some effect analysis in the type system, as seen in the type rules for return and bind in equation \ref{GradedMonadTypeRules}.
+For a more precise analysis of languages with multiple effects, we can look into the algebra on the effects. A simple example of such an algebra is a partially ordered monoid. The monoid operation defines how to compose effects, and the partial order gives a subtyping relation to make programming more intuitive with respect to if statements. A category with a strong graded monad allows us to model this algebra in a category theoretic way. It also allows us to do some effect analysis in the type system, as seen in the type rules for return and bind in equation \ref{GradedMonadTypeRules}.
 
 \todo{"Do some effect analysis" is a little sloppy}
 
@@ -702,7 +702,7 @@ In this chapter I introduce the monadic, effectful language used in the rest of 
 \todo{
     Section 3.1 you give syntax; but semantics?  The lambda bits we know, but there's no explanation of bind/return.  Perhaps just saying "Haskell-like semantics" and then explaining a bit?
     }
-The basic effect calculus is an extension of the simply typed lambda calculus to include constants, if-statements, effects, and sub-typing. It has terms of the following form:
+The basic effect calculus is an extension of the simply typed lambda calculus to include constants, if-statements, effects, and subtyping. It has terms of the following form:
 
 \begin{align}
     v ::= \const{A} \mid x\mid \t \mid\f \mid\u\mid\lam{x}{A}{v}\mid\apply{v_1}{v_2}\mid\return{v}\mid\doin{x}{v_1}{v_2}\mid\pifthenelse{A}{v}{v_1}{v_2} 
@@ -827,7 +827,7 @@ Where $E_\P$ is the closure of $E\cup \left\{\a\mid\a\in\P\right\}$ under $\dotp
     \treerule{}{\e_3 = \e_1\dot\e_2}{\e_3 = \e_1\dotp\e_2}
 \end{equation} 
 
-For variable-free terms and is defined symbolically for variable-containing terms. Further more, we also define the sub-effecting relation in terms of its variables and the ground relation.
+For variable-free terms and is defined symbolically for variable-containing terms. Further more, we also define the subeffecting relation in terms of its variables and the ground relation.
 
 \begin{equation}
     \e_1 \subeffectp \e_2 \Leftrightarrow \forall \si\downarrow. \e_1\sub{\si\downarrow} \subeffect \e_2\sub{\si\downarrow}
@@ -897,12 +897,12 @@ Finally, we can derive the a well-formedness of type-environments,   $\oke{\P}{\
     \treerule{Var}{\oke{\P}{\G}\s\s x\notin\dom{\G}\s\s \wellformed{\P}{A}}{\oke{\P}{\gax}}
 \]
 
-\subsection{Sub-typing}
+\subsection{Subtyping}
 
 \todo{"Section 3.3.6 isn't quite proper maths -- it's not that there exists, we're defining or assuming that subtyping is trivial between base types (or perhaps saying that a set of base types comes along with its own set of subtype relationships (int < real), but perhaps this is overkill here.
 Then $\Phi$ is *not* a parameter.  It's more of a label.
 "}
-    There exists a sub-typing pre-order relation $\subtype_{\ground}$ over ground types. That is:
+    There exists a subtyping pre-order relation $\subtype_{\ground}$ over ground types. That is:
 
     \[
         \treerule{Reflexive}{}{A \subtype_{\ground} A}
@@ -910,7 +910,7 @@ Then $\Phi$ is *not* a parameter.  It's more of a label.
         \treerule{Transitive}{A \subtype_{\ground} B \s \s B \subtype_{\ground} C}{A \subtype_{\ground} C}
     \]
 
-    We extend this relation with the function, effect, and effect-lambda sub-typing rules to yield the full sub-typing relation under an effect environment, $\P$, $\subtypep$
+    We extend this relation with the function, effect, and effect-lambda subtyping rules to yield the full subtyping relation under an effect environment, $\P$, $\subtypep$
 \[
     \treerule{ground}{A \subtype_{\ground} B}{A \subtypep B}
     \quad
@@ -986,7 +986,7 @@ Only the type rule \texttt{Weaken} adds terms to the environment from its precon
 
 \chapter{Semantics for EC in an S-Category}\label{SCategoryIntro}
 
-As suggested in \todo{Reference to intro}, since EC contains multiple effects, STLC terms, and if-expressions, we should be able interpret its semantics in a cartesian closed category with an appropriate strong graded monad. With the addition of some extra category structure to handle sub-typing, which I shall explain shortly, it is indeed possible to interpret EC. This section contains a fairly high-level treatment of the semantics. This is because the concepts introduced are a subset of those required for the semantics of PEC, which I shall explain in more detail later.
+As suggested in \todo{Reference to intro}, since EC contains multiple effects, STLC terms, and if-expressions, we should be able interpret its semantics in a cartesian closed category with an appropriate strong graded monad. With the addition of some extra category structure to handle subtyping, which I shall explain shortly, it is indeed possible to interpret EC. This section contains a fairly high-level treatment of the semantics. This is because the concepts introduced are a subset of those required for the semantics of PEC, which I shall explain in more detail later.
 
 \todo{
     Denotational semantic for similar languages have been presented before - references?
@@ -994,7 +994,7 @@ As suggested in \todo{Reference to intro}, since EC contains multiple effects, S
 
 In order to correctly model a given instantiation of EC, that is an EC with a collection of effects, constants, and ground types, there should be a collection of objects in the category to represent the ground types. There should also be a point morphism (a morphism from the terminal object to the appropriate type) for each constant.
 
-In addition to the previously stated requirements, we also require the category, $\C$, to be able to model sub-typing and sub-effecting. For each instance of the ground sub-typing relation, $A \subtypeg B$, there should exist a morphism between the objects representing the ground types $A$ and $B$. A further requirement is that $\C$ has a collection of sub-effecting natural transformations. For each instance of $\e_1 \subeffect \e_2$, there exists a natural transformation $\db{\e_1\subeffect\e_2}: \T{\e_1}{}\rightarrow\T{\e_2}{}$ such that it has interactions with the graded monad as specified in figures \ref{SubeffectTensorStrength}, \ref{SubeffectBind}. We can now define morphisms for all forms of sub-typing by constructions following the derivation tree for sub-typing. For more detail, one can look at section \todo{Ref} in the semantics of PEC for the same construction on PEC. From this point onwards, I shall refer to a category that fulfills these properties of having a strong graded monad, CCC, ground objects and points, sub-effect natural transformations, and a co-product as an \textit{S-Category} (Semantic Category).
+In addition to the previously stated requirements, we also require the category, $\C$, to be able to model subtyping and subeffecting. For each instance of the ground subtyping relation, $A \subtypeg B$, there should exist a morphism between the objects representing the ground types $A$ and $B$. A further requirement is that $\C$ has a collection of subeffecting natural transformations. For each instance of $\e_1 \subeffect \e_2$, there exists a natural transformation $\db{\e_1\subeffect\e_2}: \T{\e_1}{}\rightarrow\T{\e_2}{}$ such that it has interactions with the graded monad as specified in figures \ref{SubeffectTensorStrength}, \ref{SubeffectBind}. We can now define morphisms for all forms of subtyping by constructions following the derivation tree for subtyping. For more detail, one can look at section \todo{Ref} in the semantics of PEC for the same construction on PEC. From this point onwards, I shall refer to a category that fulfills these properties of having a strong graded monad, CCC, ground objects and points, subeffect natural transformations, and a co-product as an \textit{S-Category} (Semantic Category).
 
 \todo{This is very vague so far. I don't want to get too bogged down in the semantics of the Effect Calculus though}
 A full derivation and proof of soundness of the semantics of the Effect Calculus can be found online \todo{Link} as it is too long to include here and many of the concepts are repeated later in the remainder of this dissertation anyway. The categorical semantics of the Effect Calculus requires an S-category not only to simply model all of the features of EC but also to use the various commutivity diagrams and rules to manipulate the expressions encountered when proving properties of the semantics.
@@ -1010,7 +1010,7 @@ A full derivation and proof of soundness of the semantics of the Effect Calculus
         \T{\e_1}{(A \times B)} \arrow [r, "\dse{\e_1}{\e_2}_{ A \times B}"] \&
         \T{\e_2}{(A \times B)} 
     \end{tikzcd}\qquad
-    \caption{The interaction of the sub-effect natural transformation with the tensor strength natural transformation.}
+    \caption{The interaction of the subeffect natural transformation with the tensor strength natural transformation.}
     \label{SubeffectTensorStrength}
 \end{minipage}  
 \quad
@@ -1033,7 +1033,7 @@ A full derivation and proof of soundness of the semantics of the Effect Calculus
      \& \&
     \T{\e_1'\dot\e_2'}{}
 \end{tikzcd}
-\caption{The interaction of the sub-effect natural transformation with the graded monad  bind natural transformation.}
+\caption{The interaction of the subeffect natural transformation with the graded monad  bind natural transformation.}
 \label{SubeffectBind}
 \end{minipage}  
 \end{figure}
@@ -1096,11 +1096,11 @@ Using the adjunction property, we have that: $\bar{f\after\pstar(n)} = \bar{f}\a
 In figure \ref{RoadMap}, one can see a diagram of the collection of theorems that need to be proved to establish the $\beta\eta$-equivalence soundness of a semantics for PEC.
 
 
-The first pair of theorems is made up of the effect substitution and weakening theorem on effects. These theorems show that substitutions of effects have a well-behaved and easily defined action upon the denotations of effects. Using these theorems, we can then move on to characterize the action of effect substitutions and effect-environment weakening on the denotations of types and type-environments. From this, we can also look at the action of weakening and substituting effect environments on the sub-typing between types.
+The first pair of theorems is made up of the effect substitution and weakening theorem on effects. These theorems show that substitutions of effects have a well-behaved and easily defined action upon the denotations of effects. Using these theorems, we can then move on to characterize the action of effect substitutions and effect-environment weakening on the denotations of types and type-environments. From this, we can also look at the action of weakening and substituting effect environments on the subtyping between types.
 
 The next step is to use these substitution theorems to formalise the action of substitution and weakening of the effect environments on terms. This then allows us to find denotations for the weakening of term-substitutions and type environment weakening, which set us up to prove the typical weakening and substitution theorems upon term-variables and type environments. 
 
-Separately, we prove that all derivable denotations for a typing relation instance, $\gpetyperelation{v}{A}$ have the same denotation. This is important, since sub-typing allows us to find multiple distinct typing derivations for terms, which initially look like they may have distinct denotations. Using a reduction function to transform typing derivations into a unique form, I prove that all typing derivations yield equal denotations.
+Separately, we prove that all derivable denotations for a typing relation instance, $\gpetyperelation{v}{A}$ have the same denotation. This is important, since subtyping allows us to find multiple distinct typing derivations for terms, which initially look like they may have distinct denotations. Using a reduction function to transform typing derivations into a unique form, I prove that all typing derivations yield equal denotations.
 
 This collection of theorems finally allows us to complete all cases of the $\beta\eta$-equivalence soundness theorem.
 
@@ -1129,9 +1129,9 @@ This collection of theorems finally allows us to complete all cases of the $\bet
         
             \node[main node, text width=20mm](EffectSubTerms)[below of=EffectSubTypes]{Effect Substitution on Terms};
         
-            \node[main node, text width=20mm](EffectWeakeningSubTyping)[left of=EffectWeakeningTerms]{Effect Weakening on Sub-typing};
+            \node[main node, text width=20mm](EffectWeakeningSubTyping)[left of=EffectWeakeningTerms]{Effect Weakening on Subtyping};
         
-            \node[main node, text width=20mm](EffectSubSubTyping)[right of=EffectSubTerms]{Effect Substitution on Sub-typing};
+            \node[main node, text width=20mm](EffectSubSubTyping)[right of=EffectSubTerms]{Effect Substitution on Subtyping};
         
             \node[main node, text width=20mm](EffectWeakeningWeakening)[below of=EffectWeakeningTerms]{Effect Weakening on Term Weakening};
         
@@ -1226,7 +1226,7 @@ By using the terminal objects and products present in each fibre, we can now der
     \deno{\wellformedok{\P}{\gax}} = (\deno{\wellformedok{\P}{\G}} \times \deno{\typerelation{\P}{A}{\type}})
 \]
 
-Another construction that is important is the denotation of sub-typing. For each instance of the sub-typing relation in $\P$, $A\subtypep B$, there exists a denotation in the fibre induced by $\P$. $\deno{A\subtypep B} \in\C(I)(A, B)$. Since the fibres are S-closed, the ground-instances of the sub-typing relation exist in each fibre anyway.
+Another construction that is important is the denotation of subtyping. For each instance of the subtyping relation in $\P$, $A\subtypep B$, there exists a denotation in the fibre induced by $\P$. $\deno{A\subtypep B} \in\C(I)(A, B)$. Since the fibres are S-closed, the ground-instances of the subtyping relation exist in each fibre anyway.
 
 
 \[
@@ -1299,7 +1299,7 @@ Since each fibre is an S-category, for each ground constant, $\const{A}$, there 
 
 In this section, I introduce and prove a series of utility theorems, which will help us prove cases in future theorems. These weakening and substitution theorems are concerned with a change-in-environment of typing derivations and their associated denotations. If $\gpetyperelation{v}{A}$, then it should be the case that $\etyperelation{\P}{\gax}{v}{A}$. We also want to know what happens to the denotation when we change the type environment in this way. In this section, I introduce the tools for manipulating the type and effect environments in this way.
 
-Substitutions and weakenings are two distinct ways of manipulating an effect or typing environment. Weakening acts as a kind of sub-typing of the environment. If we insert fresh variables into an environment, then any expression that was typeable under the previous environment should also be typeable under the the new environment. This change of environment should also have a predictable effect on the denotations of any expressions to which it is applied.
+Substitutions and weakenings are two distinct ways of manipulating an effect or typing environment. Weakening acts as a kind of subtyping of the environment. If we insert fresh variables into an environment, then any expression that was typeable under the previous environment should also be typeable under the the new environment. This change of environment should also have a predictable effect on the denotations of any expressions to which it is applied.
 
 Substitution considers what happens when we simultaneously replace all variables in one expression, that is typeable under an environment, with expressions that are well formed under another environment. The resulting substituted expression should be typeable under the new environment, and the denotation of the new expression should be composed from the denotation of the old relation and the denotations of the expressions that replace the variables. 
 
@@ -1508,7 +1508,7 @@ $$\square$$
 
 
 
-We can then move on to state and prove the weakening and substitution theorems on types, sub-typing, and type environments. The general structure of these theorems, as well as the term-based theorems later, is that when we want to quantify the effect of a morphism $\theta: I' \rightarrow I$ between objects in the base category on structure in the fibres $\C(I)$, we should simply apply the associated re-indexing functor $\theta\star: \C(I) \rightarrow \C(I')$ to the structure. The proof of the soundness of this operation is driven by the S-closure of the re-indexing functor.
+We can then move on to state and prove the weakening and substitution theorems on types, subtyping, and type environments. The general structure of these theorems, as well as the term-based theorems later, is that when we want to quantify the effect of a morphism $\theta: I' \rightarrow I$ between objects in the base category on structure in the fibres $\C(I)$, we should simply apply the associated re-indexing functor $\theta\star: \C(I) \rightarrow \C(I')$ to the structure. The proof of the soundness of this operation is driven by the S-closure of the re-indexing functor.
 
 Specifically, effect substitutions have the following actions on types, and type-environments:
 
@@ -1620,9 +1620,9 @@ The effect-weakening theorem on types and type environments is also very similar
 \end{proof}
 
 
-Next we consider the action of weakening and substitution on sub-typing relations. 
+Next we consider the action of weakening and substitution on subtyping relations. 
 
-\begin{theorem}[Effect Substitution on Sub-typing]
+\begin{theorem}[Effect Substitution on Subtyping]
     If $A \subtypep B$ and $\typerelation{\P'}{\si}{\P}$, then $A\ssi\subtypepp B\ssi$ and $\deno{A\ssi\subtypepp B\ssi} = \ssi\star\deno{A\subtypep B}$.
 \end{theorem}
 
@@ -1631,7 +1631,7 @@ Next we consider the action of weakening and substitution on sub-typing relation
 
 
 \case{Ground}
-This case holds by the property of the S-closure of $\si\star$ that $\si\star$ preserves the ground-type sub-typing denotation.
+This case holds by the property of the S-closure of $\si\star$ that $\si\star$ preserves the ground-type subtyping denotation.
 
 \begin{align}
     \si\star(\g_1\subtypeg\g_2) &= (\g_1\subtypeg\g_2)
@@ -1787,7 +1787,7 @@ Similarly, we can derive the weakening theorem on terms.
     If $\D$ derives $\gpetyperelation{v}{B}$ them by inversion, there exists $\D_1$ deriving $\gpetyperelation{v}{A}$, such that $ \D = \deno{A\subtypep B}\after \D_1$
 
     
-    So, using the weakening of the sub-typing morphism, and induction, we can derive $\D'$.
+    So, using the weakening of the subtyping morphism, and induction, we can derive $\D'$.
     \begin{align}
         \w\star(\D) & = \w\star{\deno{A\subtypep B}}\after\w\star\D_1 \\
         & = \deno{A_{I'}\subtypepp B_{I'}}\after\D_1'\qt{By induction}\\
@@ -1891,7 +1891,7 @@ Let us first consider the action of effect weakenings on these morphisms. The we
 \end{theorem}
 
 \begin{proof}
-    By induction on the derivation of $\w$. making use of weakening on types, type environments, and sub-typing.
+    By induction on the derivation of $\w$. making use of weakening on types, type environments, and subtyping.
 
     \case{Id}
     Then $\w = \i$, so its denotation is $\w = \Id{\G_I}$
@@ -2182,14 +2182,14 @@ Up until this point we have hat to be careful about the implicit typing derivati
 
 To prove that all typing denotations have the same denotation, I first introduce the concept of a \textit{reduced} typing derivation that is unique to each term and type in each typing environment. Next, I present a function, $\reduce$, which recursively maps  typing derivations to their reduced equivalent. I also prove that this function preserves the denotation of the derivations. That is $\deno{\gpetyperelation{v}{A}} = \deno{\reduce(\gpetyperelation{v}{A})}$. Hence, we can conclude, since all derivations for a typing relation instance reduce to the same unique typing derivation, and that the reduction function preserves the denotations, that all derivations of a typing derivation have the same denotation.
 
-The need for reduced typing derivations comes about because of sub-typing. The sub-typing rule can be inserted into different places in a derivation to derive the same typing relation. Hence, the reduction function focuses on only placing sub-typing rule instances in specific places. In particular, we only allow the sub-typing rule to occur at the root of the derivation or above instances of the if-rule and apply-rule in reduced derivations. This has the effect of only introducing sub-typing rule uses when it is necessary maintain syntactic-correctness of the derivation.
+The need for reduced typing derivations comes about because of subtyping. The subtyping rule can be inserted into different places in a derivation to derive the same typing relation. Hence, the reduction function focuses on only placing subtyping rule instances in specific places. In particular, we only allow the subtyping rule to occur at the root of the derivation or above instances of the if-rule and apply-rule in reduced derivations. This has the effect of only introducing subtyping rule uses when it is necessary maintain syntactic-correctness of the derivation.
 
 \begin{theorem}[Uniqueness of reduced Derivations]
     These reduced derivations are unique.    
 \end{theorem}
 
 \begin{proof}
-    This proof proceeds by induction on the term structure, making use of the unique derivations of the sub-terms to show that a reduced derivation of the whole term must also be unique. There are no cases for sub-typing, as it is not a syntactic feature. As an aside, if sub-typing were a syntactic feature, such as explicit casts, then the rules for the typing relation would be entirely syntax directed, and hence we would not have the ambiguity that these theorems are required in order to solve.
+    This proof proceeds by induction on the term structure, making use of the unique derivations of the sub-terms to show that a reduced derivation of the whole term must also be unique. There are no cases for subtyping, as it is not a syntactic feature. As an aside, if subtyping were a syntactic feature, such as explicit casts, then the rules for the typing relation would be entirely syntax directed, and hence we would not have the ambiguity that these theorems are required in order to solve.
 
 
 
@@ -2241,7 +2241,7 @@ The need for reduced typing derivations comes about because of sub-typing. The s
     is 
 
     \begin{equation}
-        \treerule{Sub-type}{
+        \treerule{Subtype}{
             \treerule{Effect-Fn}{
                 \treerule{}{\D}{\etyperelation{\P,\a}{\G}{v}{A}}
             }{
@@ -2256,7 +2256,7 @@ The need for reduced typing derivations comes about because of sub-typing. The s
 
     Where
     \begin{eqnarray}
-        \treerule{Sub-type}{
+        \treerule{Subtype}{
             \treerule{}{\D}{\etyperelation{\P,\a}{\G}{v}{A}}
             \s\s
             A\subtypepa B
@@ -2272,7 +2272,7 @@ The need for reduced typing derivations comes about because of sub-typing. The s
 \end{proof}
 
 
-The $\reduce$ function maps each derivation to its reduced equivalent. It does this by pushing sub-typing rules from the leaves of the derivation tree down towards the root of the tree. The function case splits on the root of the tree and works up recursively. Some cases of the function are given in figure \ref{ReduceFunctionCases}. 
+The $\reduce$ function maps each derivation to its reduced equivalent. It does this by pushing subtyping rules from the leaves of the derivation tree down towards the root of the tree. The function case splits on the root of the tree and works up recursively. Some cases of the function are given in figure \ref{ReduceFunctionCases}. 
 
 \todo{Diagram of a type-derivation tree being reduced}
 
@@ -2314,7 +2314,7 @@ The $\reduce$ function maps each derivation to its reduced equivalent. It does t
 
     In
     \begin{equation}
-        \treerule{Sub-type}{
+        \treerule{Subtype}{
             \treerule{Apply}{
                 \treerule{}{
                     \D'_1
@@ -2322,7 +2322,7 @@ The $\reduce$ function maps each derivation to its reduced equivalent. It does t
                     \gpetyperelation{v_1}{\fntype{A'}{B'}}
                 }
             \s\s
-                \treerule{Sub-type}{
+                \treerule{Subtype}{
                     \treerule{}{\D'_2}{\gpetyperelation{v_2}{A''}}
                     \s\s
                     A'' \subtypep A \subtypep A'
@@ -2365,7 +2365,7 @@ The $\reduce$ function maps each derivation to its reduced equivalent. It does t
 
 
     Let \begin{equation}
-        \treerule{Sub-type}{
+        \treerule{Subtype}{
             \treerule{}{\D'_1}{\gpetyperelation{v_1}{\M{\e'_1}{A'}}}
         \s\s
         \subeffecttree{\e_1'}{A'}{\e_1}{A}
@@ -2374,10 +2374,10 @@ The $\reduce$ function maps each derivation to its reduced equivalent. It does t
         } = \reduce(\D_1)
     \end{equation}
 
-    Since $\ewrel{\P}{(i,\x)}{(\G, x: A')}{(\gax)}$ if $A' \subtypep A$, and by $\D_2 = \etyperelation{\P}{(\gax)}{v_2}{\M{\e_2}{B}}$, there also exists a derivation $\D_3$ of $\etyperelation{\P}{(\G, x: A')}{v_2}{\M{\e_2}{B}}$. $\D_3$ is derived from $\D_2$ simply by inserting a (Sub-type) rule below all instances of the (Var) rule.
+    Since $\ewrel{\P}{(i,\x)}{(\G, x: A')}{(\gax)}$ if $A' \subtypep A$, and by $\D_2 = \etyperelation{\P}{(\gax)}{v_2}{\M{\e_2}{B}}$, there also exists a derivation $\D_3$ of $\etyperelation{\P}{(\G, x: A')}{v_2}{\M{\e_2}{B}}$. $\D_3$ is derived from $\D_2$ simply by inserting a (Subtype) rule below all instances of the (Var) rule.
 
     Let \begin{equation}
-        \treerule{Sub-type}{
+        \treerule{Subtype}{
             \treerule{}{\D'_3}{\etyperelation{\P}{\G, x: A'}{v_2}{\M{\e'_2}{B'}}}
         \s\s
         \subeffecttree{\e_1'}{B'}{\e_2}{B}
@@ -2395,7 +2395,7 @@ The $\reduce$ function maps each derivation to its reduced equivalent. It does t
 
 
     \begin{equation}
-        \treerule{Sub-type}{
+        \treerule{Subtype}{
             \treerule{Bind}{
                 \treerule{}{
                     \D'_1
@@ -2432,7 +2432,7 @@ The $\reduce$ function maps each derivation to its reduced equivalent. It does t
     We proceed by induction over the structure of $\D$, making use of the substitution and weakening theorems. We make use of the the definition of the $\reduce$ function as defined in figure \ref{ReduceFunctionCases}. We also use the definitions of $\D_1, \D_2 ...$ from the figue. \todo{May need to define $\D_1..$ locally.}
     
     \case{Apply}
-    This case makes use of the fact that composing sub-typing morphisms gives the transitive sub-typing morphism.
+    This case makes use of the fact that composing subtyping morphisms gives the transitive subtyping morphism.
         Let
         \begin{align}
             f & = \deno{A\subtypep A'}: A\rightarrow A' \\
@@ -2488,7 +2488,7 @@ The $\reduce$ function maps each derivation to its reduced equivalent. It does t
         &= \bind{\e_1}{\e_2}{B}\after \T{\e_1}{\D_2}\after\tstrength{\e_1}{\G}{A}\after(\idg\times h_{1, A})\after\pr{\idg}{\T{\e_1'}{f}\after\D_1'}\qt{Factor out $h_1$}\\
         &= \bind{\e_1}{\e_2}{B}\after \T{\e_1}{\D_2}\after
         h_{1, (\G\times A)}\after
-        \tstrength{\e_1'}{\G}{A}\after\pr{\idg}{\T{\e_1'}{f}\after\D_1'}\qt{Tensor strength and sub-effecting $h_1$}\\
+        \tstrength{\e_1'}{\G}{A}\after\pr{\idg}{\T{\e_1'}{f}\after\D_1'}\qt{Tensor strength and subeffecting $h_1$}\\
         &= \bind{\e_1}{\e_2}{B}\after 
         h_{1, B}\after\T{\e_1'}{\D_2}\after
         \tstrength{\e_1'}{\G}{A}\after\pr{\idg}{\T{\e_1'}{f}\after\D_1'}\qt{Naturality of $h_1$}\\
@@ -2508,7 +2508,7 @@ The $\reduce$ function maps each derivation to its reduced equivalent. It does t
         h_{1, B}\after\T{\e_1'}{h_{2, B}}\after\T{\e_1'}{\T{\e_2'}{g}}\after \T{\e_1'}{\D_3'}\after
         \tstrength{\e_1'}{\G}{A'}\after\pr{\idg}{\D_1'}\qt{Factor out the functor}\\
         &= h_B\after\bind{\e_1'}{\e_2'}{B}\after\T{\e_1'}{\T{\e_2'}{g}}\after \T{\e_1'}{\D_3'}\after
-        \tstrength{\e_1'}{\G}{A'}\after\pr{\idg}{\D_1'}\qt{By the $\mu$ and Sub-type rule }\\
+        \tstrength{\e_1'}{\G}{A'}\after\pr{\idg}{\D_1'}\qt{By the $\mu$ and Subtype rule }\\
         & = h_B\after\T{\e_1'\dot\e_2'}{g}\after\bind{\e_1'}{\e_2'}{B'}\after \T{\e_1'}{\D_3'}\after
         \tstrength{\e_1'}{\G}{A'}\after\pr{\idg}{\D_1'}\qt{By naturality of $\bind{}{}{}$ }\\
         & = \D' \qt{By definition}
@@ -2519,7 +2519,7 @@ The $\reduce$ function maps each derivation to its reduced equivalent. It does t
 \begin{figure}[h!]
 \begin{equation}
     \treerule{Lambda}{
-        \treerule{Sub-Type}{
+        \treerule{Subtype}{
             \etyperelation{\P}{\gax}{v}{B}
             \s\s
             B \subtypep B'
@@ -2530,7 +2530,7 @@ The $\reduce$ function maps each derivation to its reduced equivalent. It does t
 \end{equation}
 
 \begin{equation}
-    \treerule{Sub-Type}{    \treerule{Lambda}{
+    \treerule{Subtype}{    \treerule{Lambda}{
             \etyperelation{\P}{\gax}{v}{B}
     }{\gpetyperelation{\lam{x}{A}{v}}{\fntype{A}{B}}}
     \s\s \ab \subtype \fntype{A}{B'}}
@@ -2716,7 +2716,7 @@ This completes the proof of soundness for this semantics.
 \chapter{Instantiating a Model of PEC}
 Now we have proved that we can form a model of PEC in an appropriate indexed S-category, it remains to show that it is feasible to construct such an indexed category. There exist $\set$-based models for the semantics of effectful languages with a graded monad, such as the Effect Calculus \todo{A reference for this}. More specifically, it is possible to treat $\set$ as an S-category. Hence, I use a $\set$ based S-category as a starting point. In this section, I  demonstrate how to construct an strictly indexed S-category which can model the PEC from such an S-category.
 
-Let $\C$ be an S-category formed from $\set$.(\todo{Is this correct parlance?}) That is, $\C$ contains a graded monad $\Tz{}{}, \bindz{}{}{}, \pointz{}, \tstrengthz{}{}{}$, is cartesian closed, has a co-product on the terminal object $\1 = \left\{\star\right\}$, has sub-typing functions $\deno{A\subtypeg B}: A \rightarrow B$ for each instance of the ground sub-typing relation, and has natural transformations $\deno{\e_1 \subeffectz \e_2}: \Tz{\e_1}{} \rightarrow \Tz{\e_2}{}$. Since $\C$ is a model for the EC, it is graded by a pre-ordered monoid on ground effects: $(E, \subeffectz, \1, \dot)$. I have indexed each of these S-category properties with $0$ to indicate that they occur in the bottom category $\C$, induced by the empty effect environment.
+Let $\C$ be an S-category formed from $\set$.(\todo{Is this correct parlance?}) That is, $\C$ contains a graded monad $\Tz{}{}, \bindz{}{}{}, \pointz{}, \tstrengthz{}{}{}$, is cartesian closed, has a co-product on the terminal object $\1 = \left\{\star\right\}$, has subtyping functions $\deno{A\subtypeg B}: A \rightarrow B$ for each instance of the ground subtyping relation, and has natural transformations $\deno{\e_1 \subeffectz \e_2}: \Tz{\e_1}{} \rightarrow \Tz{\e_2}{}$. Since $\C$ is a model for the EC, it is graded by a pre-ordered monoid on ground effects: $(E, \subeffectz, \1, \dot)$. I have indexed each of these S-category properties with $0$ to indicate that they occur in the bottom category $\C$, induced by the empty effect environment.
 
 
 
@@ -2824,14 +2824,14 @@ Through some mechanical proof and the naturality of the $\C$ strong graded monad
 \begin{figure}
     \begin{framed}
         
-        \subsection{Sub-Effecting}
-        Given a collection of sub-effecting natural transformation in $\C$,
+        \subsection{Subeffecting}
+        Given a collection of subeffecting natural transformation in $\C$,
         
         \begin{align}
             \deno{\e_1\subeffectz \e_2}:&\quad \Tz{\e_1}{} \rightarrow \Tz{\e_2}{}
         \end{align}
         
-        We can form sub-effect natural transformations in $[E^n, \C]$:
+        We can form subeffect natural transformations in $[E^n, \C]$:
         
         \begin{align}
             \deno{f\subeffectn g}:&\quad\Tn{f}{}\rightarrow \Tn{g}{}\\
@@ -2846,15 +2846,15 @@ Through some mechanical proof and the naturality of the $\C$ strong graded monad
 \begin{figure}
     \begin{framed}
         
-\subsection{Sub-Typing}
-Sub-typing in $[E^n, \C]$ holds via sub-typing in $\C$
+\subsection{Subtyping}
+Subtyping in $[E^n, \C]$ holds via subtyping in $\C$
 
 \begin{align}
     \deno{A\subtype_n B}:&\quad A\rightarrow B\\
     \deno{A\subtype_n B}\ev=&\quad \deno{A\ev\subtype_0 B\ev}
 \end{align}
 
-So the sub-typing relation $A \subtype B$ forms a morphism in $[E^n, \C]$
+So the subtyping relation $A \subtype B$ forms a morphism in $[E^n, \C]$
 
     \end{framed}
     \caption{Definition of subtyping morphisms in the functor category $[E^n, \C]$}
