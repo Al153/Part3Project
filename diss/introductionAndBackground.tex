@@ -1011,7 +1011,7 @@ A full derivation and proof of soundness of the semantics of the Effect Calculus
 \todo{This has been very vague as I want to save words on the non-polymorphic stuff.}
 
 
-\section{Required Category Structure}
+\section{Required Category Structure}\label{PECRequirements}
 In order to model the polymorphism of PEC, we need to now look at an indexed category. This consists of a base category, $\C$ in which we can interpret the possible effect environments in, and a mapping from objects in the base category to S-Categories in the category of S-closed categories. This functor is denoted from this point onwards as $\C(-)$ and the induced categories $\C(\deno{\P})$ are called ``fibres''. A further notational shorthand I use, inheriting from R. L. Crole \todo{Reference}, is to write $I$ for the denotation of $\P$. The term ``S-closed'' indicates that all functors derived from $\C$ within this category preserve the properties of S-categories, which are explained in section \ref{SCategoryIntro}. A functor $F$ preserves the properties of S-categories if it preserves each of the features within an S-category. For example $F(X\times Y) = (FX)\times (FY)$. For a full list of properties that an S-closed functor should preserve, please see appendix \todo{Link/reference}. Thus, each morphism $\theta: \deno{\P'}\rightarrow\deno{\P}$ in $\C$ should induce as S-closed, re-indexing functor $\theta\star: \C(I)\rightarrow\C(I')$ between the fibres.
 
 The essential idea from this point on is that we have defined several relations of the form $\wellformed{\texttt{Env}}{\texttt{Conclusion}}$, such as the typing relation $\gpetyperelation{v}{A}$, and the well-formedness relation on effects $\wellformed{\P}{\e}$. Each instance of such a relation has a denotation that is an object or morphism in a category. For example, $\deno{\typerelation{\P}{\e}{\effect}}$ is a morphism in the base category, $\deno{\typerelation{\P}{A}{\type}}$ is an object in the fibre (S-category) induced by $\P$, and $\deno{\gpetyperelation{v}{A}}$ is morphism between the objects which denote $\G$ and $A$ in the fibre induced by $\P$.
@@ -2936,7 +2936,11 @@ We can now prove that $\pstar \dashv \allEn$. To do this, we need a natural bije
     \bar{(-)}: [E^{n+1}, \C](\pstar A, B) \rightleftharpoons [E^n,\C] (A, \allEn B): \widehat{(-)}
 \end{equation}
 
-The leftwards and rightwards components of this bijection can be derived as follows. The leftwards component maps each morphism to a finite pairing of the morphism over each ground effect. The inverse is simply to project out the appropriate value of $\e$ from the product. These mappings can be seen in figure \ref{AdjunctionDefinition}. These transformations give rise to the unit and co-unit of the adjunction, which are defined in figure \ref{UnitCoUnitDefinition}.
+The leftwards and rightwards components of this bijection can be derived as follows. The leftwards component maps each morphism to a finite pairing of the morphism over each ground effect. The inverse is simply to project out the appropriate value of $\e$ from the product. These mappings can be seen in figure \ref{AdjunctionDefinition}. These transformations give rise to the unit and co-unit of the adjunction, which are defined in figure \ref{UnitCoUnitDefinition}. The unit and co-unit allow us to prove that this construction is an adjunction (figure \ref{AdjunctionProof}). 
+
+Finally, we need to prove that the Beck-Chevalley condition given in \ref{PECRequirements} holds. The proof of the two appropriate theorems are given in figures \ref{BeckChevalley1} and \ref{BeckChevalley2}
+
+
 
 
 \begin{figure}
@@ -2965,61 +2969,100 @@ The leftwards and rightwards components of this bijection can be derived as foll
 
 
 
+\begin{figure}
+    \todo{fix overflow here}
+\todo{Align frames}
+
+    \begin{minipage}{0.45\textwidth}
+    \begin{framed}
+    \centering
+    \textbf{Unit}
+    
+    \begin{align}
+        \unit{A}:&\quad A \rightarrow \allEn\pstar A\\
+        \unit{A}(\env)=&\quad\finpr{\Id{A(\env,e)}}{\e\in E}
+    \end{align}
+    
+    \end{framed}
+\end{minipage}
+\quad
+\begin{minipage}{0.45\textwidth}
+    \begin{framed}
+        \centering
+        \textbf{Co-Unit}
+        
+        \begin{align}
+            \counit{B} : &\quad \pstar\allEn B \rightarrow B\\
+            \counit{B}(\env, \e) =&\quad \pi_\e : \Pi_{e\in E}B(\env, \e)\rightarrow \Pi_{e\in E}B(\env, \e)
+        \end{align}
+        
+            \end{framed}
+\end{minipage}
+
+
+    \caption{The unit and co-unit of the adjunction}
+    \label{UnitCoUnitDefinition}
+\end{figure}
 
 
 
-With unit:
-
-\begin{align}
-    \unit{A}:&\quad A \rightarrow \allEn\pstar A\\
-    \unit{A}(\env)=&\quad\finpr{\Id{A(\env,e)}}{\e\in E}
-\end{align}
 
 
-And co-unit
 
 
-\begin{align}
-    \counit{B} : &\quad \pstar\allEn B \rightarrow B\\
-    \counit{B}(\env, \e) =&\quad \pi_\e : \Pi_{e\in E}B(\env, \e)\rightarrow \Pi_{e\in E}B(\env, \e)
-\end{align}
+\begin{figure}
+    \begin{framed}
+        \centering
+        \textbf{Verifying We Have an Adjunction}
+        \centering
+        For any $g: \pstar A \rightarrow B$,
+        
+        \begin{align}
+            (\counit{B}\after\pstar(\bar{g}))(\env, \e_{n+1}) & = \pi_{\e_{n+1}}\after\finpr{g(\env, \e')}{\e'\in E}\\
+            &= g(\env, \e_{n+1})
+        \end{align}
+        
+        \centering
+        So $\counit{B}\after\pstar(\bar{g}) = g$.
+        $$\square$$
+    \end{framed}
+    \caption{Proof that we have formed an adjunction}
+    \label{AdjunctionProof}
+\end{figure}
 
-The unit and co-unit allow us to prove that this construction is an adjunction. For any $g: \pstar A \rightarrow B$,
-
-\begin{align}
-    (\counit{B}\after\pstar(\bar{g}))(\env, \e_{n+1}) & = \pi_{\e_{n+1}}\after\finpr{g(\env, \e')}{\e'\in E}\\
-    &= g(\env, \e_{n+1})
-\end{align}
 
 
-So $\counit{B}\after\pstar(\bar{g}) = g$.
 
-
-Finally, we need to prove that the Beck-Chevalley condition holds
-For $\theta: E^m \rightarrow E^n$.
-
-
+\begin{figure}
+    \begin{framed}
+        
 \begin{theorem}
     [Beck-Chevalley condition, part I]
     Firstly, the functors $(\theta\star\after\allEn)$ and $(\allEm\after(\theta\times\Id{E})\star)$ are equal.
 
 \end{theorem}
 
-\begin{proof}
-    
-\begin{align}
-    ((\theta\star\after\allEn)A)\env &= \theta\star(\allEn A)\env\\
-    &= (\allEn A)(\theta(\env))\\
-    &= \Pi_{\e\in E}(A(\theta(\env), \e))\\
-    &= \Pi_{\e\in E}(((\theta\times \Id{U})\star A)(\env, \e))\\
-    &= \allEm((\theta\times\Id{E})\star A)\env\\
-    &= ((\allEm\after(\theta\times\Id{E})\star)A)\env
-\end{align}
+    \begin{proof}
 
-$$\square$$
-\end{proof}
+    \begin{align}
+    ((\theta\star\after\allEn)A)\env &= \theta\star(\allEn  A)\env\\
+        &= (\allEn A)(\theta(\env))\\
+        &= \Pi_{\e\in E}(A(\theta(\env), \e))\\
+    &= \Pi_{\e\in E}(((\theta\times \Id{U})\star A)(\env,   \e))\\
+        &= \allEm((\theta\times\Id{E})\star A)\env\\
+        &= ((\allEm\after(\theta\times\Id{E})\star)A)\env
+    \end{align}
 
+    $$\square$$
+    \end{proof}
+    \end{framed}
+    \caption{Proof that the adjunction satisfies the first part of the Beck-Chevalley condition.}
+    \label{BeckChevalley1}
+\end{figure}
 
+\begin{figure}
+    \begin{framed}
+        
 \begin{theorem}[Beck-Chevalley Condition, Part II]
     Secondly, the natural transformation $\bar{(\theta\times\Id{U})\star \counit{}}$ is equal to the identity natural transformation.
 
@@ -3037,6 +3080,11 @@ $$\square$$
 
 $$\square$$
 \end{proof}
+    \end{framed}
+    \caption{Proof that the adjunciton satisfies the second part of the Beck-Chevalley condition.}
+    \label{BeckChevalley2}
+\end{figure}
+
 
 Hence we have proof that our construction is indeed a valid indexed S-category. Importantly, this shows that reasonable models of the PEC are possible to instantiate and that our requirements do not overconstrain potential models to the point that they are not viable for doing actual analysis.
 
