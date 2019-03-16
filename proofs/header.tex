@@ -79,16 +79,18 @@
 \newcommand\after\circ
 \newcommand\term[1]{\left\langle\right\rangle_{#1}}
 
+\newcommand\bindmu[0]{\mu}
 \newcommand\point[1]{\eta_{#1}}
-\newcommand\bind[3]{\mu_{#1, #2, #3}}
+\newcommand\bind[3]{\bindmu_{#1, #2, #3}}
 
 \newcommand\T[2]{T_{#1}{#2}}
 
 \newcommand\pr[2]{\left\langle#1, #2\right\rangle}
 \newcommand\finpr[2]{\left\langle#1\right\rangle_{#2}}
 
+\newcommand\strengtht[0]{\texttt{t}}
 % tensor strength Nat-tran
-\newcommand\tstrength[3]{\texttt{t}_{#1, #2, #3}}
+\newcommand\tstrength[3]{\strengtht_{#1, #2, #3}}
 
 % Id morphism
 \newcommand\Id[1]{\texttt{Id}_{#1}}
@@ -228,6 +230,7 @@
 \newcommand\wellformedok[2]{\ok{#1\vdash #2}}
 \renewcommand{\b}[0]{\beta}
 \newcommand{\g}[0]{\gamma}
+\renewcommand\d[0]{\delta}
 \newcommand\oke[2]{\wellformed{#1}{\ok{#2}}}
 \newcommand\etyperelation[4]{\typerelation{#1\mid#2}{#3}{#4}}
 \newcommand{\gpetyperelation}[2]{\etyperelation{\P}{\G}{#1}{#2}}

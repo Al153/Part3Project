@@ -22,37 +22,6 @@ rules etc.  Use explicit spacing.
 }
 
 
-\todo{Planning Structure}
-
-\begin{itemize}
-    \item Abstract
-    \item Introduction 
-    \begin{itemize}
-        \item Intro
-        \item What is an effect?
-        \item What is effect polymorphism?
-        \item Introduction to Categorical Semantics     
-    \end{itemize}
-    \item Background \begin{itemize}
-        \item Required Category Theory
-        \item Languages and their requirements
-        \item The Effect Calculus
-        \item The Polymorphic Effect Calculus
-    \end{itemize}
-
-    \item The Semantics of PEC in an indexed category \begin{itemize}
-        \item Semantics for EC
-        \item Required Category Structure
-        \item Road Map
-        \item Denotations
-        \item Substitution and Weakening theorems
-        \item Unique Denotations
-        \item Soundness
-    \end{itemize}
-
-    \item Instantiating a model
-\end{itemize}
-
 \abstract
     
 To date, there has been limited work on the semantics of languages with polymorphic effect systems. The application, by Moggi, of strong monads to modelling the semantics of effects has become a mainstream concept in functional programming languages. This was improved upon by Lucasson (?) using a graded monad to model languages with a range of independent and dependent effects at an operational level. A categorical semantics for parametric polymorphism in types was first published by Reynolds (?) allowing a denotational analysis of languages including type parameters. There has been some work on polymorphism over the exception effect (which paper). Despite these works, there has been no work to date on the denotational semantics of languages with general parametric polymorphism over effects.
@@ -62,8 +31,6 @@ In this dissertation, I present several pieces of work. Firstly, I introduce a m
 The full proofs can be found online on my github repository (link), since due to the number of theorems and cases, the total size is well over 100 pages of definitions, theorems, and proofs.
 
 \tableofcontents
-
-
 
 \chapter{Introduction}
 
@@ -2708,13 +2675,13 @@ $$\square$$
 This completes the proof of soundness for this semantics.
 
 \chapter{Instantiating a Model of PEC}
-Now we have proved that we can form a model of PEC in an appropriate indexed S-category, it remains to show that it is feasible to construct such an indexed category. There exist $\set$-based models for the semantics of effectful languages with a graded monad, such as the Effect Calculus \todo{A reference for this}. More specifically, it is possible to treat $\set$ as an S-category. Hence, I use a $\set$ based S-category as a starting point. In this section, I  demonstrate how to construct an strictly indexed S-category which can model the PEC from such an S-category.
+Now we have proved that we can form a model of PEC in an appropriate indexed S-category, it remains to show that it is feasible to construct such an indexed category. There exist $\set$-based models for the semantics of effectful languages with a graded monad, such as the Effect Calculus \todo{A reference for this}. More specifically, it is possible to treat $\set$ as an S-category. Hence, I use a $\set$ based S-category as a starting point. In this section, I  demonstrate how to construct an strictly indexed S-category, which can model the PEC, from such an S-category.
 
-Let $\C$ be an S-category formed from $\set$.(\todo{Is this correct parlance?}) That is, $\C$ contains a graded monad $\Tz{}{}, \bindz{}{}{}, \pointz{}, \tstrengthz{}{}{}$, is cartesian closed, has a co-product on the terminal object $\1 = \left\{\star\right\}$, has subtyping functions $\deno{A\subtypeg B}: A \rightarrow B$ for each instance of the ground subtyping relation, and has natural transformations $\deno{\e_1 \subeffectz \e_2}: \Tz{\e_1}{} \rightarrow \Tz{\e_2}{}$. Since $\C$ is a model for the EC, it is graded by a pre-ordered monoid on ground effects: $(E, \subeffectz, \1, \dot)$. I have indexed each of these S-category properties with $0$ to indicate that they occur in the bottom category $\C$, induced by the empty effect environment.
+Let $\C$ be an S-category derived from $\set$. That is, $\C$ contains a graded monad $\Tz{}{}, \bindmu^0, \pointz{}, \strengtht$, is cartesian closed, has a co-product on the terminal object $\1 = \left\{\star\right\}$, has subtyping functions $\deno{A\subtypeg B}: A \rightarrow B$ for each instance of the ground subtyping relation, and has natural transformations $\deno{\e_1 \subeffectz \e_2}: \Tz{\e_1}{} \rightarrow \Tz{\e_2}{}$. Since $\C$ is a model for the EC, it is graded by a pre-ordered monoid on ground effects: $(E, \subeffectz, \1, \dot)$. I have marked each of these S-category properties with $0$ to indicate that they occur in the bottom category $\C$, induced by the empty effect environment.
 
 
-
-Since, using $\alpha$-equivalence, we can see that all effect environments of the same length are equivalent, we can reduce an effect environment to the natural number $n$ indicating its length.
+\todo{This spacing will be fixed once I tweak around with my macros}
+Using $\alpha$-equivalence, we can see that all effect environments of the same length are equivalent. For example, $(\etyperelation{(\nil, \a, \b)}{\G}{\lam{f}{\fntype{\texttt{Int}}{\M{\a\dot\b}{\U}}}{(\apply{f}{0})}}{\M{\a\dot\b}{\U}})$ and $(\etyperelation{(\nil, \g, \d)}{\G}{\lam{f}{\fntype{\texttt{Int}}{\M{\g\dot\d}{\U}}}{(\apply{f}{0})}}{\M{\g\dot\d}{\U}})$ are equivalent under $\a$-equivalence. Hence, we can reduce an effect environment to the natural number $n$ indicating its length.
 
 Next we must pick our fibre categories for non-zero values of $n$. A simple instantiation is to pick each fibre $\C(n)$ to be the functor category $[E^n, \C]$. That is, the category of functions returning an object in $\C$ given $n$ ground effects. Morphisms between objects are functions which, given a collection of ground effects, yield a morphism (function) in $C$. If $m\in [E^n, \C](A, B)$ then $m\ev\in\C(A\ev, B\ev)$. Shortly, I shall prove that these categories are indeed S-closed.
 
@@ -2732,7 +2699,8 @@ Morphisms $E^n \rightarrow E$ are functions taking $n$ ground-effect parameters 
 \begin{figure}
     
     \begin{framed}
-        \subsection{Cartesian Closed Category}
+        \centering\textbf{Cartesian Closed Category}
+
 Since $\C$ is based on $\set$ and a CCC, and , since $E$ is small, $E^n$ is small, $[E^n, \C]$ is a CCC.
 
 \begin{align}
@@ -2754,7 +2722,7 @@ Since $\C$ is based on $\set$ and a CCC, and , since $E$ is small, $E^n$ is smal
 \begin{figure}
     
 \begin{framed}
-    \subsection{The Terminal Co-Product}
+    \centering\textbf{The Terminal Co-Product}
 
 We can define the co-product pointwise.
 
@@ -2772,7 +2740,8 @@ We can define the co-product pointwise.
 
 \begin{figure}
     \begin{framed}
-        \subsection{Ground Types and Terms}
+        \centering\textbf{Ground Types and Terms}
+
         Each ground type in the non-polymorphic calculus has a fixed denotation $\deno{\g}\in\obj\C$. The ground type in the polymorphic calculus hence has a denotation represented by the constant function.
         
         \begin{align}
@@ -2796,7 +2765,8 @@ We can define the co-product pointwise.
 
 \begin{figure}
     \begin{framed}
-        \subsection{Strong Graded Monad}
+        \centering\textbf{Strong Graded Monad}
+
 Given the strong graded monad $(\Tz{}{}, \pointz{}{}{}, \bindz{}{}{}, \tstrengthz{}{}{})$ on $\C$ we can construct an appropriate graded monad on $[E^n, \C]$.
 
 \begin{align}
@@ -2818,7 +2788,9 @@ Through some mechanical proof and the naturality of the $\C$ strong graded monad
 \begin{figure}
     \begin{framed}
         
-        \subsection{Subeffecting}
+        \centering\textbf{Subeffecting}
+
+
         Given a collection of subeffecting natural transformation in $\C$,
         
         \begin{align}
@@ -2840,7 +2812,9 @@ Through some mechanical proof and the naturality of the $\C$ strong graded monad
 \begin{figure}
     \begin{framed}
         
-\subsection{Subtyping}
+\centering\textbf{Subtyping}
+
+
 Subtyping in $[E^n, \C]$ holds via subtyping in $\C$
 
 \begin{align}
@@ -2855,66 +2829,105 @@ So the subtyping relation $A \subtype B$ forms a morphism in $[E^n, \C]$
     \label{HowToBuildSubtyping}
 \end{figure}
 
-Now we need to define the required morphisms between fibres. Firstly, for any function 
-$\theta: E^m \rightarrow E^n$ in $\Eff$, there should exist the re-indexing functor $\theta\star: [E^n, \C] \rightarrow [E^m, \C]$. A simple instantiation is the pre-composition functor.
-
-\begin{align}
-    A\in&\quad [E^n, \C]\\
-    \theta\star(A) \emv =&\quad  A(\theta(\emv))\\
-    f:&\quad A \rightarrow B\\
-    \theta\star(f) \emv =&\quad f(\theta(\emv)): \theta\star(A) \rightarrow \theta\star(B)\\
-\end{align}
-
-This also obeys the composition law of re-indexing functors.
-
-\begin{align}
-    \theta\star(\phi\star A) \ev & = \phi\star(A)(\theta \ev)\\
-    & = A(\phi(\theta\ev))\\
-    & = A((\phi\after\theta) \ev)\\
-    & = (\phi\after\theta)\star(A) \ev
-\end{align}
-
-\begin{theorem}
-    The re-indexing functors are also S-closed. That is all the S-category features in $[E^n, \C]$ are preserved by $\theta\star$ in $[E^m, \C]$. For a full list of features please see appendix \todo{Reference}.
-\end{theorem}
+Now we need to define the required morphisms between fibres. Firstly, for any function $\theta: E^m \rightarrow E^n$ in $\Eff$, there should exist an S-closed re-indexing functor $\theta\star: [E^n, \C] \rightarrow [E^m, \C]$. A simple instantiation is the pre-composition functor, as seen in figure \ref{PrecompositionFunctor}. This also obeys the composition law of re-indexing functors figure \ref{PrecompositionFunctorComposition} and is S-closed.
 
 
-\begin{proof}
-    All of the S-category features are proved pointwise.
+\begin{figure}
+    \begin{framed}
+        \centering
+        \textbf{The Pre-composition Functor}
 
-    \case{Graded Monad Functor}
-    \begin{align}
-        (\theta\star\Tn{f}{A})\ev & = \Tn{f}{A}(\theta\ev) \\
-        & = \Tz{(f(\theta\ev))}{(A(\theta\ev))}\\
-        & = (\Tm{(f\after\theta)}{\theta\star A})\ev\\
-    \end{align}
+        \begin{align}
+            A\in&\quad [E^n, \C]\\
+            \theta\star(A) \emv =&\quad  A(\theta(\emv))\\
+            f:&\quad A \rightarrow B\\
+            \theta\star(f) \emv =&\quad f(\theta(\emv)): \theta\star(A) \rightarrow \theta\star(B)\\
+        \end{align}
+    \end{framed}
+    \caption{A description of the pre-composition functor.}
+    \label{PrecompositionFunctor}
+\end{figure}
 
-    \case{Terminal Object}
+\begin{figure}
+    \begin{framed}
+        \centering
+        \textbf{Composition of Pre-Composition Functor}
+
+        \begin{align}
+            \theta\star(\phi\star A) \ev & = \phi\star(A)(\theta \ev)\\
+            & = A(\phi(\theta\ev))\\
+            & = A((\phi\after\theta) \ev)\\
+            & = (\phi\after\theta)\star(A) \ev
+        \end{align}
+    \end{framed}
+
+    \caption{The pre-composition functor composes in a contravariant fashion.}
+    \label{PrecompositionFunctorComposition}
+\end{figure}
+
+
+
+\begin{figure}
     
-\begin{align}
-    (\theta\star \1)\ev & = \1(\theta\ev)\\
-    & = \1 \\
-    & = \1 \ev\\
-\end{align}
+    \begin{framed}
+        \centering
+        \textbf{S-Closure of Re-Indexing Functors}
+                
+        \begin{theorem}
+            The re-indexing functors are also S-closed. That is all the S-category features in $[E^n, \C]$ are preserved by $\theta\star$ in $[E^m, \C]$. For a full list of features please see appendix \todo{Reference}.
+        \end{theorem}
+        
+        
+        \begin{proof}
+            All of the S-category features are proved pointwise.
+        
+            \case{Graded Monad Functor}
+            \begin{align}
+                (\theta\star\Tn{f}{A})\ev & = \Tn{f}{A}(\theta\ev) \\
+                & = \Tz{(f(\theta\ev))}{(A(\theta\ev))}\\
+                & = (\Tm{(f\after\theta)}{\theta\star A})\ev\\
+            \end{align}
+        
+            \case{Terminal Object}
+            
+        \begin{align}
+            (\theta\star \1)\ev & = \1(\theta\ev)\\
+            & = \1 \\
+            & = \1 \ev\\
+        \end{align}
+        
+        \begin{align}
+            (\theta\star\term{A})\ev & = \term{A}(\theta\ev)\\
+            & = \term{A(\theta\ev)}\\
+            & = \term{\theta\star A}\ev
+        \end{align}
+        
+            $$\square$$
+        \end{proof}
+    \end{framed}
+    \caption{The pre-composition re-indexing functor $f\star$ is S-Closed}
+    \label{PrecompositionSClosure}
+\end{figure}
 
-\begin{align}
-    (\theta\star\term{A})\ev & = \term{A}(\theta\ev)\\
-    & = \term{A(\theta\ev)}\\
-    & = \term{\theta\star A}\ev
-\end{align}
+Next, the re-indexing functor $\pstar$ should have a right adjoint, $\allEn$. Here, we pick $\allEn$ to be defined as a finite product over the countable set of effects (figure \ref{ProductQuantification}). This is possible because types and effects are not impredicative (that is, they quantify over themselves), meaning that the set of effects is countable or finite.
 
-    $$\square$$
-\end{proof}
+\begin{figure}
+    \begin{framed}
+        \centering
+        \textbf{The Quantification Functor}
 
+        \begin{align}
+            \allEn:& [E^{n+1}, \C] \rightarrow [E^n, \C]\\
+            \allEn(A)\env =&\Pi_{\e\in E}{A(\env, \e)}
+            \\ 
+            \allEn(f)\env =&\Pi_{\e\in E}{f(\env, \e)}
+        \end{align}
+        
+    \end{framed}
+    \caption{Definition of the quantification functor}
+    \label{ProductQuantification}
+\end{figure}
 
-Next, the re-indexing functor $\pstar$ should have a right adjoint, $\allEn$. Here, we pick $\allEn$ to be defined as a finite product over the countable set of effects. This is possible, since types and effects are not impredicative (that is, they quantify over themselves)
-
-\begin{align}
-    \allEn:& [E^{n+1}, \C] \rightarrow [E^n, \C]\\
-    \allEn(A)\env =&\Pi_{\e\in E}{A(\env, \e)}
-    \\ 
-    \allEn(f)\env =&\Pi_{\e\in E}{f(\env, \e)}
-\end{align}
 
 
 We can now prove that $\pstar \dashv \allEn$. To do this, we need a natural bijection between morphisms in the functor categories $[E^n, \C]$ and $[E^{n+1}, \C]$.
@@ -2923,23 +2936,37 @@ We can now prove that $\pstar \dashv \allEn$. To do this, we need a natural bije
     \bar{(-)}: [E^{n+1}, \C](\pstar A, B) \rightleftharpoons [E^n,\C] (A, \allEn B): \widehat{(-)}
 \end{equation}
 
-The leftwards and rightwards components of this bijection can be derived as follows. The leftwards component maps each morphism to a finite pairing of the morphism over each ground effect.
+The leftwards and rightwards components of this bijection can be derived as follows. The leftwards component maps each morphism to a finite pairing of the morphism over each ground effect. The inverse is simply to project out the appropriate value of $\e$ from the product. These mappings can be seen in figure \ref{AdjunctionDefinition}. These transformations give rise to the unit and co-unit of the adjunction, which are defined in figure \ref{UnitCoUnitDefinition}.
 
-\begin{align}
-    m:&\quad \pstar A \rightarrow B\\
-    \bar{m}:&\quad A\rightarrow \allEn B\\
-    \bar{m}(\env) =&\quad \finpr{m(\env, \e)}{e\in E}
-\end{align}
 
-The inverse is simply to project out the appropriate value of $\e$ from the product.
+\begin{figure}
+    \begin{framed}
+        \centering
+        \textbf{The Adjunction Operations}
+        
 
-\begin{align}
-    n:&\quad A \rightarrow \allEn B\\
-    \widehat{n}:&\quad \pstar A\rightarrow B\\
-    \widehat{n}(\env, \e_{n+1}) =&\quad\pi_\e\after g(\env)
-\end{align}
+        \begin{align}
+            m:&\quad \pstar A \rightarrow B\\
+            \bar{m}:&\quad A\rightarrow \allEn B\\
+            \bar{m}(\env) =&\quad \finpr{m(\env, \e)}{e\in E}
+        \end{align}
+        
 
-These transformations give rise to the unit and co-unit of the adjunction:
+        \begin{align}
+            n:&\quad A \rightarrow \allEn B\\
+            \widehat{n}:&\quad \pstar A\rightarrow B\\
+            \widehat{n}(\env, \e_{n+1}) =&\quad\pi_\e\after g(\env)
+        \end{align}
+    \end{framed}
+
+    \caption{The definition of the adjunction's bijection operations}
+    \label{AdjunctionDefinition}
+\end{figure}
+
+
+
+
+
 
 With unit:
 
