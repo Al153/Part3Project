@@ -22,6 +22,11 @@ rules etc.  Use explicit spacing.
 }
 
 
+\todo{Question: do the requirements that you have imply that each hom-set C(I,U) forms a monoid? If they do, it might be worth mentioning this (it
+makes the requirements on the base category look more natural). (Also,
+is requiring it to form a preordered monoid a good idea?)
+}
+
 \abstract
     
 To date, there has been limited work on the semantics of languages with polymorphic effect systems. The application, by Moggi, of strong monads to modelling the semantics of effects has become a mainstream concept in functional programming languages. This was improved upon by Lucasson (?) using a graded monad to model languages with a range of independent and dependent effects at an operational level. A categorical semantics for parametric polymorphism in types was first published by Reynolds (?) allowing a denotational analysis of languages including type parameters. There has been some work on polymorphism over the exception effect (which paper). Despite these works, there has been no work to date on the denotational semantics of languages with general parametric polymorphism over effects.
@@ -39,7 +44,21 @@ The full proofs can be found online on my github repository (link), since due to
 is and where the rest of the document is going."
 }
 
+\todo{I think you need to talk more about what effect *systems* (in
+particular, types carrying effect information) are before
+talking about polymorphism.}
 
+
+\todo{"The concepts defined in 2"???}
+\todo{"Coproduct on the terminal object" is slightly ambiguous.}
+\todo{Unit effect: slightly unclear what this means.}
+\todo{Algebra on effects": what algebra? This is the first mention of effect algebra.}
+\todo{"A simple example of such an algebra": this is the most general notion of effect algebra, not a simple example.}
+\todo{"Over a property P": property is definitely the wrong word to use here.}
+\todo{Paragraph about "augmented type rules": going too technical too quickly (adjunctions etc.)}
+\todo{"as we shall see, in effect-polymorphic languages, types quantify over effects": explain this earlier, because this is the point of the project.}
+\todo{"class of categories": this is not a class of categories: each model has more structure.}
+\todo{Figure 1.2: it isn't clear that $\P_1$ is $\P_0, \a$, etc. Also dotted lines probably aren't a good dea (since they are used for unique morphisms).}
 
 \section{What is an Effect System?}
 
@@ -145,6 +164,23 @@ In this chapter I introduce the monadic, effectful language used in the rest of 
 \section{Required Category Theory}\label{CategoryTheoryRequirements}
 
 \todo{Make  this more tutorial}
+
+\todo{ Cite Mac Lane (categories for the working mathematician)?}
+
+\todo{Products: binary products?}
+\todo{Some of the definitions (product, etc.) don't really sound like definitions (they talk about when something exists). Say   "a product of X and Y is/consists of...".}
+\todo{I for initial object: usually 0. (Also, you don't seem to be using the initial object anywhere.)}
+\todo{"conceptual dual": just dual.}
+\todo{"preserves the category properties of composition and identity": these are structure, not properties. Just say "preserves composition and identities".}
+\todo{You switch from using "X, Y, ..." from objects to "A, B, ...".}
+\todo{"a monad is": a monad consists of?}
+\todo{It might be better to merge some of the figures. For example, all of the diagrams required to commute to get a monad could go into one figure (or maybe just in the text?). This would make it easy to see that  they go together.}
+
+
+\todo{Name the base category and the indexed category!}
+\todo{It might be worthwhile to point out the contravariance when you mention the reindexing functors. (Since this is easy to miss.)}
+\todo{Category of cartesian-closed categories: you don't define this. You also might not want to refer to this at all.}
+
 
 Before going further, it is necessary to assert a common level of category theory knowledge. This section is not intended as a tutorial but to jog the memory of the reader, and briefly introduce some new concepts.
 
@@ -656,6 +692,22 @@ In this dissertation, I show how these category theoretic building blocks can be
     \caption{Diagram of the structure of an indexed category for modelling a polymorphic language. Solid arrows represent functors and dashed arrows represent internal morphisms. The left hand category is the base category.}
     \label{IndexDiagram}
 \end{figure}
+
+
+\todo{The definition of the preordered monoid in Section 3.3.2 is a bit too vague.}
+\todo{Make it clearer that elements of E are now ranged over by e (before it was $\e$)}
+\todo{`G ::=` should be `$\G ::=$`}
+\todo{The (Weaken) rule needs a side-condition saying that `$\b\notin\P$` (so that
+  `$\typerelation{\P}{\e}{\Eff}$` implies $\ok{\P}$). Similarly for terms. There is also a similar
+  problem for subtyping.
+}
+
+
+
+
+
+
+
 \section{The Effect Calculus}
 
 \todo{
@@ -747,6 +799,11 @@ do $b$ $\texttt{<-}$ Prompt("Are You Sure?") in (
 
 
 \section{Polymorphic Effect Calculus}
+
+\todo{The notion of S-category is very important. Perhaps put it in a definition environment?}
+\todo{You might want to drop the subscript M from the denotations if M never does anything interesting (it clutters the notation a bit).}
+
+
 Next, we consider the Effect Calculus extended with terms to allow System-F-style polymorphism over effects.
 
 \begin{align}
@@ -945,6 +1002,45 @@ Only the type rule \texttt{Weaken} adds terms to the environment from its precon
 
 
 \chapter{The Semantics of PEC in an Strictly Indexed Category}
+
+\todo{ Section 5.1}
+
+\todo{"a mapping from objects... This functor": You don't have a functor yet!}
+\todo{Using I as a shorthand for $\deno{\P}$: this is a little vague (e.g. what does I' mean?). Does this really buy anything?}
+\todo{"essentially a list of variables": isn't $\P$ *literally* a list of
+  variables?}
+\todo{ Do you require that all of the objects of C have the form U^n? (I'm not sure if you should or not.)}
+\todo{"Monoidal operator": what does this mean?}
+
+\todo{ Section 5.3}
+
+\todo{"the denotation on an effect is a morphism": give the type of the morphism.}
+\todo{The denotation of $\deno{\typerelation{\P}{e}{\effect}}$ has a typo.}
+\todo{Possibly make it clearer where $\dsep{\e_1}{\e_2}$ comes from.}
+\todo{I suggest explaining the (Effect-App) case of the denotational semantics more, it is quite hard to understand. (I had this problem   when reading Crole.)}
+
+\todo{ Section 5.4}
+
+\todo{ The substitution typing judgement might need a little more explanation.}
+\todo{Lemma 5.4.1: since the proof relies on 5.4.3, it should probably come later (unless there is a good reason for mentioning it there).}
+\todo{Theorem 5.4.6: it's really hard to parse the statement of this theorem.}
+\todo{Theorem 5.4.9: it's not clear what $\D, \D'$ are here}
+\todo{(5.63) and (5.64): these lines don't look right. You shouldn't drop the $\a\setto\a$ from the substitution until you pull it outside of the $\forall$}
+\todo{(5.106) and (5.107) have unmatched brackets.}
+\todo{all denotations for a typing relation are equivalent": all derivations of a typing relation have the same denotation?}
+\todo{I'm not sure about the term S-closure. Closure is a specific term in category theory.}
+
+\todo{ Section 5.5}
+
+\todo{"above instances of...": each of these typing rules has more than one assumption. Do you allow subtyping to be used on all of these  assumptions?}
+\todo{You should make it clearer that this is the *definition* of reduced typing derivation.}
+\todo{"As an aside...": this shouldn't be inside the proof (but should still be mentioned somewhere). Put it before or after.}
+
+\todo{ Section 5.6}
+
+\todo{Omitting congruence: the cases for congruence follow from the fact that the semantics is compositional. You should probably mention compositionality somewhere, because it's important.}
+
+
 
 
 In this chapter, I  describe the category structure required to interpret an instance of the PEC. I then present denotations of each type of structure in the language, such as types, effects, terms, substitutions, and environment weakenings. Finally, I provide outlines and interesting cases of the proofs of the lemmas leading up to and including soundness of $\beta\eta$-conversion. \todo{Or equational equivalence} However, firstly I shall give a brief treatment to the semantics of EC.
@@ -2471,7 +2567,7 @@ The $\reduce$ function maps each derivation to its reduced equivalent. It does t
         &= h_B\after\bind{\e_1'}{\e_2'}{B}\after\T{\e_1'}{\T{\e_2'}{g}}\after \T{\e_1'}{\D_3'}\after
         \tstrength{\e_1'}{\G}{A'}\after\pr{\idg}{\D_1'}\qt{By the $\mu$ and Subtype rule }\\
         & = h_B\after\T{\e_1'\dot\e_2'}{g}\after\bind{\e_1'}{\e_2'}{B'}\after \T{\e_1'}{\D_3'}\after
-        \tstrength{\e_1'}{\G}{A'}\after\pr{\idg}{\D_1'}\qt{By naturality of $\bind{}{}{}$ }\\
+        \tstrength{\e_1'}{\G}{A'}\after\pr{\idg}{\D_1'}\qt{By naturality of $\bindmu$ }\\
         & = \D' \qt{By definition}
     \end{align}
     $$\square$$
@@ -2675,6 +2771,19 @@ $$\square$$
 This completes the proof of soundness for this semantics.
 
 \chapter{Instantiating a Model of PEC}
+
+\todo{"We have proved that we can form a model": this is a little confusing because chapter 6 is about forming models from less data.}
+\todo{"There exist Set-based models": this is the case for many side-effects, but not all of them.}
+\todo{ "Let C be an S-category formed from Set.": don't use C here (I'm not sure that you actually have to name the S-category at all.)}
+\todo{Define the base category before the fibres.}
+\todo{When you mention the functor category, you need to make it clear that E^n is a discrete category.}
+\todo{The objects of the base category have the form E^n, but the fibres are indexed by natural numbers, so strictly speaking you aren't indexing by the right thing here. It might be better to change the objects of the base category to just be natural numbers.}
+\todo{"discrete sub category": Eff is not discrete (it has non-trivial morphisms). Do you mean full subcategory? (Also, should this be full? Why not restrict to monotone functions?)}
+\todo{You say that C is complete without saying what complete means. (But you don't need completeness, you just need products because E^n is discrete.)}
+\todo{"finite product over the countable set of effects": if E is countable,  then this would be a countable product. (But also, you don't know that E is countable.) The size of the product doesn't really matter here, as long as the category has products of the right shape}
+
+
+
 Now we have proved that we can form a model of PEC in an appropriate indexed S-category, it remains to show that it is feasible to construct such an indexed category. There exist $\set$-based models for the semantics of effectful languages with a graded monad, such as the Effect Calculus \todo{A reference for this}. More specifically, it is possible to treat $\set$ as an S-category. Hence, I use a $\set$ based S-category as a starting point. In this section, I  demonstrate how to construct an strictly indexed S-category, which can model the PEC, from such an S-category.
 
 Let $\C$ be an S-category derived from $\set$. That is, $\C$ contains a graded monad $\Tz{}{}, \bindmu^0, \pointz{}, \strengtht$, is cartesian closed, has a co-product on the terminal object $\1 = \left\{\star\right\}$, has subtyping functions $\deno{A\subtypeg B}: A \rightarrow B$ for each instance of the ground subtyping relation, and has natural transformations $\deno{\e_1 \subeffectz \e_2}: \Tz{\e_1}{} \rightarrow \Tz{\e_2}{}$. Since $\C$ is a model for the EC, it is graded by a pre-ordered monoid on ground effects: $(E, \subeffectz, \1, \dot)$. I have marked each of these S-category properties with $0$ to indicate that they occur in the bottom category $\C$, induced by the empty effect environment.
@@ -2767,7 +2876,7 @@ We can define the co-product pointwise.
     \begin{framed}
         \centering\textbf{Strong Graded Monad}
 
-Given the strong graded monad $(\Tz{}{}, \pointz{}{}{}, \bindz{}{}{}, \tstrengthz{}{}{})$ on $\C$ we can construct an appropriate graded monad on $[E^n, \C]$.
+Given the strong graded monad $(\Tz{}{}, \pointz{}, \bindmu^0, \strengtht^0)$ on $\C$ we can construct an appropriate graded monad on $[E^n, \C]$.
 
 \begin{align}
     \Tn{}{}:&\quad(E^n, \dot, \subeffect_n, \1_n) \rightarrow [[E^n, \C], [E^n, \C]]\\
@@ -3081,7 +3190,7 @@ Finally, we need to prove that the Beck-Chevalley condition given in \ref{PECReq
 $$\square$$
 \end{proof}
     \end{framed}
-    \caption{Proof that the adjunciton satisfies the second part of the Beck-Chevalley condition.}
+    \caption{Proof that the adjunction satisfies the second part of the Beck-Chevalley condition.}
     \label{BeckChevalley2}
 \end{figure}
 
