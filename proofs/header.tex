@@ -19,12 +19,15 @@
 \usepackage{framed}
 \usepackage{listings}
 
+\usepackage{amsthm}
 %Theorems
 \usepackage[utf8]{inputenc}
 \usepackage[english]{babel}
 \newtheorem{theorem}{Theorem}[section]
 \newtheorem{corollary}{Corollary}[theorem]
 \newtheorem{lemma}[theorem]{Lemma}
+\theoremstyle{definition}
+\newtheorem{definition}{Definition}[section]
 
 \usepackage{tikz}
 
@@ -75,7 +78,7 @@
 \newcommand\e[0]{\epsilon}
 
 \newcommand{\db}[1]{{\bf [\![}#1{\bf ]\!]}}
-\newcommand{\deno}[1]{\db{#1}_M}
+\newcommand{\deno}[1]{\db{#1}}
 \newcommand\after\circ
 \newcommand\term[1]{\left\langle\right\rangle_{#1}}
 
@@ -246,7 +249,7 @@
 \newcommand{\ab}[0]{\fntype{A}{B}}
 
 \newcommand\wrelw[2]{\wrel{\w}{#1}{#2}}
-\newcommand\proof[0]{\paragraph{Proof:}}
+\renewcommand\proof[0]{\paragraph{Proof:}}
 \newcommand{\case}[1]{\paragraph{Case #1:}}
 \newcommand{\subcase}[1]{\subparagraph{Case: #1}}
 \newcommand\bi[0]{By inversion}
