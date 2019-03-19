@@ -891,21 +891,16 @@ Only the type rule \texttt{Weaken} adds terms to the environment from its precon
 
 \chapter{The Semantics of PEC in an Strictly Indexed Category}
 
-\todo{Using I as a shorthand for $\deno{\P}$: this is a little vague (e.g. what does $I$ mean?). Does this really buy anything?}
-\todo{ Do you require that all of the objects of C have the form U^n? (I'm not sure if you should or not.)}
-\todo{"Monoidal operator": what does this mean?}
-
-
 \todo{ Section 5.4}
 
 \todo{ The substitution typing judgement might need a little more explanation.}
-\todo{Lemma 5.4.1: since the proof relies on 5.4.3, it should probably come later (unless there is a good reason for mentioning it there).}
+
 \todo{Theorem 5.4.6: it's really hard to parse the statement of this theorem.}
 \todo{Theorem 5.4.9: it's not clear what $\D, \D'$ are here}
 \todo{(5.63) and (5.64): these lines don't look right. You shouldn't drop the $\a\setto\a$ from the substitution until you pull it outside of the $\forall$}
 \todo{(5.106) and (5.107) have unmatched brackets.}
 \todo{all denotations for a typing relation are equivalent": all derivations of a typing relation have the same denotation?}
-\todo{I'm not sure about the term S-closure. Closure is a specific term in category theory.}
+
 
 \todo{ Section 5.5}
 
@@ -992,11 +987,11 @@ In order to model the polymorphism of PEC, we need to now look at an indexed cat
 
 The essential idea from this point on is that we have defined several relations of the form $\wellformed{\texttt{Env}}{\texttt{Conclusion}}$, such as the typing relation $\gpetyperelation{v}{A}$, and the well-formedness relation on effects $\wellformed{\P}{\e}$. Each instance of such a relation has a denotation that is an object or morphism in a category. For example, $\deno{\typerelation{\P}{\e}{\effect}}$ is a morphism in the base category, $\deno{\typerelation{\P}{A}{\type}}$ is an object in the fibre (S-category) induced by $\P$, and $\deno{\gpetyperelation{v}{A}}$ is morphism between the objects which denote $\G$ and $A$ in the fibre induced by $\P$.
 
-In order to form denotations of well formed effects, $\e$, we need specific objects to exist in the base category $\C$. Firstly, there should exist an object, $U$, indicating the kind of effects. To denote effect variable environments, which are lists of effect variables, we need finite products on $U$, that is $\C$ should have a terminal object, $\1$ and binary products. We can form finite products as so: $U^0 = \1$ and $U^{n+1} = U^n\times U$. From now on, I use $I$ to mean $U^n$ for some $n$.
+In order to form denotations of well formed effects, $\e$, we need specific objects to exist in the base category $\C$. Firstly, there should exist an object, $U$, indicating the kind of effects. To denote effect variable environments, which are lists of effect variables, we need finite products on $U$, that is $\C$ should have a terminal object, $\1$ and binary products. We can form finite products as so: $U^0 = \1$ and $U^{n+1} = U^n\times U$. From now on, I use $I$ to mean $U^n$ for some $n$. Hence, the base category $\C$ should contain $\1$, $U$ and finite products of $U$.
 
 There is also a requirement that the indexed category can model ground effects, types, and terms. In order to do this, it should have a base-category morphism $\deno{e}: \C(\1, U)$ for each ground effect $e$. Furthermore, each fibre should contain and object $\deno{\g}$ for each ground type $\g$. Finally, for each constant, $\const{A}$, there should exist a morphism in each fibre: $\deno{\const{A}}: \1 \rightarrow A$. These last two requirements are satisfied by the fibres all being S-categories.
 
-Next up, there needs to be a monoidal operator $\Mul: \ciu \times \ciu \rightarrow \ciu$. $\Mul$ should be natural, which means: $\Mul(f, g)\after\theta = \Mul(f\after\theta, g\after\theta)$. Secondly, $\Mul$ should preserve the operation of the multiplication of ground effects. That is, $\Mul(\deno{e_1},\deno{e_2}) = \deno{e_1\dot e_2}$ where $e_1, e_2$ are ground effects.
+Next up, there needs to be a monoidal operator $\Mul: \ciu \times \ciu \rightarrow \ciu$. This means that $\Mul$ should be associative and have an identity element (which is $\deno{\1}\after\term{I}$). Furthermore $\Mul$ should be natural, which means: $\Mul(f, g)\after\theta = \Mul(f\after\theta, g\after\theta)$. Finally, $\Mul$ should preserve the operation of the multiplication of ground effects. That is, $\Mul(\deno{e_1},\deno{e_2}) = \deno{e_1\dot e_2}$ where $e_1, e_2$ are ground effects.
 
 Our penultimate requirement is that the re-indexing functor  induced by $\p: I\times U\rightarrow I$ (that is $\pstar: \C(I) \rightarrow \C(I\times U)$) has a right adjoint, $\allI: \C(I\times U) \rightarrow \C(I)$. As the reader might be able to guess, this functor allows us to interpret quantification over effects. This right adjoint need not be S-closed.
 
@@ -1052,7 +1047,7 @@ This collection of theorems finally allows us to complete all cases of the $\bet
             \node[main node,text width=20mm, fill=red] (MulNaturality) [below of=IndexCategory] {Naturality of Mul Operator};
         
             \node[main node,text width=20mm, fill=red] (BeckChevalley) [left of=MulNaturality]{Beck-Chevalley Condition};
-            \node[main node,text width=20mm, fill=red](SClosure) [right of=MulNaturality]{S-Closure of Re-indexing};
+            \node[main node,text width=20mm, fill=red](SClosure) [right of=MulNaturality]{Re-indexing Functors are S-Closed};
         
             \node[main node, text width=20mm](EffectWeakeningEffects) [below left of=MulNaturality]{Effect Weakening on Effects};
         
@@ -1120,10 +1115,16 @@ This collection of theorems finally allows us to complete all cases of the $\bet
 
 
 \section{Denotations}\label{PECDenotations}
-We are now equipped to define the denotations of structures in the language. Firstly, we shall define the denotation of effect environments. \todo{Define this denotation}
-\todo{Incomplete}
+We are now equipped to define the denotations of structures in the language. Firstly, we shall define the denotation of effect environments. In the base category, with the kind of effects indicated by $U$, the denotation of an effect environment $\P$ is given by a finite product.
 
-of the well-formedness relation on effects. In order to de-clutter the notation used going forwards, inheriting from R. L. Crole \needsRef, I shall write $I$ as shorthand for $\deno{\P}$.  As stated earlier, the denotation of an effect is a morphism $\deno{\typerelation{\P}{\e}{\effect}}: I \rightarrow U$ in $\C$.
+\[
+\deno{\nil} = \1 \quad\quad \deno{\P, \a} = \deno{\P}\times U    
+\]
+
+Hence, the denotation of an  effect-variable environment $\P$ is given by a finite product on $U$ of width $n$ where $n$ is the length of $\P$. In order to de-clutter the notation used going forwards, inheriting from R. L. Crole \needsRef, I shall write $I$ as shorthand for $\deno{\P}$.  
+
+
+As stated earlier, the denotation of a well-formed effect is a morphism $\deno{\typerelation{\P}{\e}{\effect}}: I \rightarrow U$ in $\C$.
 
 \[
     \deno{\typerelation{\P}{e}{\effect}} = \deno{\e} \after \term{I}: I\rightarrow U
@@ -1329,14 +1330,6 @@ By inspection, we can find the denotations of these special-case substitutions t
 
 These substitutions will form a useful shorthand later. We also need to define the property $\a \# \si$. This indicates that $\a$ does not occur in the domain or any of the substitution expression of $\si$. Finally, it will be useful to examine how the substitutions generated by extending the effect environment, such as in the case of polymorphic types, relate to the original substitution.
 
-\begin{lemma}[Extension Lemma on Effect Substitutions]
-     If $\typerelation{\P'}{\si}{\P}$, and $\a\#\si$, then $\typerelation{(\P', \a)}{(\si, \a\setto\a)}{(\P,\a)}$ with denotation $\deno{\typerelation{(\P', \a)}{(\si, \a\setto\a)}{(\P,\a)}} = (\deno{\typerelation{\P'}{\si}{\P}}\times\Id{U})$
-\end{lemma}
-\begin{proof}
-    This holds by the weakening-theorem on effects, theorem \ref{EffWeakeningEff}
-
-    $$\square$$
-\end{proof}
 
 
 
@@ -1453,10 +1446,18 @@ $$\square$$
     $$\square$$
 \end{proof}
 
+\begin{lemma}[Extension Lemma on Effect Substitutions]
+    If $\typerelation{\P'}{\si}{\P}$, and $\a\#\si$, then $\typerelation{(\P', \a)}{(\si, \a\setto\a)}{(\P,\a)}$ with denotation $\deno{\typerelation{(\P', \a)}{(\si, \a\setto\a)}{(\P,\a)}} = (\deno{\typerelation{\P'}{\si}{\P}}\times\Id{U})$
+\end{lemma}
+\begin{proof}
+   This holds by the weakening-theorem on effects, theorem \ref{EffWeakeningEff}
+
+   $$\square$$
+\end{proof}
 
 
 
-We can then move on to state and prove the weakening and substitution theorems on types, subtyping, and type environments. The general structure of these theorems, as well as the term-based theorems later, is that when we want to quantify the effect of a morphism $\theta: I' \rightarrow I$ between objects in the base category on structure in the fibres $\C(I)$, we should simply apply the associated re-indexing functor $\theta\star: \C(I) \rightarrow \C(I')$ to the structure. The proof of the soundness of this operation is driven by the S-closure of the re-indexing functor.
+We can then move on to state and prove the weakening and substitution theorems on types, subtyping, and type environments. The general structure of these theorems, as well as the term-based theorems later, is that when we want to quantify the effect of a morphism $\theta: I' \rightarrow I$ between objects in the base category on structure in the fibres $\C(I)$, we should simply apply the associated re-indexing functor $\theta\star: \C(I) \rightarrow \C(I')$ to the structure. The proof of the soundness of this operation is driven by the fact that the re-ndexing functor is S-closed.
 
 Specifically, effect substitutions have the following actions on types, and type-environments:
 
@@ -1478,10 +1479,10 @@ Specifically, effect substitutions have the following actions on types, and type
 \end{theorem}
 
 \begin{proof}
-    By S-closure of $\si\star$ and the Beck-Chevalley Condition.
+   By the fact that $\si\star$ is S-closed and the Beck-Chevalley Condition.
 
     \case{Monad}
-    This case makes use of the S-closure of $\si\star$. Specifically the S-closure property upon the graded monad functor $\T{}{}$: $\si\star(\T{f}{A}) = \T{f\after\si}{(\si\star A)}$.
+    This case makes use of the fact that $\si\star$ is S-closed. Specifically the property upon the graded monad functor $\T{}{}$: $\si\star(\T{f}{A}) = \T{f\after\si}{(\si\star A)}$.
 
 
     \begin{align}
@@ -1507,19 +1508,19 @@ Specifically, effect substitutions have the following actions on types, and type
 \end{theorem}
 
 \begin{proof}
-    By induction on the derivation on $\deno{\wellformedok{\P}{\G}}$ whilst making use of S-closure of the re-indexing functor.
+    By induction on the derivation on $\deno{\wellformedok{\P}{\G}}$ whilst making use of the S-closed property of the re-indexing functor.
 
     \case{Nil}
-    We make use of the fact that S-closure means that the terminal object is preserved.
+    We make use of the fact that an S-closed functor preserves the terminal object.
     \begin{align}
         \si\star\deno{\wellformedok{\P}{\nil}} &=\si\star\1\\
-        & = \1\qt{By S-closure}\\
+        & = \1\qt{By S-closed property}\\
         &= \deno{\wellformedok{\P'}{\nil}}\\
         &= \deno{\wellformedok{\P'}{\nil\ssi}}\\
     \end{align}
     
     \case{Var}
-    S-closure means that $\si\star(A \times B) = (\si\star A)\times (\si\star B)$.
+    The S-closed property means that $\si\star(A \times B) = (\si\star A)\times (\si\star B)$.
     \begin{align}
        \si\star\deno{\wellformedok{\P}{\gax}} &= \si\star(\deno{\wellformedok{\P}{\G}} \times \deno{\typerelation{\P}{A}{\type}}) \\
        & = (\si\star\deno{\wellformedok{\P}{\G}} \times \si\star\deno{\typerelation{\P}{A}{\type}})\\
@@ -1539,7 +1540,7 @@ The effect-weakening theorem on types and type environments is also very similar
 \end{theorem}
 
 \begin{proof}
-   In a similar fashion, we make use of the Beck-Chevalley condition and the S-closure of $\si\star$.
+   In a similar fashion, we make use of the Beck-Chevalley condition and the S-closed property of $\si\star$.
 
     \case{Quantification}
         This case uses the Beck-Chevalley condition and the fact that $\deno{\wrel{\w\x}{(\P', \a)}{(\P,\a)}} = w\times \Id{U}$. This property is used in conjunction with induction to change the environment from $(\P, \a)$ to $(\P', \a)$.
@@ -1553,7 +1554,7 @@ The effect-weakening theorem on types and type environments is also very similar
         \end{align}
     
     \case{Function}
-    This case makes use of the S-closure property that $\w\star$ preserves exponentials. Specifically $\w\star(B^A) = (\w\star B)^{(\w\star A)}$.
+    This case makes use of the S-closed property that $\w\star$ preserves exponentials. Specifically $\w\star(B^A) = (\w\star B)^{(\w\star A)}$.
     \begin{align}
         \w\star\deno{\typerelation{\P}{\ab}{\type}} &= \w\star(\deno{\typerelation{\P}{B}{\type}}^{\deno{\typerelation{\P}{A}{\type}}})\\
         &=\w\star(\deno{\typerelation{\P}{B}{\type}})^{\w\star(\deno{\typerelation{\P}{A}{\type}})}\\
@@ -1575,11 +1576,11 @@ Next we consider the action of weakening and substitution on subtyping relations
 \end{theorem}
 
 \begin{proof}
-    By rule induction over the definition of the subtype relation, making use of S-closure and the effect-substitution theorem on types.
+    By rule induction over the definition of the subtype relation, making use of S-closed property and the effect-substitution theorem on types.
 
 
 \case{Ground}
-This case holds by the property of the S-closure of $\si\star$ that $\si\star$ preserves the ground-type subtyping denotation.
+This case holds by the property of the S-closed property of $\si\star$ that $\si\star$ preserves the ground-type subtyping denotation.
 
 \begin{align}
     \si\star(\g_1\subtypeg\g_2) &= (\g_1\subtypeg\g_2)
@@ -1589,7 +1590,7 @@ This case holds by the property of the S-closure of $\si\star$ that $\si\star$ p
 
 \case{Fn}
 
-This case holds by several S-closure properties of $\si\star$. $\si\star$ preserves the exponential morphisms: $\si\star(\cur{f}) = \cur{\si\star(f)}$ and $\si\star(\app) = \app$. $\si\star$ should also preserve the product morphisms: $\si\star(\p) = \p$, $\si\star(\pp) = \pp$ and $\si\star\pr{f}{g} = \pr{\si\star f}{\si\star g}$. Hence $\si\star(f \times g) = (\si\star f \times \si\star g)$.
+This case holds by several S-closed properties of $\si\star$. $\si\star$ preserves the exponential morphisms: $\si\star(\cur{f}) = \cur{\si\star(f)}$ and $\si\star(\app) = \app$. $\si\star$ should also preserve the product morphisms: $\si\star(\p) = \p$, $\si\star(\pp) = \pp$ and $\si\star\pr{f}{g} = \pr{\si\star f}{\si\star g}$. Hence $\si\star(f \times g) = (\si\star f \times \si\star g)$.
 
 \begin{align}
     \si\star\deno{(\ab)\subtypep\fntype{A'}{B'}} &= \si\star(\deno{B\subtypep B'}^{A'}\after B^{\deno{A'\subtypep A}})\\
@@ -1706,7 +1707,7 @@ Let \begin{align}
     & = \widehat{\bar{(\si\times\Id{U})\star(\widehat{\Id{\allI(A)}})}}\qt{By bijection}\\
     & = \widehat{\si\star(\bar{\widehat{\Id{\allI(A)}}})}\qt{By naturality}\\
     & = \widehat{\si\star(\Id{\allI(A)})}\qt{By bijection}\\
-    & = \widehat{\Id{\allII(A\after(\si\times\Id{U}))}}\qt{By S-Closure, naturality}\\
+    & = \widehat{\Id{\allII(A\after(\si\times\Id{U}))}}\qt{By S-closed property, naturality}\\
     & = \widehat{\Id{\allII(A\sub{\si,\a\setto\a})}}\qt{By Substitution theorem}\\
     & = \e_{A\ssi}
 \end{align}
@@ -1743,7 +1744,7 @@ Similarly, we can derive the weakening theorem on terms.
     \end{align}
     
     \case{Lambda}
-    This case holds by induction and the S-closure of $\w\star$.
+    This case holds by induction and the S-closed property of $\w\star$.
 
     If $\D$ derives $\gpetyperelation{\lam{x}{A}{v}}{\ab}$ then by inversion there exists $\D_1$ deriving $\etyperelation{\P}{\gax}{v}{B}$ such that:
     
@@ -1751,10 +1752,10 @@ Similarly, we can derive the weakening theorem on terms.
         \D = \cur{\D_1}\\
     \end{equation}
     
-    Using induction and S-closure, we can derive $\D'$.
+    Using induction and S-closed property, we can derive $\D'$.
     \begin{align}
         \w\star(\D) & = \w\star(\cur{\D_1})\\
-        & = \cur{\w\star(\D_1)}\qt{By S-closure}\\
+        & = \cur{\w\star(\D_1)}\qt{By S-closed property}\\
         & = \cur{\D_1'}\qt{By induction}\\
         & = \D'
     \end{align}
@@ -2870,7 +2871,7 @@ Now we need to define the required morphisms between fibres. Firstly, for any fu
     
     \begin{framed}
         \centering
-        \textbf{S-Closure of Re-Indexing Functors}
+        \textbf{Re-Indexing Functors are S-Closed}
                 
         \begin{theorem}
             The re-indexing functors are also S-closed. That is all the S-category features in $[E^n, \C]$ are preserved by $\theta\star$ in $[E^m, \C]$. For a full list of features please see appendix \needsRef.
