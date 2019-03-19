@@ -235,15 +235,7 @@ A \textit{natural transformation} $\theta$ between to functors $F, G: \C \righta
 
 
 \subsection{Monad}
-A \textit{monad} consists of:
-
-\begin{itemize}
-    \item A functor, $T: \C \rightarrow C$, from $\C$ onto itself, also known as an \textit{endofunctor}.
-    \item A ``unit'' natural transformation $\point{A}: A\rightarrow T(A)$
-    \item A ``join'' natural transformation $\mu_{A}: T(T(A)) \rightarrow T(A)$
-\end{itemize}
-
-Such that the diagrams in figures \ref{MonadAssociativity}, \ref{MonadUnits} commute.
+A \textit{monad} consists of a functor, $T: \C \rightarrow C$, from $\C$ onto itself, also known as an \textit{endofunctor}, which represents the collection of effectful values, and a pair of natural transformations. The first is the the \textit{unit} natural transformation $\point{A}: A\rightarrow T(A)$, which is used to treat pure values as an effectful expression. The second is the \textit{join} (also known as bind) natural transformation, $\mu_{A}: T(T(A)) \rightarrow T(A)$ ,  which is used to model the sequential composition of effectful subexpressions. In addition, there is the requirement that the diagrams in figures \ref{MonadAssociativity}, \ref{MonadUnits} commute.
 
 
 \begin{figure}
@@ -277,15 +269,8 @@ Another concept, though not strictly category theory, is that of a monoidal alge
 
 \subsection{Graded Monad}
 
-A \textit{graded monad} is a generalisation of a monad to be indexed by a monoidal algebra $(E,\dot, \1)$. It is made up of:
 
-\begin{itemize}
-    \item An endofunctor indexed by a monoid: $\T{}{}: (E, \dot\, \1)  \rightarrow [\C, \C]$
-    \item A unit natural transformation: $\point{}: \Id{} \rightarrow \T{\1}{}$
-    \item A join natural transformation: $\bind{\e_1}{\e_2}{}: \T{\e_1}{\T{\e_2}{}} \rightarrow \T{\e_1 \dot \e_2}{}$
-\end{itemize}
-
-Such that the diagrams in figures \ref{GradedMonadAssociativity}, \ref{GradedMonadUnits} commute.
+A \textit{graded monad} is a generalisation of a monad to be indexed by a monoidal algebra $(E,\dot, \1)$. It consists of an endofunctor indexed by elements in the monoid, $\T{}{}: (E, \dot\, \1)  \rightarrow [\C, \C]$, and a pair of indexed natural transformations. Firstly, there is the unit natural transformation to the monad functor indexed by the identity $\point{}: \Id{} \rightarrow \T{\1}{}$. The second natural transformation is a generalisation of join which composes nested instances of the indexed functor $\bind{\e_1}{\e_2}{}: \T{\e_1}{\T{\e_2}{}} \rightarrow \T{\e_1 \dot \e_2}{}$. Furthermore there is a requirement that the diagrams in figures \ref{GradedMonadAssociativity}, \ref{GradedMonadUnits} commute.
 
 
 \begin{figure}
@@ -325,7 +310,7 @@ Such that the diagrams in figures \ref{GradedMonadAssociativity}, \ref{GradedMon
 
 
 \subsection{Tensor Strength}
-A slightly harder concept to motivate is that of tensorial (or tensor) \textit{strength}. Tensor strength consists of a natural transformation: $\tstrength{\e}{A}{B}: A \times \teb \rightarrow \T{\e}{(A \times B)}$, which is required to have well defined interactions with the graded monad morphisms and the product-reordering natural transformation $\alpha_{A, B, C} = \pr{\p\after\p}{\pr{\pp\after\p}{\pp}}: ((A \times B) \times C) \rightarrow (A \times (B \times C))$, as seen in figures \ref{TensorStrengthLeftNaturality}, \ref{TensorStrengthRightNaturality}, \ref{TensorStrengthUnitorLaw}, \ref{TensorStengthJoin}, \ref{TensorStrengthPoint}, \ref{TensorStrengthAlpha}. The reasoning behind this is that the tensor strength natural transformation allows us to model operations that are invisibly implicit in a programming language but not given by default in category theory. A monad (or respectively a graded monad) is called \textit{strong} if it has tensorial strength.
+A slightly harder concept to motivate is that of tensorial (or tensor) \textit{strength}. Tensor strength consists of a natural transformation: $\tstrength{\e}{A}{B}: A \times \teb \rightarrow \T{\e}{(A \times B)}$, which is required to have well defined interactions with the graded monad morphisms and the product-reordering natural transformation $\alpha_{A, B, C} = \pr{\p\after\p}{\pr{\pp\after\p}{\pp}}: ((A \times B) \times C) \rightarrow (A \times (B \times C))$, as seen in figures \ref{TensorStrengthLeftNaturality}, \ref{TensorStrengthRightNaturality}, \ref{TensorStrengthUnitorLaw}, \ref{TensorStengthJoin}, \ref{TensorStrengthPoint}, \ref{TensorStrengthAlpha}. The reasoning behind this is that the tensor strength natural transformation allows us to model operations that are invisibly implicit in a programming language but not given by default in category theory. Tensor strength of a monad can be generalised to tensor strength in a graded monad by indexing by an element of the monoid algebra. A monad (or respectively a graded monad) is called \textit{strong} if it has tensorial strength. 
 
 \begin{figure}
 \begin{framed}
