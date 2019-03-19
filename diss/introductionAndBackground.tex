@@ -34,22 +34,14 @@ The full proofs can be found online on my github repository (\needsRef{link}), s
 
 \chapter{Introduction}
 
-
-
-\todo{I think you need to talk more about what effect *systems* (in
-particular, types carrying effect information) are before
-talking about polymorphism.}
-
-
-
 \section{What is an Effect System?}
 
-Programs very rarely stand alone without interacting with their environment in some form. This interaction might be to receive input, such as from sensors or buttons, to write output to a file, or to halt with an error. In functional languages, manipulating mutable state can also be considered interacting with the environment. Language terms that produce interactions are known as "effects" as they have some observable effect in the environment other than simply the value that executing the term produces. It is important to be able to reason about the effects that a program term may produce, in order to ensure the soundness of compiler transformations and formal verification. Languages such as Haskell and the languages introduced later in this dissertation do not allow implicit effects. Instead they require the programmer to explicitly use structures called monads \needsRef{Moggi} to encode effect analysis in the type of program fragments.
+Programs very rarely stand alone without interacting with their environment in some form. This interaction might be to receive input, such as from sensors or buttons, to write output to a file, or to halt with an error. In functional languages, manipulating mutable state can also be considered interacting with the environment. Language terms that produce these interactions are said to have \textit{effects} as they have some observable effect in the environment other than simply the value that executing the term produces. It is important to be able to reason about the effects that a program term may produce, in order to ensure the soundness of compiler transformations and formal verification. An effect system, analogously to a type system, is a formal system of rules which determines the effects that a program might have. Languages such as Haskell and the languages introduced later in this dissertation do not allow implicit effects. Instead they require the programmer to explicitly use structures called monads \needsRef{Moggi} to encode effect analysis in the type of program fragments. This has the useful result of combining the effect system with the type system of the language. For example, a program of type \texttt{Int} cannot interact with its environment to produce its result and hence always yields the same return value. However a program of type \texttt{IO Int} may perform IO operations before returning its result and hence may not always behave in exactly the same fashion.
 
 \section{What is Effect Polymorphism?}
 
 
-Effect polymorphism is when a single function in a language can operate on values of similar types but with different effects. It allows the same piece of code to be used in multiple contexts with different type signatures \todo{introduce effect-in-signatures}. This manifests in a similar manner to type parameter polymorphism in system-F-based languages. Consider the following Scala-style pseudocode:
+Effect polymorphism is when a single function in a language can operate on values of similar types but with different effects. It allows the same piece of code to be used in multiple contexts with different type signature. This manifests in a similar manner to type parameter polymorphism in system-F-based languages. Consider the following Scala-style pseudocode:
 
 \begin{framed}
     \begin{framed}
@@ -78,8 +70,10 @@ check[Exception](ThrowException("Not Aborted"))
     \end{framed}
 \end{framed}
 
-In this example, we are reusing the same “check” function in three different situations with three different effects in a type safe manner. Hence, “check” is polymorphic in the effect parameter it receives. To analyse this language, it would be useful to have an analysis tool that can precisely model these separate, though potentially interdependent, effects. A denotational semantics that can account for the parametric polymorphism over effects would be a step towards building such tools. \todo{Verifying/formally reasoning about?}.
-\todo{Effects are not impredicative - explain this either here or the next section}
+In this example, we are reusing the same “check” function in three different situations with three different effects in a type safe manner. Hence, “check” is polymorphic in the effect parameter it receives. To analyse this language, it would be useful to have an analysis tool that can precisely model these separate, though potentially interdependent, effects. A denotational semantics that can account for the parametric polymorphism over effects would be a step towards verifying and reasoning about such tools. 
+
+A key property of effect polymorphism that distinguishes it from type polymorphism is that effects are not impredicative. That is, types are polymorphic over effects, but effects do not range over themselves. This means that the models used to interpret effect-polymorphic languages can be simpler than the models required to interpret languages with impredicative polymorphism, such as System F.
+
 
 \section{An Introduction to Categorical Semantics}
 
@@ -117,7 +111,7 @@ In this chapter I first introduce the required category theory to understand the
 
 \section{Required Category Theory}\label{CategoryTheoryRequirements}
 
-\todo{ Cite Mac Lane (categories for the working mathematician)?}
+\needsRef{Cite Mac Lane (categories for the working mathematician)?}
 
 
 
@@ -337,7 +331,7 @@ A slightly harder concept to motivate is that of tensorial (or tensor) \textit{s
                 \&
                 \T{\e_1 \dot \e_2}({A \times B)}
             \end{tikzcd}
-            \caption{How the tensor strength natural transformation commutes with the join natural transformation \todo{Fix overflow here}}
+            \caption{How the tensor strength natural transformation commutes with the join natural transformation \fixLayout{Fix overflow here}}
             \label{TensorStengthJoin}
         \end{minipage}
     
@@ -586,7 +580,7 @@ In this dissertation, I show how these category theoretic building blocks can be
         \draw [decoration={brace,amplitude=8pt},decorate] ($(s3)+(10em,1ex)$) -- ($(s0)+(10em,-1ex)$);
         \node[text width=20mm] (Label) at (14,5){Fibres for each effect environment};
     \end{tikzpicture}
-    \caption{Diagram of the structure of an indexed category for modelling a polymorphic language. Solid arrows represent functors and dashed arrows represent internal morphisms. The left hand category is the base category. \todo{dotted lines probably aren't a good idea (since they are used for unique morphisms).}
+    \caption{Diagram of the structure of an indexed category for modelling a polymorphic language. Solid arrows represent functors and dashed arrows represent internal morphisms. The left hand category is the base category. \fixLayout{dotted lines probably aren't a good idea (since they are used for unique morphisms).}
     }
     \label{IndexDiagram}
 \end{figure}
@@ -887,9 +881,6 @@ Only the type rule \texttt{Weaken} adds terms to the environment from its precon
 \chapter{The Semantics of PEC in an Strictly Indexed Category}
 
 \todo{Think of an alternative for "S-Closed" ("S-Preserving?")}
-\todo{ Section 5.4}
-
-
 
 \todo{ The substitution typing judgement might need a little more explanation.}
 
@@ -898,7 +889,7 @@ Only the type rule \texttt{Weaken} adds terms to the environment from its precon
 
 
 
-In this chapter, I  describe the category structure required to interpret an instance of the PEC. I then present denotations of each type of structure in the language, such as types, effects, terms, substitutions, and environment weakenings. Finally, I provide outlines and interesting cases of the proofs of the lemmas leading up to and including soundness of $\beta\eta$-conversion. \todo{Or equational equivalence} However, firstly I shall give a brief treatment to the semantics of EC.
+In this chapter, I  describe the category structure required to interpret an instance of the PEC. I then present denotations of each type of structure in the language, such as types, effects, terms, substitutions, and environment weakenings. Finally, I provide outlines and interesting cases of the proofs of the lemmas leading up to and including soundness of the semantics with respect to a $\beta\eta$-conversion-based equational equivalence. However, firstly I shall give a brief treatment to the semantics of EC.
 
 
 \section{Semantics for EC in an S-Category}\label{SCategoryIntro}
@@ -1008,7 +999,7 @@ Using the adjunction property, we have that: $\bar{f\after\pstar(n)} = \bar{f}\a
     \end{align}
 
 \section{Road Map}
-In figure \ref{RoadMap}, one can see a diagram of the collection of theorems that need to be proved to establish the $\beta\eta$-equivalence soundness of a semantics for PEC.
+In figure \ref{RoadMap}, one can see a diagram of the collection of theorems that need to be proved to establish the soundness of a semantics for PEC.
 
 
 The first pair of theorems is made up of the effect substitution and weakening theorem on effects. These theorems show that substitutions of effects have a well-behaved and easily defined action upon the denotations of effects. Using these theorems, we can then move on to characterize the action of effect substitutions and effect-environment weakening on the denotations of types and type environments. From this, we can also look at the action of weakening and substituting effect environments on the subtyping between types.
@@ -1017,7 +1008,7 @@ The next step is to use these substitution theorems to formalise the action of s
 
 Separately, we prove that all derivable denotations for a typing relation instance, $\gpetyperelation{v}{A}$ have the same denotation. This is important, since subtyping allows us to find multiple distinct typing derivations for terms, which initially look like they may have distinct denotations. Using a reduction function to transform typing derivations into a unique form, I prove that all typing derivations yield equal denotations.
 
-This collection of theorems finally allows us to complete all cases of the $\beta\eta$-equivalence soundness theorem.
+This collection of theorems finally allows us to complete all cases of the equational-equivalence soundness theorem.
 
 \begin{figure}[h!]
     \begin{center}
@@ -1174,7 +1165,7 @@ This finally gives us the ability to express the denotations of well-typed terms
 
 Since each fibre is an S-category, for each ground constant, $\const{A}$, there exists $c: \1 \rightarrow A_I$ in $\C(I)$.
 
-\todo{Make these more readable/fix spacing}
+\fixLayout{Make these more readable/fix spacing}
 \[
     \treerule{Unit}{\wellformedok{\P}{\G}}{\deno{\etyperelation{\P}{\G}{\u}{\U}} = \term{\G} : \G_I \rightarrow \1}
     \quad
@@ -1440,7 +1431,7 @@ $$\square$$
 
 
 
-We can then move on to state and prove the weakening and substitution theorems on types, subtyping, and type environments. The general structure of these theorems, as well as the term-based theorems later, is that when we want to quantify the effect of a morphism $\theta: I' \rightarrow I$ between objects in the base category on structure in the fibres $\C(I)$, we should simply apply the associated re-indexing functor $\theta\star: \C(I) \rightarrow \C(I')$ to the structure. The proof of the soundness of this operation is driven by the fact that the re-ndexing functor is S-closed.
+We can then move on to state and prove the weakening and substitution theorems on types, subtyping, and type environments. The general structure of these theorems, as well as the term-based theorems later, is that when we want to quantify the effect of a morphism $\theta: I' \rightarrow I$ between objects in the base category on structure in the fibres $\C(I)$, we should simply apply the associated re-indexing functor $\theta\star: \C(I) \rightarrow \C(I')$ to the structure. The proof of the soundness of this operation is driven by the fact that the re-indexing functor is S-closed.
 
 Specifically, effect substitutions have the following actions on types, and type-environments:
 
@@ -2146,7 +2137,7 @@ In particular a reduced typing derivation is one where, we only allow the subtyp
 
     Hence the reduced type derivation of $\gpetyperelation{\doin{x}{v_1}{v_2}}{\M{\e_1'\dot\e_2'}{B'}}$ is the following:
 
-    \todo{Make this and the other smaller}
+    \fixLayout{Make this and the other smaller}
     \begin{equation}
         \treerule{Type} {
             \treerule{Bind}{
@@ -2471,9 +2462,9 @@ The $\reduce$ function maps each derivation to its reduced equivalent. It does t
 \end{figure}
 
 \section{Soundness}
-We are now at a stage where we can state and prove the most important theorem for a denotational semantics: soundness with respect to $\beta\eta$-reductions. Soundness follows from the common sense requirement that terms that are equivalent in a given language should also have equivalent denotations. In our case, I introduce a $\beta\eta$-equivalence relation and then prove that equivalent terms have equal denotations.
+We are now at a stage where we can state and prove the most important theorem for a denotational semantics: soundness with respect to an equational equivalence. Soundness follows from the common sense requirement that terms that are equivalent in a given language should also have equivalent denotations. In our case, I introduce a $\beta\eta$-based equational equivalence relation and then prove that equivalent terms have equal denotations.
 
-The $\beta\eta$-equivalence relation is a rule based relation with three main flavours of rules. Firstly, as seen in figure \ref{BetaEtaReductions}, there are the $\beta\eta$-reductions which formalise how we expect the program to execute given an appropriate implementation. We give a $\beta\eta$-reduction for each term transition, such as the application of lambda terms or the execution of an \texttt{if} expression. Secondly, there are congruences, seen in figure \ref{BetaEtaCongruence}, which formalise how the reduction of subexpressions affects the rest of the expression in a compositional way. Finally, we extend this relation into an equivalence relation by closing it under transitivity, reflexivity and symmetry as seen in figure \ref{BetaEtaEquivalence}.
+The equational equivalence relation is a rule based relation with three main flavours of rules. Firstly, as seen in figure \ref{BetaEtaReductions}, there are the reductions which formalise how we expect the program to execute given an appropriate implementation. We give a $\beta\eta$-reduction for each term transition, such as the application of lambda terms or the execution of an \texttt{if} expression, as well as the monad equivalence laws. Secondly, there are congruences, seen in figure \ref{BetaEtaCongruence}, which formalise how the reduction of subexpressions affects the rest of the expression in a compositional way. Finally, we extend this relation into an equivalence relation by closing it under transitivity, reflexivity and symmetry as seen in figure \ref{BetaEtaEquivalence}.
 
 
 \begin{figure}[h!]
@@ -2514,7 +2505,7 @@ The $\beta\eta$-equivalence relation is a rule based relation with three main fl
         \quad 
         \treerule{Effect-eta}{\etyperelation{\P}{\G}{v}{\all{\a}{A}}}{\gpeberelation{\elam{\a}{(\eapp{v}{\a})}}{v}{\all{\a}{A}}}
     \]
-    \caption{The $\beta\eta$-reduction rules for PEC}
+    \caption{The reduction rules for PEC}
     \label{BetaEtaReductions}
 \end{figure}
 
@@ -2556,12 +2547,12 @@ The $\beta\eta$-equivalence relation is a rule based relation with three main fl
     \[
         \treerule{Transitive}{\gpeberelation{v_1}{v_2}{A}\s\s\gpeberelation{v_2}{v_3}{A}}{\gpeberelation{v_1}{v_3}{A}}
     \]
-    \caption{Rules expanding the $\beta\eta$-reduction and congruence relation to an equivalence relation}
+    \caption{Rules expanding the reduction and congruence relation to an equivalence relation}
     \label{BetaEtaEquivalence}
 \end{figure}
 
 
-Now we can state the $\beta\eta$-soundness theorem. 
+Now we can state the soundness theorem. 
 
 \begin{theorem}[Soundness]
     If $\gpeberelation{v_1}{v_2}{A}$, then $\gpetyperelation{v_1}{A}$, $\gpetyperelation{v_2}{A}$, and $\deno{\gpetyperelation{v_1}{A}} = \deno{\gpetyperelation{v_2}{A}}$.
@@ -2569,11 +2560,11 @@ Now we can state the $\beta\eta$-soundness theorem.
 
 
 \begin{proof}
-    The proof proceeds by induction on the definition of the $\beta\eta$-equivalence relation.
+    The proof proceeds by induction on the definition of the equational equivalence relation.
 
-    This proof has a lot of cases and each of the $\beta\eta$-reductions makes use of many of the requirements we have placed on the indexed S-category.
+    This proof has a lot of cases and each of the reduction cases makes use of many of the requirements we have placed on the indexed S-category.
 
-    I have omitted the congruence cases here as they hold through simple application of the inductive hypothesis on subterms. This occurs because this denotational semantics is compositional, meaning that denotations of terms are defined entirely in terms of the denotations of their subexpression. Similarly, the equivalence relation cases hold simply because equality on morphisms is an equivalence relation by definition. I do however, give a selection of the $\beta\eta$-reduction cases to demonstrate the necessity of the S-category requirements.
+    I have omitted the congruence cases here as they hold through simple application of the inductive hypothesis on subterms. This occurs because this denotational semantics is compositional, meaning that denotations of terms are defined entirely in terms of the denotations of their subexpression. Similarly, the equivalence relation cases hold simply because equality on morphisms is an equivalence relation by definition. I do however, give a selection of the reduction cases to demonstrate the necessity of the S-category requirements.
 
 \case{Right Unit}
 This case makes use of the right-unit monad law.
@@ -2651,7 +2642,7 @@ Now we have proved that an appropriate categorical structure can model PEC, it r
 Let $\Cz$ be an S-category derived from $\set$. That is, $\Cz$ contains a graded monad $\Tz{}{}, \bindmu^0, \pointz{}, \strengtht^0$, is cartesian closed, has a co-product of the terminal object ($\1 = \left\{\star\right\}$) with itself, has subtyping functions $\deno{A\subtypeg B}: A \rightarrow B$ for each instance of the ground subtyping relation, and has natural transformations $\deno{\e_1 \subeffectz \e_2}: \Tz{\e_1}{} \rightarrow \Tz{\e_2}{}$. Since $\Cz$ is a model for the EC, it is graded by a pre-ordered monoid on ground effects: $(E, \subeffectz, \1, \dot)$. I have marked each of these S-category properties with $0$ to indicate that they occur in the bottom category $\Cz$, induced by the empty effect environment.
 
 
-\todo{This spacing will be fixed once I tweak around with my macros}
+\fixLayout{This spacing will be fixed once I tweak around with my macros}
 Using $\alpha$-equivalence, we can see that all effect environments of the same length are equivalent. For example, $(\etyperelation{(\nil, \a, \b)}{\G}{\lam{f}{\fntype{\texttt{Int}}{\M{\a\dot\b}{\U}}}{(\apply{f}{0})}}{\M{\a\dot\b}{\U}})$ and $(\etyperelation{(\nil, \g, \d)}{\G}{\lam{f}{\fntype{\texttt{Int}}{\M{\g\dot\d}{\U}}}{(\apply{f}{0})}}{\M{\g\dot\d}{\U}})$ are equivalent under $\a$-equivalence. Hence, we can reduce an effect environment to the natural number $n$ indicating its length.
 
 
@@ -2942,8 +2933,8 @@ Finally, we need to prove that the Beck-Chevalley condition given in \ref{PECReq
 
 
 \begin{figure}
-    \todo{fix overflow here}
-\todo{Align frames}
+    \fixLayout{fix overflow here}
+\fixLayout{Align frames}
 
     \begin{minipage}{0.45\textwidth}
     \begin{framed}
@@ -3062,7 +3053,7 @@ Hence we have proof that our construction is indeed a valid indexed S-category. 
 
 \chapter{Conclusion}
 
-This dissertation has introduced a denotational semantics for polymorphic effect systems in category theory and has proved that non-trivial models capable of interpreting effect-polymorphic languages can indeed be instantiated. The final piece of the puzzle would be to find an adequate model of a given effect-polymorphic language. This means instantiating a sound model such that if the denotations of two terms are equal in the model, then the terms themselves are equal upto some property, such as $\beta\eta$-equivalence or effect behaviour. This is typically a hard problem which is not addressed in presentations of denotational semantics. \todo{Explain why}.
+This dissertation has introduced a denotational semantics for polymorphic effect systems in category theory and has proved that non-trivial models capable of interpreting effect-polymorphic languages can indeed be instantiated. The final piece of the puzzle would be to find an adequate model of a given effect-polymorphic language. This means instantiating a sound model such that if the denotations of two terms are equal in the model, then the terms themselves are equal up to the same equational equivalence. This is typically a hard problem which is not addressed in presentations of denotational semantics. \todo{Explain why}.
 
 This work forms a potential foundation for more precise analysis tools which could be used to improve compilers and interpreters in the future. A more precise analysis of programs allows more specific optimisations to be made, where they would not be considered sound under a non-polymorphic system.
 
