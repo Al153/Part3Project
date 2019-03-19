@@ -15,15 +15,10 @@
 
 \maketitle
 
-\todo{Fix Spacing:
-Much of the maths lacks proper spacing.  Latex knows about (e.g.) $n + n \log n$ but it doesn't know how to format $\vdash$ ... : as a loosely binding ternary operator in
-rules etc.  Use explicit spacing.
-(~ \quad or even \hspace{2em}).
-}
+\todo{Fix Spacing}
 
 
-\todo{Question: do the requirements that you have imply that each hom-set C(I,U) forms a monoid? If they do, it might be worth mentioning this (it
-makes the requirements on the base category look more natural). (Also,
+\todo{Question: do the requirements that you have imply that each hom-set C(I,U) forms a monoid? If they do, it might be worth mentioning this (it makes the requirements on the base category look more natural). (Also,
 is requiring it to form a preordered monoid a good idea?)
 }
 
@@ -891,26 +886,14 @@ Only the type rule \texttt{Weaken} adds terms to the environment from its precon
 
 \chapter{The Semantics of PEC in an Strictly Indexed Category}
 
+\todo{Think of an alternative for "S-Closed" ("S-Preserving?")}
 \todo{ Section 5.4}
+
+
 
 \todo{ The substitution typing judgement might need a little more explanation.}
 
-\todo{Theorem 5.4.6: it's really hard to parse the statement of this theorem.}
-\todo{Theorem 5.4.9: it's not clear what $\D, \D'$ are here}
-\todo{(5.63) and (5.64): these lines don't look right. You shouldn't drop the $\a\setto\a$ from the substitution until you pull it outside of the $\forall$}
-\todo{(5.106) and (5.107) have unmatched brackets.}
-\todo{all denotations for a typing relation are equivalent": all derivations of a typing relation have the same denotation?}
 
-
-\todo{ Section 5.5}
-
-\todo{"above instances of...": each of these typing rules has more than one assumption. Do you allow subtyping to be used on all of these  assumptions?}
-\todo{You should make it clearer that this is the *definition* of reduced typing derivation.}
-\todo{"As an aside...": this shouldn't be inside the proof (but should still be mentioned somewhere). Put it before or after.}
-
-\todo{ Section 5.6}
-
-\todo{Omitting congruence: the cases for congruence follow from the fact that the semantics is compositional. You should probably mention compositionality somewhere, because it's important.}
 
 
 
@@ -1496,8 +1479,7 @@ Specifically, effect substitutions have the following actions on types, and type
             \si\star\deno{\typerelation{\P}{\all{\a}A}{\type}} & = \si\star(\allI(\deno{\typerelation{\P,\a}{A}{\type}}))\\
             & = \allI((\si\times\Id{U})\star\deno{\typerelation{\P,\a}{A}{\type}})\qt{By Beck-Chevalley}\\
             & = \allI(\deno{\typerelation{\P',\a}{A\sub{\si, \a\setto\a}}{\type}})\qt{By induction}\\
-            & = \allI(\deno{\typerelation{\P',\a}{A\ssi}{\type}})\\
-            & = \deno{\typerelation{\P'}{\all{\a}{A\ssi}}{\type}}\\
+            & = \deno{\typerelation{\P'}{\all{\a}{(A\sub{\si, \a\setto\a})}}{\type}}\\
             & = \deno{\typerelation{\P'}{(\all{\a}{A})\ssi}{\type}}\\
         \end{align}
         $$\square$$
@@ -1536,7 +1518,7 @@ Specifically, effect substitutions have the following actions on types, and type
 The effect-weakening theorem on types and type environments is also very similar.
 
 \begin{theorem}[Effect Weakening on Types]
-    If $\wrelw{\P'}{\P}$ then $\wellformed{\P}{A}$ implies $\wellformed{\P'}{A} \wedge \deno{\wellformed{\P'}{A}} = \w\star\deno{\wellformed{\P}{A}}$ and $\wellformedok{\P}{\G}$ then $\deno{\wellformedok{\P'}{\G}} = \w\star\deno{\wellformedok{\P}{\G}}$
+    If $\wrelw{\P'}{\P}$ and $\wellformed{\P}{A}$ then $\wellformed{\P'}{A}$ $\deno{\wellformed{\P'}{A}} = \w\star\deno{\wellformed{\P}{A}}$. Further more, $\wrelw{\P'}{\P}$ and $\wellformedok{\P}{\G}$ imply $\deno{\wellformedok{\P'}{\G}} = \w\star\deno{\wellformedok{\P}{\G}}$
 \end{theorem}
 
 \begin{proof}
@@ -1572,7 +1554,7 @@ The effect-weakening theorem on types and type environments is also very similar
 Next we consider the action of weakening and substitution on subtyping relations. 
 
 \begin{theorem}[Effect Substitution on Subtyping]
-    If $A \subtypep B$ and $\typerelation{\P'}{\si}{\P}$, then $A\ssi\subtypepp B\ssi$ and $\deno{A\ssi\subtypepp B\ssi} = \ssi\star\deno{A\subtypep B}$.
+    If $A$ is a subtype of $B$ under environment $\P$ ($A \subtypep B$), and $\si$ is a substitution from $\P'$ to $\P$ ($\typerelation{\P'}{\si}{\P}$), then $A\ssi$ is also a subtype of $B\ssi$ under $\P'$ ($A\ssi\subtypepp B\ssi$) and $\deno{A\ssi\subtypepp B\ssi} = \si\star\deno{A\subtypep B}$.
 \end{theorem}
 
 \begin{proof}
@@ -1638,7 +1620,7 @@ We are now at a point to define and prove the effect weakening and substitution 
 The substitution theorem is defined as so:
 
 \begin{theorem}[Effect Substitution on Terms]
-    If $\typerelation{\P'}{\si}{\P}$ and $\D$ derives $\gpetyperelation{v}{A}$ then there exists $\D'$ deriving $\etyperelation{\P'}{\G\ssi}{v\ssi}{A\ssi}$ and $\D' = \si\star(\D)$.
+    If $\typerelation{\P'}{\si}{\P}$ and typing derivation tree $\D$ derives $\gpetyperelation{v}{A}$ then there exists a typing derivation tree  $\D'$ deriving $\etyperelation{\P'}{\G\ssi}{v\ssi}{A\ssi}$ and $\D' = \si\star(\D)$.
 \end{theorem}
 
 
@@ -1693,8 +1675,8 @@ Hence, by applying the re-indexing functor to $\D$, we have:
 \begin{align}
     \si\star{\D} & = \si\star(\pr{\Id{\G}}{h}\star(\e_{\deno{\typerelation{\P,\b}{A\ssub{\a}{\b}}{\type}}})\after\D_1)\\
     & = (\pr{\Id{\G}}{h}\after\si)\star(\e_{\deno{\typerelation{\P,\b}{A\ssub{\a}{\b}}{\type}}})\after\si\star(\D_1)\\
-    & = ((\si\times\Id{U})\after\pr{\Id{\G}}{h\after\si})\star(\e_{\deno{\typerelation{\P,\b}{A\ssub{\a}{\b}}{\type}}})\after\D_1')\\
-    & = (\pr{\Id{\G}}{h'})\star((\si\times\Id{U})\star\e_{\deno{\typerelation{\P,\b}{A\ssub{\a}{\b}}{\type}}})\after\D_1')\\
+    & = ((\si\times\Id{U})\after\pr{\Id{\G}}{h\after\si})\star(\e_{\deno{\typerelation{\P,\b}{A\ssub{\a}{\b}}{\type}}})\after\D_1'\\
+    & = (\pr{\Id{\G}}{h'})\star((\si\times\Id{U})\star\e_{\deno{\typerelation{\P,\b}{A\ssub{\a}{\b}}{\type}}})\after\D_1'\\
 \end{align}
 
 Looking at the inner part of the functor application:
@@ -1946,7 +1928,7 @@ Furthermore, it will be useful to have an analogue of the extension lemma for te
 \end{proof}
 
 
-Now we can move onto the term substitution and weakening theorems. These theorems are the final step before we prove that all denotations for a typing relation are equivalent and then move onto soundness. They demonstrate that the can model the action of applying well-formed type-environment changes by pre-composing the morphisms to be acted on with a morphism modelling the change in environment.
+Now we can move onto the term substitution and weakening theorems. These theorems are the final step before we prove that derivations of the same typing-relation instance have the same denotation and then move onto soundness. They demonstrate that the can model the action of applying well-formed type-environment changes by pre-composing the morphisms to be acted on with a morphism modelling the change in environment.
 
 The term-weakening theorem is as so: 
 
@@ -2127,20 +2109,20 @@ $$\square$$
 
 \section{Uniqueness of Denotations}
 
-Up until this point we have hat to be careful about the implicit typing derivation for every term denotation $\deno{\gpetyperelation{v}{A}}$. We are now equipped with the tools to prove that all derivations of the same typing relation instance $\gpetyperelation{v}{A}$ induce the same denotation. This allows us to no longer worry about the equality of denotations, which will be helpful in the soundness proof.
+Up until this point we have had to be careful about the implicit typing derivation for every term denotation $\deno{\gpetyperelation{v}{A}}$. We are now equipped with the tools to prove that all derivations of the same typing relation instance $\gpetyperelation{v}{A}$ induce the same denotation. This allows us to no longer worry about the equality of denotations, which will be helpful in the soundness proof.
 
 To prove that all typing denotations have the same denotation, I first introduce the concept of a \textit{reduced} typing derivation that is unique to each term and type in each typing environment. Next, I present a function, $\reduce$, which recursively maps  typing derivations to their reduced equivalent. I also prove that this function preserves the denotation of the derivations. That is $\deno{\gpetyperelation{v}{A}} = \deno{\reduce(\gpetyperelation{v}{A})}$. Hence, we can conclude, since all derivations for a typing relation instance reduce to the same unique typing derivation, and that the reduction function preserves the denotations, that all derivations of a typing derivation have the same denotation.
 
-The need for reduced typing derivations comes about because of subtyping. The subtyping rule can be inserted into different places in a derivation to derive the same typing relation. Hence, the reduction function focuses on only placing subtyping rule instances in specific places. In particular, we only allow the subtyping rule to occur at the root of the derivation or above instances of the (if) rule and (apply) rule in reduced derivations. This has the effect of only introducing subtyping rule uses when it is necessary maintain syntactic correctness of the derivation.
+The need for reduced typing derivations comes about because of subtyping. The subtyping rule can be inserted into different places in a derivation to derive the same typing relation. Hence, the reduction function focuses on only placing subtyping rule instances in specific places. 
+
+In particular a reduced typing derivation is one where, we only allow the subtyping rule to occur in three places. Firstly, the subtyping rule may occur as the root rule of the tree in order to coerce the the typing relation to the correct type. Secondly, the subtyping rule can occur at the root of any of subtrees deriving the preconditions of the type-annotated (if) rule. This is to coerce the condition to a boolean type, and each of the branches to the type $A$ in the if-expression itself. Finally, we allow the subtyping rule to occur at the root of the argument subtree of an (apply) rule. This allows us to coerce the argument to the correct type to match the parameter type in a lambda expression. These rules have the effect of only introducing subtyping rule uses when it is necessary maintain syntactic correctness of the derivation. As an aside, if subtyping were a syntactic feature, such as being induced by explicit casts, then the rules for the typing relation would be entirely syntax directed, and hence we would not have the ambiguity that these theorems are required in order to solve.
 
 \begin{theorem}[Uniqueness of reduced Derivations]
     These reduced derivations are unique.    
 \end{theorem}
 
 \begin{proof}
-    This proof proceeds by induction on the term structure, making use of the unique derivations of the subterms to show that a reduced derivation of the whole term must also be unique. There are no cases for subtyping, as it is not a syntactic feature. As an aside, if subtyping were a syntactic feature, such as explicit casts, then the rules for the typing relation would be entirely syntax directed, and hence we would not have the ambiguity that these theorems are required in order to solve.
-
-
+    This proof proceeds by induction on the term structure, making use of the unique derivations of the subterms to show that a reduced derivation of the whole term must also be unique. There are no cases for subtyping, as it is not a syntactic feature. 
 
     \case{Bind} This case makes use of the weakening theorem on typing environments.
 
@@ -2591,7 +2573,7 @@ Now we can state the $\beta\eta$-soundness theorem.
 
     This proof has a lot of cases and each of the $\beta\eta$-reductions makes use of many of the requirements we have placed on the indexed S-category.
 
-    I have omitted the congruence cases here as they hold through simple application of the inductive hypothesis on subterms. Similarly, the equivalence relation cases hold simply because equality on morphisms is an equivalence relation by definition. I do however, give a selection of the $\beta\eta$-reduction cases to demonstrate the necessity of the S-category requirements.
+    I have omitted the congruence cases here as they hold through simple application of the inductive hypothesis on subterms. This occurs because this denotational semantics is compositional, meaning that denotations of terms are defined entirely in terms of the denotations of their subexpression. Similarly, the equivalence relation cases hold simply because equality on morphisms is an equivalence relation by definition. I do however, give a selection of the $\beta\eta$-reduction cases to demonstrate the necessity of the S-category requirements.
 
 \case{Right Unit}
 This case makes use of the right-unit monad law.
@@ -2664,35 +2646,25 @@ This completes the proof of soundness for this semantics.
 
 \chapter{Instantiating a Model of PEC}
 
-\todo{"We have proved that we can form a model": this is a little confusing because chapter 6 is about forming models from less data.}
-\todo{"There exist Set-based models": this is the case for many side-effects, but not all of them.}
-\todo{ "Let C be an S-category formed from Set.": don't use C here (I'm not sure that you actually have to name the S-category at all.)}
-\todo{When you mention the functor category, you need to make it clear that E^n is a discrete category.}
-\todo{The objects of the base category have the form E^n, but the fibres are indexed by natural numbers, so strictly speaking you aren't indexing by the right thing here. It might be better to change the objects of the base category to just be natural numbers.}
-\todo{"discrete sub category": Eff is not discrete (it has non-trivial morphisms). Do you mean full subcategory? (Also, should this be full? Why not restrict to monotone functions?)}
-\todo{You say that C is complete without saying what complete means. (But you don't need completeness, you just need products because E^n is discrete.)}
-\todo{"finite product over the countable set of effects": if E is countable,  then this would be a countable product. (But also, you don't know that E is countable.) The size of the product doesn't really matter here, as long as the category has products of the right shape}
+Now we have proved that an appropriate categorical structure can model PEC, it remains to show that it is feasible to construct such an indexed category. There exist $\set$-based models for the semantics of many effectful languages with a graded monad, such as a certain instantiations of the Effect Calculus \needsRef{}. More specifically, it is possible to treat $\set$ as an S-category. Hence, I use a $\set$ based S-category as a starting point. In this section, I  demonstrate how to construct an strictly indexed S-category, which can model the PEC, from such an S-category.
 
-
-
-Now we have proved that we can form a model of PEC in an appropriate indexed S-category, it remains to show that it is feasible to construct such an indexed category. There exist $\set$-based models for the semantics of many effectful languages with a graded monad, such as a collection of instantiations of the Effect Calculus \needsRef{}. More specifically, it is possible to treat $\set$ as an S-category. Hence, I use a $\set$ based S-category as a starting point. In this section, I  demonstrate how to construct an strictly indexed S-category, which can model the PEC, from such an S-category.
-
-Let $\C$ be an S-category derived from $\set$. That is, $\C$ contains a graded monad $\Tz{}{}, \bindmu^0, \pointz{}, \strengtht$, is cartesian closed, has a co-product of the terminal object ($\1 = \left\{\star\right\}$) with itself, has subtyping functions $\deno{A\subtypeg B}: A \rightarrow B$ for each instance of the ground subtyping relation, and has natural transformations $\deno{\e_1 \subeffectz \e_2}: \Tz{\e_1}{} \rightarrow \Tz{\e_2}{}$. Since $\C$ is a model for the EC, it is graded by a pre-ordered monoid on ground effects: $(E, \subeffectz, \1, \dot)$. I have marked each of these S-category properties with $0$ to indicate that they occur in the bottom category $\C$, induced by the empty effect environment.
+Let $\Cz$ be an S-category derived from $\set$. That is, $\Cz$ contains a graded monad $\Tz{}{}, \bindmu^0, \pointz{}, \strengtht^0$, is cartesian closed, has a co-product of the terminal object ($\1 = \left\{\star\right\}$) with itself, has subtyping functions $\deno{A\subtypeg B}: A \rightarrow B$ for each instance of the ground subtyping relation, and has natural transformations $\deno{\e_1 \subeffectz \e_2}: \Tz{\e_1}{} \rightarrow \Tz{\e_2}{}$. Since $\Cz$ is a model for the EC, it is graded by a pre-ordered monoid on ground effects: $(E, \subeffectz, \1, \dot)$. I have marked each of these S-category properties with $0$ to indicate that they occur in the bottom category $\Cz$, induced by the empty effect environment.
 
 
 \todo{This spacing will be fixed once I tweak around with my macros}
 Using $\alpha$-equivalence, we can see that all effect environments of the same length are equivalent. For example, $(\etyperelation{(\nil, \a, \b)}{\G}{\lam{f}{\fntype{\texttt{Int}}{\M{\a\dot\b}{\U}}}{(\apply{f}{0})}}{\M{\a\dot\b}{\U}})$ and $(\etyperelation{(\nil, \g, \d)}{\G}{\lam{f}{\fntype{\texttt{Int}}{\M{\g\dot\d}{\U}}}{(\apply{f}{0})}}{\M{\g\dot\d}{\U}})$ are equivalent under $\a$-equivalence. Hence, we can reduce an effect environment to the natural number $n$ indicating its length.
 
 
-We also need to define the base category. This shall be $\Eff$, the discrete sub category of $\set$, populated by the set of ground effects $E$ as the effect object $U$, and its finite products.
+We also need to define the base category. This shall be $\Eff$, a sub category of $\set$, populated by the set of ground effects $E$ as the effect object $U$, its finite products, and monotone functions between them.
 
 \begin{align}
     E^0 & = \1 = \left\{\singleton\right\}\\
     E^{n+1} &= E^n \times E
 \end{align}
 
-Morphisms $E^n \rightarrow E$ in $\Eff$ are functions taking $n$ ground-effect parameters and returning a ground effect. 
-Next we must pick our fibre categories for non-zero values of $n$. A simple instantiation is to pick each fibre $\C(n)$ to be the functor category $[E^n, \C]$. That is, the category of functions returning an object in $\C$ given $n$ ground effects. Morphisms between objects are functions which, given a collection of ground effects, yield a morphism (function) in $C$. If $m\in [E^n, \C](A, B)$ then $m\ev\in\C(A\ev, B\ev)$. The fibres, $[E^n, C]$ are S-categories. This can be proved by constructing the S-category structures pointwise with respect to their parameter $\ev \in E^n$ as seen in figures \ref{HowToBuildCCC} - \ref{HowToBuildSubtyping}. Full proofs of the naturality and monad laws can be found \needsRef.
+Morphisms $E^n \rightarrow E$ in $\Eff$ are functions taking $n$ ground-effect parameters and returning a ground effect.
+
+Next we must pick our fibre categories for non-zero values of $n$. A simple instantiation is to pick each fibre $\C(E^n)$ to be the functor category $[E^n, \Cz]$,  where $E^n$ is a discrete category (a category that only contains the identity morphisms). That is, the category of functions returning an object in $\Cz$ given $n$ ground effects. Morphisms between objects are functions which, given a collection of ground effects, yield a morphism (function) in $C$. If $m\in [E^n, \Cz](A, B)$ then $m\ev\in\Cz(A\ev, B\ev)$. The fibres, $[E^n, C]$ are S-categories. This can be proved by constructing the S-category structures pointwise with respect to their parameter $\ev \in E^n$ as seen in figures \ref{HowToBuildCCC} - \ref{HowToBuildSubtyping}. Full proofs of the naturality and monad laws can be found \needsRef.
 
 
 
@@ -2701,7 +2673,7 @@ Next we must pick our fibre categories for non-zero values of $n$. A simple inst
     \begin{framed}
         \centering\textbf{Cartesian Closed Category}
 
-Since $\C$ is based on $\set$ and a CCC, and , since $E$ is small, $E^n$ is small, $[E^n, \C]$ is a CCC.
+Since $\Cz$ is based on $\set$ and a CCC, and since $E$ is small, $E^n$ is small, $[E^n, \Cz]$ is a CCC.
 
 \begin{align}
     (A\times B)\ev & = (A\ev)\times(B\ev)\\
@@ -2715,7 +2687,7 @@ Since $\C$ is based on $\set$ and a CCC, and , since $E$ is small, $E^n$ is smal
 \end{align}
 
 \end{framed}
-\caption{The construction of CCC features in the functor category $[E^n, \C]$}
+\caption{The construction of CCC features in the functor category $[E^n, \Cz]$}
 \label{HowToBuildCCC}
 \end{figure}
 
@@ -2734,7 +2706,7 @@ We can define the co-product pointwise.
     [f, g]\ev &= [f\ev, g\ev]\\
 \end{align}
 \end{framed}
-\caption{The construction of co-product features in the functor category $[E^n, \C]$}
+\caption{The construction of co-product features in the functor category $[E^n, \Cz]$}
 \label{HowToBuildCoproduct}
 \end{figure}
 
@@ -2742,23 +2714,23 @@ We can define the co-product pointwise.
     \begin{framed}
         \centering\textbf{Ground Types and Terms}
 
-        Each ground type in the non-polymorphic calculus has a fixed denotation $\deno{\g}\in\obj\C$. The ground type in the polymorphic calculus hence has a denotation represented by the constant function.
+        Each ground type in the non-polymorphic calculus has a fixed denotation $\deno{\g}\in\obj\Cz$. The ground type in the polymorphic calculus hence has a denotation represented by the constant function.
         
         \begin{align}
-            \deno{\g}:&\quad E^n\rightarrow \obj\C\\
+            \deno{\g}:&\quad E^n\rightarrow \obj\Cz\\
             \ev \mapsto&\quad  \deno{\g}\\
         \end{align}
         
-        Each constant term $\const{A}$ in the non-polymorphic calculus has a fixed denotation $\deno{\const{A}}\in\C(\1, A)$.
+        Each constant term $\const{A}$ in the non-polymorphic calculus has a fixed denotation $\deno{\const{A}}\in\Cz(\1, A)$.
         
-        So the morphism $\deno{\const{A}}$ in $[E^n, \C]$ is the corresponding constant dependently typed morphism.
+        So the morphism $\deno{\const{A}}$ in $[E^n, \Cz]$ is the corresponding constant dependently typed morphism.
         
         \begin{align}
-            \deno{\const{A}}:&\quad[E^n, \C](\1, A)\\
+            \deno{\const{A}}:&\quad[E^n, \Cz](\1, A)\\
             \ev\mapsto&\quad\deno{\const{A}}
         \end{align}        
     \end{framed}
-    \caption{The definition of ground types and terms in the category $[E^n, \C]$ }
+    \caption{The definition of ground types and terms in the category $[E^n, \Cz]$ }
     \label{HowToBuildGround}
 \end{figure}
 
@@ -2767,17 +2739,17 @@ We can define the co-product pointwise.
     \begin{framed}
         \centering\textbf{Strong Graded Monad}
 
-Given the strong graded monad $(\Tz{}{}, \pointz{}, \bindmu^0, \strengtht^0)$ on $\C$ we can construct an appropriate graded monad on $[E^n, \C]$.
+Given the strong graded monad $(\Tz{}{}, \pointz{}, \bindmu^0, \strengtht^0)$ on $\Cz$ we can construct an appropriate graded monad on $[E^n, \Cz]$.
 
 \begin{align}
-    \Tn{}{}:&\quad(E^n, \dot, \subeffect_n, \1_n) \rightarrow [[E^n, \C], [E^n, \C]]\\
+    \Tn{}{}:&\quad(E^n, \dot, \subeffect_n, \1_n) \rightarrow [[E^n, \Cz], [E^n, \Cz]]\\
     (\Tn{f}{A})\ev=&\quad \Tz{(f\ev)}{A\ev}\\
     (\pointn{A})\ev=&\quad\pointz{A\ev}\\
     (\bindn{f}{g}{A})\ev=&\quad\bindz{(f\ev)}{(g\ev)}{(A\ev)}\\
     (\tstrengthn{f}{A}{B})\ev=&\quad\tstrengthz{(f\ev)}{(A\ev)}{(B\ev)}
 \end{align}
 
-Through some mechanical proof and the naturality of the $\C$ strong graded monad, these morphisms are natural in their type parameters and form a strong graded monad in $[E^n, \C]$
+Through some mechanical proof and the naturality of the $\Cz$ strong graded monad, these morphisms are natural in their type parameters and form a strong graded monad in $[E^n, \Cz]$
 
     \end{framed}
     \caption{The definition of the graded monad in the category $[E^n, C]$}
@@ -2791,13 +2763,13 @@ Through some mechanical proof and the naturality of the $\C$ strong graded monad
         \centering\textbf{Subeffecting}
 
 
-        Given a collection of subeffecting natural transformation in $\C$,
+        Given a collection of subeffecting natural transformations in $\Cz$,
         
         \begin{align}
             \deno{\e_1\subeffectz \e_2}:&\quad \Tz{\e_1}{} \rightarrow \Tz{\e_2}{}
         \end{align}
         
-        We can form subeffect natural transformations in $[E^n, \C]$:
+        We can form subeffect natural transformations in $[E^n, \Cz]$:
         
         \begin{align}
             \deno{f\subeffectn g}:&\quad\Tn{f}{}\rightarrow \Tn{g}{}\\
@@ -2805,7 +2777,7 @@ Through some mechanical proof and the naturality of the $\C$ strong graded monad
             =&\quad \deno{f\ev\subeffectz g\ev}A\ev
         \end{align}
     \end{framed}
-    \caption{Subeffect natural transformations in the category $[E^n, \C]$}
+    \caption{Subeffect natural transformations in the category $[E^n, \Cz]$}
     \label{HowToBuildSubeffecting}
 \end{figure}
 
@@ -2815,21 +2787,21 @@ Through some mechanical proof and the naturality of the $\C$ strong graded monad
 \centering\textbf{Subtyping}
 
 
-Subtyping in $[E^n, \C]$ holds via subtyping in $\C$
+Subtyping in $[E^n, \Cz]$ holds via subtyping in $\Cz$
 
 \begin{align}
     \deno{A\subtype_n B}:&\quad A\rightarrow B\\
     \deno{A\subtype_n B}\ev=&\quad \deno{A\ev\subtype_0 B\ev}
 \end{align}
 
-So the subtyping relation $A \subtype B$ forms a morphism in $[E^n, \C]$
+So the subtyping relation $A \subtype B$ forms a morphism in $[E^n, \Cz]$
 
     \end{framed}
-    \caption{Definition of subtyping morphisms in the functor category $[E^n, \C]$}
+    \caption{Definition of subtyping morphisms in the functor category $[E^n, \Cz]$}
     \label{HowToBuildSubtyping}
 \end{figure}
 
-Now we need to define the required morphisms between fibres. Firstly, for any function $\theta: E^m \rightarrow E^n$ in $\Eff$, there should exist an S-closed re-indexing functor $\theta\star: [E^n, \C] \rightarrow [E^m, \C]$. A simple instantiation is the pre-composition functor, as seen in figure \ref{PrecompositionFunctor}. This also obeys the composition law of re-indexing functors figure \ref{PrecompositionFunctorComposition} and is S-closed.
+Now we need to define the required morphisms between fibres. Firstly, for any function $\theta: E^m \rightarrow E^n$ in $\Eff$, there should exist an S-closed re-indexing functor $\theta\star: [E^n, \Cz] \rightarrow [E^m, \Cz]$. A simple instantiation is the pre-composition functor, as seen in figure \ref{PrecompositionFunctor}. This also obeys the composition law of re-indexing functors figure \ref{PrecompositionFunctorComposition} and is S-closed.
 
 
 \begin{figure}
@@ -2838,7 +2810,7 @@ Now we need to define the required morphisms between fibres. Firstly, for any fu
         \textbf{The Pre-composition Functor}
 
         \begin{align}
-            A\in&\quad [E^n, \C]\\
+            A\in&\quad [E^n, \Cz]\\
             \theta\star(A) \emv =&\quad  A(\theta(\emv))\\
             f:&\quad A \rightarrow B\\
             \theta\star(f) \emv =&\quad f(\theta(\emv)): \theta\star(A) \rightarrow \theta\star(B)\\
@@ -2874,7 +2846,7 @@ Now we need to define the required morphisms between fibres. Firstly, for any fu
         \textbf{Re-Indexing Functors are S-Closed}
                 
         \begin{theorem}
-            The re-indexing functors are also S-closed. That is all the S-category features in $[E^n, \C]$ are preserved by $\theta\star$ in $[E^m, \C]$. For a full list of features please see appendix \needsRef.
+            The re-indexing functors are also S-closed. That is all the S-category features in $[E^n, \Cz]$ are preserved by $\theta\star$ in $[E^m, \Cz]$. For a full list of features please see appendix \needsRef.
         \end{theorem}
         
         
@@ -2909,7 +2881,7 @@ Now we need to define the required morphisms between fibres. Firstly, for any fu
     \label{PrecompositionSClosure}
 \end{figure}
 
-Next, the re-indexing functor $\pstar$ should have a right adjoint, $\allEn$. Here, we pick $\allEn$ to be defined as a finite product over the countable set of effects (figure \ref{ProductQuantification}). This is possible because types and effects are not impredicative (that is, they quantify over themselves), meaning that the set of effects is countable or finite.
+Next, the re-indexing functor $\pstar$ should have a right adjoint, $\allEn$. Here, we pick $\allEn$ to be defined as a product over the set of effects (figure \ref{ProductQuantification}). This is possible because types and effects are not impredicative (that is, they quantify over themselves), meaning that the set of effects is countable or finite.
 
 \begin{figure}
     \begin{framed}
@@ -2917,7 +2889,7 @@ Next, the re-indexing functor $\pstar$ should have a right adjoint, $\allEn$. He
         \textbf{The Quantification Functor}
 
         \begin{align}
-            \allEn:& [E^{n+1}, \C] \rightarrow [E^n, \C]\\
+            \allEn:& [E^{n+1}, \Cz] \rightarrow [E^n, \Cz]\\
             \allEn(A)\env =&\Pi_{\e\in E}{A(\env, \e)}
             \\ 
             \allEn(f)\env =&\Pi_{\e\in E}{f(\env, \e)}
@@ -2930,10 +2902,10 @@ Next, the re-indexing functor $\pstar$ should have a right adjoint, $\allEn$. He
 
 
 
-We can now prove that $\pstar \dashv \allEn$. To do this, we need a natural bijection between morphisms in the functor categories $[E^n, \C]$ and $[E^{n+1}, \C]$.
+We can now prove that $\pstar \dashv \allEn$. To do this, we need a natural bijection between morphisms in the functor categories $[E^n, \Cz]$ and $[E^{n+1}, \Cz]$.
 
 \begin{equation}
-    \bar{(-)}: [E^{n+1}, \C](\pstar A, B) \rightleftharpoons [E^n,\C] (A, \allEn B): \widehat{(-)}
+    \bar{(-)}: [E^{n+1}, \Cz](\pstar A, B) \rightleftharpoons [E^n,\Cz] (A, \allEn B): \widehat{(-)}
 \end{equation}
 
 The leftwards and rightwards components of this bijection can be derived as follows. The leftwards component maps each morphism to a finite pairing of the morphism over each ground effect. The inverse is simply to project out the appropriate value of $\e$ from the product. These mappings can be seen in figure \ref{AdjunctionDefinition}. These transformations give rise to the unit and co-unit of the adjunction, which are defined in figure \ref{UnitCoUnitDefinition}. The unit and co-unit allow us to prove that this construction is an adjunction (figure \ref{AdjunctionProof}). 
