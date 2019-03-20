@@ -18,10 +18,6 @@
 \todo{Fix Spacing}
 
 
-\todo{Question: do the requirements that you have imply that each hom-set C(I,U) forms a monoid? If they do, it might be worth mentioning this (it makes the requirements on the base category look more natural). (Also,
-is requiring it to form a preordered monoid a good idea?)
-}
-
 \abstract
     
 To date, there has been limited work on the semantics of languages with polymorphic effect systems. The application, by Moggi, of strong monads to modelling the semantics of effects has become a mainstream concept in functional programming languages. This was improved upon by Lucasson (?) using a graded monad to model languages with a range of independent and dependent effects at an operational level. A categorical semantics for parametric polymorphism in types was first published by Reynolds (?) allowing a denotational analysis of languages including type parameters. There has been some work on polymorphism over the exception effect (which paper). Despite these works, there has been no work to date on the denotational semantics of languages with general parametric polymorphism over effects.
@@ -470,7 +466,7 @@ let $x$ = $5$ in (
         
 \todo{I'm not happy at all with this explanation yet.}
 In the \texttt{return} clause, the program makes reference to variables $x$ and $y$ from the environment. Since $x$ is defined outside of the monadic \texttt{do} clause, it is not available to clauses in the body of the clause without a means to convert the type $(\G \times \T{}{A)}$ to $\T{}{(\G\times A)}$.
-    \end{framed}
+\end{framed}
    
 \caption{Program in a monadic effectful language that requires tensor strength of the effect's monad to execute.}
 \label{MonadStrengthRequirement}
@@ -605,7 +601,44 @@ Where $\const{A}$ is one of collection of ground constants, and $A$ ranges over 
 
 Where $\g$ is from a collection of ground types, including $\U, \B$, and $\e$ ranges over pre-ordered monoid of effects: $(E, \dot, \subeffect, \1)$.
 
-The calculus has a simple, Haskell style semantics. Lambda terms when applied to a parameter substitute their bound variable for the parameter expression, as seen in figure \todo{}, if statements pick a branch once their condition is decided to be true or false, figure \todo{}, and finally the monadic effects behave in a similar way to Haskell's monad type class. It is difficult to simply formalise an operational $\beta\eta$-reduction semantics for a monadic language without a concrete instantiation of the graded monad. Instead, the monad should obey the equational laws given in figure \todo{}.
+The calculus has a simple, Haskell style semantics. Lambda terms when applied to a parameter substitute their bound variable for the parameter expression, as seen in figure \ref{ECBeta}, if statements pick a branch once their condition is decided to be true or false, figure \ref{ECIf}, and finally the monadic effects behave in a similar way to Haskell's monad type class. It is difficult to simply formalise an operational $\beta\eta$-reduction semantics for a monadic language without a concrete instantiation of the graded monad. Instead, the monad should obey the equational laws given in figure \ref{ECMonads}.
+
+
+\begin{figure}
+    \begin{framed}
+        \begin{align*}
+            \apply{(\lam{x}{A}{v_1})}{v_2} & \rightarrow v_1\ssub{x}{v_1}
+        \end{align*}
+    \end{framed}
+    \caption{The $\beta$ reduction lambda terms of lambda terms in the effect calculus. \todo{make the arrows in these figures wiggly}}
+    \label{ECBeta}
+\end{figure}
+
+\begin{figure}
+    \begin{framed}
+        \begin{align*}
+            \pifthenelse{A}{\t}{v_1}{v_2} & \rightarrow v_1\\
+            \pifthenelse{A}{\t}{v_2}{v_2} & \rightarrow v_2\\
+        \end{align*}
+    \end{framed}
+    \caption{The reduction of if expressions in the effect calculus.}
+    \label{ECIf}
+\end{figure}
+
+
+\begin{figure}
+    \begin{framed}
+        \begin{align*}
+            \doin{x}{\return{v_1}}{v_2} & \rightarrow v_2\ssub{x}{v_1}\\
+            \doin{x}{v}{\return{x}} & \rightarrow v\\
+            \doin{x}{v_1}{(\doin{y}{v_2}{v_3})} 
+            & \leftrightarrow\quad  \doin{y}{(\doin{y}{v_1}{v_2})}{v_3}
+        \end{align*}
+    \end{framed}
+    \caption{The monad laws for the effect calculus.}
+    \label{ECMonads}
+\end{figure}
+
 
 
 As an example, by instantiating the language with the appropriate constants, ground effects, and ground types, we can write the programs in figure \ref{CheckExample}.
@@ -793,18 +826,14 @@ Finally, we can derive the a well-formedness of type environments,   $\oke{\P}{\
 
 \subsubsection{Subtyping}
 
-\todo{"Section 3.3.6 isn't quite proper maths -- it's not that there exists, we're defining or assuming that subtyping is trivial between base types (or perhaps saying that a set of base types comes along with its own set of subtype relationships (int < real), but perhaps this is overkill here.
-Then $\Phi$ is *not* a parameter.  It's more of a label.
-"}
-    There exists a subtyping pre-order relation $\subtype_{\ground}$ over ground types. That is:
-
+We assume that the set of ground types with a subtyping pre-order relation $\subtype_{\ground}$. This subtyping relationship could be the trivial pre-order, which only includes $A\subtypeg B$ if $A = B$, or could be a more interesting relation. As this relationship is a pre-order, it is transitive and reflexive.
     \[
         \treerule{Reflexive}{}{A \subtype_{\ground} A}
         \quad
         \treerule{Transitive}{A \subtype_{\ground} B \s \s B \subtype_{\ground} C}{A \subtype_{\ground} C}
     \]
 
-    We extend this relation with the function, effect, and effect-lambda subtyping rules to yield the full subtyping relation under an effect environment, $\P$, $\subtypep$
+Using this ground type relation, we can then construct a subtyping relation between pairs of types $A, B$ with respect to an effect environment $\P$.
 \[
     \treerule{ground}{A \subtype_{\ground} B}{A \subtypep B}
     \quad
@@ -814,6 +843,8 @@ Then $\Phi$ is *not* a parameter.  It's more of a label.
     \quad
     \treerule{Effect}{A\subtypep B\s\s \e_1\subeffectp\e_2}{\M{\e_1}{A}\subtypep\M{\e_2}{B}}
 \]
+
+Since the ground subtyping and subeffecting relations are pre-order, it is fairly simple to prove by induction that the new relation is also a pre-order.
 
 
 \subsubsection{Type Rules}
@@ -853,13 +884,20 @@ We define a fairly standard set of type rules on the language.
     \treerule{Do}{\gpetyperelation{v_1}{\M{\e_1}{A}} \s\s \etyperelation{\P}{\gax}{v_2}{\M{\e_2}{B}}}{\gpetyperelation{\doin{x}{v_1}{v_2}}{\M{\e_1 \dot \e_2}{B}}}
 \]
 
-\subsubsection{Ok Lemma} The first lemma used in this dissertation is that: If $\gpetyperelation{v}{A}$ then $\oke{\P}{\G}$.
-\paragraph{Proof}
-If $\oke{\P}{\gax}$ then by the inversion (See figure \ref{InversionPrinciple}) of the $\ok{}$ rule, we have $\oke{\P}{\G}$ 
+\subsubsection{Ok Lemma}
+
+\begin{lemma}[Ok Lemma]
+    The first lemma used in this dissertation is that: If $\gpetyperelation{v}{A}$ then $\oke{\P}{\G}$.
+\end{lemma}
+\begin{proof}
+    If $\oke{\P}{\gax}$ then by the inversion (See figure \ref{InversionPrinciple}) of the $\ok{}$ rule, we have $\oke{\P}{\G}$ 
+    $$\square$$
+\end{proof}
+
 
 \begin{figure}
     \begin{framed}
-        \paragraph{Inversion in Inductive Proofs}
+        \textbf{Inversion in Inductive Proofs}
 
         In proofs involving assumptions with multiple inductive rules, a useful property is that of inversion. This allows us to case split over the inductive rule that generated the assumption and can allow us to infer the structure of the term.
 
@@ -883,11 +921,6 @@ Only the type rule \texttt{Weaken} adds terms to the environment from its precon
 \todo{Think of an alternative for "S-Closed" ("S-Preserving?")}
 
 \todo{ The substitution typing judgement might need a little more explanation.}
-
-
-
-
-
 
 In this chapter, I  describe the category structure required to interpret an instance of the PEC. I then present denotations of each type of structure in the language, such as types, effects, terms, substitutions, and environment weakenings. Finally, I provide outlines and interesting cases of the proofs of the lemmas leading up to and including soundness of the semantics with respect to a $\beta\eta$-conversion-based equational equivalence. However, firstly I shall give a brief treatment to the semantics of EC.
 
@@ -965,7 +998,7 @@ In order to form denotations of well formed effects, $\e$, we need specific obje
 
 There is also a requirement that the indexed category can model ground effects, types, and terms. In order to do this, it should have a base-category morphism $\deno{e}: \C(\1, U)$ for each ground effect $e$. Furthermore, each fibre should contain and object $\deno{\g}$ for each ground type $\g$. Finally, for each constant, $\const{A}$, there should exist a morphism in each fibre: $\deno{\const{A}}: \1 \rightarrow A$. These last two requirements are satisfied by the fibres all being S-categories.
 
-Next up, there needs to be a monoidal operator $\Mul: \ciu \times \ciu \rightarrow \ciu$. This means that $\Mul$ should be associative and have an identity element (which is $\deno{\1}\after\term{I}$). Furthermore $\Mul$ should be natural, which means: $\Mul(f, g)\after\theta = \Mul(f\after\theta, g\after\theta)$. Finally, $\Mul$ should preserve the operation of the multiplication of ground effects. That is, $\Mul(\deno{e_1},\deno{e_2}) = \deno{e_1\dot e_2}$ where $e_1, e_2$ are ground effects.
+Next up, there needs to be a monoidal operator $\Mul: \ciu \times \ciu \rightarrow \ciu$. This means that $\Mul$ should be associative and have an identity element (which is $\deno{\1}\after\term{I}$). A corrollary \todo{spelling} of this is that the hom-set $\C(I, U)$ forms a monoid. Furthermore $\Mul$ should be natural, which means: $\Mul(f, g)\after\theta = \Mul(f\after\theta, g\after\theta)$. Finally, $\Mul$ should preserve the operation of the multiplication of ground effects. That is, $\Mul(\deno{e_1},\deno{e_2}) = \deno{e_1\dot e_2}$ where $e_1, e_2$ are ground effects.
 
 Our penultimate requirement is that the re-indexing functor  induced by $\p: I\times U\rightarrow I$ (that is $\pstar: \C(I) \rightarrow \C(I\times U)$) has a right adjoint, $\allI: \C(I\times U) \rightarrow \C(I)$. As the reader might be able to guess, this functor allows us to interpret quantification over effects. This right adjoint need not be S-closed.
 
@@ -1141,13 +1174,7 @@ By using the terminal objects and products present in each fibre, we can now der
     \deno{\wellformedok{\P}{\gax}} = (\deno{\wellformedok{\P}{\G}} \times \deno{\typerelation{\P}{A}{\type}})
 \]
 
-Another construction that is important is the denotation of subtyping. For each instance of the subtyping relation in $\P$, $A\subtypep B$, there exists a denotation in the fibre induced by $\P$. $\deno{A\subtypep B} \in\C(I)(A, B)$. Since the fibres are S-closed, the ground instances of the subtyping relation exist in each fibre anyway.
-
-
-\todo{ Section 5.3}
-
-\todo{Possibly make it clearer where $\dsep{\e_1}{\e_2}$ comes from.}
-
+Another construction that is important is the denotation of subtyping. For each instance of the subtyping relation in $\P$, $A\subtypep B$, there exists a denotation in the fibre induced by $\P$. $\deno{A\subtypep B} \in\C(I)(A, B)$. Since the fibres are S-categories, the ground instances of the subtyping relation exist in each fibre anyway. In addition, for each instance of the subeffect relation $\e_1\subeffectp \e_2$ each fibre contains the natural transformation $\dsep{\e_1}{\e_2}: \T{\e_1}{}\rightarrow \T{\e_2}{}$ 
 
 \[
     \deno{\g_1\subtypep \g_2} = \deno{\g_1\subtypeg \g_2}
