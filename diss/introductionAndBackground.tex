@@ -17,99 +17,9 @@
 
 \todo{Fix Spacing}
 
-\comment{
-    Also, when you say
-    e.g. the subtyping rule can occur at the root, I think you mean there
-    must be *exactly* one use of the subtyping rule. Allowing zero would
-    also lead to non-uniqueness.
-    
-    # Abstract
-    
-    - "improved upon by Lucasson": Katsumata
-    
-    # Chapter 1
-    
-    - "determines the effects that a program might have": the word
-      determines makes it sound a bit like the effect system chooses the
-      effects programs have.
-    - I think you might need to make the distinction between the actual
-      side-effects programs have at runtime, and the data tracked by an
-      effect system (which abstractly represent these side-effects).
-    - The symbol ≅ is used for isomorphism between objects, so probably
-      shouldn't be used for the equational theory as well.
-    
-    # Chapter 2
-    
-    - Typo: "there exists morphism" should be "there exists a morphism".
-    - Typo: "between to functors" should be "between two functors". Also,
-      what is Δ? (D?)
-    - Preordered monoid: the multiplication should also be monotone.
-    - Definition of graded monad: shouldn't you give the definition for a
-      preordered monoid (rather than just a monoid?).
-    - Defininition of tensorial strength: you should probably say *for a
-      graded monad* (it is also possible to define strength for functors
-      and other things).
-    - Adjunction: you don't actually say what an adjunction is!
-    - "weak functor": do you mean weak 2-functor?
-    - CCCat: you should define this if you are going to mention it
-    - "calls a continuation": this might not be the best example, because
-      we normally wouldn't expect continuations to return
-    - "algebraic effect": avoid this phrase, since it means something
-      specific.
-    - Should 2.4 be in the Background chapter?
-    - The definition of the preordered monoid `E_Φ` isn't precise enough.
-    - Currently, `Φ | Γ ⊢ v : A` does not imply `Φ Ok`. Perhaps it should?
-      (In general, it might be sensible to ensure that every judgment that
-      has a context `Φ` implies `Φ Ok`.)
-    
-    # Chapter 3
-    
-    - "interpret its semantics in...": also need the coproduct 1+1. (Also,
-      this sentence is missing the word "to").
-    - Definition of S-category: you should say "an S-category is..."
-      somewhere.
-    - A diagram might make the Beck-Chevalley condition easier to
-      understand.
-    - Section 3.5 inconsistently uses ω and w for weakenings.
-    - I think the (Project) and (Extend) rules should assume that α is not
-      already in the context.
-    - With inductively typed denotations: say what the type of ⟦w⟧ is for an
-      arbitrary w before giving the definition.
-    - "This definition allows us to define": this doesn't use the definition
-      of substitution on effects.
-    - The statements of 3.5.1 and 3.5.2 have typos.
-    - Why is the □ at the end of each proof in the middle of the page?
-    - There are typos in the congruence rules for if and bind
-    - It might be a good idea to include the Effect-Eta case in the proof of
-      soundness.
-    
-    # Chapter 4
-    
-    - "S-category properties": structure, not properties.
-    - "Morphisms Eⁿ → E in Eff are functions": monotone functions.
-    - "Since C₀ is based on Set ... [Eⁿ, C₀] is a CCC". It looks like C₀
-      refers to the whole structure (i.e. a category (Set in this case),
-      graded monad, choice of products, etc), but when you state the functor
-      category, you use C₀ as a category. I think you should write [Eⁿ, Set]
-      instead. (And I'm not sure you should name C₀ at all.)
-    - "we pick ∀ to be defined as a product": there is actually no choice
-      here: this functor has to be product. You might want to point this
-      out.
-    - (4.63) has two typos.
-    - In (4.65), (εₙ, e) should just be εₙ.
-    - (4.67) also has some typos.
-    - Fig. 4.13 only has one of the triangle identities. Where is the other?
-    - Merge Theorems 4.0.2 and 4.0.3.
-    
-    # Chapter 5
-    
-    - "not addressed in presentations": this is too strong. Many people *do*
-      prove adequacy, but many don't.
-    - "optimizations to be made": give an example.
-}
 
 \abstract
-    
+    \todo{"improved upon by Lucasson": Katsumata}
 To date, there has been limited work on the semantics of languages with polymorphic effect systems. The application, by Moggi, of strong monads to modelling the semantics of effects has become a mainstream concept in functional programming languages. This was improved upon by Lucasson (?) using a graded monad to model languages with a range of independent and dependent effects at an operational level. A categorical semantics for parametric polymorphism in types was first published by Reynolds (?) allowing a denotational analysis of languages including type parameters. There has been some work on polymorphism over the exception effect (which paper). Despite these works, there has been no work to date on the denotational semantics of languages with general parametric polymorphism over effects.
 
 In this dissertation, I present several pieces of work. Firstly, I introduce a modern definition of a lambda-calculus-based language with an explicit graded monad to handle a variety of effects. This calculus is then extended using polymorphic terms to yield a more general polymorphic effect calculus. Next, I give an indexed-category-based denotational semantics for the language, along with an outline of a proof for the soundness of these semantics. Following this, I present a method of transforming a model of a non-polymorphic language into a model of the language with polymorphism over effects.
@@ -120,6 +30,19 @@ The full proofs can be found online on my github repository (\needsRef{link}), s
 
 \chapter{Introduction}
 
+
+\todo{
+    "determines the effects that a program might have": the word
+      determines makes it sound a bit like the effect system chooses the
+      effects programs have.
+}
+\todo{- I think you might need to make the distinction between the actual
+side-effects programs have at runtime, and the data tracked by an
+effect system (which abstractly represent these side-effects).}
+    
+\todo{The symbol  is used for isomorphism between objects, so probably
+      shouldn't be used for the equational theory as well.}
+}
 \section{What is an Effect System?}
 
 Programs very rarely stand alone without interacting with their environment in some form. This interaction might be to receive input, such as from sensors or buttons, to write output to a file, or to halt with an error. In functional languages, manipulating mutable state can also be considered interacting with the environment. Language terms that produce these interactions are said to have \textit{effects} as they have some observable effect in the environment other than simply the value that executing the term produces. It is important to be able to reason about the effects that a program term may produce, in order to ensure the soundness of compiler transformations and formal verification. An effect system, analogously to a type system, is a formal system of rules which determines the effects that a program might have. Languages such as Haskell and the languages introduced later in this dissertation do not allow implicit effects. Instead they require the programmer to explicitly use structures called monads \needsRef{Moggi} to encode effect analysis in the type of program fragments. This has the useful result of combining the effect system with the type system of the language. For example, a program of type \texttt{Int} cannot interact with its environment to produce its result and hence always yields the same return value. However a program of type \texttt{IO Int} may perform IO operations before returning its result and hence may not always behave in exactly the same fashion.
@@ -192,6 +115,32 @@ An example of an inductive equivalence rule that we might want to be sound with 
 In this dissertation, I shall introduce an effect-polymorphic language, describe a semantics for it, then prove that the semantics is sound with respect to a $\beta\eta$-equivalence-based equational equivalence relation.
 
 \chapter{Background}
+\todo{Typo: "there exists morphism" should be "there exists a morphism".}
+
+\todo{Typo: "between to functors" should be "between two functors". Also,
+what is $\D$, D?}
+
+\todo{- Preordered monoid: the multiplication should also be monotone.}
+\todo{Definition of graded monad: shouldn't you give the definition for a
+preordered monoid (rather than just a monoid?).}
+
+\todo{ Defininition of tensorial strength: you should probably say *for a
+graded monad* (it is also possible to define strength for functors
+and other things).}
+
+\todo{Adjunction: you don't actually say what an adjunction is!}
+\todo{"weak functor": do you mean weak 2-functor?}
+\todo{ CCCat: you should define this if you are going to mention it}
+\todo{"calls a continuation": this might not be the best example, because
+we normally wouldn't expect continuations to return}
+\todo{"algebraic effect": avoid this phrase, since it means something
+specific.}
+\todo{Should 2.4 be in the Background chapter?}
+\todo{The definition of the preordered monoid $E_\P$ isn't precise enough.}
+\todo{Currently, $\gpetyperelation{v}{A}$ does not imply $\ok{\P}$. Perhaps it should?
+(In general, it might be sensible to ensure that every judgment that
+has a context $\P$ implies $\ok{\P}$.)}
+    
 
 In this chapter I first introduce the required category theory to understand the rest of the dissertation. In addition, I shall explain briefly how the particular category theoretic structures can be used to model particular features of various programming languages, such as the simply typed lambda calculus and the polymorphic lambda calculus. Following this, I proceed to introduce the monadic, effectful language used in the rest of the dissertation, known from now on as the Effect Calculus (EC). In the final section, I extend the EC with polymorphic syntax to yield Polymorphic Effect Calculus (PEC).
 
@@ -1006,6 +955,23 @@ Only the type rule \texttt{Weaken} adds terms to the environment from its precon
 \chapter{The Semantics of PEC in an Strictly Indexed Category}
 
 \todo{Think of an alternative for "S-Closed" ("S-Preserving?")}
+\todo{"interpret its semantics in...": also need the coproduct 1+1. (Also,
+this sentence is missing the word "to").}
+\todo{Definition of S-category: you should say "an S-category is..." somewhere.}
+\todo{A diagram might make the Beck-Chevalley condition easier to
+understand.}
+\todo{Section 3.5 inconsistently uses $\w$ and w for weakenings.} 
+\todo{I think the (Project) and (Extend) rules should assume that $\a$ is not
+already in the context.} 
+\todo{ With inductively typed denotations: say what the type of $\deno{\w}$ is for an
+arbitrary w before giving the definition.}
+\todo{"This definition allows us to define": this doesn't use the definition
+of substitution on effects.}
+\todo{The statements of 3.5.1 and 3.5.2 have typos.} \todo{Why is the $\square$ at the end of each proof in the middle of the page?}
+\todo{There are typos in the congruence rules for if and bind}
+\todo{It might be a good idea to include the Effect-Eta case in the proof of
+soundness.}
+    
 
 In this chapter, I  describe the category structure required to interpret an instance of the PEC. I then present denotations of each type of structure in the language, such as types, effects, terms, substitutions, and environment weakenings. Finally, I provide outlines and interesting cases of the proofs of the lemmas leading up to and including soundness of the semantics with respect to a $\beta\eta$-conversion-based equational equivalence. However, firstly I shall give a brief treatment to the semantics of EC.
 
@@ -2284,7 +2250,13 @@ To prove that all typing denotations have the same denotation, I first introduce
 
 The need for reduced typing derivations comes about because of subtyping. The subtyping rule can be inserted into different places in a derivation to derive the same typing relation. Hence, the reduction function focuses on only placing subtyping rule instances in specific places. 
 
-In particular a reduced typing derivation is one where, we only allow the subtyping rule to occur in three places. Firstly, the subtyping rule may occur as the root rule of the tree in order to coerce the the typing relation to the correct type. Secondly, the subtyping rule can occur at the root of any of subtrees deriving the preconditions of the type-annotated (if) rule. This is to coerce the condition to a boolean type, and each of the branches to the type $A$ in the if-expression itself. Finally, we allow the subtyping rule to occur at the root of the argument subtree of an (apply) rule. This allows us to coerce the argument to the correct type to match the parameter type in a lambda expression. These rules have the effect of only introducing subtyping rule uses when it is necessary maintain syntactic correctness of the derivation. As an aside, if subtyping were a syntactic feature, such as being induced by explicit casts, then the rules for the typing relation would be entirely syntax directed, and hence we would not have the ambiguity that these theorems are required in order to solve.
+\todo{ Also, when you say
+e.g. the subtyping rule can occur at the root, I think you mean there
+must be *exactly* one use of the subtyping rule. Allowing zero would
+also lead to non-uniqueness.
+}
+
+In particular a reduced typing derivation is one where we only allow the subtyping rule to occur in three places. Firstly, the subtyping rule may occur as the root rule of the tree in order to coerce the the typing relation to the correct type. Secondly, the subtyping rule can occur at the root of any of subtrees deriving the preconditions of the type-annotated (if) rule. This is to coerce the condition to a boolean type, and each of the branches to the type $A$ in the if-expression itself. Finally, we allow the subtyping rule to occur at the root of the argument subtree of an (apply) rule. This allows us to coerce the argument to the correct type to match the parameter type in a lambda expression. These rules have the effect of only introducing subtyping rule uses when it is necessary maintain syntactic correctness of the derivation. As an aside, if subtyping were a syntactic feature, such as being induced by explicit casts, then the rules for the typing relation would be entirely syntax directed, and hence we would not have the ambiguity that these theorems are required in order to solve.
 
 \begin{theorem}[Uniqueness of reduced Derivations]
     These reduced derivations are unique.    
@@ -2373,8 +2345,6 @@ In particular a reduced typing derivation is one where, we only allow the subtyp
 
 
 The $\reduce$ function maps each derivation to its reduced equivalent. It does this by pushing subtyping rules from the leaves of the derivation tree down towards the root of the tree. The function case splits on the root of the tree and works up recursively. Some cases of the function are given in figure \ref{ReduceFunctionCases}. 
-
-\todo{Diagram of a type-derivation tree being reduced}
 
 \begin{figure}
     \begin{framed}
@@ -2815,6 +2785,24 @@ This completes the proof of soundness for this semantics.
 
 \chapter{Instantiating a Model of PEC}
 
+\todo{"S-category properties": structure, not properties.}
+\todo{"Morphisms $\E^n \rightarrow E$ in Eff are functions": monotone functions.}
+
+    
+\todo{"Since $\C_0$ is based on Set ... $[E^n, \C_0]$ is a CCC". It looks like $\C_0$ refers to the whole structure (i.e. a category (Set in this case),
+graded monad, choice of products, etc), but when you state the functor
+category, you use $\C_0$ as a category. I think you should write $[E^n, \Set]$
+instead. (And I'm not sure you should name $\C_0$ at all.)} 
+\todo{"we pick $\forall$ to be defined as a product": there is actually no choice
+here: this functor has to be product. You might want to point this
+out.}
+\todo{ (4.63) has two typos.} 
+\todo{ In (4.65), $(\e_n, e)$ should just be $\e_n$.}
+\todo{(4.67) also has some typos.}
+\todo{
+    - Fig. 4.13 only has one of the triangle identities. Where is the other?} 
+\todo{ - Merge Theorems 4.0.2 and 4.0.3.}
+
 Now we have proved that an appropriate categorical structure can model PEC, it remains to show that it is feasible to construct such an indexed category. There exist $\set$-based models for the semantics of many effectful languages with a graded monad, such as a certain instantiations of the Effect Calculus \needsRef{}. More specifically, it is possible to treat $\set$ as an S-category. Hence, I use a $\set$ based S-category as a starting point. In this section, I  demonstrate how to construct an strictly indexed S-category, which can model the PEC, from such an S-category.
 
 Let $\Cz$ be an S-category derived from $\set$. That is, $\Cz$ contains a graded monad $\Tz{}{}, \bindmu^0, \pointz{}, \strengtht^0$, is cartesian closed, has a co-product of the terminal object ($\1 = \left\{\star\right\}$) with itself, has subtyping functions $\deno{A\subtypeg B}: A \rightarrow B$ for each instance of the ground subtyping relation, and has natural transformations $\deno{\e_1 \subeffectz \e_2}: \Tz{\e_1}{} \rightarrow \Tz{\e_2}{}$. Since $\Cz$ is a model for the EC, it is graded by a pre-ordered monoid on ground effects: $(E, \subeffectz, \1, \dot)$. I have marked each of these S-category properties with $0$ to indicate that they occur in the bottom category $\Cz$, induced by the empty effect environment.
@@ -3230,7 +3218,10 @@ $$\square$$
 Hence we have proof that our construction is indeed a valid indexed S-category. Importantly, this shows that reasonable models of the PEC are possible to instantiate and that our requirements do not overconstrain potential models to the point that they are not viable for doing actual analysis.
 
 \chapter{Conclusion}
-
+\todo{ - "not addressed in presentations": this is too strong. Many people *do*
+prove adequacy, but many don't.
+}
+\todo{- "optimizations to be made": give an example.}
 This dissertation has introduced a denotational semantics for polymorphic effect systems in category theory and has proved that non-trivial models capable of interpreting effect-polymorphic languages can indeed be instantiated. The final piece of the puzzle would be to find an adequate model of a given effect-polymorphic language. This means instantiating a sound model such that if the denotations of two terms are equal in the model, then the terms themselves are equal up to the same equational equivalence. This is typically a hard problem which is not addressed in presentations of denotational semantics. \todo{Explain why}.
 
 This work forms a potential foundation for more precise analysis tools which could be used to improve compilers and interpreters in the future. A more precise analysis of programs allows more specific optimisations to be made, where they would not be considered sound under a non-polymorphic system.
