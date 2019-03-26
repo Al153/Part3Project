@@ -1799,7 +1799,7 @@ This is a more complex case, as it makes use of several naturality properties an
     \D = \treerule{Effect-Application}{\treerule{}{\D_1}{\gpetyperelation{v}{\all{\a}{A}}}\s\s\treerule{}{h}{\typerelation{\P}{\e}{\effect}}}{\gpetyperelation{\eapp{v}{\e}}{A\ssub{\a}{\e}}}
 \end{equation}
 \begin{equation}\label{EffectSubTermsEffAppDeno}
-    \D = \pr{\Id{\G}}{h}\star(\e_{\deno{\typerelation{\P,\b}{A\ssub{\a}{\b}}{\type}}})\after\D_1\\
+    \D = \pr{\Id{\G}}{h}\star(\e_{\deno{\typerelation{\P,\b}{A\ssub{\a}{\b}}{\type}}})\after\D_1
 \end{equation}
 
 So by induction and effect-substitution preserving well-formedness of effects, we have $\D_1'$ deriving $\etyperelation{\P'}{\G\ssi}{v\ssi}{(\all{\a}{A})\ssi}$ and $\wellformed{\P'}{\si(\e)}$. Using the effect-application type rule, we can construct $\D'$ deriving $\etyperelation{\P'}{\G\ssi}{\eapp{(v\ssi)}{(\si(\e))}}{A\ssi\ssub{\a}{\si(\e)}}$ from $\D_1'$, as in equation \ref{EffectSubTermsEffAppNewTree}. Since $\a\#\si$, we can commute the applications of substitution. As a result, $\D'$ also derives $\etyperelation{\P'}{\G\ssi}{(\eapp{v}{\e})\ssi}{A\ssub{\a}{\e}\ssi}$.
@@ -1827,7 +1827,7 @@ Hence, by applying the re-indexing functor to $\D$, we have:
     \si\star{\D} & = \si\star(\pr{\Id{\G}}{h}\star(\e_{\deno{\typerelation{\P,\b}{A\ssub{\a}{\b}}{\type}}})\after\D_1)\\
     & = (\pr{\Id{\G}}{h}\after\si)\star(\e_{\deno{\typerelation{\P,\b}{A\ssub{\a}{\b}}{\type}}})\after\si\star(\D_1)\\
     & = ((\si\times\Id{U})\after\pr{\Id{\G}}{h\after\si})\star(\e_{\deno{\typerelation{\P,\b}{A\ssub{\a}{\b}}{\type}}})\after\D_1'\\
-    & = (\pr{\Id{\G}}{h'})\star((\si\times\Id{U})\star\e_{\deno{\typerelation{\P,\b}{A\ssub{\a}{\b}}{\type}}})\after\D_1'\\
+    & = (\pr{\Id{\G}}{h'})\star((\si\times\Id{U})\star\e_{\deno{\typerelation{\P,\b}{A\ssub{\a}{\b}}{\type}}})\after\D_1'
 \end{align}
 
 Looking at the inner part of the functor application:
@@ -1849,43 +1849,79 @@ Going back to the original expression:
 
 \begin{align}
     \si\star{\D} & = (\pr{\Id{\G}}{h'})\star(\e_{A\ssi})\after\D_1')\\
-    & = \D'\\
+    & = \D'
 \end{align}
 $$\square$$
 \end{proof}
 
 
-Similarly, we can derive the weakening theorem on terms. 
+ 
 \begin{theorem}[Effect Weakening on Terms]
+   Similarly, we can derive the weakening theorem on terms.
+
     If $\wrelw{\P'}{\P}$ and $\D$ derives $\gpetyperelation{v}{A}$ then there exists $\D'$ deriving $\etyperelation{\P'}{\G}{v}{A}$ and $\D' = \w\star\D$.
 \end{theorem}
 
 \begin{proof}
-    \todo{Prove typing}
     This theorem is proved in a similar fashion to the substitution theorem, and many of its cases are the same.
 
 
     \case{Subtype}
-    If $\D$ derives $\gpetyperelation{v}{B}$ them by inversion, there exists $\D_1$ deriving $\gpetyperelation{v}{A}$, such that $ \D = \deno{A\subtypep B}\after \D_1$
+    If $\D$ derives $\gpetyperelation{v}{B}$ then, by inversion, there exists $\D_1$ deriving $\gpetyperelation{v}{A}$, such that $ \D = \deno{A\subtypep B}\after \D_1$, as shown in equation \ref{EffectWeakenTermsSubtype}.
 
-    
-    So, using the weakening of the subtyping morphism, and induction, we can derive $\D'$.
+    \begin{equation}
+        \label{EffectWeakenTermsSubtype}
+        \D = \treerule{Subtype}{\treerule{}{\D_1}{\gpetyperelation{v}{A}}\s\s A \subtypep B}{\gpetyperelation{v}{B}}
+    \end{equation}
+
+    By induction there exists $\D_1'$ deriving $\etyperelation{\P'}{\G}{v}{A}$, so we can construct $\D'$ using the subtyping rule in equation \ref{EffectWeakenTermsSubtypeNew}.
+    So, using the weakening of the subtyping morphism, we can derive the denotation of $\D'$.
+
+    \begin{equation}
+        \label{EffectWeakenTermsSubtypeNew}
+        \D' = \treerule{Subtype}{\treerule{}{\D_1'}{\etyperelation{\P'}{\G}{v}{A}}\s\s A \subtypep B}{\etyperelation{\P'}{\G}{v}{B}}
+    \end{equation}
+
     \begin{align}
         \w\star(\D) & = \w\star{\deno{A\subtypep B}}\after\w\star\D_1 \\
-        & = \deno{A_{I'}\subtypepp B_{I'}}\after\D_1'\qt{By induction}\\
-        & = D'
+        & = \deno{A\subtypepp B}\after\D_1'\qt{By induction}\\
+        & = \D'
     \end{align}
     
     \case{Lambda}
     This case holds by induction and the S-closed property of $\w\star$.
 
-    If $\D$ derives $\gpetyperelation{\lam{x}{A}{v}}{\ab}$ then by inversion there exists $\D_1$ deriving $\etyperelation{\P}{\gax}{v}{B}$ such that:
+    If $\D$ derives $\gpetyperelation{\lam{x}{A}{v}}{\ab}$ then by inversion there exists $\D_1$ deriving $\etyperelation{\P}{\gax}{v}{B}$ such that $\D$ and its denotation can be defined as in equations \ref{EffWeakenTermsLambdaTree} and \ref{EffWeakenTermsLambdaDeno}
     
+
     \begin{equation}
+        \label{EffWeakenTermsLambdaTree}
+        \D = \treerule{Lambda}{
+            \treerule{}{\D_1}{\etyperelation{\P}{\gax}{v}{B}}
+        }{\gpetyperelation{\lam{x}{A}{v}}{\ab}}
+    \end{equation}
+
+
+    \begin{equation}\label{EffWeakenTermsLambdaDeno}
         \D = \cur{\D_1}\\
     \end{equation}
-    
-    Using induction and S-closed property, we can derive $\D'$.
+
+    By induction, there exists $\D_1'$ deriving $\etyperelation{\P'}{\gax}{v}{B}$ with denotation $\D_1' = \w\star(\D_1)$. Using S-closed property, we can derive $\D'$ and its denotation, seen in equations \ref{EffWeakenTermsLambdaTreeNew} and \ref{EffWeakenTermsLambdaDenoNew}.
+
+    \begin{equation}
+        \label{EffWeakenTermsLambdaTreeNew}
+        \D' = \treerule{Lambda}{
+            \treerule{}{\D_1'}{\etyperelation{\P'}{\gax}{v}{B}}
+        }{\etyperelation{\P'}{\G}{\lam{x}{A}{v}}{\ab}}
+    \end{equation}
+
+
+    \begin{equation}\label{EffWeakenTermsLambdaDenoNew}
+        \D' = \cur{\D_1'}\\
+    \end{equation}
+
+    Using S-closure, we can show that $\D' = \w\star(\D)$.
+
     \begin{align}
         \w\star(\D) & = \w\star(\cur{\D_1})\\
         & = \cur{\w\star(\D_1)}\qt{By S-closed property}\\
