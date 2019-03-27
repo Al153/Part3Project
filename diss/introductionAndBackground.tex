@@ -2779,9 +2779,6 @@ instead. (And I'm not sure you should name $\C_0$ at all.)}
 \todo{"we pick $\forall$ to be defined as a product": there is actually no choice
 here: this functor has to be product. You might want to point this
 out.}
-\todo{ (4.63) has two typos.} 
-\todo{ In (4.65), $(\e_n, e)$ should just be $\e_n$.}
-\todo{(4.67) also has some typos.}
 \todo{
     - Fig. 4.13 only has one of the triangle identities. Where is the other?} 
 \todo{ - Merge Theorems 4.0.2 and 4.0.3.}
@@ -3057,21 +3054,24 @@ Finally, we need to prove that the Beck-Chevalley condition given in \ref{PECReq
 
 \begin{figure}
     \begin{framed}
+        
+
+
         \centering
         \textbf{The Adjunction Operations}
         
 
         \begin{align}
-            m:&\quad \pstar A \rightarrow B\\
-            \bar{m}:&\quad A\rightarrow \allEn B\\
-            \bar{m}(\env) =&\quad \finpr{m(\env, \e)}{e\in E}
+            f:&\quad \pstar A \rightarrow B\\
+            \bar{f}:&\quad A\rightarrow \allEn B\\
+            \bar{f}(\env) =&\quad \finpr{f(\env)}{e\in E}
         \end{align}
         
 
         \begin{align}
-            n:&\quad A \rightarrow \allEn B\\
-            \widehat{n}:&\quad \pstar A\rightarrow B\\
-            \widehat{n}(\env, \e_{n+1}) =&\quad\pi_\e\after g(\env)
+            g:&\quad A \rightarrow \allEn B\\
+            \widehat{g}:&\quad \pstar A\rightarrow B\\
+            \widehat{g}(\env, \e_{n+1}) =&\quad\pi_{\e_{n+1}}\after g(\env)
         \end{align}
     \end{framed}
 
@@ -3105,7 +3105,7 @@ Finally, we need to prove that the Beck-Chevalley condition given in \ref{PECReq
         
         \begin{align}
             \counit{B} : &\quad \pstar\allEn B \rightarrow B\\
-            \counit{B}(\env, \e) =&\quad \pi_\e : \Pi_{e\in E}B(\env, \e)\rightarrow \Pi_{e\in E}B(\env, \e)
+            \counit{B}(\env, \e') =&\quad \pi_{\e'} : \Pi_{e\in E}B(\env, \e)\rightarrow B(\env, \e')
         \end{align}
         
             \end{framed}
