@@ -31,26 +31,14 @@ The full proofs can be found online on my github repository (\needsRef{link}), s
 \chapter{Introduction}
 
 
-\todo{
-    "determines the effects that a program might have": the word
-      determines makes it sound a bit like the effect system chooses the
-      effects programs have.
-}
-\todo{- I think you might need to make the distinction between the actual
-side-effects programs have at runtime, and the data tracked by an
-effect system (which abstractly represent these side-effects).}
-    
-\todo{The symbol  is used for isomorphism between objects, so probably
-      shouldn't be used for the equational theory as well.}
-}
 \section{What is an Effect System?}
 
-Programs very rarely stand alone without interacting with their environment in some form. This interaction might be to receive input, such as from sensors or buttons, to write output to a file, or to halt with an error. In functional languages, manipulating mutable state can also be considered interacting with the environment. Language terms that produce these interactions are said to have \textit{effects} as they have some observable effect in the environment other than simply the value that executing the term produces. It is important to be able to reason about the effects that a program term may produce, in order to ensure the soundness of compiler transformations and formal verification. An effect system, analogously to a type system, is a formal system of rules which determines the effects that a program might have. Languages such as Haskell and the languages introduced later in this dissertation do not allow implicit effects. Instead they require the programmer to explicitly use structures called monads \needsRef{Moggi} to encode effect analysis in the type of program fragments. This has the useful result of combining the effect system with the type system of the language. For example, a program of type \texttt{Int} cannot interact with its environment to produce its result and hence always yields the same return value. However a program of type \texttt{IO Int} may perform IO operations before returning its result and hence may not always behave in exactly the same fashion.
+Programs very rarely stand alone without interacting with their environment in some form. This interaction might be to receive input, such as from sensors or buttons, to write output to a file, or to halt with an error. In functional languages, manipulating mutable state can also be considered interacting with the environment. Language terms that produce these interactions are said to have \textit{effects} as they have some observable effect in the environment other than simply the value that executing the term produces. It is important to be able to reason about the effects that a program term may produce, in order to ensure the soundness of compiler transformations and formal verification. An effect system, analogously to a type system, is a formal system of rules which infers abstract information about the side-effects that a program might have. This non-concrete data may then inform tools such as a compiler of the soundness of code transformations, such as removing redundant code or reordering statements. Languages such as Haskell and the languages introduced later in this dissertation do not allow implicit effects. Instead they require the programmer to explicitly use structures called monads \needsRef{Moggi} to encode effect analysis in the type of program fragments. This has the useful result of combining the effect system with the type system of the language. For example, a program of type \texttt{Int} cannot interact with its environment to produce its result and hence always yields the same return value. However a program of type \texttt{IO Int} may perform IO operations before returning its result and hence may not always behave in exactly the same fashion.
 
 \section{What is Effect Polymorphism?}
 
 
-Effect polymorphism is when a single function in a language can operate on values of similar types but with different effects. It allows the same piece of code to be used in multiple contexts with different type signature. This manifests in a similar manner to type parameter polymorphism in system-F-based languages. Consider the following Scala-style pseudocode:
+Effect polymorphism is when a single function in a language can operate on values of similar types but with different effect signatures. It allows the same piece of code to be used in multiple contexts with different type signature. This manifests in a similar manner to type parameter polymorphism in system-F-based languages. Consider the following Scala-style pseudocode:
 
 \begin{framed}
     \begin{framed}
@@ -115,10 +103,6 @@ An example of an inductive equivalence rule that we might want to be sound with 
 In this dissertation, I shall introduce an effect-polymorphic language, describe a semantics for it, then prove that the semantics is sound with respect to a $\beta\eta$-equivalence-based equational equivalence relation.
 
 \chapter{Background}
-\todo{Typo: "there exists morphism" should be "there exists a morphism".}
-
-\todo{Typo: "between to functors" should be "between two functors". Also,
-what is $\D$, D?}
 
 \todo{- Preordered monoid: the multiplication should also be monotone.}
 \todo{Definition of graded monad: shouldn't you give the definition for a
@@ -169,7 +153,7 @@ A \textit{binary product} of a pair of objects $A, B\in\obj\C$ consists of an ob
 A category is said to have binary products if for all objects $A, B$, $A\times B$ also exists.
 
 \subsubsection{Exponentials}
-An \textit{exponential} for objects $A, C$ is an object $C^A$ with morphism $\app: C^A\times A \rightarrow C$ such that for any object $B$ and morphism $f: B\times A \rightarrow C$, there exists morphism $\cur{f}: B \rightarrow C^A$ such that the following commutes:
+An \textit{exponential} for objects $A, C$ is an object $C^A$ with morphism $\app: C^A\times A \rightarrow C$ such that for any object $B$ and morphism $f: B\times A \rightarrow C$, there exists a morphism $\cur{f}: B \rightarrow C^A$ such that the following commutes:
 
 \begin{tikzcd}
     C^A \times A \arrow{r}{\app}& C\\
@@ -201,7 +185,7 @@ A functor $F: \C \rightarrow \DC$ is a mapping of objects and morphisms in $\C$ 
 
 \subsection{Natural Transformations}
 
-A \textit{natural transformation} $\theta$ between to functors $F, G: \C \rightarrow \DC$ is a collection of morphisms in $\D$, indexed by objects in $\C$ with  $\theta_A: F(A) \rightarrow G(A)$ such that diagram in figure \ref{Naturality} commutes for each $f: A \rightarrow B \in \C$.
+A \textit{natural transformation} $\theta$ between two functors $F, G: \C \rightarrow \DC$ is a collection of morphisms in $\DC$, indexed by objects in $\C$ with  $\theta_A: F(A) \rightarrow G(A)$ such that diagram in figure \ref{Naturality} commutes for each $f: A \rightarrow B \in \C$.
 
 \begin{figure}
     \centering
@@ -251,7 +235,7 @@ A \textit{monad} consists of a functor, $T: \C \rightarrow C$, from $\C$ onto it
 
 \subsection{Monoid}
 
-Another concept, though not strictly category theory, is that of a monoidal algebra. A \textit{monoid} is a set, operation, and identity $(M, \dot, \1)$ where $\dot: M\times M \rightarrow M$, is associative ($a\dot(b\dot c) = (a\dot b)\dot c$), and has an identity $a\dot\1 = a = \1\dot a$. In this dissertation, I shall make use of a monoid with a pre-order. This means there is a transitive, reflexive relation $\subeffect$ over the set $M$. Such an algebra cant be used to describe how effects induced by terms in a program interact with each other. For example, $a \dot b$ is the effect induced by composing a subexpression which produces effect $a$ with a subexpression that produces effect $b$. The pre-order is used to develop a notion of \textit{subtyping} over effects.
+Another concept, though not strictly of category theory, is that of a monoidal algebra. A \textit{monoid} is a set, operation, and identity $(M, \dot, \1)$ where $\dot: M\times M \rightarrow M$, is associative ($a\dot(b\dot c) = (a\dot b)\dot c$), and has an identity $a\dot\1 = a = \1\dot a$. In this dissertation, I shall make use of a monoid with a pre-order. This means there is a transitive, reflexive relation $\subeffect$ over the set $M$. The operator $\dot$ should also be monotone. That is if $a \subeffect a'$ and $b\subeffect b'$ then $a\dot b \subeffect a'\subeffect b'$ . Such an algebra can be used to describe how effects induced by terms in a program interact with each other. For example, $a \dot b$ is the effect induced by composing a subexpression which produces effect $a$ with a subexpression that produces effect $b$. The pre-order is used to develop a notion of \textit{subtyping} over effects.
 
 \subsection{Graded Monad}
 
@@ -960,11 +944,10 @@ this sentence is missing the word "to").}
 \todo{Definition of S-category: you should say "an S-category is..." somewhere.}
 \todo{A diagram might make the Beck-Chevalley condition easier to
 understand.}
-\todo{Section 3.5 inconsistently uses $\w$ and w for weakenings.} 
 \todo{I think the (Project) and (Extend) rules should assume that $\a$ is not
 already in the context.} 
 \todo{ With inductively typed denotations: say what the type of $\deno{\w}$ is for an
-arbitrary w before giving the definition.}
+arbitrary $\w$ before giving the definition.}
 \todo{"This definition allows us to define": this doesn't use the definition
 of substitution on effects.}
 \todo{The statements of 3.5.1 and 3.5.2 have typos.} \todo{Why is the $\square$ at the end of each proof in the middle of the page?}
@@ -1361,11 +1344,11 @@ With inductively defined denotations:
 \[
     \deno{\wrel{\i}{\P}{\P}} = \Id{I}: I \rightarrow I
     \quad
-    \deno{\wrel{w\pi}{\P',\a}{\P}} = \deno{\wrelw{\P'}{\P}}\after \p: I'\times U\rightarrow I
+    \deno{\wrel{\w\pi}{\P',\a}{\P}} = \deno{\wrelw{\P'}{\P}}\after \p: I'\times U\rightarrow I
 \]
 
 \[
-    \deno{\wrel{w\x}{\P',\a}{\P,\a}} = (\deno{\wrelw{\P'}{\P}}\times \Id{U}): I'\times U\rightarrow I\times U    
+    \deno{\wrel{\w\x}{\P',\a}{\P,\a}} = (\deno{\wrelw{\P'}{\P}}\times \Id{U}): I'\times U\rightarrow I\times U    
 \]
 
 Substitutions are also an inductively defined relation between effect environments, with inductively defined denotations. Substitutions may be represented as a snoc-list of variable-effect pairs.
@@ -1505,7 +1488,7 @@ $$\square$$
         \deno{\typerelation{\P,\b}{\a}{\effect}}\after\w = \deno{\typerelation{\P}{\a}{\effect}}\after\p\after\w
     \end{equation}
     
-    Similarly, we perform a case split on structure of $w$:
+    Similarly, we perform a case split on structure of $\w$:
     
     \subcase{$\w=\i$}
     Then $\P' = \P,\b$ so $\w=\Id{I}$
@@ -1631,7 +1614,7 @@ The effect-weakening theorem on types and type environments is also very similar
    In a similar fashion, we make use of the Beck-Chevalley condition and the S-closed property of $\si\star$.
 
     \case{Quantification}
-        This case uses the Beck-Chevalley condition and the fact that $\deno{\wrel{\w\x}{(\P', \a)}{(\P,\a)}} = w\times \Id{U}$. This property is used in conjunction with induction to change the environment from $(\P, \a)$ to $(\P', \a)$.
+        This case uses the Beck-Chevalley condition and the fact that $\deno{\wrel{\w\x}{(\P', \a)}{(\P,\a)}} = \w\times \Id{U}$. This property is used in conjunction with induction to change the environment from $(\P, \a)$ to $(\P', \a)$.
 
         \begin{align}
             \w\star\deno{\typerelation{\P}{\all{\a}A}{\type}} & = \w\star(\allI(\deno{\typerelation{\P,\a}{A}{\type}}))\\
@@ -1910,7 +1893,7 @@ Now we are at a point to start considering weakenings and substitution of the ty
     \quad  
     \treerule{Project}{\pewrel{\w}{\G'}{\G}\s\s x \notin \dom{\G'}}{\pewrel{\w \pi}{\G, x: A}{\G}}
     \quad
-    \treerule{Extend}{\pewrel{\w}{\G'}{\G}\s\s x \notin \dom{\G'}\s\s A \subtype B}{\pewrel{w \x}{\G', x: A}{\G, x: B}}
+    \treerule{Extend}{\pewrel{\w}{\G'}{\G}\s\s x \notin \dom{\G'}\s\s A \subtype B}{\pewrel{\w \x}{\G', x: A}{\G, x: B}}
 \]
 
 With denotations defined as morphisms in a fibre: $\deno{\pewrel{\w}{\G'}{\G}}: \G' \rightarrow \G \in \C(I)$.
