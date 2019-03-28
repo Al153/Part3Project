@@ -935,8 +935,6 @@ We define a fairly standard set of type rules on the language.
 
 \chapter{The Semantics of PEC in an Strictly Indexed Category}
 
-
-\todo{"interpret its semantics in...": also need the coproduct 1+1. (Also, this sentence is missing the word "to").}
 \todo{Definition of S-category: you should say "an S-category is..." somewhere.}
 \todo{A diagram might make the Beck-Chevalley condition easier to
 understand.}
@@ -947,7 +945,6 @@ arbitrary $\w$ before giving the definition.}
 \todo{"This definition allows us to define": this doesn't use the definition
 of substitution on effects.}
  \todo{Why is the $\square$ at the end of each proof in the middle of the page?}
-\todo{There are typos in the congruence rules for if and bind}
 \todo{It might be a good idea to include the Effect-Eta case in the proof of
 soundness.}
     
@@ -957,7 +954,7 @@ In this chapter, I  describe the category structure required to interpret an ins
 
 \section{Semantics for EC in an S-Category}\label{SCategoryIntro}
 
-As suggested in section \ref{LanguageFeatureRequirements}, since EC contains multiple effects, STLC terms, and \texttt{if} expressions, we should be able interpret its semantics in a cartesian closed category with an appropriate strong graded monad. With the addition of some extra category structure to handle subtyping, which I shall explain shortly, it is indeed possible to interpret EC. This section contains a fairly high-level treatment of the semantics. This is because the concepts introduced are a subset of those required for the semantics of PEC, which I shall explain in more detail later.
+As suggested in section \ref{LanguageFeatureRequirements}, since EC contains multiple effects, STLC terms, and \texttt{if} expressions, we should be able to interpret its semantics in a cartesian closed category with an appropriate strong graded monad and the co-product $\1 + \1$. With the addition of some extra category structure to handle subtyping, which I shall explain shortly, it is indeed possible to interpret EC. This section contains a fairly high-level treatment of the semantics. This is because the concepts introduced are a subset of those required for the semantics of PEC, which I shall explain in more detail later.
 
 \needsRef{
     Denotational semantic for similar languages have been presented before
@@ -2589,85 +2586,94 @@ The equational equivalence relation is a rule based relation with three main fla
 
 
 \begin{figure}[h!]
-    \[
-        \treerule{Lambda-Beta}{\etyperelation{\P}{\gax}{v_2}{B}\s\s \gpetyperelation{v_1}{A}}{\gpeberelation{\apply{(\lam{x}{A}{v_1})}{v_2} }{ v_1\ssub{x}{v_2}}{B}}
-        \quad
-        \treerule{Lambda-Eta}{\gpetyperelation{v}{\ab}}{\gpeberelation{\lam{x}{A}{(\apply{v}{x}})}{v}{\ab}}
-    \]
-
-    \[
-        \treerule{Left Unit}{\gpetyperelation{v_1}{A} \s\s \etyperelation{\P}{\gax}{v_2}{\meb}}{\gpeberelation{\doin{x}{\return{v_1}}{v_2}}{v_2\ssub{x}{v_1}}{\meb}}
-        \quad
-        \treerule{Right Unit}{\gpetyperelation{v}{\mea}}{\gpeberelation{\doin{x}{v}{\return{x}} }{v}{\mea}}
-    \]
-
-    \[
-        \treerule{Associativity}{\gpetyperelation{v_1}{\M{\e_1}{A}} \s\s \etyperelation{\P}{\gax}{v_2}{\M{\e_2}{B}}\s\s \etyperelation{\P}{\gby}{v_3}{\M{\e_3}{C}}}{
-            \gpeberelation{\doin{x}{v_1}{(\doin{y}{v_2}{v_3})}}{\doin{y}{(\doin{x}{v_1}{v_2})}{v_3}}{\M{\e_1 \dot \e_2 \dot \e_3}{C}}
-        }
-    \]
-
-    \[
-        \treerule{Unit}{\gpetyperelation{v}{\U}}{\gpeberelation{v}{\u}{\U}}
-    \]
-
-    \[
-        \treerule{if-true}{\gpetyperelation{v_1}{A}\s\s\gpetyperelation{v_2}{A}}{\gpeberelation{\pifthenelse{A}{\t}{v_1}{v_2}}{v_1}{A}}
-        \quad
-        \treerule{if-false}{\gpetyperelation{v_2}{A}\s\s\gpetyperelation{v_1}{A}}{\gpeberelation{\pifthenelse{A}{\f}{v_1}{v_2}}{v_2}{A}}    
-    \]
-
-    \[
-        \treerule{If-Eta}{\etyperelation{\P}{\G, x: \B}{v_2}{A}\s\s\gpetyperelation{v_1}{\B}}{\gpeberelation{\pifthenelse{A}{v_1}{v_2\ssub{x}{\t}}{v_2\ssub{x}{\f}}}{v_2\ssub{x}{v_1}}{A}}
-    \]
-
-    \[
-        \treerule{Effect-beta}{\wellformed{\P}{\e}\s\s\etyperelation{\P, \a}{\G}{v}{A}}{\gpeberelation{\eapp{(\elam{\a}{v}}{\e})}{v\ssub{\a}{\e}}{A\ssub{\a}{\e}}}
-        \quad 
-        \treerule{Effect-eta}{\etyperelation{\P}{\G}{v}{\all{\a}{A}}}{\gpeberelation{\elam{\a}{(\eapp{v}{\a})}}{v}{\all{\a}{A}}}
-    \]
+    
+    \begin{framed}
+        \[
+            \treerule{Lambda-Beta}{\etyperelation{\P}{\gax}{v_2}{B}\s\s \gpetyperelation{v_1}{A}}{\gpeberelation{\apply{(\lam{x}{A}{v_1})}{v_2} }{ v_1\ssub{x}{v_2}}{B}}
+            \quad
+            \treerule{Lambda-Eta}{\gpetyperelation{v}{\ab}}{\gpeberelation{\lam{x}{A}{(\apply{v}{x}})}{v}{\ab}}
+        \]
+    
+        \[
+            \treerule{Left Unit}{\gpetyperelation{v_1}{A} \s\s \etyperelation{\P}{\gax}{v_2}{\meb}}{\gpeberelation{\doin{x}{\return{v_1}}{v_2}}{v_2\ssub{x}{v_1}}{\meb}}
+            \quad
+            \treerule{Right Unit}{\gpetyperelation{v}{\mea}}{\gpeberelation{\doin{x}{v}{\return{x}} }{v}{\mea}}
+        \]
+    
+        \[
+            \treerule{Associativity}{\gpetyperelation{v_1}{\M{\e_1}{A}} \s\s \etyperelation{\P}{\gax}{v_2}{\M{\e_2}{B}}\s\s \etyperelation{\P}{\gby}{v_3}{\M{\e_3}{C}}}{
+                \gpeberelation{\doin{x}{v_1}{(\doin{y}{v_2}{v_3})}}{\doin{y}{(\doin{x}{v_1}{v_2})}{v_3}}{\M{\e_1 \dot \e_2 \dot \e_3}{C}}
+            }
+        \]
+    
+        \[
+            \treerule{Unit}{\gpetyperelation{v}{\U}}{\gpeberelation{v}{\u}{\U}}
+        \]
+    
+        \[
+            \treerule{if-true}{\gpetyperelation{v_1}{A}\s\s\gpetyperelation{v_2}{A}}{\gpeberelation{\pifthenelse{A}{\t}{v_1}{v_2}}{v_1}{A}}
+            \quad
+            \treerule{if-false}{\gpetyperelation{v_2}{A}\s\s\gpetyperelation{v_1}{A}}{\gpeberelation{\pifthenelse{A}{\f}{v_1}{v_2}}{v_2}{A}}    
+        \]
+    
+        \[
+            \treerule{If-Eta}{\etyperelation{\P}{\G, x: \B}{v_2}{A}\s\s\gpetyperelation{v_1}{\B}}{\gpeberelation{\pifthenelse{A}{v_1}{v_2\ssub{x}{\t}}{v_2\ssub{x}{\f}}}{v_2\ssub{x}{v_1}}{A}}
+        \]
+    
+        \[
+            \treerule{Effect-beta}{\wellformed{\P}{\e}\s\s\etyperelation{\P, \a}{\G}{v}{A}}{\gpeberelation{\eapp{(\elam{\a}{v}}{\e})}{v\ssub{\a}{\e}}{A\ssub{\a}{\e}}}
+            \quad 
+            \treerule{Effect-eta}{\etyperelation{\P}{\G}{v}{\all{\a}{A}}}{\gpeberelation{\elam{\a}{(\eapp{v}{\a})}}{v}{\all{\a}{A}}}
+        \]
+    \end{framed}
     \caption{The reduction rules for PEC}
     \label{BetaEtaReductions}
 \end{figure}
 
 \begin{figure}[h!]
-    \[
-        \treerule{Effect-Abs}{\eberelation{\P, \a}{\G}{v_1}{v_2}{A}}{\gpeberelation{\elam{\a}{v_1}}{\elam{\a}{v_2}}{\all{\a}{A}}}
-        \quad
-        \treerule{Effect-Apply}{\gpeberelation{v_1}{v_2}{\all{\a}{A}}\s\s\wellformed{\P}{\e}}{\gpeberelation{\eapp{v_1}{\e}}{\eapp{v_2}{\e}}{A\ssub{\a}{\e}}}
-    \]
-
-    \[
-        \treerule{Lambda}{\eberelation{\P}{\gax}{v_1}{v_2}{B}}{\gpeberelation{\lam{x}{A}{v_1}}{\lam{x}{A}{v_2}}{\ab}}
-        \quad
-        \treerule{Return}{\gpeberelation{v_1}{v_2}{A}}{\gpeberelation{\return{v_1}}{\return{v_2}}{\moa}}
-    \]
-
-    \[
-        \treerule{Apply}{\gpeberelation{v_1}{v_1'}{\ab}\s\s\gpeberelation{v_2}{v_2'}{A}}{\gpeberelation{\apply{v_1}{v_2}}{\apply{v_1'}{v_2'}}{B}}
-        \quad   
-        \treerule{Bind}{\gpeberelation{v_1}{v_1'}{\M{\e_1}{A}} \s\s \eberelation{\P}{\gax}{v_2}{v_2'}{\M{\e_2}{B}}}{\gpeberelation{\doin{x}{v_1}{v_2}}{\doin{c}{v_1'}{v_2'}}{\M{\e_1 \dot \e_2}{B}}} 
-    \]
-
-    \[
-        \treerule{If}{\gpeberelation{v}{v'}{\B} \s\s \gpeberelation{v_1}{v_1'}{A}\s\s\gpeberelation{v_2}{v_2'}{A}}{\gpeberelation{\pifthenelse{A}{v}{v_1}{v_2}}{\pifthenelse{A}{v}{v_1'}{v_2'}}{A}}
-        \quad    
-        \treerule{Subtype}{\gpeberelation{v}{v'}{A} \s\s A \subtypep B}{\gpeberelation{v}{v'}{B}}
-    \]
+   
+   \begin{framed}
+        \[
+            \treerule{Effect-Abs}{\eberelation{\P, \a}{\G}{v_1}{v_2}{A}}{\gpeberelation{\elam{\a}{v_1}}{\elam{\a}{v_2}}{\all{\a}{A}}}
+            \quad
+            \treerule{Effect-Apply}{\gpeberelation{v_1}{v_2}{\all{\a}{A}}\s\s\wellformed{\P}{\e}}{\gpeberelation{\eapp{v_1}{\e}}{\eapp{v_2}{\e}}{A\ssub{\a}{\e}}}
+        \]
+    
+        \[
+            \treerule{Lambda}{\eberelation{\P}{\gax}{v_1}{v_2}{B}}{\gpeberelation{\lam{x}{A}{v_1}}{\lam{x}{A}{v_2}}{\ab}}
+            \quad
+            \treerule{Return}{\gpeberelation{v_1}{v_2}{A}}{\gpeberelation{\return{v_1}}{\return{v_2}}{\moa}}
+        \]
+    
+        \[
+            \treerule{Apply}{\gpeberelation{v_1}{v_1'}{\ab}\s\s\gpeberelation{v_2}{v_2'}{A}}{\gpeberelation{\apply{v_1}{v_2}}{\apply{v_1'}{v_2'}}{B}}
+            \quad   
+            \treerule{Bind}{\gpeberelation{v_1}{v_1'}{\M{\e_1}{A}} \s\s \eberelation{\P}{\gax}{v_2}{v_2'}{\M{\e_2}{B}}}{\gpeberelation{\doin{x}{v_1}{v_2}}{\doin{x}{v_1'}{v_2'}}{\M{\e_1 \dot \e_2}{B}}} 
+        \]
+    
+        \[
+            \treerule{If}{\gpeberelation{v}{v'}{\B} \s\s \gpeberelation{v_1}{v_1'}{A}\s\s\gpeberelation{v_2}{v_2'}{A}}{\gpeberelation{\pifthenelse{A}{v}{v_1}{v_2}}{\pifthenelse{A}{v'}{v_1'}{v_2'}}{A}}
+            \quad    
+            \treerule{Subtype}{\gpeberelation{v}{v'}{A} \s\s A \subtypep B}{\gpeberelation{v}{v'}{B}}
+        \]
+   \end{framed}
     \caption{The congruence rules for PEC}
     \label{BetaEtaCongruence}
 \end{figure}
 
 \begin{figure}
-    \[
-        \treerule{Reflexive}{\gpetyperelation{v}{A}}{\gpeberelation{v}{v}{A}}
-        \quad
-        \treerule{Symmetric}{\gpeberelation{v_1}{v_2}{A}}{\gpeberelation{v_2}{v_1}{A}}
-    \]
-
-    \[
-        \treerule{Transitive}{\gpeberelation{v_1}{v_2}{A}\s\s\gpeberelation{v_2}{v_3}{A}}{\gpeberelation{v_1}{v_3}{A}}
-    \]
+    
+    \begin{framed}
+        \[
+            \treerule{Reflexive}{\gpetyperelation{v}{A}}{\gpeberelation{v}{v}{A}}
+            \quad
+            \treerule{Symmetric}{\gpeberelation{v_1}{v_2}{A}}{\gpeberelation{v_2}{v_1}{A}}
+        \]
+    
+        \[
+            \treerule{Transitive}{\gpeberelation{v_1}{v_2}{A}\s\s\gpeberelation{v_2}{v_3}{A}}{\gpeberelation{v_1}{v_3}{A}}
+        \]
+    \end{framed}
     \caption{Rules expanding the reduction and congruence relation to an equivalence relation}
     \label{BetaEtaEquivalence}
 \end{figure}
