@@ -929,9 +929,6 @@ We define a fairly standard set of type rules on the language.
 
 \chapter{The Semantics of PEC in an Strictly Indexed Category}
 
-\todo{A diagram might make the Beck-Chevalley condition easier to
-understand.}  
-
 In this chapter, I  describe the category structure required to interpret an instance of the PEC. I then present denotations of each type of structure in the language, such as types, effects, terms, substitutions, and environment weakenings. Finally, I provide outlines and interesting cases of the proofs of the lemmas leading up to and including soundness of the semantics with respect to a $\beta\eta$-conversion-based equational equivalence. However, firstly I shall give a brief treatment to the semantics of EC.
 
 
@@ -943,9 +940,12 @@ As suggested in section \ref{LanguageFeatureRequirements}, since EC contains mul
     Denotational semantic for similar languages have been presented before
 }
 
-\begin{definition}[S-Category]
-    In order to correctly model a given instantiation of EC, that is an EC with a collection of effects, constants, and ground types, there should be a collection of objects in the category to represent the ground types. There should also be a point morphism (a morphism from the terminal object to the appropriate type) for each constant. In addition to the previously stated requirements, we also require an S-category, $\C$, to be able to model subtyping and subeffecting. For each instance of the ground subtyping relation, $A \subtypeg B$, there should exist a morphism between the objects representing the ground types $A$ and $B$. A further requirement is that $\C$ has a collection of subeffecting natural transformations. For each instance of $\e_1 \subeffect \e_2$, there exists a natural transformation $\db{\e_1\subeffect\e_2}: \T{\e_1}{}\rightarrow\T{\e_2}{}$ such that it has interactions with the graded monad as specified in figures \ref{SubeffectTensorStrength}, \ref{SubeffectBind}. We can now define morphisms for all forms of subtyping by constructions following the derivation tree for subtyping. For more detail, one can look at section \ref{PECDenotations} and below for the same construction on PEC. From this point onwards, I shall refer to a category that fulfills these properties of having a strong graded monad, CCC, ground objects and points, subeffect natural transformations, and a co-product $\1 + \1$ as an \textit{S-Category} (Semantic Category).
-\end{definition}
+
+\begin{framed}
+    \begin{definition}[S-Category]
+        In order to correctly model a given instantiation of EC, that is an EC with a collection of effects, constants, and ground types, there should be a collection of objects in the category to represent the ground types. There should also be a point morphism (a morphism from the terminal object to the appropriate type) for each constant. In addition to the previously stated requirements, we also require an S-category, $\C$, to be able to model subtyping and subeffecting. For each instance of the ground subtyping relation, $A \subtypeg B$, there should exist a morphism between the objects representing the ground types $A$ and $B$. A further requirement is that $\C$ has a collection of subeffecting natural transformations. For each instance of $\e_1 \subeffect \e_2$, there exists a natural transformation $\db{\e_1\subeffect\e_2}: \T{\e_1}{}\rightarrow\T{\e_2}{}$ such that it has interactions with the graded monad as specified in figures \ref{SubeffectTensorStrength}, \ref{SubeffectBind}. We can now define morphisms for all forms of subtyping by constructions following the derivation tree for subtyping. For more detail, one can look at section \ref{PECDenotations} and below for the same construction on PEC. From this point onwards, I shall refer to a category that fulfills these properties of having a strong graded monad, CCC, ground objects and points, subeffect natural transformations, and a co-product $\1 + \1$ as an \textit{S-Category} (Semantic Category).
+    \end{definition}
+\end{framed}
 
 A full derivation and proof of soundness of the semantics of the Effect Calculus can be found online \needsRef{Link} as it is too long to include here and many of the concepts are repeated later in the remainder of this dissertation anyway. The categorical semantics of the Effect Calculus requires an S-category not only to simply model all of the features of EC but also to use the various commutivity diagrams and rules to manipulate the expressions encountered when proving properties of the semantics. Again, as all these manipulations are also applied when proving the semantics of PEC, I shall not go into further detail here.
 
@@ -1002,7 +1002,23 @@ Next up, there needs to be a monoidal operator $\Mul: \ciu \times \ciu \rightarr
 
 Our penultimate requirement is that the re-indexing functor  induced by $\p: I\times U\rightarrow I$ (that is $\pstar: \C(I) \rightarrow \C(I\times U)$) has a right adjoint, $\allI: \C(I\times U) \rightarrow \C(I)$. As the reader might be able to guess, this functor allows us to interpret quantification over effects. This right adjoint need not be S-preserving.
 
-Finally, $\allI$ should satisfy the Beck-Chevalley condition. That is $\theta\star\after\allI = \allII\after(\theta\times\Id{U})\star$, and the natural transformation $\bar{(\theta\times\Id{U})\star(\counit{})}$ between these functors is equal to the identity natural transformation. This allows us to commute the re-indexing functors with the quantification functor.
+Finally, $\allI$ should satisfy the Beck-Chevalley condition, as seen in figure \ref{BeckChevalleyDiagram}. That is $\theta\star\after\allI = \allII\after(\theta\times\Id{U})\star$, and the natural transformation $\bar{(\theta\times\Id{U})\star(\counit{})}$ between these functors is equal to the identity natural transformation. This allows us to commute the re-indexing functors with the quantification functor.
+
+\begin{figure}
+    \begin{framed}
+        \centering
+        \begin{tikzcd}[column sep=huge]
+            \C(I) 
+            \arrow[bend left=50]{rrrr}[name=U,label=above:$\scriptstyle \theta\star\after\allI$]{}
+            \arrow[bend right=50]{rrrr}[name=D,label=below:$\scriptstyle \allII\after(\theta\times\Id{U})\star$]{} 
+            &&&& 
+            \C(I'\times U)
+            \arrow[name=Canon,shorten <=10pt,shorten >=10pt,equal,to path={(U) -- node[label=right:$\bar{(\theta\times\Id{U})\star(\counit{})}$] {} (D)}]{}
+        \end{tikzcd}
+    \end{framed}
+    \caption{A functor diagram of the Beck-Chevalley condition}
+    \label{BeckChevalleyDiagram}
+\end{figure}
 
 \begin{align}
     \bar{(\theta\times\Id{U})\star(\counit{})} = \Id{}: \theta\star\after\allI \rightarrow \allII\after(\theta\times\Id{U})\star\in \C(I')
@@ -2808,7 +2824,7 @@ We also need to define the base category. This shall be $\Eff$, a sub category o
 
 Morphisms $E^n \rightarrow E$ in $\Eff$ are monotone functions taking $n$ ground-effect parameters and returning a ground effect.
 
-Next we must pick our fibre categories for non-zero values of $n$. A simple instantiation is to pick each fibre $\C(E^n)$ to be the functor category $[E^n, \set]$,  where $E^n$ is a discrete category (a category that only contains the identity morphisms). That is, the category of functions returning an object in $\set$ given $n$ ground effects. Morphisms between objects are functions which, given a collection of ground effects, yield a morphism (function) in $C$. If $m\in [E^n, \set](A, B)$ then $m\ev\in\set(A\ev, B\ev)$. The fibres, $[E^n, C]$ are S-categories. This can be proved by constructing the S-category structures pointwise with respect to their parameter $\ev \in E^n$ as seen in figures \ref{HowToBuildCCC} - \ref{HowToBuildSubtyping}. Full proofs of the naturality and monad laws can be found \needsRef.
+Next we must pick our fibre categories for non-zero values of $n$. A simple instantiation is to pick each fibre $\C(E^n)$ to be the functor category $[E^n, \set]$,  where $E^n$ is a discrete category (a category that only contains the identity morphisms). That is, the category of functions returning an object in $\set$ given $n$ ground effects. Morphisms between objects are functions which, given a collection of ground effects, yield a morphism (function) in $C$. If $m\in [E^n, \set](A, B)$ then $m\ev\in\set(A\ev, B\ev)$. The fibres, $[E^n, C]$ are S-categories. This can be proved by constructing the S-category structures pointwise with respect to their parameter $\ev \in E^n$ as seen in figures \ref{HowToBuildCCC} - \ref{HowToBuildSubtyping}. Full proofs of the naturality and monad laws can be found \needsRef{}.
 
 
 
@@ -2893,10 +2909,10 @@ Given the strong graded monad $(\Tz{}{}, \pointz{}, \bindmu^0, \strengtht^0)$ on
     (\tstrengthn{f}{A}{B})\ev=&\quad\tstrengthz{(f\ev)}{(A\ev)}{(B\ev)}
 \end{align}
 
-Through some mechanical proof and the naturality of the $\Tz$ strong graded monad, these morphisms are natural in their type parameters and form a strong graded monad in $[E^n, \set]$
+Through some mechanical proof and the naturality of the $\Tz{}{}$ strong graded monad, these morphisms are natural in their type parameters and form a strong graded monad in $[E^n, \set]$
 
     \end{framed}
-    \caption{The definition of the graded monad in the category $[E^n, C]$}
+    \caption{The definition of the graded monad in the category $[E^n, \set]$}
     \label{HowToBuildMonad}
 \end{figure}
 
