@@ -2790,13 +2790,9 @@ This completes the proof of soundness for this semantics.
 
 \chapter{Instantiating a Model of PEC}
 
-    
-\todo{(And I'm not sure you should name $\Cz$ at all.)} 
-
-
 Now we have proved that an appropriate categorical structure can model PEC, it remains to show that it is feasible to construct such an indexed category. There exist $\set$-based models for the semantics of many effectful languages with a graded monad, such as a certain instantiations of the Effect Calculus \needsRef{}. More specifically, it is possible to treat $\set$ as an S-category. Hence, I use a $\set$ based S-category as a starting point. In this section, I  demonstrate how to construct an strictly indexed S-category, which can model the PEC, from such an S-category.
 
-Let $\Cz$ be an S-category derived from $\set$. That is, $\Cz$ contains a graded monad $\Tz{}{}, \bindmu^0, \pointz{}, \strengtht^0$, is cartesian closed, has a co-product of the terminal object ($\1 = \left\{\star\right\}$) with itself, has subtyping functions $\deno{A\subtypeg B}: A \rightarrow B$ for each instance of the ground subtyping relation, and has natural transformations $\deno{\e_1 \subeffectz \e_2}: \Tz{\e_1}{} \rightarrow \Tz{\e_2}{}$. Since $\Cz$ is a model for the EC, it is graded by a pre-ordered monoid on ground effects: $(E, \subeffectz, \1, \dot)$. I have marked each of these instances of S-category structure with $0$ to indicate that they occur in the bottom category $\Cz$, induced by the empty effect environment.
+Suppose we have an S-category structure derived from $\set$ which models an instance of EC. That is, there exists a graded monad $\Tz{}{}, \bindmu^0, \pointz{}, \strengtht^0$ on $\set$, and there exist subtyping functions $\deno{A\subtypeg B}: A \rightarrow B$ for each instance of the ground subtyping relation, and natural transformations $\deno{\e_1 \subeffectz \e_2}: \Tz{\e_1}{} \rightarrow \Tz{\e_2}{}$ for each instance of the subeffecting relation. Further more, $\set$ is cartesian closed and has co-products for all pairs of objects. Since this structure is a model for the EC, it is graded by a pre-ordered monoid on ground effects: $(E, \subeffectz, \1, \dot)$. I have marked each of these instances of S-category structure with $0$ to indicate that they occur in the fibre induced by the empty effect-variable environment.
 
 
 \fixLayout{This spacing will be fixed once I tweak around with my macros}
@@ -2812,7 +2808,7 @@ We also need to define the base category. This shall be $\Eff$, a sub category o
 
 Morphisms $E^n \rightarrow E$ in $\Eff$ are monotone functions taking $n$ ground-effect parameters and returning a ground effect.
 
-Next we must pick our fibre categories for non-zero values of $n$. A simple instantiation is to pick each fibre $\C(E^n)$ to be the functor category $[E^n, \set]$,  where $E^n$ is a discrete category (a category that only contains the identity morphisms). That is, the category of functions returning an object in $\Cz$ given $n$ ground effects. Morphisms between objects are functions which, given a collection of ground effects, yield a morphism (function) in $C$. If $m\in [E^n, \set](A, B)$ then $m\ev\in\Cz(A\ev, B\ev)$. The fibres, $[E^n, C]$ are S-categories. This can be proved by constructing the S-category structures pointwise with respect to their parameter $\ev \in E^n$ as seen in figures \ref{HowToBuildCCC} - \ref{HowToBuildSubtyping}. Full proofs of the naturality and monad laws can be found \needsRef.
+Next we must pick our fibre categories for non-zero values of $n$. A simple instantiation is to pick each fibre $\C(E^n)$ to be the functor category $[E^n, \set]$,  where $E^n$ is a discrete category (a category that only contains the identity morphisms). That is, the category of functions returning an object in $\set$ given $n$ ground effects. Morphisms between objects are functions which, given a collection of ground effects, yield a morphism (function) in $C$. If $m\in [E^n, \set](A, B)$ then $m\ev\in\set(A\ev, B\ev)$. The fibres, $[E^n, C]$ are S-categories. This can be proved by constructing the S-category structures pointwise with respect to their parameter $\ev \in E^n$ as seen in figures \ref{HowToBuildCCC} - \ref{HowToBuildSubtyping}. Full proofs of the naturality and monad laws can be found \needsRef.
 
 
 
@@ -2821,7 +2817,7 @@ Next we must pick our fibre categories for non-zero values of $n$. A simple inst
     \begin{framed}
         \centering\textbf{Cartesian Closed Category}
 
-Since $\Cz$ is based on $\set$ and a CCC, and since $E$ is small, $E^n$ is small, $[E^n, \set]$ is a CCC.
+Since $E$ is small, $E^n$ is also small, and hence $[E^n, \set]$ is a CCC. This can be demonstrated pointwise.
 
 \begin{align}
     (A\times B)\ev & = (A\ev)\times(B\ev)\\
@@ -2862,14 +2858,14 @@ We can define the co-product pointwise.
     \begin{framed}
         \centering\textbf{Ground Types and Terms}
 
-        Each ground type in the non-polymorphic calculus has a fixed denotation $\deno{\g}\in\obj\Cz$. The ground type in the polymorphic calculus hence has a denotation represented by the constant function.
+        Each ground type in the non-polymorphic calculus has a fixed denotation $\deno{\g}\in\obj\set$. The ground type in the polymorphic calculus hence has a denotation represented by the constant function.
         
         \begin{align}
-            \deno{\g}:&\quad E^n\rightarrow \obj\Cz\\
+            \deno{\g}:&\quad E^n\rightarrow \obj\set\\
             \ev \mapsto&\quad  \deno{\g}\\
         \end{align}
         
-        Each constant term $\const{A}$ in the non-polymorphic calculus has a fixed denotation $\deno{\const{A}}\in\Cz(\1, A)$.
+        Each constant term $\const{A}$ in the non-polymorphic calculus has a fixed denotation $\deno{\const{A}}\in\set(\1, A)$.
         
         So the morphism $\deno{\const{A}}$ in $[E^n, \set]$ is the corresponding constant dependently typed morphism.
         
@@ -2887,7 +2883,7 @@ We can define the co-product pointwise.
     \begin{framed}
         \centering\textbf{Strong Graded Monad}
 
-Given the strong graded monad $(\Tz{}{}, \pointz{}, \bindmu^0, \strengtht^0)$ on $\Cz$ we can construct an appropriate graded monad on $[E^n, \set]$.
+Given the strong graded monad $(\Tz{}{}, \pointz{}, \bindmu^0, \strengtht^0)$ on $\set$ we can construct an appropriate graded monad on $[E^n, \set]$.
 
 \begin{align}
     \Tn{}{}:&\quad(E^n, \dot, \subeffect_n, \1_n) \rightarrow [[E^n, \set], [E^n, \set]]\\
@@ -2897,7 +2893,7 @@ Given the strong graded monad $(\Tz{}{}, \pointz{}, \bindmu^0, \strengtht^0)$ on
     (\tstrengthn{f}{A}{B})\ev=&\quad\tstrengthz{(f\ev)}{(A\ev)}{(B\ev)}
 \end{align}
 
-Through some mechanical proof and the naturality of the $\Cz$ strong graded monad, these morphisms are natural in their type parameters and form a strong graded monad in $[E^n, \set]$
+Through some mechanical proof and the naturality of the $\Tz$ strong graded monad, these morphisms are natural in their type parameters and form a strong graded monad in $[E^n, \set]$
 
     \end{framed}
     \caption{The definition of the graded monad in the category $[E^n, C]$}
@@ -2911,7 +2907,7 @@ Through some mechanical proof and the naturality of the $\Cz$ strong graded mona
         \centering\textbf{Subeffecting}
 
 
-        Given a collection of subeffecting natural transformations in $\Cz$,
+        Given a collection of subeffecting natural transformations in $\set$,
         
         \begin{align}
             \deno{\e_1\subeffectz \e_2}:&\quad \Tz{\e_1}{} \rightarrow \Tz{\e_2}{}
@@ -2935,7 +2931,7 @@ Through some mechanical proof and the naturality of the $\Cz$ strong graded mona
 \centering\textbf{Subtyping}
 
 
-Subtyping in $[E^n, \set]$ holds via subtyping in $\Cz$
+Subtyping in $[E^n, \set]$ holds via subtyping in $\set$
 
 \begin{align}
     \deno{A\subtype_n B}:&\quad A\rightarrow B\\
@@ -2949,7 +2945,7 @@ So the subtyping relation $A \subtype B$ forms a morphism in $[E^n, \set]$
     \label{HowToBuildSubtyping}
 \end{figure}
 
-Now we need to define the required morphisms between fibres. Firstly, for any function $\theta: E^m \rightarrow E^n$ in $\Eff$, there should exist an S-preserving re-indexing functor $\theta\star: [E^n, \set] \rightarrow [E^m, \Cz]$. A simple instantiation is the pre-composition functor, as seen in figure \ref{PrecompositionFunctor}. This also obeys the composition law of re-indexing functors figure \ref{PrecompositionFunctorComposition} and is S-preserving.
+Now we need to define the required morphisms between fibres. Firstly, for any function $\theta: E^m \rightarrow E^n$ in $\Eff$, there should exist an S-preserving re-indexing functor $\theta\star: [E^n, \set] \rightarrow [E^m, \set]$. A simple instantiation is the pre-composition functor, as seen in figure \ref{PrecompositionFunctor}. This also obeys the composition law of re-indexing functors figure \ref{PrecompositionFunctorComposition} and is S-preserving.
 
 
 \begin{figure}
@@ -2994,7 +2990,7 @@ Now we need to define the required morphisms between fibres. Firstly, for any fu
         \textbf{Re-Indexing Functors are S-Preserving}
                 
         \begin{theorem}
-            The re-indexing functors are also S-preserving. That is all the S-category features in $[E^n, \set]$ are preserved by $\theta\star$ in $[E^m, \Cz]$. For a full list of features please see appendix \needsRef.
+            The re-indexing functors are also S-preserving. That is all the S-category features in $[E^n, \set]$ are preserved by $\theta\star$ in $[E^m, \set]$. For a full list of features please see appendix \needsRef.
         \end{theorem}
         
         
@@ -3053,7 +3049,7 @@ Next, the re-indexing functor $\pstar$ should have a right adjoint, $\allEn$. Un
 We can now prove that $\pstar \dashv \allEn$. To do this, we need a natural bijection between morphisms in the functor categories $[E^n, \set]$ and $[E^{n+1}, \set]$.
 
 \begin{equation}
-    \bar{(-)}: [E^{n+1}, \set](\pstar A, B) \rightleftharpoons [E^n,\Cz] (A, \allEn B): \widehat{(-)}
+    \bar{(-)}: [E^{n+1}, \set](\pstar A, B) \rightleftharpoons [E^n,\set] (A, \allEn B): \widehat{(-)}
 \end{equation}
 
 The leftwards and rightwards components of this bijection can be derived as follows. The leftwards component maps each morphism to a finite pairing of the morphism over each ground effect. The inverse is simply to project out the appropriate value of $\e$ from the product. These mappings can be seen in figure \ref{AdjunctionDefinition}. These transformations give rise to the unit and co-unit of the adjunction, which are defined in figure \ref{UnitCoUnitDefinition}. The unit and co-unit allow us to prove that this construction is an adjunction (figure \ref{AdjunctionProof}). 
