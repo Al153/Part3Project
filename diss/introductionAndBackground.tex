@@ -837,7 +837,7 @@ Using this ground type relation, we can then construct a subtyping relation betw
     \quad
     \treerule{Fn}{A \subtypep A' \s\s B' \subtypep B }{\fntype{A'}{B'} \subtypep \ab}
     \quad
-    \treerule{All}{A\subtypep A'}{\all{\a}{A}\subtypepa\all{\a}{A'}}
+    \condtreerule{All}{A\subtypep A'}{\all{\a}{A}\subtypepa\all{\a}{A'}}{\a\notin\P}
     \quad
     \treerule{Effect}{A\subtypep B\s\s \e_1\subeffectp\e_2}{\M{\e_1}{A}\subtypep\M{\e_2}{B}}
 \]
@@ -895,16 +895,17 @@ We define a fairly standard set of type rules on the language.
 \end{proof}
 
 \begin{lemma}[Ok Lemma on Effect Environments]
-    A second group of lemmas is that each of the judgments $\oke{\P}{\G}$, $\wellformed{\P}{A}$, and $\wellformed{\P}{\e}$implies $\ok{\P}$.
+    A second group of lemmas is that each of the judgments  $\wellformed{\P}{\e}$, $\wellformed{\P}{A}$, and $\oke{\P}{\G}$ implies $\ok{\P}$.
 \end{lemma}
 
 \begin{proof}
-    \todo{this needs finishing.}
-    If $\oke{\P}{\gax}$ then, by inversion, $\wellformed{\P}{A}$  and $\oke{\P}{\G}$. Since $\G$ is finite, $\oke{\P}{\nil}$. By the \textit{(Nil)} rule, $\ok{\P}$.
-    
-    If $\wellformed{\P}{\e}$, then by inspecting the derivation tree, all ground nodes require
+    We shall prove each of the implications separately, but an over-arching theme of this proof is that the leaf rules of any $\wellformed{\P}{\texttt{Consequence}}$ derivation tree require $\ok{\P}$ and that any modifications to the effect environment in the assumptions to the effect environment in the consequence of a rule preserve the $\ok{}$ relation. Hence, using induction and inversion, we can show that the effect environment is always well formed in any complete derivation tree.
 
-    Similarly, if $\wellformed{\P}{A}$, we can inspect the derivation tree. Each leaf rule of the tree (Ground types) requires that  
+    Firstly in the case of the well-formedness relation $\wellformed{\P}{\e}$, the only leaf rules are the (\textit{Ground}) and (\textit{Var}) rules. By inversion, if $\wellformed{\P}{e}$ or $\wellformed{\P, \a}{\a}$ then $\ok{\P}$ or $\ok{\P, \a}$ respectively. Next, by inversion on the (\textit{Monoid Op}) rule, if $\wellformed{\P}{\e_1\dot\e_2}$ then $\wellformed{\P}{\e_1}$, so by induction $\ok{\P}$. Finally, the weakening rule preserves the $\ok{}$ property of the effect environment, so $\wellformed{\P, \b}{\a} \implies \wellformed{\P}{\a} \implies \ok{\P} \implies \ok{(\P, \b)}$.
+
+    Secondly, in the case of the well formedness relation on types, the only leaf rule is (\textit{Ground}). If $\wellformed{\P}{\g}$, then by inversion, $\ok{\P}$. Similarly to the (\textit{Monoid Op}) rule for effects, the (\textit{Fn}) rule's preconditions have the same effect-environment, so $\ok{\P}$ holds by inversion and induction. By inversion on the (\textit{Effect}) rule, $\wellformed{\P}{\e}$ so $\ok{\P}$. Finally the (\textit{All}) rule preserves $\ok{}$ in a similar way to the (\textit{Weaken}) rule above.
+
+    Finally, if $\oke{\P}{\gax}$ then, by inversion, $\wellformed{\P}{A}$  and $\oke{\P}{\G}$. Since $\G$ is finite, $\oke{\P}{\nil}$. By inversion of the \textit{(Nil)} rule, $\ok{\P}$.
 \end{proof}
 
 
@@ -2468,7 +2469,7 @@ The $\reduce$ function maps each derivation to its reduced equivalent. It does t
 
 
 \begin{proof}
-    We proceed by induction over the structure of $\D$, making use of the substitution and weakening theorems. We make use of the the definition of the $\reduce$ function as defined in figure \ref{ReduceFunctionCases}. We also use the definitions of $\D_1, \D_2 ...$ from the figure. \todo{May need to define $\D_1..$ locally.}
+    We proceed by induction over the structure of $\D$, making use of the substitution and weakening theorems. We make use of the the definition of the $\reduce$ function as defined in figure \ref{ReduceFunctionCases}. We also use the definitions of $\D_1, \D_2 ...$ from the figure. \todo{Should I define $\D_1..$ locally?}
     
     \case{Apply}
     This case makes use of the fact that composing subtyping morphisms gives the transitive subtyping morphism.
