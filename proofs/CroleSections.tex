@@ -1138,7 +1138,7 @@ Let \begin{equation}
 Then
 
 \begin{equation}
-    \D = \widehat{\D_1}\\
+    \D = \bar{\D_1}\\
 \end{equation}
 
 And also
@@ -1149,9 +1149,9 @@ And also
 
 So
 \begin{align}
-    \w\star\D &= \w\star(\widehat{\D_1})\\
-    & = \widehat{(\w\times\Id{U})\star\D_1}\qt{By naturality}\\
-    & = \widehat{\D_1'}\qt{By induction}\\
+    \w\star\D &= \w\star(\bar{\D_1})\\
+    & = \bar{(\w\times\Id{U})\star\D_1}\qt{By naturality}\\
+    & = \bar{\D_1'}\qt{By induction}\\
     & = \D'
 \end{align}
 
@@ -3209,6 +3209,7 @@ Then
     \end{align}
 
     \case{Effect-Eta}
+    \todo{Use reindexing functors rather than post composition}
     Let \begin{align}
         f & = \deno{\gpetyperelation{v}{\all{\a}{A}}}\\
         A & = \deno{\typerelation{\P,\a}{A}{\type}}

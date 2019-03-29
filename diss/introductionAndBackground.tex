@@ -19,8 +19,7 @@
 
 
 \abstract
-    \todo{"improved upon by Lucasson": Katsumata}
-To date, there has been limited work on the semantics of languages with polymorphic effect systems. The application, by Moggi, of strong monads to modelling the semantics of effects has become a mainstream concept in functional programming languages. This was improved upon by Lucasson (?) using a graded monad to model languages with a range of independent and dependent effects at an operational level. A categorical semantics for parametric polymorphism in types was first published by Reynolds (?) allowing a denotational analysis of languages including type parameters. There has been some work on polymorphism over the exception effect (which paper). Despite these works, there has been no work to date on the denotational semantics of languages with general parametric polymorphism over effects.
+To date, there has been limited work on the semantics of languages with polymorphic effect systems. The application, by Moggi, of strong monads to modelling the semantics of effects has become a mainstream concept in functional programming languages. This was improved upon by Katsumata \needsRef{} using a graded monad to model languages with a range of independent and dependent effects at an operational level. A categorical semantics for parametric polymorphism in types was first published by Reynolds \needsRef{} allowing a denotational analysis of languages including type parameters. There has been some work on polymorphism over the exception effect (which paper). Despite these works, there has been no work to date on the denotational semantics of languages with general parametric polymorphism over effects.
 
 In this dissertation, I present several pieces of work. Firstly, I introduce a modern definition of a lambda-calculus-based language with an explicit graded monad to handle a variety of effects. This calculus is then extended using polymorphic terms to yield a more general polymorphic effect calculus. Next, I give an indexed-category-based denotational semantics for the language, along with an outline of a proof for the soundness of these semantics. Following this, I present a method of transforming a model of a non-polymorphic language into a model of the language with polymorphism over effects.
 
@@ -403,10 +402,10 @@ An important concept in category theory is that of an Adjunction. Given functors
 
 \subsection{Strictly Indexed Category}
 
-The final piece of category theory required to understand this dissertation is the concept of a strictly indexed category. A strictly indexed category is a functor from a \textit{base category} $\C$ into a target (\textit{indexed}) category of categories, where objects are categories and morphisms are functors. Objects, $A$, in the base category are mapped to categories $\C(A)$, known as \textit{fibres} in the indexed category. Morphisms between objects in the base category, $f: B\rightarrow A$, are contravariantly mapped to functors, written $f\star: \C(A)\rightarrow \C(B)$, between fibres in the indexed category. The strictly adverb indicates that the indexing in this construction is done by a functor as opposed to the weaker pseudofunctor (weak 2-functor) structure. Since pseudofunctors are not needed to explain anything in this project, I shall leave out their definition, though an interested reader may wish to research them further. \footnote{https://ncatlab.org/nlab/show/pseudofunctor}
+The final piece of category theory required to understand this dissertation is the concept of a strictly indexed category. A strictly indexed category is a functor from a \textit{base category} $\C$ into a target (\textit{indexed}) category of categories, where objects are categories and morphisms are functors. Objects, $A$, in the base category are mapped to categories $\C(A)$, known as \textit{fibres} in the indexed category. Morphisms between objects in the base category, $f: B\rightarrow A$, are contravariantly mapped to functors, written $f\star: \C(A)\rightarrow \C(B)$ and known as \textit{re-indexing functors}, between fibres in the indexed category. The strictly adverb indicates that the indexing in this construction is done by a functor as opposed to the weaker pseudofunctor (weak 2-functor) structure. Since pseudofunctors are not needed to explain anything in this project, I shall leave out their definition, though an interested reader may wish to research them further. \footnote{https://ncatlab.org/nlab/show/pseudofunctor}. 
 
 
-Due to the composition laws for functors, $\theta\star\after\phi\star = (\phi\after\theta)\star$ and $\Id{A}*(B) = B\in\obj \C(A)$. For example, we may use the category of cartesian closed categories and cartesian closed functors, ($\cccat$) indexed by a pre-order, $\mathbb{P}$:
+Due to the composition laws for functors, $\theta\star\after\phi\star = (\phi\after\theta)\star$ and $\Id{A}*(B) = B\in\obj \C(A)$, and $\Id{}\star$ is the identity functor. For example, we may use the category of cartesian closed categories and cartesian closed functors, ($\cccat$) indexed by a pre-order, $\mathbb{P}$:
 
 \begin{align}
     I: \mathbb{P} & \rightarrow \cccat\qt{The indexing functor} \\
@@ -710,8 +709,6 @@ do $b$ $\texttt{<-}$ Prompt("Are You Sure?") in (
 
 
 \section{Polymorphic Effect Calculus}
-\todo{Should 2.4 be in the Background chapter?}
-
 
 Next, we consider the Effect Calculus extended with terms to allow System-F-style polymorphism over effects.
 
@@ -790,7 +787,7 @@ The $\ok{}$ predicate on effect environments asserts that the effect environment
 \[
     \treerule{Empty}{}{\ok{\nil}}
 \quad
-    \treerule{Const}{\ok{\P} \s\s \a\notin \P}{\ok{\P, \a}}
+    \condtreerule{Extend}{\ok{\P}}{\ok{\P, \a}}{\a\notin \P}
 \]
 
 Using this, we can define the well-formedness relation on effects, $\wellformed{\P}{\e}$. In short, this relation ensures that effects do not reference variables that are not in the effect environment.
@@ -822,7 +819,7 @@ Finally, we can derive the a well-formedness of type environments,   $\oke{\P}{\
 \[
     \treerule{Nil}{}{\oke{\P}{\nil}}
     \quad
-    \treerule{Var}{\oke{\P}{\G}\s\s x\notin\dom{\G}\s\s \wellformed{\P}{A}}{\oke{\P}{\gax}}
+    \condtreerule{Var}{\oke{\P}{\G}\s\s \wellformed{\P}{A}}{\oke{\P}{\gax}}{x\notin\dom{\G}}
 \]
 
 \subsubsection{Subtyping}
@@ -930,24 +927,10 @@ We define a fairly standard set of type rules on the language.
 \end{figure}
 
 
-
-
-
 \chapter{The Semantics of PEC in an Strictly Indexed Category}
 
-\todo{Definition of S-category: you should say "an S-category is..." somewhere.}
 \todo{A diagram might make the Beck-Chevalley condition easier to
-understand.}
-\todo{I think the (Project) and (Extend) rules should assume that $\a$ is not
-already in the context.} 
-\todo{ With inductively typed denotations: say what the type of $\deno{\w}$ is for an
-arbitrary $\w$ before giving the definition.}
-\todo{"This definition allows us to define": this doesn't use the definition
-of substitution on effects.}
- \todo{Why is the $\square$ at the end of each proof in the middle of the page?}
-\todo{It might be a good idea to include the Effect-Eta case in the proof of
-soundness.}
-    
+understand.}  
 
 In this chapter, I  describe the category structure required to interpret an instance of the PEC. I then present denotations of each type of structure in the language, such as types, effects, terms, substitutions, and environment weakenings. Finally, I provide outlines and interesting cases of the proofs of the lemmas leading up to and including soundness of the semantics with respect to a $\beta\eta$-conversion-based equational equivalence. However, firstly I shall give a brief treatment to the semantics of EC.
 
@@ -961,7 +944,7 @@ As suggested in section \ref{LanguageFeatureRequirements}, since EC contains mul
 }
 
 \begin{definition}[S-Category]
-    In order to correctly model a given instantiation of EC, that is an EC with a collection of effects, constants, and ground types, there should be a collection of objects in the category to represent the ground types. There should also be a point morphism (a morphism from the terminal object to the appropriate type) for each constant. In addition to the previously stated requirements, we also require an S-category, $\C$, to be able to model subtyping and subeffecting. For each instance of the ground subtyping relation, $A \subtypeg B$, there should exist a morphism between the objects representing the ground types $A$ and $B$. A further requirement is that $\C$ has a collection of subeffecting natural transformations. For each instance of $\e_1 \subeffect \e_2$, there exists a natural transformation $\db{\e_1\subeffect\e_2}: \T{\e_1}{}\rightarrow\T{\e_2}{}$ such that it has interactions with the graded monad as specified in figures \ref{SubeffectTensorStrength}, \ref{SubeffectBind}. We can now define morphisms for all forms of subtyping by constructions following the derivation tree for subtyping. For more detail, one can look at section \ref{PECDenotations} and below for the same construction on PEC. From this point onwards, I shall refer to a category that fulfills these properties of having a strong graded monad, CCC, ground objects and points, subeffect natural transformations, and a co-product as an \textit{S-Category} (Semantic Category).
+    In order to correctly model a given instantiation of EC, that is an EC with a collection of effects, constants, and ground types, there should be a collection of objects in the category to represent the ground types. There should also be a point morphism (a morphism from the terminal object to the appropriate type) for each constant. In addition to the previously stated requirements, we also require an S-category, $\C$, to be able to model subtyping and subeffecting. For each instance of the ground subtyping relation, $A \subtypeg B$, there should exist a morphism between the objects representing the ground types $A$ and $B$. A further requirement is that $\C$ has a collection of subeffecting natural transformations. For each instance of $\e_1 \subeffect \e_2$, there exists a natural transformation $\db{\e_1\subeffect\e_2}: \T{\e_1}{}\rightarrow\T{\e_2}{}$ such that it has interactions with the graded monad as specified in figures \ref{SubeffectTensorStrength}, \ref{SubeffectBind}. We can now define morphisms for all forms of subtyping by constructions following the derivation tree for subtyping. For more detail, one can look at section \ref{PECDenotations} and below for the same construction on PEC. From this point onwards, I shall refer to a category that fulfills these properties of having a strong graded monad, CCC, ground objects and points, subeffect natural transformations, and a co-product $\1 + \1$ as an \textit{S-Category} (Semantic Category).
 \end{definition}
 
 A full derivation and proof of soundness of the semantics of the Effect Calculus can be found online \needsRef{Link} as it is too long to include here and many of the concepts are repeated later in the remainder of this dissertation anyway. The categorical semantics of the Effect Calculus requires an S-category not only to simply model all of the features of EC but also to use the various commutivity diagrams and rules to manipulate the expressions encountered when proving properties of the semantics. Again, as all these manipulations are also applied when proving the semantics of PEC, I shall not go into further detail here.
@@ -1273,7 +1256,7 @@ The least intuitive of these denotations is that of effect application (speciali
             & : \quad \pstar \allI(\deno{\typerelation{\P,\b}{A\ssub{\a}{\b}}{\type}}) \rightarrow \deno{\typerelation{\P,\b}       {A\ssub{\a}{\b}}{\type}} \\
             & : \quad\pstar \deno{\typerelation{\P}{\all{\b}{A\ssub{\a}{\b}}}{\type}} \rightarrow \deno{\typerelation{\P,\b}        {A\ssub{\a}{\b}}{\type}} \\
             & : \quad \pstar \deno{\typerelation{\P}{\all{\a}{A}}{\type}} \rightarrow \deno{\typerelation{\P,\b}{A\ssub     {\a}{\b}}{\type}}\\
-            & : \quad \deno{\typerelation{\P, \b}{\all{\a}{A}}{\type}} \rightarrow \deno{\typerelation{\P,\b}{A\ssub{\a}{\b}}       {\type}}
+            & : \quad \deno{\typerelation{\P, \b}{\all{\a}{A}}{\type}} \rightarrow \deno{\typerelation{\P,\b}{A\ssub{\a}{\b}}{\type}}
         \end{align}
     \end{framed}
     \caption{Analysis of the type of the co-unit natural transformation}
@@ -1292,12 +1275,14 @@ The least intuitive of these denotations is that of effect application (speciali
 \end{figure}
 
 
+ 
 \begin{figure}
     \begin{framed}
+        \centering
         \begin{tikzcd}
-            &&   \deno{\typerelation{\P}{\all{\a}{A}}{\type}} \arrow{rrrr}{\counit{\deno{\typerelation{\P,\b}{A\ssub{\a}{\b}}{\type}}}}&&&&  \deno{\typerelation{\P}{A\ssub{\a}{\e}}{\type}} &&
+            &  \deno{\typerelation{\P, \b}{\all{\a}{A}}{\type}}  \arrow{rrrr}{\counit{\deno{\typerelation{\P,\b}{A\ssub{\a}{\b}}{\type}}}}&&&&  \deno{\typerelation{\P,\b}{A\ssub{\a}{\b}}{\type}} &
             \\
-            \G \arrow{rrrr}{g}&&&&
+            \G \arrow{rr}{g}&&
             \allI (A) \arrow{rrrr}{ \pr{\Id{I}}{h}\star(\counit{\deno{\typerelation{\P,\b}{A\ssub{\a}{\b}}{\type}}})}
             &&&&
             A\ssub{\a}{\e}
@@ -1327,12 +1312,12 @@ The first family of theorems is that of weakening and substitution of the effect
 \[
     \treerule{Id}{\ok{\P}}{\wrel{\i}{\P}{\P}}
     \quad
-    \treerule{Project}{\wrel{\w}{\P'}{\P}}{\wrel{\w\pi}{(\P', \a)}{\P}}
+    \condtreerule{Project}{\wrel{\w}{\P'}{\P}}{\wrel{\w\pi}{(\P', \a)}{\P}}{\a\notin\P'}
     \quad
-    \treerule{Extend}{\wrel{\w}{\P'}{\P}}{\wrel{\w\x}{(\P', \a)}{(\P, \a)}}
+    \condtreerule{Extend}{\wrel{\w}{\P'}{\P}}{\wrel{\w\x}{(\P', \a)}{(\P, \a)}}{\a\notin\P'}
 \]
 
-With inductively defined denotations: 
+We can define the denotation of an effect-environment weakening as a morphism in the base category: $\deno{\wrelw{\P'}{\P}}: I' \rightarrow I$. The denotations are defined as follows:
 
 \[
     \deno{\wrel{\i}{\P}{\P}} = \Id{I}: I \rightarrow I
@@ -1355,10 +1340,10 @@ The substitution relation matches substitutions to the environments it operates 
 \[
     \treerule{Nil}{\ok{\P'}}{\typerelation{\P'}{\nil}{\nil}}
     \quad\quad
-    \treerule{Extend}{\typerelation{\P'}{\si}{\P}\s\s\wellformed{\P'}{\e}\s\s\a\notin\P}{\typerelation{\P'}{\si, \a \setto\e}{(\P, \a)}}
+    \condtreerule{Extend}{\typerelation{\P'}{\si}{\P}\s\s\wellformed{\P'}{\e}}{\typerelation{\P'}{\si, \a \setto\e}{(\P, \a)}}{\a\notin\P}
 \]
 
-The denotations of substitutions, $\deno{\typerelation{\P'}{\si}{\P}}: \cii$, are defined as so:
+The denotation of an effect-environment substitutions, $\deno{\typerelation{\P'}{\si}{\P}}$, is a morphism $I' \rightarrow I$ in the base category. These denotations are defined inductively as so:
 
 \[
     \deno{\typerelation{\P'}{\nil}{\nil}} = \term{I}: \C(I', \1)
@@ -1376,7 +1361,7 @@ We can also define the action of substitutions on effects.
     (\si, \a\setto \e)(\a) & =\e
 \end{align}.
 
-This definition allows us to define, in particular, the identity substitution,$\typerelation{\P}{\Id{\P}}{\P}$ and the single substitution, $\typerelation{\P}{\ssub{\a}{\e}}{\P,\a}$.
+The general construction for effect-variable substitution allows us to define, in particular, the identity substitution, $\typerelation{\P}{\Id{\P}}{\P}$ and the single substitution, $\typerelation{\P}{\ssub{\a}{\e}}{\P,\a}$.
 
 
 \begin{align}\label{SpecialSubs}
@@ -1777,7 +1762,7 @@ Let \begin{align}
     A & = \deno{\typerelation{\P,\b}{A\ssub{\a}{\b}}{\type}}\\
 \end{align}
 \begin{align}
-    (\si\times\Id{U})\star\e_{\deno{\typerelation{\P,\b}{A\ssub{\a}{\b}}{\type}}} &= (\si\times\Id{U})\star\e_{A}\\
+    (\si\times\Id{U})\star\e_{\deno{\typerelation{\P,\b}{A\ssub{\a}{\b}}{\type}}} &= (\si\times\Id{U})\star\counit{A}\\
     & = (\si\times\Id{U})\star(\widehat{\Id{\allI(A)}})\\
     & = \widehat{\bar{(\si\times\Id{U})\star(\widehat{\Id{\allI(A)}})}}\qt{By bijection}\\
     & = \widehat{\si\star(\bar{\widehat{\Id{\allI(A)}}})}\qt{By naturality}\\
@@ -1884,12 +1869,12 @@ Now we are at a point to start considering weakenings and substitution of the ty
 \[
     \treerule{Id}{\wellformedok{\P}{\G}}{\pewrel{\i}{\G}{\G}}
     \quad  
-    \treerule{Project}{\pewrel{\w}{\G'}{\G}\s\s x \notin \dom{\G'}}{\pewrel{\w \pi}{\G, x: A}{\G}}
+    \condtreerule{Project}{\pewrel{\w}{\G'}{\G}}{\pewrel{\w \pi}{\G, x: A}{\G}}{x \notin \dom{\G'}}
     \quad
-    \treerule{Extend}{\pewrel{\w}{\G'}{\G}\s\s x \notin \dom{\G'}\s\s A \subtype B}{\pewrel{\w \x}{\G', x: A}{\G, x: B}}
+    \condtreerule{Extend}{\pewrel{\w}{\G'}{\G}\s\s A \subtype B}{\pewrel{\w \x}{\G', x: A}{\G, x: B}}{x \notin \dom{\G'}}
 \]
 
-With denotations defined as morphisms in a fibre: $\deno{\pewrel{\w}{\G'}{\G}}: \G' \rightarrow \G \in \C(I)$.
+The denotation of such a weakening is a morphism within an appropriate fibre category: $\deno{\pewrel{\w}{\G'}{\G}}: \G' \rightarrow \G \in \C(I)$. These denotations are defined as so:
 
 \[
     \deno{\pewrel{\i}{\G}{\G}} = \idg: \G \rightarrow \G \in \C(I)
@@ -1907,18 +1892,16 @@ Type-environment substitutions are also derived inductively with respect to a ef
 \[
     \treerule{Nil}{\wellformedok{\P}{\G'}}{\etyperelation{\P}{\G'}{\nil}{\nil}}
     \quad
-    \treerule{Extend}{
+    \condtreerule{Extend}{
         \etyperelation{\P}{\G'}{\si}{\G}
-        \s\s
-        x\notin\dom{\G}
         \s\s
         \etyperelation{\P}{\G'}{v}{A}
     }{
         \etyperelation{\P}{\G'}{(\si, x \setto v)}{(\gax)}
-    }
+    }{x \notin \dom{\G'}}
 \]
 
-With denotations defined as morphisms in the appropriate fibre category: $\deno{\etyperelation{\P}{\G'}{\si}{\G}}: \G' \rightarrow \in \C(I)$
+Denotations of type-environment substitutions are morphisms in the appropriate fibre category: $\deno{\etyperelation{\P}{\G'}{\si}{\G}}: \G' \rightarrow \G \in \C(I)$ and are defined as so:
 
 \[
     \deno{\etyperelation{\P}{\G'}{\nil}{\nil}} = \term{\G'}: \G' \rightarrow \1
@@ -2747,15 +2730,58 @@ Then
 
 So
 \begin{align}
-    \deno{\gpetyperelation{\eapp{(\elam{\a}{v})}{\e}}{\all{\a}{A}}} & = \pr{\Id{I}}{h}\star(\e_A)\after\bar{f}\\
-    & = \pr{\Id{I}}{h}\star(\e_A)\after\pr{\Id{I}}{h}\star(\pstar(\bar{f}))\qt{Identity functor}\\
-    &= \pr{\Id{I}}{h}\star(\e_A\after\pstar(\bar{f}))\\
+    \deno{\gpetyperelation{\eapp{(\elam{\a}{v})}{\e}}{\all{\a}{A}}} & = \pr{\Id{I}}{h}\star(\counit{A})\after\bar{f}\\
+    & = \pr{\Id{I}}{h}\star(\counit{A})\after\pr{\Id{I}}{h}\star(\pstar(\bar{f}))\qt{Identity functor}\\
+    &= \pr{\Id{I}}{h}\star(\counit{A}\after\pstar(\bar{f}))\\
     &= \pr{\Id{I}}{h}\star(f)\qt{By adjunction}\\
     &= \deno{\gpetyperelation{v\ssub{\a}{\e}}{A\ssub{\a}{e}}}\qt{By substitution theorem}\\
 \end{align}
 
+\case{Effect-Eta}
+    Let \begin{align}
+        f & = \deno{\gpetyperelation{v}{\all{\a}{A}}}\\
+        A & = \deno{\typerelation{\P,\a}{A}{\type}}
+    \end{align}
 
-$$\square$$
+    so
+    \begin{align}
+        \deno{\gpetyperelation{\elam{\a}{(\eapp{v}{\a})}}{\all{\a}{A}}} & = \bar{\deno{\etyperelation{\P,\a}{\G}{\eapp{v}{\a}}{A}}} \\
+        & = \bar{\pr{\Id{I\times U}}{\pp}\star(\e_{\deno{\typerelation{\P,\a,\b}{A\ssub{\a}{\b}}{\type}}})\after\pstar(f)}
+    \end{align}
+
+    Let us look at $\deno{\typerelation{\P,\a,\b}{A\ssub{\a}{\b}}{\type}}$. We have the weakening $\wrel{\i\pi\x}{\P,\a,\b}{\P,\b}$, so by the weakening theorem on type denotations, we can re-arrange the quantification and projection functors.
+
+    \begin{align}
+        \allIU(\deno{\typerelation{\P,\a,\b}{A\ssub{\a}{\b}}{\type}}) & = \allI( (\p\times \Id{U})\star\deno{\typerelation{\P,\b}{A\ssub{\a}{\b}}{\type}})\\ 
+        & = \pstar\allI(\deno{\typerelation{\P,\b}{A\ssub{\a}{\b}}{\type}})
+    \end{align}
+
+    Using this and the adjunction and naturality properties (\ref{NaturalityCondition}), we can unwind the definition of the co-unit on $\deno{\typerelation{\P,\a,\b}{A\ssub{\a}{\b}}{\type}}$.
+
+
+    \begin{align}
+        \counit{\deno{\typerelation{\P,\a,\b}{A\ssub{\a}{\b}}{\type}}} 
+        & = \widehat{\Id{\allIU(\deno{\typerelation{\P,\a,\b}{A\ssub{\a}{\b}}{\type}})}}\\
+        & = \widehat{\Id{\pstar\allI(\deno{\typerelation{\P,\b}{A\ssub{\a}{\b}}{\type}})}}\\
+        & =\widehat{\Id{\pstar\allI A}}\\
+        & = \widehat{\pstar(\Id{\allI A})}\\
+        & = \widehat{\pstar(\bar{\counit{A}})}\\
+        & = \widehat{\bar{(\p\times\Id{U})\star(\counit{A})}}\\
+        & = (\p\times\Id{U})\star(\counit{A}) 
+    \end{align}
+
+    This rearrangement can now be used in conjunction with the contravariant composition of re-indexing functors to show the denotation $\deno{\gpetyperelation{\elam{\a}{(\eapp{v}{\a})}}{\all{\a}{A}}}$ is equal to the morphism $f$.
+    \begin{align}
+        \deno{\gpetyperelation{\elam{\a}{(\eapp{v}{\a})}}{\all{\a}{A}}} & = \bar{\pr{\Id{I\times U}}{\pp}\star(\counit{\deno{\typerelation{\P,\a,\b}{A\ssub{\a}{\b}}{\type}}})\after\pstar(f)}\\
+        & = \bar{\pr{\Id{I\times U}}{\pp}\star((\p\times\Id{U})\star(\counit{A}))\after\pstar(f)}\\
+        & = \bar{\pr{\p}{\pp}\star(\counit{A})\after\pstar(f)}\\
+        &= \bar{\Id{I\times U}\star(\counit{A})\after\pstar(f)} \\
+        & = \bar{\counit{A}\after \pstar(f)}\qt{The identity re-indexing functor is the identity.}\\
+        & = f \qt{By adjunction}
+    \end{align}
+
+
+    $$\square$$
 
 \end{proof}
 
@@ -2765,7 +2791,7 @@ This completes the proof of soundness for this semantics.
 \chapter{Instantiating a Model of PEC}
 
     
-\todo{(And I'm not sure you should name $\C_0$ at all.)} 
+\todo{(And I'm not sure you should name $\Cz$ at all.)} 
 
 
 Now we have proved that an appropriate categorical structure can model PEC, it remains to show that it is feasible to construct such an indexed category. There exist $\set$-based models for the semantics of many effectful languages with a graded monad, such as a certain instantiations of the Effect Calculus \needsRef{}. More specifically, it is possible to treat $\set$ as an S-category. Hence, I use a $\set$ based S-category as a starting point. In this section, I  demonstrate how to construct an strictly indexed S-category, which can model the PEC, from such an S-category.
@@ -3185,7 +3211,7 @@ Secondly,
 Hence we have proof that our construction is indeed a valid indexed S-category. Importantly, this shows that reasonable models of the PEC are possible to instantiate and that our requirements do not overconstrain potential models to the point that they are not viable for doing actual analysis.
 
 \chapter{Conclusion}
-This dissertation has introduced a denotational semantics for polymorphic effect systems in category theory and has proved that non-trivial models capable of interpreting effect-polymorphic languages can indeed be instantiated. The final piece of the puzzle would be to find an adequate model of a given effect-polymorphic language. This means instantiating a sound model such that if the denotations of two terms are equal in the model, then the terms themselves are equal up to the same equational equivalence. This is typically a hard problem which is often not addressed in presentations of denotational semantics. \todo{Explain why}.
+This dissertation has introduced a denotational semantics for polymorphic effect systems in category theory and has proved that non-trivial models capable of interpreting effect-polymorphic languages can indeed be instantiated. The final piece of the puzzle would be to find an adequate model of a given effect-polymorphic language. This means instantiating a sound model such that if the denotations of two terms are equal in the model, then the terms themselves are equal up to the same equational equivalence. This is typically a hard problem which is often not addressed in presentations of denotational semantics.
 
 This work forms a potential foundation for more precise analysis tools which could be used to improve compilers and interpreters in the future. A more precise analysis of programs allows more specific optimisations to be made, such as code re-ordering or removal of dead code, where they would not be considered sound under a non-polymorphic system.
 
