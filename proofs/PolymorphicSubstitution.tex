@@ -1,379 +1,380 @@
-\newcommand\fev[1]{fev(#1)}
-\newcommand\union[0]{\cup}
+
 
 \newcommand\Substitution[0]{
-    We need to define substitutions of effects on effects,
-    effects on types, effects on terms, terms on terms.
-
-    \section{Effect Substitutions}
-    Define a substitution, $\si$ as 
-    \begin{equation}
-        \si \gens \nil \mid \si, \a \setto \e
-    \end{equation}
-
-    Define the free-effect Variables of $\si$:
-
-    \begin{align*}
-        \fev{\nil} & = \emptyset \\
-        \fev{\si, \a\setto\e} & = \fev{\si} \union \fev{\e}
-    \end{align*}
-
-    We define the property:
-    \begin{equation}
-       \a\#\si \Leftrightarrow \a \notin (\dom{\si} \cup\fev{\si})
-    \end{equation}
-
-    \subsection{Action of Effect Substitution on Effects}
-
-    Define the action of applying an effect substitution to an effect symbol:
-
-    \begin{equation}
-       \si(\e)
-    \end{equation}
-
-    \begin{align}
-        \si(e) & = e \\
-        \si(\e_1\dot\e_2) & = (\si(\e_1))\dot(\si(\e_2))\\
-        \nil(\a) & = \a\\
-        (\si, \b\setto \e)(\a) & = \si(\a) \\
-        (\si, \a\setto \e)(\a) & =\e
-    \end{align}
-
-    \subsection{Action of Effect Substitution on Types}
-
-    Define the action of applying an effect substitution, $\si$ to a type $A$ as:
-
-    $$A\sub{\si}$$
-
-    Defined as so
-
-    \begin{align}
-        \g\sub{\si} &= \g \\
-        (\fntype{A}{B})\sub{\si} &= \fntype{(A\sub{\si})}{(B\sub{\si})} \\
-        (\M{\e}{A})\ssi &= \M{\si(\e)}{(A\ssi)}\\
-        (\all{\a}{A})\ssi &= \all{\a}{(A\ssi)}\qt{If $\a\#\si$}
-    \end{align}
-
-
-    \subsection{Action of Effect-Substitution on Type Environments}
-
-    Define the action of effect substitution on type environments:
     
-    $$\G\ssi$$
-
-    Defined as so:
-
-    \begin{align*}
-        \nil\ssi & = \nil \\
-        (\gax)\ssi &= (\G\ssi, x:(A\ssi))\\
-    \end{align*}
-
-
-    \subsection{Action of Effect Substitution on Terms}
-
-    Define the action of effect-substitution on terms:
-
-    \begin{align}
-        x\ssi & = x \\
-        \const{A}\ssi & = \const{(A\ssi)} \\
-        (\lam{x}{A}{v})\ssi &= \lam{x}{(A\ssi)}{(v\ssi)}\\
-        (\pifthenelse{A}{v}{v_1}{v_2})\ssi &= \pifthenelse{(A\ssi)}{v\ssi}{v_1\ssi}{v_2\ssi}\\
-        (\apply{v_1}{v_2})\ssi&= \apply{(v_1\ssi)}{v_2\ssi}\\
-        (\doin{x}{v_1}{v_2})\ssi&= \doin{x}{(v_1\ssi)}{(v_2\ssi)}\\
-        (\elam{\a}{v})\ssi & = \elam{\a}{(v\ssi)}\qt{If $\a\#\si$}\\
-        (\eapp{v}{\e})\ssi & = \eapp{(v\ssi)}{\si(\e)}\\
-    \end{align}
-
-
-    \subsection{Well-Formed-ness }
-
-    For any two effect-environments, and a substitution, define the well-formed-ness relation:
-
-    \begin{equation}
-        \typerelation{\P'}{\si}{\P}
-    \end{equation}
-
-    \begin{itemize}
-        \item $\treerule{Nil}{\ok{\P'}}{\typerelation{\P'}{\nil}{\nil}}$
-        \item $\treerule{Extend}{\typerelation{\P'}{\si}{\P}\s\s\wellformed{\P'}{\e}\s\s\a\notin\P}{\typerelation{\P'}{\si, \a \setto\e}{(\P, \a)}}$
-    \end{itemize}
-
-    \subsection{Property 1}
-    If $\typerelation{\P'}{\si}{\P}$ then $\ok{\P'}$ (By  the 
-    Nil case) and $\ok{\P}$ Since each use of the extend case preserves $\ok{}$.
-
-    \subsection{Property 2}
-    If $\typerelation{\P'}{\si}{\P}$ then $\wrelw{\P'}{\P'} \implies \typerelation{\P''}{\si}{\P}$ since $\wellformed{\P'}{\e}\implies \wellformed{\P''}{\e}$ and $\ok{\P'}\implies \ok{\P''}$
-
-
-    \subsection{Property 3}
-    If $\typerelation{\P'}{\si}{\P}$ then
-
-    \begin{equation}
-        \a\notin\P\wedge\a\notin\P' \implies \typerelation{(\P', \a)}{(\si, \a\setto\a)}{(\P,\a)}
-    \end{equation}
-
-    Since $\wrel{\i\pi}{\P',\a}{\P'}$ so $\typerelation{\P',\a}{\si}{\P}$ and $\wellformed{\P',\a}{\a}$
-
-    \section{Substitution Preserves the Well-formed-ness of Effects}
-
-    I.e. \begin{equation}
-        \wellformed{\P}{\e}\wedge\typerelation{\P'}{\i}{\P} \implies \wellformed{\P'}{\si(\e)}
-    \end{equation}
-
-    \proof
-    \case{Ground}
-    $\si(e) = e$, so $\wellformed{\P'}{\si(\e)}$ holds.
-    \case{Multiply}
-    \bi, $\wellformed{\P}{\e_1}$ and $\wellformed{\P}{\e_2}$ so $\wellformed{\P'}{\si(\e_1)}$ and $\wellformed{\P'}{\si(\e_2)}$ by induction and hence $\wellformed{\P'}{\si(\e_1\dot\e_2)}$
-    \case{Var}
-    \bi, $\P=\P'',\a$ and $\ok{\P'',\a}$. Hence byu case splitting on $\i$, we see that $\si=\si', \a\setto\e$.
-
-    So by inversion, $\wellformed{\si}{\e}$ so $\wellformed{\P'}{\si(\a)=\e}$
-    \case{Weaken}
-    \bi $\P=\P'', \b$ and $\wellformed{\P''}{\a}$, so $\si=\si'\b\setto\e$.
-
-    So $\typerelation{\P'}{\si'}{\P''}$.
-
-    hence by induction, $\wellformed{\P'}{\si'(a)}$, so $\wellformed{\P'}{\si(\a)}$ since $\a\neq\b)$
-
-    \subsection{Effect Substitution preserves the sub-effect relation}
-
-    If $\typerelation{\P'}{\si}{\P}$ and $\e_1\subeffectp\e_2$, then $\e_1\ssi\subeffect_{\P'}\e_2\ssi$.
-
-    \proof
-    For any ground substitution $\si'$ of $\P'$, then $\si\si'$ (the substitution $\si'$ applied after $\si$) is also a ground substitution.
     
-    So $\e_1\ssi\sub{\si'}\subeffect\e_2\ssi\sub{\si'}$. 
-    
-    So $\e_1\ssi\subeffect_{\P'}\e_2\ssi$.
+We need to define substitutions of effects on effects,
+effects on types, effects on terms, terms on terms.
 
-    \subsection{Substitution preserves well-formed-ness of Types}
-    \begin{equation}
-        \typerelation{\P'}{\si}{\P} \wedge \wellformed{\P}{A} \implies \wellformed{\P'}{A\ssi}
-    \end{equation}
-    \proof
-    \case{Ground}
+\section{Effect Substitutions}
+Define a substitution, $\si$ as 
+\begin{equation}
+    \si \gens \nil \mid \si, \a \setto \e
+\end{equation}
 
-    $\ok{\P'}$ so $\wellformed{\P'}{\g}$ and $\g\ssi=\g$.
+Define the free-effect Variables of $\si$:
 
-    Hence $\wellformed{\P'}{\g\ssi}$.
+\begin{align*}
+    \fev{\nil} & = \emptyset \\
+    \fev{\si, \a\setto\e} & = \fev{\si} \union \fev{\e}
+\end{align*}
 
-    \case {Lambda}
+We define the property:
+\begin{equation}
+   \a\#\si \Leftrightarrow \a \notin (\dom{\si} \cup\fev{\si})
+\end{equation}
 
-    \bi $\wellformed{\P}{A}$ and $\wellformed{\P}{B}$.
+\subsection{Action of Effect Substitution on Effects}
 
-    So by induction, $\wellformed{\P'}{A\ssi}$ and $\wellformed{\P'}{B\ssi}$.
+Define the action of applying an effect substitution to an effect symbol:
 
-    So \begin{equation}
-        \wellformed{\P'}{\fntype{(A\ssi)}{(B\ssi)}}
-    \end{equation}
+\begin{equation}
+   \si(\e)
+\end{equation}
 
-    So \begin{equation}
-        \wellformed{\P'}{(\ab)\ssi}
-    \end{equation}
+\begin{align}
+    \si(e) & = e \\
+    \si(\e_1\dot\e_2) & = (\si(\e_1))\dot(\si(\e_2))\\
+    \nil(\a) & = \a\\
+    (\si, \b\setto \e)(\a) & = \si(\a) \\
+    (\si, \a\setto \e)(\a) & =\e
+\end{align}
 
-    
+\subsection{Action of Effect Substitution on Types}
 
-    \case{Computation}
+Define the action of applying an effect substitution, $\si$ to a type $A$ as:
 
-    \bi, $\wellformed{\P}{\e}$ and $\wellformed{\P}{A}$ so by induction and substitution of effect preserving effect-well-formed-ness, 
+$$A\sub{\si}$$
 
-    $\wellformed{\P'}{\si(\e)}$ and $\wellformed{\P'}{A\ssi}$ so $\wellformed{\P}{\M{\si(\e)}{A\ssi}}$ so $\wellformed{\P'}{(\mea)\ssi}$
+Defined as so
 
-    \case{For All}
-    \bi, $\wellformed{\P,\a}{A}$. So by picking $\a\notin\P\wedge\a\notin\P'$ using $\a$-equivalence, we have $\typerelation{(\P',\a)}{(\si\a\setto\a)}{(\P,\a)}$.
+\begin{align}
+    \g\sub{\si} &= \g \\
+    (\fntype{A}{B})\sub{\si} &= \fntype{(A\sub{\si})}{(B\sub{\si})} \\
+    (\M{\e}{A})\ssi &= \M{\si(\e)}{(A\ssi)}\\
+    (\all{\a}{A})\ssi &= \all{\a}{(A\ssi)}\qt{If $\a\#\si$}
+\end{align}
 
-    So by induction $\wellformed{(\P, \a)}{A\sub{\si,\a\setto\a}}$
 
-    So $\wellformed{(\P',\a)}{A\ssi}$
+\subsection{Action of Effect-Substitution on Type Environments}
 
-    So $\wellformed{\P'}{(\all{\a}{A})\ssi}$
+Define the action of effect substitution on type environments:
 
-    \subsection{Substitution of effects preserves Sub-Typing Relation}
+$$\G\ssi$$
 
-    If $\typerelation{\P'}{\si}{\P}$ and $A\subtypep B$ then $A\ssi\subtypepp B\ssi$
+Defined as so:
 
-    \proof
-    By induction on the sub-typing relation
+\begin{align*}
+    \nil\ssi & = \nil \\
+    (\gax)\ssi &= (\G\ssi, x:(A\ssi))\\
+\end{align*}
 
-    \case{Ground}
-    \bi, $A\subtypeg B$, so $A, B$ are ground types.
-    Hence $A\ssi = A$ and $B\ssi = B$.
-    So $A\ssi\subtypepp B\ssi$
 
-    \case{Fn}
-    \bi, $A'\subtypep A$ and $B\subtypep B'$.
-    
-    So by induction, $A'\ssi\subtypepp A\ssi$ and $B\ssi\subtypepp B'\ssi$.
+\subsection{Action of Effect Substitution on Terms}
 
-    So $\fntype{(A\ssi)}{(B\ssi)}\subtypepp \fntype{(A'\ssi)}{(B'\ssi)}$
+Define the action of effect-substitution on terms:
 
-    So $(\ab)\ssi\subtypepp (\fntype{A'}{B'})\ssi$
+\begin{align}
+    x\ssi & = x \\
+    \const{A}\ssi & = \const{(A\ssi)} \\
+    (\lam{x}{A}{v})\ssi &= \lam{x}{(A\ssi)}{(v\ssi)}\\
+    (\pifthenelse{A}{v}{v_1}{v_2})\ssi &= \pifthenelse{(A\ssi)}{v\ssi}{v_1\ssi}{v_2\ssi}\\
+    (\apply{v_1}{v_2})\ssi&= \apply{(v_1\ssi)}{v_2\ssi}\\
+    (\doin{x}{v_1}{v_2})\ssi&= \doin{x}{(v_1\ssi)}{(v_2\ssi)}\\
+    (\elam{\a}{v})\ssi & = \elam{\a}{(v\ssi)}\qt{If $\a\#\si$}\\
+    (\eapp{v}{\e})\ssi & = \eapp{(v\ssi)}{\si(\e)}\\
+\end{align}
 
-    \case{Computation}
 
-    \bi, $A\subtypep B$, $\e_1\subeffectp\e_2$.
+\subsection{Well-Formed-ness }
 
-    So by induction and substitution preserving the sub-effect relation, 
+For any two effect-environments, and a substitution, define the well-formed-ness relation:
 
-    $A\ssi\subtypepp B\ssi$ and $\si(\e_1)\subeffectpp\si(\e_2)$
+\begin{equation}
+    \typerelation{\P'}{\si}{\P}
+\end{equation}
 
-    So $\M{\si(\e_1)}{(A\ssi)} \subtypepp\M{\si(\e_2)}{(B\ssi)}$
+\begin{itemize}
+    \item $\ntreeruleI{Nil}{\ok{\P'}}{\typerelation{\P'}{\nil}{\nil}}$
+    \item $\ntreeruleIII{Extend}{\typerelation{\P'}{\si}{\P}}{\wellformed{\P'}{\e}}{\a\notin\P}{\typerelation{\P'}{\si, \a \setto\e}{(\P, \a)}}$
+\end{itemize}
 
-    So $(\M{\e_1}{A})\ssi \subtypepp(\M{\e_2}{B})\ssi$
+\subsection{Property 1}
+If $\typerelation{\P'}{\si}{\P}$ then $\ok{\P'}$ (By  the 
+Nil case) and $\ok{\P}$ Since each use of the extend case preserves $\ok{}$.
 
-    
-    \subsection{Substitution preserves well-formed-ness of Type Environments}
+\subsection{Property 2}
+If $\typerelation{\P'}{\si}{\P}$ then $\wrelw{\P'}{\P'} \implies \typerelation{\P''}{\si}{\P}$ since $\wellformed{\P'}{\e}\implies \wellformed{\P''}{\e}$ and $\ok{\P'}\implies \ok{\P''}$
 
-    If $\wellformedok{\P}{\G}$ and $\typerelation{\P'}{\si}{\P}$ then $\wellformedok{\P'}{\G\ssi}$
 
-    \proof
-    \case{Nil}
-    $\ok{\P}\implies\ok{\P'}$ so $\wellformedok{\P'}{\nil}$
-    and $\nil\ssi = \nil$
-    \case{Var}
-    \bi, $\wellformedok{\P}{\G}$ and $\wellformed{\P}{A}$.
+\subsection{Property 3}
+If $\typerelation{\P'}{\si}{\P}$ then
 
-    By induction and substitution preserving well-formed-ness of types, $\wellformedok{\P'}{\G'\ssi}$ and $\wellformed{\P'}{A\ssi}$.
+\begin{equation}
+    \a\notin\P\wedge\a\notin\P' \implies \typerelation{(\P', \a)}{(\si, \a\setto\a)}{(\P,\a)}
+\end{equation}
 
+Since $\wrel{\i\pi}{\P',\a}{\P'}$ so $\typerelation{\P',\a}{\si}{\P}$ and $\wellformed{\P',\a}{\a}$
 
-    So $\wellformedok{\P'}{(\G'\ssi, x: A\ssi)}$.
+\section{Substitution Preserves the Well-formed-ness of Effects}
 
-    Hence $\wellformedok{\P'}{\gax\ssi}$.
+I.e. \begin{equation}
+    \wellformed{\P}{\e}\wedge\typerelation{\P'}{\i}{\P} \implies \wellformed{\P'}{\si(\e)}
+\end{equation}
 
-    \subsection{Effect-Polymorphism Preserves the Typing Relation}
+\proof
+\case{Ground}
+$\si(e) = e$, so $\wellformed{\P'}{\si(\e)}$ holds.
+\case{Multiply}
+\bi, $\wellformed{\P}{\e_1}$ and $\wellformed{\P}{\e_2}$ so $\wellformed{\P'}{\si(\e_1)}$ and $\wellformed{\P'}{\si(\e_2)}$ by induction and hence $\wellformed{\P'}{\si(\e_1\dot\e_2)}$
+\case{Var}
+\bi, $\P=\P'',\a$ and $\ok{\P'',\a}$. Hence byu case splitting on $\i$, we see that $\si=\si', \a\setto\e$.
 
-    If $\typerelation{\P'}{\si}{\P}$ and $\gpetyperelation{v}{A}$, then $\etyperelation{\P'}{\G\ssi}{v\ssi}{A\ssi}$
+So by inversion, $\wellformed{\si}{\e}$ so $\wellformed{\P'}{\si(\a)=\e}$
+\case{Weaken}
+\bi $\P=\P'', \b$ and $\wellformed{\P''}{\a}$, so $\si=\si'\b\setto\e$.
 
+So $\typerelation{\P'}{\si'}{\P''}$.
 
-    \proof
-    \case{Const}
-    \bi, $\wellformedok{\P}{\G}$.
+hence by induction, $\wellformed{\P'}{\si'(a)}$, so $\wellformed{\P'}{\si(\a)}$ since $\a\neq\b)$
 
-    So $\wellformedok{\P'}{\G}$
+\subsection{Effect Substitution preserves the sub-effect relation}
 
-    So $\etyperelation{\P'}{\G\ssi}{\const{A\ssi}}{A\ssi}$
-    \case{True, False, Unit}
-    The logic is the same for each of these cases, so we look at the case $\t$ only.
+If $\typerelation{\P'}{\si}{\P}$ and $\e_1\subeffectp\e_2$, then $\e_1\ssi\subeffect_{\P'}\e_2\ssi$.
 
-    \bi, $\wellformedok{\P}{\G}$.
+\proof
+For any ground substitution $\si'$ of $\P'$, then $\si\si'$ (the substitution $\si'$ applied after $\si$) is also a ground substitution.
 
-    So $\wellformedok{\P'}{\G}$
+So $\e_1\ssi\sub{\si'}\subeffect\e_2\ssi\sub{\si'}$. 
 
-    So $\etyperelation{\P'}{\G\ssi}{\t}{\B}$
+So $\e_1\ssi\subeffect_{\P'}\e_2\ssi$.
 
-    Since $\t\ssi=\t$ and $\B\ssi=\B$.
-   
-    \case{Var}
-    \bi $\G = \G', x:A$ and $\wellformedok{\P}{\G', x:A}$.
+\subsection{Substitution preserves well-formed-ness of Types}
+\begin{equation}
+    \typerelation{\P'}{\si}{\P} \wedge \wellformed{\P}{A} \implies \wellformed{\P'}{A\ssi}
+\end{equation}
+\proof
+\case{Ground}
 
-    So since substitution preserves well-formed-ness of type environments, $\wellformedok{\P'}{\G'\ssi, x:A\ssi}$
+$\ok{\P'}$ so $\wellformed{\P'}{\g}$ and $\g\ssi=\g$.
 
-    So $\etyperelation{\P'}{\G\ssi}{x}{A\ssi}$
+Hence $\wellformed{\P'}{\g\ssi}$.
 
-    Since $x\ssi = x$
+\case {Lambda}
 
-    \case{Weaken}
-    \bi $\G = \G', y:B$, $\wellformed{\P}{B}$, and $\etyperelation{\P}{\G'}{x}{A}$. $x \neq y$
+\bi $\wellformed{\P}{A}$ and $\wellformed{\P}{B}$.
 
-    By induction and the theorem that effect-substitution preserves type well-formed-ness, we have: $\etyperelation{\P'}{\G'\ssi}{x}{A\ssi}$ and $\wellformed{\P'}{B\ssi}$
+So by induction, $\wellformed{\P'}{A\ssi}$ and $\wellformed{\P'}{B\ssi}$.
 
-    So $\etyperelation{\P'}{\G\ssi}{x\ssi}{A\ssi}$
+So \begin{equation}
+    \wellformed{\P'}{\fntype{(A\ssi)}{(B\ssi)}}
+\end{equation}
 
-    Since $x\ssi = x$, $\G\ssi = (\G'\ssi, y:B\ssi)$
+So \begin{equation}
+    \wellformed{\P'}{(\ab)\ssi}
+\end{equation}
 
-    
-    \case{Lambda}
-    \bi $\etyperelation{\P}{\gax}{v}{B}$.
 
-    So, by induction $\etyperelation{\P'}{(\gax)\ssi}{v\ssi}{B\ssi}$.
 
-    So, $\etyperelation{\P}{\G\ssi, x:A\ssi}{v\ssi}{B\ssi}$.
+\case{Computation}
 
-    Hence by the lambda type rule,
+\bi, $\wellformed{\P}{\e}$ and $\wellformed{\P}{A}$ so by induction and substitution of effect preserving effect-well-formed-ness, 
 
-    $\etyperelation{\P'}{\G\ssi}{\lam{x}{A\ssi}{v\ssi}}{\fntype{(A\ssi)}{(B\ssi)}}$
+$\wellformed{\P'}{\si(\e)}$ and $\wellformed{\P'}{A\ssi}$ so $\wellformed{\P}{\M{\si(\e)}{A\ssi}}$ so $\wellformed{\P'}{(\mea)\ssi}$
 
-    So
-    
-    $\etyperelation{\P'}{\G\ssi}{(\lam{x}{A}{v})\ssi}{(\ab)\ssi)}$
+\case{For All}
+\bi, $\wellformed{\P,\a}{A}$. So by picking $\a\notin\P\wedge\a\notin\P'$ using $\a$-equivalence, we have $\typerelation{(\P',\a)}{(\si\a\setto\a)}{(\P,\a)}$.
 
-    \case{Apply}
-    \bi, $\gpetyperelation{v_1}{\ab}$, $\gpetyperelation{V_2}{A}$.
+So by induction $\wellformed{(\P, \a)}{A\sub{\si,\a\setto\a}}$
 
-    So by induction, $\etyperelation{\P'}{\G\ssi}{v_1\ssi}{\fntype{(A\ssi)}{(B\ssi)}}$.
+So $\wellformed{(\P',\a)}{A\ssi}$
 
-    So $\etyperelation{\P'}{\G\ssi}{\apply{(v_1\ssi)}{(v_2\ssi)}}{B\ssi}$.
+So $\wellformed{\P'}{(\all{\a}{A})\ssi}$
 
-    So $\etyperelation{\P'}{\G\ssi}{(\apply{v_1}{v_2})\ssi}{(\ab)\ssi}$
-    \case{Subtype}
+\subsection{Substitution of effects preserves Sub-Typing Relation}
 
-    \bi, $\gpetyperelation{v}{A}$ and $\wellformed{\P}{A\subtype B}$
+If $\typerelation{\P'}{\si}{\P}$ and $A\subtypep B$ then $A\ssi\subtypepp B\ssi$
 
-    So by induction and effect-substitution preserving sub-typing, $\etyperelation{\P'}{\G\ssi}{v\ssi}{A\ssi}$ and $\wellformed{\P'}{A\ssi\subtype B\ssi}$
+\proof
+By induction on the sub-typing relation
 
-    So $\etyperelation{\P'}{\G\ssi}{v\ssi}{B\ssi}$
-    \case{Return}
-    \bi, $\gpetyperelation{v}{A}$
+\case{Ground}
+\bi, $A\subtypeg B$, so $A, B$ are ground types.
+Hence $A\ssi = A$ and $B\ssi = B$.
+So $A\ssi\subtypepp B\ssi$
 
-    So by induction, $\etyperelation{\P'}{\G\ssi}{v\ssi}{A\ssi}$
+\case{Fn}
+\bi, $A'\subtypep A$ and $B\subtypep B'$.
 
-    So $\etyperelation{\P'}{\G\ssi}{\return{(v\ssi)}}{\M{\1}{(A\ssi)}}$
+So by induction, $A'\ssi\subtypepp A\ssi$ and $B\ssi\subtypepp B'\ssi$.
 
-    Hence $\etyperelation{\P'}{\G\ssi}{(\return{v})\ssi}{(\moa)\ssi}$
-    \case{Bind}
+So $\fntype{(A\ssi)}{(B\ssi)}\subtypepp \fntype{(A'\ssi)}{(B'\ssi)}$
 
-    \bi, $\gpetyperelation{v_1}{\M{\e_1}{A}}$ and $\etyperelation{\P}{\gax}{v_2}{\M{\e_2}{B}}$.
+So $(\ab)\ssi\subtypepp (\fntype{A'}{B'})\ssi$
 
-    So by induction: $\etyperelation{\P'}{\G\ssi}{v_1\ssi}{\M{\si(\e_1)}{(A\ssi)}}$, and $\etyperelation{\P'}{\G\ssi, x:A\ssi}{v_2}{\M{\si(\e_2)}{(B\ssi)}}$.
+\case{Computation}
 
-    And so $\etyperelation{\P'}{\G\ssi}{\doin{x}{(v_1\ssi)}{(v_2\ssi)}}{\M{\si(\e_1)\dot(\e_2\ssi)}{B\ssi}}$
+\bi, $A\subtypep B$, $\e_1\subeffectp\e_2$.
 
+So by induction and substitution preserving the sub-effect relation, 
 
-    \case{If}
+$A\ssi\subtypepp B\ssi$ and $\si(\e_1)\subeffectpp\si(\e_2)$
 
-    \bi, $\gpetyperelation{v}{\B}$, $\gpetyperelation{v_1}{A}$, and $\gpetyperelation{v_2}{A}$
+So $\M{\si(\e_1)}{(A\ssi)} \subtypepp\M{\si(\e_2)}{(B\ssi)}$
 
-    So by induction $\etyperelation{\P'}{\G\ssi}{v\ssi}{\B}$, $\etyperelation{\P'}{\G\ssi}{v_1}{A\ssi}$, and $\etyperelation{\P'}{\G\ssi}{v\ssi}{\B}$, $\etyperelation{\P'}{\G\ssi}{v_2}{A\ssi}$.
-    (Since $\B\ssi = \B$)
+So $(\M{\e_1}{A})\ssi \subtypepp(\M{\e_2}{B})\ssi$
 
-    Hence:
 
-    $\etyperelation{\P'}{\G\ssi}{\pifthenelse{A\ssi}{v\ssi}{v_1\ssi}{v_2\ssi}}{A\ssi}$
+\subsection{Substitution preserves well-formed-ness of Type Environments}
 
-    So $\etyperelation{\P'}{\G\ssi}{(\pifthenelse{A}{v}{v_1}{v_2})\ssi}{A\ssi}$
+If $\wellformedok{\P}{\G}$ and $\typerelation{\P'}{\si}{\P}$ then $\wellformedok{\P'}{\G\ssi}$
 
-    \case{Effect-lambda}
-    \bi, $\etyperelation{\P,\a}{\G}{v}{A}$.
+\proof
+\case{Nil}
+$\ok{\P}\implies\ok{\P'}$ so $\wellformedok{\P'}{\nil}$
+and $\nil\ssi = \nil$
+\case{Var}
+\bi, $\wellformedok{\P}{\G}$ and $\wellformed{\P}{A}$.
 
-    So by the substitution property 3 (\todo{Is this correct/reference correctly}), pick $\a\notin\P'\wedge\a\notin\P$ so we have:
+By induction and substitution preserving well-formed-ness of types, $\wellformedok{\P'}{\G'\ssi}$ and $\wellformed{\P'}{A\ssi}$.
 
-    $$\typerelation{(\P',\a)}{(\si, \a\setto\a)}{(\P,\a)}$$
 
-    So by induction, $\etyperelation{\P', \a}{\G\sub{\si, \a\setto\a}}{v\sub{\si,\a\setto\a}}{A\sub{\si, \a\setto\a}}$
+So $\wellformedok{\P'}{(\G'\ssi, x: A\ssi)}$.
 
-    So $\etyperelation{\P',\a}{\G\ssi}{v\ssi}{A\ssi}$ since $\a\notin\P' \wedge\a\notin\P$.
+Hence $\wellformedok{\P'}{\gax\ssi}$.
 
-    So $\etyperelation{\P'}{\G\ssi}{v\ssi}{(\all{\a}{A})\ssi}$
-    
-    \case{Effect-Apply}
-    \bi, $\gpetyperelation{v}{\all{\a}{A}}$, $\wellformed{\P}{\e}$.
+\subsection{Effect-Polymorphism Preserves the Typing Relation}
 
-    So by induction and effect-substitution preserving well-formed-ness of effects: $\etyperelation{\P'}{\G\ssi}{v\ssi}{(\all{\a}{A})\ssi}$ and $\wellformed{\P'}{\si(\e)}$
+If $\typerelation{\P'}{\si}{\P}$ and $\gpetyperelation{v}{A}$, then $\etyperelation{\P'}{\G\ssi}{v\ssi}{A\ssi}$
 
-    So $\etyperelation{\P'}{\G\ssi}{\eapp{(v\ssi)}{(\si(\e))}}{A\ssi\ssub{\a}{\si(\e)}}$.
 
-    Since $\a\#\si$, we can commute the applications of substitution. \todo{Do I need to prove this?}
+\proof
+\case{Const}
+\bi, $\wellformedok{\P}{\G}$.
 
-    So, $\etyperelation{\P'}{\G\ssi}{(\eapp{v}{\e})\ssi}{A\ssub{\a}{\e}\ssi}$
+So $\wellformedok{\P'}{\G}$
 
-    \section{The Identity Substitution on Effect Environments}
+So $\etyperelation{\P'}{\G\ssi}{\const{A\ssi}}{A\ssi}$
+\case{True, False, Unit}
+The logic is the same for each of these cases, so we look at the case $\t$ only.
+
+\bi, $\wellformedok{\P}{\G}$.
+
+So $\wellformedok{\P'}{\G}$
+
+So $\etyperelation{\P'}{\G\ssi}{\t}{\B}$
+
+Since $\t\ssi=\t$ and $\B\ssi=\B$.
+
+\case{Var}
+\bi $\G = \G', x:A$ and $\wellformedok{\P}{\G', x:A}$.
+
+So since substitution preserves well-formed-ness of type environments, $\wellformedok{\P'}{\G'\ssi, x:A\ssi}$
+
+So $\etyperelation{\P'}{\G\ssi}{x}{A\ssi}$
+
+Since $x\ssi = x$
+
+\case{Weaken}
+\bi $\G = \G', y:B$, $\wellformed{\P}{B}$, and $\etyperelation{\P}{\G'}{x}{A}$. $x \neq y$
+
+By induction and the theorem that effect-substitution preserves type well-formed-ness, we have: $\etyperelation{\P'}{\G'\ssi}{x}{A\ssi}$ and $\wellformed{\P'}{B\ssi}$
+
+So $\etyperelation{\P'}{\G\ssi}{x\ssi}{A\ssi}$
+
+Since $x\ssi = x$, $\G\ssi = (\G'\ssi, y:B\ssi)$
+
+
+\case{Lambda}
+\bi $\etyperelation{\P}{\gax}{v}{B}$.
+
+So, by induction $\etyperelation{\P'}{(\gax)\ssi}{v\ssi}{B\ssi}$.
+
+So, $\etyperelation{\P}{\G\ssi, x:A\ssi}{v\ssi}{B\ssi}$.
+
+Hence by the lambda type rule,
+
+$\etyperelation{\P'}{\G\ssi}{\lam{x}{A\ssi}{v\ssi}}{\fntype{(A\ssi)}{(B\ssi)}}$
+
+So
+
+$\etyperelation{\P'}{\G\ssi}{(\lam{x}{A}{v})\ssi}{(\ab)\ssi)}$
+
+\case{Apply}
+\bi, $\gpetyperelation{v_1}{\ab}$, $\gpetyperelation{V_2}{A}$.
+
+So by induction, $\etyperelation{\P'}{\G\ssi}{v_1\ssi}{\fntype{(A\ssi)}{(B\ssi)}}$.
+
+So $\etyperelation{\P'}{\G\ssi}{\apply{(v_1\ssi)}{(v_2\ssi)}}{B\ssi}$.
+
+So $\etyperelation{\P'}{\G\ssi}{(\apply{v_1}{v_2})\ssi}{(\ab)\ssi}$
+\case{Subtype}
+
+\bi, $\gpetyperelation{v}{A}$ and $\wellformed{\P}{A\subtype B}$
+
+So by induction and effect-substitution preserving sub-typing, $\etyperelation{\P'}{\G\ssi}{v\ssi}{A\ssi}$ and $\wellformed{\P'}{A\ssi\subtype B\ssi}$
+
+So $\etyperelation{\P'}{\G\ssi}{v\ssi}{B\ssi}$
+\case{Return}
+\bi, $\gpetyperelation{v}{A}$
+
+So by induction, $\etyperelation{\P'}{\G\ssi}{v\ssi}{A\ssi}$
+
+So $\etyperelation{\P'}{\G\ssi}{\return{(v\ssi)}}{\M{\1}{(A\ssi)}}$
+
+Hence $\etyperelation{\P'}{\G\ssi}{(\return{v})\ssi}{(\moa)\ssi}$
+\case{Bind}
+
+\bi, $\gpetyperelation{v_1}{\M{\e_1}{A}}$ and $\etyperelation{\P}{\gax}{v_2}{\M{\e_2}{B}}$.
+
+So by induction: $\etyperelation{\P'}{\G\ssi}{v_1\ssi}{\M{\si(\e_1)}{(A\ssi)}}$, and $\etyperelation{\P'}{\G\ssi, x:A\ssi}{v_2}{\M{\si(\e_2)}{(B\ssi)}}$.
+
+And so $\etyperelation{\P'}{\G\ssi}{\doin{x}{(v_1\ssi)}{(v_2\ssi)}}{\M{\si(\e_1)\dot(\e_2\ssi)}{B\ssi}}$
+
+
+\case{If}
+
+\bi, $\gpetyperelation{v}{\B}$, $\gpetyperelation{v_1}{A}$, and $\gpetyperelation{v_2}{A}$
+
+So by induction $\etyperelation{\P'}{\G\ssi}{v\ssi}{\B}$, $\etyperelation{\P'}{\G\ssi}{v_1}{A\ssi}$, and $\etyperelation{\P'}{\G\ssi}{v\ssi}{\B}$, $\etyperelation{\P'}{\G\ssi}{v_2}{A\ssi}$.
+(Since $\B\ssi = \B$)
+
+Hence:
+
+$\etyperelation{\P'}{\G\ssi}{\pifthenelse{A\ssi}{v\ssi}{v_1\ssi}{v_2\ssi}}{A\ssi}$
+
+So $\etyperelation{\P'}{\G\ssi}{(\pifthenelse{A}{v}{v_1}{v_2})\ssi}{A\ssi}$
+
+\case{Effect-lambda}
+\bi, $\etyperelation{\P,\a}{\G}{v}{A}$.
+
+So by the substitution property 3 (\todo{Is this correct/reference correctly}), pick $\a\notin\P'\wedge\a\notin\P$ so we have:
+
+$$\typerelation{(\P',\a)}{(\si, \a\setto\a)}{(\P,\a)}$$
+
+So by induction, $\etyperelation{\P', \a}{\G\sub{\si, \a\setto\a}}{v\sub{\si,\a\setto\a}}{A\sub{\si, \a\setto\a}}$
+
+So $\etyperelation{\P',\a}{\G\ssi}{v\ssi}{A\ssi}$ since $\a\notin\P' \wedge\a\notin\P$.
+
+So $\etyperelation{\P'}{\G\ssi}{v\ssi}{(\all{\a}{A})\ssi}$
+
+\case{Effect-Apply}
+\bi, $\gpetyperelation{v}{\all{\a}{A}}$, $\wellformed{\P}{\e}$.
+
+So by induction and effect-substitution preserving well-formed-ness of effects: $\etyperelation{\P'}{\G\ssi}{v\ssi}{(\all{\a}{A})\ssi}$ and $\wellformed{\P'}{\si(\e)}$
+
+So $\etyperelation{\P'}{\G\ssi}{\eapp{(v\ssi)}{(\si(\e))}}{A\ssi\ssub{\a}{\si(\e)}}$.
+
+Since $\a\#\si$, we can commute the applications of substitution. \todo{Do I need to prove this?}
+
+So, $\etyperelation{\P'}{\G\ssi}{(\eapp{v}{\e})\ssi}{A\ssub{\a}{\e}\ssi}$
+
+\section{The Identity Substitution on Effect Environments}
 For each type environment $\P$, define the identity substitution $I_{\P}$ as so:
 
 \begin{itemize}
-    \item $I_{\nil} = \nil$
-    \item $I_{(\P, \a} = (I_{\P}, \a\setto \a)$
+\item $I_{\nil} = \nil$
+\item $I_{(\P, \a} = (I_{\P}, \a\setto \a)$
 \end{itemize}
 
 \subsection{Properties of the Identity Substitution}
@@ -386,337 +387,340 @@ If $\ok{\P}$ then $\typerelation{\P}{I_\P}{\P}$, proved trivially by induction o
 
 If $\wellformed{\P}{\e}$, let the single substitution $\typerelation{\P}{\ssub{\a}{\e}}{\P,\a}$, be defined as:
 \begin{equation}
-    \ssub{\a}{x} = (I_{\P}, \a\setto \e)
+\ssub{\a}{x} = (I_{\P}, \a\setto \e)
 \end{equation}
 
 
 
-    \section{Term-Term Substitutions}
+\section{Term-Term Substitutions}
 
 
 
-    \subsection{Substitutions as SNOC lists}
+\subsection{Substitutions as SNOC lists}
 
-    \begin{equation}
-       \si \gens \nil \mid \si, x \setto v
-    \end{equation}
+\begin{equation}
+   \si \gens \nil \mid \si, x \setto v
+\end{equation}
 
-    \subsection{Trivial Properties of substitutions}
-    \paragraph{$\fv{\si}$}
+\subsection{Trivial Properties of substitutions}
+\paragraph{$\fv{\si}$}
+\begin{align}
+    \fv{\nil} &= \emptyset\\
+    \fv{\si, x\setto v} &= \fv{\si}\cup\fv{v}
+\end{align}
+\paragraph{$\dom{\si}$}
+\begin{align}
+    \dom{\nil} & = \emptyset\\
+    \dom{\si, x\setto v} & = \dom{\si}\cup\left\{x\right\}
+\end{align}
+
+\paragraph{$x \# \si$}
+\begin{equation}
+    x \# \si \Leftrightarrow x\notin(\fv{\si}\cup\dom{\si`})
+\end{equation}
+
+\subsection{Action of substitutions}
+    We define the action of applying a substitution $\si$ as 
+    $$t\ssi$$
+
+    
     \begin{align}
-        \fv{\nil} &= \emptyset\\
-        \fv{\si, x\setto v} &= \fv{\si}\cup\fv{v}
+        x\sub{\nil} & = x \\
+        x\sub{\si,x\setto v} & = v \\
+        x\sub{\si,x'\setto v'} & = x\ssi\qt{If }x \neq x'\\
+        \const{A}\ssi & = \const{A} \\
+        (\lam{x}{A}{v})\ssi &= \lam{x}{A}{(v\ssi)}\qt{If }x\#\si\\
+        (\pifthenelse{A}{v}{v_1}{v_2})\ssi &= \pifthenelse{A}{v\ssi}{v_1\ssi}{v_2\ssi}\\
+        (\apply{v_1}{v_2})\ssi&= \apply{(v_1\ssi)}{v_2\ssi}\\
+        (\doin{x}{v_1}{v_2})&= \doin{x}{(v_1\ssi)}{(v_2\ssi)}\qt{If } x\#\si\\
+        (\elam{\a}{v})\ssi & = \elam{\a}{(v\ssi)}\\
+        (\eapp{v}{\e})\ssi & = \eapp{(v\ssi)}{\e}\\
     \end{align}
-    \paragraph{$\dom{\si}$}
-    \begin{align}
-        \dom{\nil} & = \emptyset\\
-        \dom{\si, x\setto v} & = \dom{\si}\cup\left\{x\right\}
-    \end{align}
+    \subsection{Well-Formed-ness}
+Define the relation $$\etyperelation{\P}{\G'}{\si}{\G}$$ by:
 
-    \paragraph{$x \# \si$}
-    \begin{equation}
-        x \# \si \Leftrightarrow x\notin(\fv{\si}\cup\dom{\si`})
-    \end{equation}
-
-    \subsection{Action of substitutions}
-        We define the action of applying a substitution $\si$ as 
-        $$t\ssi$$
-
-        
-        \begin{align}
-            x\sub{\nil} & = x \\
-            x\sub{\si,x\setto v} & = v \\
-            x\sub{\si,x'\setto v'} & = x\ssi\qt{If }x \neq x'\\
-            \const{A}\ssi & = \const{A} \\
-            (\lam{x}{A}{v})\ssi &= \lam{x}{A}{(v\ssi)}\qt{If }x\#\si\\
-            (\pifthenelse{A}{v}{v_1}{v_2})\ssi &= \pifthenelse{A}{v\ssi}{v_1\ssi}{v_2\ssi}\\
-            (\apply{v_1}{v_2})\ssi&= \apply{(v_1\ssi)}{v_2\ssi}\\
-            (\doin{x}{v_1}{v_2})&= \doin{x}{(v_1\ssi)}{(v_2\ssi)}\qt{If } x\#\si\\
-            (\elam{\a}{v})\ssi & = \elam{\a}{(v\ssi)}\\
-            (\eapp{v}{\e})\ssi & = \eapp{(v\ssi)}{\e}\\
-        \end{align}
-        \subsection{Well-Formed-ness}
-    Define the relation $$\etyperelation{\P}{\G'}{\si}{\G}$$ by:
-
-    \begin{itemize}
-        \item $\treerule{Nil}{\wellformedok{\P}{\G'}}{\etyperelation{\P}{\G'}{\nil}{\nil}}$
-        \item $\treerule{Extend}{
-            \etyperelation{\P}{\G'}{\si}{\G}
-            \s\s
-            x\notin\dom{\G}
-            \s\s
-            \etyperelation{\P}{\G'}{v}{A}
+\begin{itemize}
+    \item $\ntreeruleI{Nil}{\wellformedok{\P}{\G'}}{\etyperelation{\P}{\G'}{\nil}{\nil}}$
+    \item $\ntreeruleIII{Extend}{
+        \etyperelation{\P}{\G'}{\si}{\G}
         }{
-            \etyperelation{\P}{\G'}{(\si, x \setto v)}{(\gax)}
-        }$
-    \end{itemize}
-    \subsection{Simple Properties Of Substitution}
-    If $\etyperelation{\P}{\G'}{\si}{\G}$ then:
-    \todo{Number these}
+        x\notin\dom{\G}
+        }{
+        \etyperelation{\P}{\G'}{v}{A}
+    }{
+        \etyperelation{\P}{\G'}{(\si, x \setto v)}{(\gax)}
+    }$
+\end{itemize}
+\subsection{Simple Properties Of Substitution}
+If $\etyperelation{\P}{\G'}{\si}{\G}$ then:
+\todo{Number these}
 
-        \paragraph{Property 1: $\wellformedok{\P}{\G}$ and $\wellformedok{\P}{\G'}$}
-         Since $\wellformedok{\P}{\G'}$ holds by the Nil-axiom. $\wellformedok{\P}{\G}$ holds by induction on the well-formed-ness relation.
-        \paragraph{Property 2: $\wrel{\w}{\G''}{\G'}$ implies $\etyperelation{\P}{\G''}{\si}{\G}$}. 
-        By induction over well-formed-ness relation. For each $x\setto v$ in $\si$, $\etyperelation{\P}{\G''}{v}{A}$ holds if $\etyperelation{\P}{\G'}{v}{A}$ holds.
-        \paragraph{Property 3: $x \notin (\dom{\G} \cup \dom{\G''})$ implies $\etyperelation{\P}{(\G', x: A)}{(\si, x \setto x)}{(\gax)}$} 
-        Since $\wrel{\i\pi}{\G',x: A}{\G'}$, so by (Property 2) \todo{Better referencing here}, 
-        $$\etyperelation{\P}{\G', x: A}{\si}{\G}$$
-        In addition, $\etyperelation{\P}{\G', x: A}{x}{A}$ trivially, so by the rule \textbf{Extend}, well-formed-ness holds for
-        \begin{equation}
-            \etyperelation{\P}{(\G', x:A)}{(\si, x\setto v)}{(\gax)}
-        \end{equation}
-    
-
-    \subsection{Substitution Preserves Typing}
-    We have the following non-trivial property of substitution:
-
+    \paragraph{Property 1: $\wellformedok{\P}{\G}$ and $\wellformedok{\P}{\G'}$}
+     Since $\wellformedok{\P}{\G'}$ holds by the Nil-axiom. $\wellformedok{\P}{\G}$ holds by induction on the well-formed-ness relation.
+    \paragraph{Property 2: $\wrel{\w}{\G''}{\G'}$ implies $\etyperelation{\P}{\G''}{\si}{\G}$}. 
+    By induction over well-formed-ness relation. For each $x\setto v$ in $\si$, $\etyperelation{\P}{\G''}{v}{A}$ holds if $\etyperelation{\P}{\G'}{v}{A}$ holds.
+    \paragraph{Property 3: $x \notin (\dom{\G} \cup \dom{\G''})$ implies $\etyperelation{\P}{(\G', x: A)}{(\si, x \setto x)}{(\gax)}$} 
+    Since $\wrel{\i\pi}{\G',x: A}{\G'}$, so by (Property 2) \todo{Better referencing here}, 
+    $$\etyperelation{\P}{\G', x: A}{\si}{\G}$$
+    In addition, $\etyperelation{\P}{\G', x: A}{x}{A}$ trivially, so by the rule \textbf{Extend}, well-formed-ness holds for
     \begin{equation}
-        (\etyperelation{\P}{\G}{v}{A})\wedge(\etyperelation{\P}{\G'}{\si}{\G})\Rightarrow(\etyperelation{\P}{\G'}{v\ssi}{A})
+        \etyperelation{\P}{(\G', x:A)}{(\si, x\setto v)}{(\gax)}
     \end{equation}
 
-    Assuming $\etyperelation{\P}{\G'}{\si}{\G}$, we induct over the typing relation, proving $\gpetyperelation{v}{A}\implies\etyperelation{\P}{\G'}{v}{A}$
 
-    \proof
-        \case{Var}
-            By inversion $\G = (\G'', x:A)$
-            So \begin{equation}
-                \etyperelation{\P}{\G'',x:A}{x}{A}
-            \end{equation}
+\subsection{Substitution Preserves Typing}
+We have the following non-trivial property of substitution:
 
-            So by inversion, since $\etyperelation{\P}{\G'}{\si}{\G'', x:A}$, 
+\begin{equation}
+    (\etyperelation{\P}{\G}{v}{A})\wedge(\etyperelation{\P}{\G'}{\si}{\G})\Rightarrow(\etyperelation{\P}{\G'}{v\ssi}{A})
+\end{equation}
 
-            \begin{equation}
-                \si = (\si', x\setto v) \wedge \etyperelation{\P}{\G'}{v}{A}
-            \end{equation}
+Assuming $\etyperelation{\P}{\G'}{\si}{\G}$, we induct over the typing relation, proving $\gpetyperelation{v}{A}\implies\etyperelation{\P}{\G'}{v}{A}$
 
-            By the definition of the effect of substitutions, $x\ssi = v$, So
-            \begin{equation}
-                \etyperelation{\P}{\G'}{x\ssi}{A}
-            \end{equation}
-
-            holds.
-            
-        \case{Weaken}
-            By inversion, $\G = \G'', y: B, x \neq y$, and there exists $\D$ such that
- 
-            \begin{equation}
-                \treerule{Weaken}{\treerule{}{\D}{\etyperelation{\P}{\G''}{x}{A}}}{\etyperelation{\P}{\G'', y: B}{x}{A}}
-            \end{equation}
-
-            By inversion, $\si = \si', y\setto v$
-            and:
-
-            \begin{equation}
-                \etyperelation{\P}{\G'}{\si'}{\G''}
-            \end{equation}
-
-            So by induction,
-
-            \begin{equation}
-                \etyperelation{\P}{\G'}{x\sub{\si'}}{A}
-            \end{equation}
-
-            And so by definition of the effect of $\si$, $x\ssi = x\sub{\si'}$
-
-            \begin{equation}
-                \etyperelation{\P}{\G'}{x\sub{\si}}{A}
-            \end{equation}
-
-    \case{Lambda}
-        By inversion, there exists $\D$ such that:
-
-        \begin{equation}
-            \treerule{Fn}{
-                \treerule{}{\D}{\etyperelation{\P}{\G, x:A }{v}{B}}
-            }{\etyperelation{\P}{\G}{\lam{x}{A}{v}}{\ab}}
-        \end{equation}
-        Using alpha equivalence, we pick $x\notin(\dom{\G}\cup\dom{\G'})$
-        Hence, by property 3, we have
-
-        \begin{equation}
-            \etyperelation{\P}{(\G', x:A )}{(\si, x\setto x)}{\gax}
-        \end{equation}
-
-        So by induction using $\si,x\setto x$, we have $\D'$ such that:
-
-        \begin{equation}
-            \treerule{Fn}{
-                \treerule{}{\D'}{\etyperelation{\P}{\G', x:A }{v\sub{\si, x\setto v}}{B}}
-            }{\etyperelation{\P}{\G}{\lam{x}{A}{v\sub{\si, x\setto{x}}}}{\ab}}
-        \end{equation} 
-        Since $\lam{x}{A}{(v\sub{\si, x\setto{x}})} = {\lam{x}{A}({v\ssi})} = (\lam{x}{A}{v})\ssi$, we have a typing derivation for $\etyperelation{\P}{\G'}{(\lam{x}{A}{v})\ssi}{\ab}$.
-
-    \case{Constants}
-        We use the same logic for all constants, $\u,\t,\f,\const{A}$:
-
-        $\etyperelation{\P}{\G}{\si}{\G} \Rightarrow \wellformedok{\P}{\G'}$ and:
-
-        \begin{equation}
-            \const{A}\ssi =\const{A}
-        \end{equation}
-
+\proof
+    \case{Var}
+        By inversion $\G = (\G'', x:A)$
         So \begin{equation}
-            \treerule{Const}{\wellformedok{\P}{\G'}}{\etyperelation{\P}{\G'}{\const{A}}{A}}
+            \etyperelation{\P}{\G'',x:A}{x}{A}
         \end{equation}
-    \subsection{Computation Terms}
-    \case{Return}
-        By inversion, we have $\D_1$ such that:
+
+        So by inversion, since $\etyperelation{\P}{\G'}{\si}{\G'', x:A}$, 
 
         \begin{equation}
-            \treerule{Return}{\treerule{}{\D_1}{\etyperelation{\P}{\G}{v}{A}}}{\etyperelation{\P}{\G}{\return{v}}{\moa}}
+            \si = (\si', x\setto v) \wedge \etyperelation{\P}{\G'}{v}{A}
         \end{equation}
 
-        By induction, we have $\D_1'$ such that
-
+        By the definition of the effect of substitutions, $x\ssi = v$, So
         \begin{equation}
-            \treerule{Return}{\treerule{}{\D'_1}{\etyperelation{\P}{\G'}{v\ssi}{A}}}{\etyperelation{\P}{\G'}{\return{(v\ssi)}}{\moa}}
+            \etyperelation{\P}{\G'}{x\ssi}{A}
         \end{equation}
 
-        Since $(\return{v})\ssi = \return{(v\ssi)}$, the type derivation above holds for $\etyperelation{\P}{\G'}{(\return{v})\ssi}{\moa}$.
-
-    \case{Apply}
-        By inversion, we have $\D_1$, $\D_2$ such that:
-
-        \begin{equation}
-            \treerule{Apply}{
-                \treerule{}{\D_1}{\etyperelation{\P}{\G}{v_1}{\ab}}
-                \s\s
-                \treerule{}{\D_2}{\etyperelation{\P}{\G}{v_2}{A}}
-            }{\etyperelation{\P}{\G}{\apply{v_1}{v_2}}{B}}
-        \end{equation}
-
-        By induction on $\D_1, \D_2$, we have $\D_1',\D_2'$ such that
-
-        \begin{equation}
-            \treerule{Apply}{
-                \treerule{}{\D'_1}{\etyperelation{\P}{\G'}{v_1\ssi}{\ab}}
-                \s\s
-                \treerule{}{\D_2'}{\etyperelation{\P}{\G'}{v_2\ssi}{A}}
-            }{\etyperelation{\P}{\G'}{\apply{(v_1\ssi)}{(v_2\ssi)}}{B}}
-        \end{equation}
-
-        Since $(\apply{v_1}{v_2})\ssi = \apply{(v_1\ssi)}{(v_2\ssi)}$, we the above derivation holds for $\etyperelation{\P}{\G'}{(\apply{v_1}{v_2})\ssi}{B}$
-    \case{If}
-        By inversion, we have $\D_1,\D_2,\D_3$ such that:
-
-        \begin{equation}
-            \treerule{If}{
-                \treerule{}{\D_1}{\etyperelation{\P}{\G}{v}{\B}}
-                \s\s
-                \treerule{}{\D_2}{\etyperelation{\P}{\G}{v_1}{A}}
-                \s\s
-                \treerule{}{\D_3}{\etyperelation{\P}{\G}{v_2}{A}}
-            }{
-                \etyperelation{\P}{\G}{\pifthenelse{A}{v}{v_1}{v_2}}{A}
-            }
-        \end{equation}
-
-        By induction on $\D_1,\D_2, \D_3$, we derive 
-        $\D_1', \D_2',\D_3'$ such that:
+        holds.
         
+    \case{Weaken}
+        By inversion, $\G = \G'', y: B, x \neq y$, and there exists $\D$ such that
+
         \begin{equation}
-            \treerule{If}{
-                \treerule{}{\D_1'}{\etyperelation{\P}{\G'}{v\ssi}{\B}}
-                \s\s
-                \treerule{}{\D_2'}{\etyperelation{\P}{\G'}{v_1\ssi}{A}}
-                \s\s
-                \treerule{}{\D_3'}{\etyperelation{\P}{\G'}{v_2\ssi}{A}}
+            \ntreeruleI{Weaken}{\treeruleI{\D}{\etyperelation{\P}{\G''}{x}{A}}}{\etyperelation{\P}{\G'', y: B}{x}{A}}
+        \end{equation}
+
+        By inversion, $\si = \si', y\setto v$
+        and:
+
+        \begin{equation}
+            \etyperelation{\P}{\G'}{\si'}{\G''}
+        \end{equation}
+
+        So by induction,
+
+        \begin{equation}
+            \etyperelation{\P}{\G'}{x\sub{\si'}}{A}
+        \end{equation}
+
+        And so by definition of the effect of $\si$, $x\ssi = x\sub{\si'}$
+
+        \begin{equation}
+            \etyperelation{\P}{\G'}{x\sub{\si}}{A}
+        \end{equation}
+
+\case{Lambda}
+    By inversion, there exists $\D$ such that:
+
+    \begin{equation}
+        \ntreeruleI{Fn}{
+            \treeruleI{\D}{\etyperelation{\P}{\G, x:A }{v}{B}}
+        }{\etyperelation{\P}{\G}{\lam{x}{A}{v}}{\ab}}
+    \end{equation}
+    Using alpha equivalence, we pick $x\notin(\dom{\G}\cup\dom{\G'})$
+    Hence, by property 3, we have
+
+    \begin{equation}
+        \etyperelation{\P}{(\G', x:A )}{(\si, x\setto x)}{\gax}
+    \end{equation}
+
+    So by induction using $\si,x\setto x$, we have $\D'$ such that:
+
+    \begin{equation}
+        \ntreeruleI{Fn}{
+            \treeruleI{\D'}{\etyperelation{\P}{\G', x:A }{v\sub{\si, x\setto v}}{B}}
+        }{\etyperelation{\P}{\G}{\lam{x}{A}{v\sub{\si, x\setto{x}}}}{\ab}}
+    \end{equation} 
+    Since $\lam{x}{A}{(v\sub{\si, x\setto{x}})} = {\lam{x}{A}({v\ssi})} = (\lam{x}{A}{v})\ssi$, we have a typing derivation for $\etyperelation{\P}{\G'}{(\lam{x}{A}{v})\ssi}{\ab}$.
+
+\case{Constants}
+    We use the same logic for all constants, $\u,\t,\f,\const{A}$:
+
+    $\etyperelation{\P}{\G}{\si}{\G} \Rightarrow \wellformedok{\P}{\G'}$ and:
+
+    \begin{equation}
+        \const{A}\ssi =\const{A}
+    \end{equation}
+
+    So \begin{equation}
+        \ntreeruleI{Const}{\wellformedok{\P}{\G'}}{\etyperelation{\P}{\G'}{\const{A}}{A}}
+    \end{equation}
+\subsection{Computation Terms}
+\case{Return}
+    By inversion, we have $\D_1$ such that:
+
+    \begin{equation}
+        \ntreeruleI{Return}{\treeruleI{\D_1}{\etyperelation{\P}{\G}{v}{A}}}{\etyperelation{\P}{\G}{\return{v}}{\moa}}
+    \end{equation}
+
+    By induction, we have $\D_1'$ such that
+
+    \begin{equation}
+        \ntreeruleI{Return}{\treeruleI{\D'_1}{\etyperelation{\P}{\G'}{v\ssi}{A}}}{\etyperelation{\P}{\G'}{\return{(v\ssi)}}{\moa}}
+    \end{equation}
+
+    Since $(\return{v})\ssi = \return{(v\ssi)}$, the type derivation above holds for $\etyperelation{\P}{\G'}{(\return{v})\ssi}{\moa}$.
+
+\case{Apply}
+    By inversion, we have $\D_1$, $\D_2$ such that:
+
+    \begin{equation}
+        \ntreeruleII{Apply}{
+            \treeruleI{\D_1}{\etyperelation{\P}{\G}{v_1}{\ab}}
             }{
-                \etyperelation{\P}{\G'}{\pifthenelse{A}{(v\ssi)}{(v_1\ssi)}{(v_2\ssi)}}{A}
-            }
-        \end{equation}
+            \treeruleI{\D_2}{\etyperelation{\P}{\G}{v_2}{A}}
+        }{\etyperelation{\P}{\G}{\apply{v_1}{v_2}}{B}}
+    \end{equation}
 
-        Since $(\pifthenelse{A}{v}{v_1}{v_2})\ssi = \pifthenelse{A}{(v\ssi)}{(v_1\ssi)}{(v_2\ssi)}$ The derivation above holds for $\etyperelation{\P}{\G'}{(\pifthenelse{A}{v}{v_1}{v_2})\ssi}{A}$
+    By induction on $\D_1, \D_2$, we have $\D_1',\D_2'$ such that
 
-    \case{Bind}
-        By inversion, there exist $\D_1, \D_2$ such that:
-        \begin{equation}
-            \treerule{Bind}{
-                \treerule{}{\D_1}{\etyperelation{\P}{\G}{v_1}{\M{\e_1}{A}}}
-                \s\s
-                \treerule{}{\D_2}{\etyperelation{\P}{\G, x:A}{v_2}{\M{\e_2}{B}}}
-            }{\etyperelation{\P}{\G}{\doin{x}{v_1}{v_2}}{\M{\e_1\dot\e_2}{B}}}
-        \end{equation}
+    \begin{equation}
+        \ntreeruleII{Apply}{
+            \treeruleI{\D'_1}{\etyperelation{\P}{\G'}{v_1\ssi}{\ab}}
+            }{
+            \treeruleI{\D_2'}{\etyperelation{\P}{\G'}{v_2\ssi}{A}}
+        }{\etyperelation{\P}{\G'}{\apply{(v_1\ssi)}{(v_2\ssi)}}{B}}
+    \end{equation}
 
-        Using alpha-equivalence, we pick $x\notin(\dom{\G}\cup\dom{\G'})$. Hence by property 3, $$\etyperelation{\P}{(\G, x: A)}{(\si, x\setto x)}{(\gax)}$$
-        By induction on $\D_1, \D_2$, we have $\D_1', \D_2'$ such that:
-        \begin{equation}
-            \treerule{Bind}{
-                \treerule{}{\D_1'}{\etyperelation{\P}{\G'}{v_1\ssi}{\M{\e_1}{A}}}
-                \s\s
-                \treerule{}{\D_2}{\etyperelation{\P}{\G', x:A}{v_2\sub{\si, x\setto x}}{\M{\e_2}{B}}}
-            }{\etyperelation{\P}{\G'}{\doin{x}{(v_1\ssi)}{(v_2\sub{\si, x\setto x})}}{\M{\e_1\dot\e_2}{B}}}
-        \end{equation}
+    Since $(\apply{v_1}{v_2})\ssi = \apply{(v_1\ssi)}{(v_2\ssi)}$, we the above derivation holds for $\etyperelation{\P}{\G'}{(\apply{v_1}{v_2})\ssi}{B}$
+\case{If}
+    By inversion, we have $\D_1,\D_2,\D_3$ such that:
 
-        Since $(\doin{x}{v_1}{v_2})\ssi = \doin{x}{(v_1\ssi)}{(v_2\ssi)} = \doin{x}{(v_1\ssi)}{(v_2\sub{\si, x\setto x})}$, the above derivation holds for $\etyperelation{\P}{\G'}{(\doin{x}{v_1}{v_2})\ssi}{\M{\e_1\dot\e_2}{B}}$
+    \begin{equation}
+        \ntreeruleIII{If}{
+            \treeruleI{\D_1}{\etyperelation{\P}{\G}{v}{\B}}
+            }{
+            \treeruleI{\D_2}{\etyperelation{\P}{\G}{v_1}{A}}
+            }{
+            \treeruleI{\D_3}{\etyperelation{\P}{\G}{v_2}{A}}
+        }{
+            \etyperelation{\P}{\G}{\pifthenelse{A}{v}{v_1}{v_2}}{A}
+        }
+    \end{equation}
+
+    By induction on $\D_1,\D_2, \D_3$, we derive 
+    $\D_1', \D_2',\D_3'$ such that:
     
-    \case{Sub-type}
-        By inversion, there exists $\D$ such that
-        \begin{equation}
-            \treerule{sub-type}{\treerule{}{\D}{\etyperelation{\P}{\G}{v}{A}}\s\s A\subtypep B}{\etyperelation{\P}{\G}{v}{B}}
-        \end{equation}
-
-        By induction on $\D$ we derive $\D'$ such that:
-
-        \begin{equation}
-            \treerule{sub-type}{\treerule{}{\D'}{\etyperelation{\P}{\G'}{v\ssi}{A}}\s\s A\subtypep B}{\etyperelation{\P}{\G}{v\ssi}{B}}
-        \end{equation}
-
-    \case{Effect-Lambda}
-    \bi, there exists $\D$ such that 
     \begin{equation}
-        \treerule{Effect-abs}{\treerule{}{\D}{\etyperelation{\P,\a}{\G}{v}{A}}}{\gpetyperelation{\elam{\a}{v}}{\all{\a}{A}}}
+        \ntreeruleIII{If}{
+            \treeruleI{\D_1'}{\etyperelation{\P}{\G'}{v\ssi}{\B}}
+            }{
+            \treeruleI{\D_2'}{\etyperelation{\P}{\G'}{v_1\ssi}{A}}
+            }{
+            \treeruleI{\D_3'}{\etyperelation{\P}{\G'}{v_2\ssi}{A}}
+        }{
+            \etyperelation{\P}{\G'}{\pifthenelse{A}{(v\ssi)}{(v_1\ssi)}{(v_2\ssi)}}{A}
+        }
     \end{equation}
 
-    It is also the case that $\wrel{\i\pi}{\P,\a}{\P}$.
+    Since $(\pifthenelse{A}{v}{v_1}{v_2})\ssi = \pifthenelse{A}{(v\ssi)}{(v_1\ssi)}{(v_2\ssi)}$ The derivation above holds for $\etyperelation{\P}{\G'}{(\pifthenelse{A}{v}{v_1}{v_2})\ssi}{A}$
 
-    So $\etyperelation{\P,\a}{\G'}{\si}{\G}$
-
-    So by induction there exists $\D'$,
-
+\case{Bind}
+    By inversion, there exist $\D_1, \D_2$ such that:
     \begin{equation}
-        \treerule{Effect-abs}{\treerule{}{\D'}{\etyperelation{\P,\a}{\G'}{v\ssi}{A}}}{\etyperelation{\P}{\G'}{\elam{\a}{(v\ssi)}}{\all{\a}{A}}}
+        \ntreeruleII{Bind}{
+            \treeruleI{\D_1}{\etyperelation{\P}{\G}{v_1}{\M{\e_1}{A}}}
+            }{
+            \treeruleI{\D_2}{\etyperelation{\P}{\G, x:A}{v_2}{\M{\e_2}{B}}}
+        }{\etyperelation{\P}{\G}{\doin{x}{v_1}{v_2}}{\M{\e_1\dot\e_2}{B}}}
     \end{equation}
 
-    Where $\elam{\a}{(v\ssi)} = (\elam{\a}{v})\ssi$
-
-    \case{Effect Application}
-
-    \bi $\wellformed{\P}{\e}$ and there exists $\D$ such that
-
+    Using alpha-equivalence, we pick $x\notin(\dom{\G}\cup\dom{\G'})$. Hence by property 3, $$\etyperelation{\P}{(\G, x: A)}{(\si, x\setto x)}{(\gax)}$$
+    By induction on $\D_1, \D_2$, we have $\D_1', \D_2'$ such that:
     \begin{equation}
-        \treerule{Effect-App}{\treerule{}{\D}{\etyperelation{\P}{\G}{v}{\all{\a}{A}}}}{\etyperelation{\P}{\G}{\eapp{v}{\e}}{A\ssub{\a}{\e}}}
+        \ntreeruleII{Bind}{
+            \treeruleI{\D_1'}{\etyperelation{\P}{\G'}{v_1\ssi}{\M{\e_1}{A}}}
+            }{
+            \treeruleI{\D_2}{\etyperelation{\P}{\G', x:A}{v_2\sub{\si, x\setto x}}{\M{\e_2}{B}}}
+        }{\etyperelation{\P}{\G'}{\doin{x}{(v_1\ssi)}{(v_2\sub{\si, x\setto x})}}{\M{\e_1\dot\e_2}{B}}}
     \end{equation}
 
-    So by induction there exists $\D'$ such that:
+    Since $(\doin{x}{v_1}{v_2})\ssi = \doin{x}{(v_1\ssi)}{(v_2\ssi)} = \doin{x}{(v_1\ssi)}{(v_2\sub{\si, x\setto x})}$, the above derivation holds for $\etyperelation{\P}{\G'}{(\doin{x}{v_1}{v_2})\ssi}{\M{\e_1\dot\e_2}{B}}$
+
+\case{Sub-type}
+    By inversion, there exists $\D$ such that
     \begin{equation}
-        \treerule{Effect-App}{\treerule{}{\D'}{\etyperelation{\P}{\G'}{v\ssi}{\all{\a}{A}}}}{\etyperelation{\P}{\G'}{\eapp{(v\ssi)}{\e}}{A\ssub{\a}{\e}}}
+        \ntreeruleII{sub-type}{\treeruleI{\D}{\etyperelation{\P}{\G}{v}{A}}}{ A\subtypep B}{\etyperelation{\P}{\G}{v}{B}}
     \end{equation}
 
-    Where $\eapp{(v\ssi)}{\e} = (\eapp{v}{\e})\ssi$
+    By induction on $\D$ we derive $\D'$ such that:
 
-    \section{The Identity Substitution on Type Environments}
-    For each type environment $\G$, define the identity substitution $I_{\G}$ as so:
-
-    \begin{itemize}
-        \item $I_{\nil} = \nil$
-        \item $I_{(\gax} = (I_{\G}, x\setto x)$
-    \end{itemize}
-
-    \subsection{Properties of the Identity Substitution}
-    \paragraph{Property 1}
-    If $\wellformedok{\P}{\G}$ then $\etyperelation{\P}{\G}{I_{\G}}{\G}$, proved trivially by induction over the well-formed-ness relation.
-
-    \paragraph{Property 2}
-    \todo{The denotational property of id-substitution}
-    \section{Single Substitution on Type Environments}
-
-    If $\etyperelation{\P}{\G}{v}{A}$, let the single substitution $\etyperelation{\P}{\G}{\ssub{x}{v}}{\gax}$, be defined as:
     \begin{equation}
-        \ssub{x}{v} = (I_{\G}, x\setto v)
+        \ntreeruleII{sub-type}{\treeruleI{\D'}{\etyperelation{\P}{\G'}{v\ssi}{A}}}{ A\subtypep B}{\etyperelation{\P}{\G}{v\ssi}{B}}
     \end{equation}
-    
-    
+
+\case{Effect-Lambda}
+\bi, there exists $\D$ such that 
+\begin{equation}
+    \ntreeruleI{Effect-abs}{\treeruleI{\D}{\etyperelation{\P,\a}{\G}{v}{A}}}{\gpetyperelation{\elam{\a}{v}}{\all{\a}{A}}}
+\end{equation}
+
+It is also the case that $\wrel{\i\pi}{\P,\a}{\P}$.
+
+So $\etyperelation{\P,\a}{\G'}{\si}{\G}$
+
+So by induction there exists $\D'$,
+
+\begin{equation}
+    \ntreeruleI{Effect-abs}{\treeruleI{\D'}{\etyperelation{\P,\a}{\G'}{v\ssi}{A}}}{\etyperelation{\P}{\G'}{\elam{\a}{(v\ssi)}}{\all{\a}{A}}}
+\end{equation}
+
+Where $\elam{\a}{(v\ssi)} = (\elam{\a}{v})\ssi$
+
+\case{Effect Application}
+
+\bi $\wellformed{\P}{\e}$ and there exists $\D$ such that
+
+\begin{equation}
+    \ntreeruleII{Effect-App}{
+        \treeruleI{\D}{\etyperelation{\P}{\G}{v}{\all{\a}{A}}}
+    }{\wellformed{\P}{\e}}{
+        \etyperelation{\P}{\G}{\eapp{v}{\e}
+    }{A\ssub{\a}{\e}}}
+\end{equation}
+
+So by induction there exists $\D'$ such that:
+\begin{equation}
+    \ntreeruleII{Effect-App}{\treeruleI{\D'}{\etyperelation{\P}{\G'}{v\ssi}{\all{\a}{A}}}}{\wellformed{\P}{\e}}{\etyperelation{\P}{\G'}{\eapp{(v\ssi)}{\e}}{A\ssub{\a}{\e}}}
+\end{equation}
+
+Where $\eapp{(v\ssi)}{\e} = (\eapp{v}{\e})\ssi$
+
+\section{The Identity Substitution on Type Environments}
+For each type environment $\G$, define the identity substitution $I_{\G}$ as so:
+
+\begin{itemize}
+    \item $I_{\nil} = \nil$
+    \item $I_{(\gax} = (I_{\G}, x\setto x)$
+\end{itemize}
+
+\subsection{Properties of the Identity Substitution}
+\paragraph{Property 1}
+If $\wellformedok{\P}{\G}$ then $\etyperelation{\P}{\G}{I_{\G}}{\G}$, proved trivially by induction over the well-formed-ness relation.
+
+\paragraph{Property 2}
+\todo{The denotational property of id-substitution}
+\section{Single Substitution on Type Environments}
+
+If $\etyperelation{\P}{\G}{v}{A}$, let the single substitution $\etyperelation{\P}{\G}{\ssub{x}{v}}{\gax}$, be defined as:
+\begin{equation}
+    \ssub{x}{v} = (I_{\G}, x\setto v)
+\end{equation}
+
 }
 
 

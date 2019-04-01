@@ -1,155 +1,155 @@
 
 \newcommand\LanguageDefinition[0]{
+
     \section{Terms}
-Making the language no-longer differentiate between values and computations.
-\subsection{Value Terms}
-
-\begin{equation}
-    \begin{split}
-        v \gens & x \\
-        & \mid \lam{x}{A}{v} \\
-        & \mid \const{A} \\
-        & \mid \u \\
-        & \mid \t \mid \f \\
-        & \mid \elam{\a}{v} \\
-        & \mid \eapp{v}{\e} \\
-        & \mid \pifthenelse{A}{v}{v_1}{v_2} \\
-        & \mid \apply{v_1}{v_2} \\
-        & \mid \doin{x}{v_1}{v_2} \\
-        & \mid \return{v}
-    \end{split}
-\end{equation}
-
-
-
-\section{Type System}
-\subsection{Ground Effects}
-The effects should form a monotonous, pre-ordered monoid $(E, \dot, \1, \subeffect)$ with ground elements $e$.
-
-\subsection{Effect Po-Monoid Under an Effect Environment}
-
-Derive a new Po-Monoid for each $\P$:
-\begin{equation}
-    (E_\P, \dotp, \1, \subeffectp)
-\end{equation}
-Where meta-variables, $\e$, range over $E_\P$
-Where
-
-\begin{equation}
-    E_\P = E \cup \left\{\a \mid \a \in \P \right\}
-\end{equation}
-
-And 
-\begin{equation}
-    \treerule{}{\e_3 = \e_1\dot\e_2}{\e_3 = \e_1\dotp\e_2}
-\end{equation}
-
-Otherwise, $\dotp$ is symbolic in nature.
-
-\begin{equation}
-    \e_1 \subeffectp \e_2 \Leftrightarrow \forall \si\downarrow. \e_1\sub{\si\downarrow} \subeffect \e_2\sub{\si\downarrow}
-\end{equation}
-
-Where $\si\downarrow$ denotes any ground-substitution of $\P$. That is any substitution of all effect-variables in $\P$ to ground effects. Where it is obvious from the context, I shall use $\subeffect$ instead of $\subeffectp$.
-
-
-\subsection{Types}
-    \paragraph{Ground Types}
-        There exists a set $\ground$ of ground types, including \U, \B
-    \paragraph{Term Types}
-    $$ A, B, C \gens \ground \mid \ab \mid \mea \mid \all{\a}{A}$$
-  
-\subsection{Type and Effect Environments}
-A type environment is a snoc-list of term-variable, type pairs, $G \gens \nil \mid \gax$ .
-An effect environment is a snoc-list of effect-variables.
-
-$\P\gens\nil\mid\P, \a$
-\paragraph{Domain Function on Type Environments}
-\begin{itemize}
-    \item $\dom{\nil} = \emptyset$
-    \item $\dom{\gax} =  \dom{\G}  \cup \left\{x \right\}$
-\end{itemize}
-
-\paragraph{Membership of Effect Environments}
-Informally, $\a \in \P$ if $\a$ appears in the list represented by $\P$.
-
-\paragraph{$\ok{}$ Predicate On Effect Environments}
-\begin{itemize}
-    \item $\treerule{Atom}{}{\ok{\nil}}$
-    \item $\treerule{A}{\ok{\P} \s\s \a\notin \P}{\ok{\P, \a}}$
-\end{itemize}
-
-\paragraph{Well-Formed-ness of effects}
-We define a relation $\wellformed{\P}{\e}$.
-
-\begin{itemize}
-    \item $\treerule{Ground}{\ok{\P}}{\wellformed{\P}{e}}$
-    \item $\treerule{Var}{\ok{\P,\a}}{\wellformed{\P,\a}{\a}}$
-    \item $\condtreerule{Weaken}{\wellformed{\P}{\a}}{\wellformed{\P,\b}{\a}}{\a\neq\b}$
-    \item $\treerule{Monoid Op}{\wellformed{\P}{\e_1}\s\s\wellformed{\P}{\e_2}}{\wellformed{\P}{\e_1\dot\e_2}}$
-\end{itemize}
-
-\paragraph{Well-Formed-ness of Types}
-We define a relation $\wellformed{\P}{\tau}$ on types.
-
-\begin{itemize}
-    \item $\treerule{Ground}{}{\wellformed{\P}{\g}}$
-    \item $\treerule{Lambda}{\wellformed{\P}{A}\s\s\wellformed{\P}{B}}{\wellformed{\P}{\ab}}$
-    \item $\treerule{Computation}{\wellformed{\P}{A}\s\s\wellformed{\P}{\e}}{\wellformed{\P}{\mea}}$
-    \item $\treerule{For-All}{\wellformed{\P,\a}{A}}{\wellformed{\P}{\all{\a}{A}}}$
-\end{itemize}
-
-\paragraph{Ok Predicate on Type Environments}
-We now define a predicate on type environments and effect environments: $\oke{\P}{\G}$
-
-\begin{itemize}
-    \item $\treerule{Nil}{}{\oke{\P}{\nil}}$
-    \item $\treerule{Var}{\oke{\P}{\G}\s\s x\notin\dom{\G}\s\s \wellformed{\P}{A}}{\oke{\P}{\gax}}$
-\end{itemize}
-
-
-
-\subsection{Sub-typing}
-    There exists a sub-typing pre-order relation $\subtype_{\ground}$ over ground types that is:
+    Making the language no-longer differentiate between values and computations.
+    \subsection{Value Terms}
+    
+    \begin{equation}
+        \begin{split}
+            v \gens & x \\
+            & \mid \lam{x}{A}{v} \\
+            & \mid \const{A} \\
+            & \mid \u \\
+            & \mid \t \mid \f \\
+            & \mid \elam{\a}{v} \\
+            & \mid \eapp{v}{\e} \\
+            & \mid \pifthenelse{A}{v}{v_1}{v_2} \\
+            & \mid \apply{v_1}{v_2} \\
+            & \mid \doin{x}{v_1}{v_2} \\
+            & \mid \return{v}
+        \end{split}
+    \end{equation}
+    
+    
+    
+    \section{Type System}
+    \subsection{Ground Effects}
+    The effects should form a monotonous, pre-ordered monoid $(E, \dot, \1, \subeffect)$ with ground elements $e$.
+    
+    \subsection{Effect Po-Monoid Under an Effect Environment}
+    
+    Derive a new Po-Monoid for each $\P$:
+    \begin{equation}
+        (E_\P, \dotp, \1, \subeffectp)
+    \end{equation}
+    Where meta-variables, $\e$, range over $E_\P$
+    Where
+    
+    \begin{equation}
+        E_\P = E \cup \left\{\a \mid \a \in \P \right\}
+    \end{equation}
+    
+    And 
+    \begin{equation}
+        \treeruleI{\e_3 = \e_1\dot\e_2}{\e_3 = \e_1\dotp\e_2}
+    \end{equation}
+    
+    Otherwise, $\dotp$ is symbolic in nature.
+    
+    \begin{equation}
+        \e_1 \subeffectp \e_2 \Leftrightarrow \forall \si\downarrow. \e_1\sub{\si\downarrow} \subeffect \e_2\sub{\si\downarrow}
+    \end{equation}
+    
+    Where $\si\downarrow$ denotes any ground-substitution of $\P$. That is any substitution of all effect-variables in $\P$ to ground effects. Where it is obvious from the context, I shall use $\subeffect$ instead of $\subeffectp$.
+    
+    
+    \subsection{Types}
+        \paragraph{Ground Types}
+            There exists a set $\ground$ of ground types, including \U, \B
+        \paragraph{Term Types}
+        $$ A, B, C \gens \ground \mid \ab \mid \mea \mid \all{\a}{A}$$
+      
+    \subsection{Type and Effect Environments}
+    A type environment is a snoc-list of term-variable, type pairs, $G \gens \nil \mid \gax$ .
+    An effect environment is a snoc-list of effect-variables.
+    
+    $\P\gens\nil\mid\P, \a$
+    \paragraph{Domain Function on Type Environments}
     \begin{itemize}
-        \item $\treerule{Reflexive}{}{A \subtype_{\ground} A}$
-        \item $\treerule{Transitive}{A \subtype_{\ground} B \s \s B \subtype_{\ground} C}{A \subtype_{\ground} C}$
+        \item $\dom{\nil} = \emptyset$
+        \item $\dom{\gax} =  \dom{\G}  \cup \left\{x \right\}$
     \end{itemize}
-
-    We extend this relation with the function and effect-lambda sub-typing rules to yield the full sub-typing relation under an effect environment, $\P$, $\subtypep$
-
+    
+    \paragraph{Membership of Effect Environments}
+    Informally, $\a \in \P$ if $\a$ appears in the list represented by $\P$.
+    
+    \paragraph{$\ok{}$ Predicate On Effect Environments}
     \begin{itemize}
-        \item $\treerule{ground}{A \subtype_{\ground} B}{A \subtypep B}$
-        \item $\treerule{Fn}{A \subtypep A' \s\s B' \subtypep B }{\fntype{A'}{B'} \subtypep \ab}$
-        \item $\treerule{All}{A\subtypep A'}{\all{\a}{A}\subtypep\all{a}{A'}}$
-        \item $\treerule{Effect}{A\subtypep B\s\s \e_1\subeffectp\e_2}{\M{\e_1}{A}\subtypep\M{\e_2}{B}}$
+        \item $\ntreerulez{Atom}{\ok{\nil}}$
+        \item $\condtreeruleI{A}{\ok{\P}}{\ok{\P, \a}}{ \a\notin \P}$
     \end{itemize}
-
-\subsection{Type Rules}
-\begin{itemize}
-    \item $\treerule{Const}{\oke{\P}{\G}\s\s\wellformed{\P}{A}}{\gpetyperelation{\const{A}}{A}}$
-    \item $\treerule{Unit}{\oke{\P}{\G}}{\gpetyperelation{\u}{\U}}$
-    \item $\treerule{True}{\oke{\P}{\G}}{\gpetyperelation{\t}{\B}}$
-    \item $\treerule{False}{\oke{\P}{\G}}{\gpetyperelation{\f}{\B}}$
-    \item $\treerule{Var}{\oke{\P}{\gax}}{\etyperelation{\P}{\gax}{x}{A}}$
-    \item $\condtreerule{Weaken}{\etyperelation{\P}{\G}{x}{A}\s\s\wellformed{\P}{B}}{\etyperelation{\P}{\gby}{x}{A}}{x \neq y}$
-    \item $\treerule{Fn}{\etyperelation{\P}{\gax}{v}{\b}}{\etyperelation{\P}{\G}{\lam{x}{A}{v}}{\ab}}$
-    \item $\treerule{Sub}{\etyperelation{\P}{\G}{v}{A}\s\s A \subtypep B}{\etyperelation{\P}{\G}{v}{B}}$
-    \item $\treerule{Effect-Abs}{\etyperelation{\P,\a}{\G}{v}{A}}{\gpetyperelation{\elam{\a}{v}}{\all{\a}{A}}}$
-    \item $\treerule{Effect-apply}{\gpetyperelation{v}{\all{\a}A}\s\s\wellformed{\P}{\e}}{\gpetyperelation{\eapp{v}{\e}}{A\ssub{\a}{\e}}}$
-    \item $\treerule{Return}{\gpetyperelation{v}{A}}{\gpetyperelation{\return{v}}{\moa}}$
-    \item $\treerule{Apply}{\gpetyperelation{v_1}{\aeb}\s\s\gpetyperelation{v_2}{A}}{\gpetyperelation{\apply{v_1}{v_2}}{\meb}}$
-    \item $\treerule{If}{\gpetyperelation{v}{\B} \s\s \gpetyperelation{v_1}{A}\s\s\gpetyperelation{v_2}{A}}{\gpetyperelation{\pifthenelse{A}{V}{v_1}{v_2}}{A}}$
-    \item $\treerule{Do}{\gpetyperelation{v_1}{\M{\e_1}{A}} \s\s \etyperelation{\P}{\gax}{v_2}{\M{\e_2}{B}}}{\gpetyperelation{\doin{x}{v_1}{v_2}}{\M{\e_1 \dot \e_2}{B}}}$
-\end{itemize}
-
-\subsection{Ok Lemma}
-If $\gpetyperelation{t}{\tau}$ then $\oke{\P}{\G}$.
-\paragraph{Proof}
-If $\ok{\gax}$ then by inversion $\ok{\G}$
-Only the type rule \texttt{Weaken} adds terms to the environment from its preconditions to its post-condition and it does so in an $\ok{}$ preserving way. Any type derivation tree has at least one leaf. All leaves are axioms which require $\oke{\P}{\G}$. And all non-axiom derivations preserve the $\ok{}$ property.
-
-
+    
+    \paragraph{Well-Formed-ness of effects}
+    We define a relation $\wellformed{\P}{\e}$.
+    
+    \begin{itemize}
+        \item $\ntreeruleI{Ground}{\ok{\P}}{\wellformed{\P}{e}}$
+        \item $\ntreeruleI{Var}{\ok{\P,\a}}{\wellformed{\P,\a}{\a}}$
+        \item $\condtreeruleI{Weaken}{\wellformed{\P}{\a}}{\wellformed{\P,\b}{\a}}{\a\neq\b}$
+        \item $\ntreeruleII{Monoid Op}{\wellformed{\P}{\e_1}}{\wellformed{\P}{\e_2}}{\wellformed{\P}{\e_1\dot\e_2}}$
+    \end{itemize}
+    
+    \paragraph{Well-Formed-ness of Types}
+    We define a relation $\wellformed{\P}{\tau}$ on types.
+    
+    \begin{itemize}
+        \item $\ntreerulez{Ground}{\wellformed{\P}{\g}}$
+        \item $\ntreeruleII{Lambda}{\wellformed{\P}{A}}{\wellformed{\P}{B}}{\wellformed{\P}{\ab}}$
+        \item $\ntreeruleII{Computation}{\wellformed{\P}{A}}{\wellformed{\P}{\e}}{\wellformed{\P}{\mea}}$
+        \item $\ntreeruleI{For-All}{\wellformed{\P,\a}{A}}{\wellformed{\P}{\all{\a}{A}}}$
+    \end{itemize}
+    
+    \paragraph{Ok Predicate on Type Environments}
+    We now define a predicate on type environments and effect environments: $\oke{\P}{\G}$
+    
+    \begin{itemize}
+        \item $\ntreerulez{Nil}{\oke{\P}{\nil}}$
+        \item $\ntreeruleII{Var}{\oke{\P}{\G}}{ x\notin\dom{\G}}{ \wellformed{\P}{A}}{\oke{\P}{\gax}}$
+    \end{itemize}
+    
+    
+    
+    \subsection{Sub-typing}
+        There exists a sub-typing pre-order relation $\subtype_{\ground}$ over ground types that is:
+        \begin{itemize}
+            \item $\ntreerulez{Reflexive}{A \subtype_{\ground} A}$
+            \item $\ntreeruleII{Transitive}{A \subtype_{\ground} B }{ B \subtype_{\ground} C}{A \subtype_{\ground} C}$
+        \end{itemize}
+    
+        We extend this relation with the function and effect-lambda sub-typing rules to yield the full sub-typing relation under an effect environment, $\P$, $\subtypep$
+    
+        \begin{itemize}
+            \item $\ntreeruleI{ground}{A \subtype_{\ground} B}{A \subtypep B}$
+            \item $\ntreeruleII{Fn}{A \subtypep A' }{ B' \subtypep B }{\fntype{A'}{B'} \subtypep \ab}$
+            \item $\ntreeruleI{All}{A\subtypep A'}{\all{\a}{A}\subtypep\all{a}{A'}}$
+            \item $\ntreeruleII{Effect}{A\subtypep B}{ \e_1\subeffectp\e_2}{\M{\e_1}{A}\subtypep\M{\e_2}{B}}$
+        \end{itemize}
+    
+    \subsection{Type Rules}
+    \begin{itemize}
+        \item $\ntreeruleI{Const}{\oke{\P}{\G}}{\wellformed{\P}{A}}{\gpetyperelation{\const{A}}{A}}$
+        \item $\ntreeruleI{Unit}{\oke{\P}{\G}}{\gpetyperelation{\u}{\U}}$
+        \item $\ntreeruleI{True}{\oke{\P}{\G}}{\gpetyperelation{\t}{\B}}$
+        \item $\ntreeruleI{False}{\oke{\P}{\G}}{\gpetyperelation{\f}{\B}}$
+        \item $\ntreeruleI{Var}{\oke{\P}{\gax}}{\etyperelation{\P}{\gax}{x}{A}}$
+        \item $\condtreeruleI{Weaken}{\etyperelation{\P}{\G}{x}{A}}{\wellformed{\P}{B}}{\etyperelation{\P}{\gby}{x}{A}}{x \neq y}$
+        \item $\ntreeruleI{Fn}{\etyperelation{\P}{\gax}{v}{\b}}{\etyperelation{\P}{\G}{\lam{x}{A}{v}}{\ab}}$
+        \item $\ntreeruleII{Sub}{\etyperelation{\P}{\G}{v}{A}}{ A \subtypep B}{\etyperelation{\P}{\G}{v}{B}}$
+        \item $\ntreeruleI{Effect-Abs}{\etyperelation{\P,\a}{\G}{v}{A}}{\gpetyperelation{\elam{\a}{v}}{\all{\a}{A}}}$
+        \item $\ntreeruleII{Effect-apply}{\gpetyperelation{v}{\all{\a}A}}{\wellformed{\P}{\e}}{\gpetyperelation{\eapp{v}{\e}}{A\ssub{\a}{\e}}}$
+        \item $\ntreeruleI{Return}{\gpetyperelation{v}{A}}{\gpetyperelation{\return{v}}{\moa}}$
+        \item $\ntreeruleII{Apply}{\gpetyperelation{v_1}{\aeb}}{\gpetyperelation{v_2}{A}}{\gpetyperelation{\apply{v_1}{v_2}}{\meb}}$
+        \item $\ntreeruleIII{If}{\gpetyperelation{v}{\B} }{ \gpetyperelation{v_1}{A}}{\gpetyperelation{v_2}{A}}{\gpetyperelation{\pifthenelse{A}{V}{v_1}{v_2}}{A}}$
+        \item $\ntreeruleII{Do}{\gpetyperelation{v_1}{\M{\e_1}{A}} }{ \etyperelation{\P}{\gax}{v_2}{\M{\e_2}{B}}}{\gpetyperelation{\doin{x}{v_1}{v_2}}{\M{\e_1 \dot \e_2}{B}}}$
+    \end{itemize}
+    
+    \subsection{Ok Lemma}
+    If $\gpetyperelation{t}{\tau}$ then $\oke{\P}{\G}$.
+    \paragraph{Proof}
+    If $\ok{\gax}$ then by inversion $\ok{\G}$
+    Only the type rule \texttt{Weaken} adds terms to the environment from its preconditions to its post-condition and it does so in an $\ok{}$ preserving way. Any type derivation tree has at least one leaf. All leaves are axioms which require $\oke{\P}{\G}$. And all non-axiom derivations preserve the $\ok{}$ property.
+    
 }
 
 \ifdefined\NoDocument

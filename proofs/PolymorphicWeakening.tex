@@ -6,9 +6,9 @@
     \subsection{Relation}
 
     \begin{itemize}
-        \item $\treerule{Id}{\ok{\P}}{\wrel{\i}{\P}{\P}}$
-        \item $\treerule{Project}{\wrel{\w}{\P'}{\P}}{\wrel{\w\pi}{(\P', \a)}{\P}}$
-        \item $\treerule{Extend}{\wrel{\w}{\P'}{\P}}{\wrel{\w\x}{(\P', \a)}{(\P, \a)}}$
+        \item $\ntreeruleI{Id}{\ok{\P}}{\wrel{\i}{\P}{\P}}$
+        \item $\ntreeruleI{Project}{\wrel{\w}{\P'}{\P}}{\wrel{\w\pi}{(\P', \a)}{\P}}$
+        \item $\ntreeruleI{Extend}{\wrel{\w}{\P'}{\P}}{\wrel{\w\x}{(\P', \a)}{(\P, \a)}}$
     \end{itemize}
     \subsection{Weakening Properties}
     \subsection{Effect Weakening Preserves $\ok{}$}
@@ -66,7 +66,7 @@
         So $\w = \w'\x$
         So $\wrel{\w'}{\P'''}{\P''}$, and hence:
         \begin{equation}
-            \treerule{Var}{\ok{\P''', \a}}{\wellformed{\P''',\a}{\a}}
+            \ntreeruleI{Var}{\ok{\P''', \a}}{\wellformed{\P''',\a}{\a}}
         \end{equation}
     \subcase{$\P' = \P''', \b$} and $\b \neq\a$
 
@@ -74,7 +74,7 @@
 
     By induction, $\wrel{\w'}{\P'''}{\P}$
     so \begin{equation}
-        \treerule{Weaken}{\wellformed{\P'''}{\a}}{\wellformed{\P'}{\a}}
+        \ntreeruleI{Weaken}{\wellformed{\P'''}{\a}}{\wellformed{\P'}{\a}}
     \end{equation}
 
     \paragraph{Case Weaken}
@@ -88,7 +88,7 @@
 
     So by induction
     \begin{equation}
-        \treerule{weak}{\wellformed{\P'''}{\a}}{\wellformed{\P'}{\a}}
+        \ntreeruleI{weak}{\wellformed{\P'''}{\a}}{\wellformed{\P'}{\a}}
     \end{equation}
 
 
@@ -155,7 +155,7 @@
     If $\wellformedok{\P}{\G}$ then $\wellformedok{\P'}{\G}$ so:
 
     \begin{equation}
-        \treerule{Const}{\wellformedok{\P'}{\G}}{\etyperelation{\P'}{\G}{\const{A}}{A}}
+        \ntreeruleI{Const}{\wellformedok{\P'}{\G}}{\etyperelation{\P'}{\G}{\const{A}}{A}}
     \end{equation}
 
     \case{Variables}
@@ -256,9 +256,9 @@
 
 
     \begin{itemize}
-        \item $\treerule{Id}{\wellformedok{\P}{\G}}{\pewrel{\i}{\G}{\G}}$
-        \item $\treerule{Project}{\pewrel{\w}{\G'}{\G}\s\s x \notin \dom{\G'}}{\pewrel{\w \pi}{\G, x: A}{\G}}$
-        \item $\treerule{Extend}{\pewrel{\w}{\G'}{\G}\s\s x \notin \dom{\G'}\s\s A \subtype B}{\pewrel{w \x}{\G', x: A}{\G, x: B}}$
+        \item $\ntreeruleI{Id}{\wellformedok{\P}{\G}}{\pewrel{\i}{\G}{\G}}$
+        \item $\ntreeruleII{Project}{\pewrel{\w}{\G'}{\G}}{ x \notin \dom{\G'}}{\pewrel{\w \pi}{\G, x: A}{\G}}$
+        \item $\ntreeruleIII{Extend}{\pewrel{\w}{\G'}{\G}}{ x \notin \dom{\G'}}{ A \subtype B}{\pewrel{w \x}{\G', x: A}{\G, x: B}}$
     \end{itemize}
 
     \subsection{Domain Lemma}
@@ -276,19 +276,19 @@
     If $\pewrel{\w}{\G'}{\G}$ and $\wellformedok{\P}{\G}$ then $\wellformedok{\P}{\G'}$
     \proof
     \case{Id}
-    $$\treerule{Id}{\wellformedok{\P}{\G}}{\pewrel{\i}{\G}{\G}}$$
+    $$\ntreeruleI{Id}{\wellformedok{\P}{\G}}{\pewrel{\i}{\G}{\G}}$$
 
     By inversion, $\wellformedok{\P}{\G}$.
 
     \case{Project}
-    $$\treerule{Project}{\pewrel{\w}{\G'}{\G}\s\s x \notin \dom{\G'}}{\pewrel{\w \pi}{\G, x: A}{\G}}$$
+    $$\ntreeruleII{Project}{\pewrel{\w}{\G'}{\G}}{ x \notin \dom{\G'}}{\pewrel{\w \pi}{\G, x: A}{\G}}$$
 
     By inversion, $\pewrel{\w}{\G'}{\G}$ and $x\notin \dom{\G'}$.
 
     Hence by induction $\wellformedok{\P}{\G'}$, $\wellformedok{\P}{\G}$. Since $x\notin\dom{\G'}$, we have $\wellformedok{\P}{\G', x:A}$.
 
     \case{Extend}
-    $\treerule{Extend}{\pewrel{\w}{\G'}{\G}\s\s x \notin \dom{\G'}\s\s A \subtype B}{\pewrel{w \x}{\G', x: A}{\G, x: B}}$, 
+    $\ntreeruleIII{Extend}{\pewrel{\w}{\G'}{\G}}{ x \notin \dom{\G'}}{ A \subtype B}{\pewrel{w \x}{\G', x: A}{\G, x: B}}$, 
 
     By inversion, we have 
 
@@ -314,7 +314,7 @@
         Then  $\G' = (\G'',x': A')$ and $\pewrel{\w'}{\G''}{\G}$. So by induction, there is a tree, $\D_1$ deriving $\etyperelation{\P}{\G''}{x}{A}$,  such that:
         
         \begin{equation}
-            \treerule{Weaken}{\treerule{}{\D_1}{\etyperelation{\P}{\G''}{x}{A}}}{\etyperelation{\P}{\G'', x':A' }{x}{A}}
+            \ntreeruleI{Weaken}{\treeruleI{\D_1}{\etyperelation{\P}{\G''}{x}{A}}}{\etyperelation{\P}{\G'', x':A' }{x}{A}}
         \end{equation}
 
         \subcase{$\w = \w'\x$} 
@@ -332,9 +332,9 @@
         Then we derive the new derivation, $\D'$ as so:
 
         \begin{equation}
-            \treerule{Sub-type}{
-                \treerule{var}{}{\etyperelation{\P}{\G''', x: B}{x}{B}}
-                \s\s
+            \ntreeruleII{Sub-type}{
+                \ntreeruleI{var}{}{\etyperelation{\P}{\G''', x: B}{x}{B}}
+                }{
                 B \subtype A
             }{
                 \etyperelation{\P}{\G'}{x}{A}
@@ -344,7 +344,7 @@
         \subcase{$x \neq x'$}
         Then 
         \begin{equation}
-            \D = \treerule{Weaken}{\treerule{}{\D_1}{\etyperelation{\P}{\G''}{x}{A}}}{\gpetyperelation{x}{A}}
+            \D = \ntreeruleI{Weaken}{\treeruleI{\D_1}{\etyperelation{\P}{\G''}{x}{A}}}{\gpetyperelation{x}{A}}
         \end{equation}
 
         By induction with $\pewrel{\w}{\G'''}{\G''}$,
@@ -353,7 +353,7 @@
         We have the weakened derivation:
 
         \begin{equation}
-            \D' = \treerule{Weaken}{\treerule{}{\D_1'}{\etyperelation{\P}{\G'''}{x}{A}}}{\etyperelation{\P}{\G'}{x}{A}}
+            \D' = \ntreeruleI{Weaken}{\treeruleI{\D_1'}{\etyperelation{\P}{\G'''}{x}{A}}}{\etyperelation{\P}{\G'}{x}{A}}
         \end{equation}
 
     \case{Constant}
@@ -368,7 +368,7 @@
     Hence
 
     \begin{equation}
-        \treerule{Const}{\wellformedok{\P}{\G'}}{\etyperelation{\P}{\G'}{\const{A}}{A}}
+        \ntreeruleI{Const}{\wellformedok{\P}{\G'}}{\etyperelation{\P}{\G'}{\const{A}}{A}}
     \end{equation}
     Holds.
 
@@ -376,8 +376,8 @@
     By inversion, we have a derivation $\D_1$ giving
 
     \begin{equation}
-        \D = \treerule{Fn}{
-            \treerule{}{\D_1}{\etyperelation{\P}{\gax}{v}{B}}
+        \D = \ntreeruleI{Fn}{
+            \treeruleI{\D_1}{\etyperelation{\P}{\gax}{v}{B}}
         }{\gpetyperelation{\lam{x}{A}{v}}{\ab}}
     \end{equation}
 
@@ -390,36 +390,36 @@
     Hence, by induction, using $\pewrel{\w\x}{(\G,x:  A)}{(\gax)}$, we derive $\D_1'$:
 
     \begin{equation}
-        \D' = \treerule{Fn}{
-            \treerule{}{\D_1'}{\etyperelation{\P}{\G',x: A}{v}{B}}
+        \D' = \ntreeruleI{Fn}{
+            \treeruleI{\D_1'}{\etyperelation{\P}{\G',x: A}{v}{B}}
         }{\etyperelation{\P}{\G',x: A}{\lam{x}{A}{v}}{\ab}}
     \end{equation}
 
     \case{Sub-typing}
 
     \begin{equation}
-        \treerule{Sub-type}{\gpetyperelation{v}{A}\s\s A\subtype B}{\gpetyperelation{v}{B}}
+        \ntreeruleII{Sub-type}{\gpetyperelation{v}{A}}{ A\subtype B}{\gpetyperelation{v}{B}}
     \end{equation}
 
     by inversion, we have a derivation $\D_1$
     \begin{equation}
-        \treerule{}{\D_1}{\gpetyperelation{v}{A}}
+        \treeruleI{\D_1}{\gpetyperelation{v}{A}}
     \end{equation}
 
     So by induction, we have a derivation $\D_1'$ such that:
     \begin{equation}
-        \treerule{Sub-type}{\treerule{}{\D_1'}{\etyperelation{\P}{\G'}{v}{a}}\s\s A \subtype B}{\etyperelation{\P}{\G'}{v}{B}}
+        \ntreeruleII{Sub-type}{\treeruleI{\D_1'}{\etyperelation{\P}{\G'}{v}{a}}}{ A \subtype B}{\etyperelation{\P}{\G'}{v}{B}}
     \end{equation}
 
     \case{Return}
     We have the sub-derivation $\D_1$ such that
     \begin{equation}
-        \D = \treerule{Return}{\treerule{}{\D_1}{\gpetyperelation{v}{A}}}{\gpetyperelation{\return{v}}{\moa}}
+        \D = \ntreeruleI{Return}{\treeruleI{\D_1}{\gpetyperelation{v}{A}}}{\gpetyperelation{\return{v}}{\moa}}
     \end{equation}
 
     Hence, by induction, with $\pewrel{\w}{\G'}{\G}$, we find the derivation $\D_1'$ such that:
     \begin{equation}
-        \D' = \treerule{Return}{\treerule{}{\D_1'}{\etyperelation{\P}{\G'}{v}{A}}}{\etyperelation{\P}{\G'}{\return{v}}{\moa}}
+        \D' = \ntreeruleI{Return}{\treeruleI{\D_1'}{\etyperelation{\P}{\G'}{v}{A}}}{\etyperelation{\P}{\G'}{\return{v}}{\moa}}
     \end{equation}
 
     \case{Apply}
@@ -427,10 +427,10 @@
 
         \begin{equation}
             \D = 
-            \treerule{Apply}{
-                \treerule{}{\D_1}{\gpetyperelation{v_1}{\ab}}
-                \s\s
-                \treerule{}{\D_2}{\gpetyperelation{v_2}{A}}
+            \ntreeruleII{Apply}{
+                \treeruleI{\D_1}{\gpetyperelation{v_1}{\ab}}
+                }{
+                \treeruleI{\D_2}{\gpetyperelation{v_2}{A}}
             } {
                 \gpetyperelation{\apply{v_1}{v_2}}{B}
             }
@@ -441,10 +441,10 @@
         
         \begin{equation}
             \D' = 
-            \treerule{Apply}{
-                \treerule{}{\D_1'}{\etyperelation{\P}{\G'}{v_1}{\ab}}
-                \s\s
-                \treerule{}{\D_2'}{\etyperelation{\P}{\G'}{v_2}{A}}
+            \ntreeruleII{Apply}{
+                \treeruleI{\D_1'}{\etyperelation{\P}{\G'}{v_1}{\ab}}
+                }{
+                \treeruleI{\D_2'}{\etyperelation{\P}{\G'}{v_2}{A}}
             } {
                 \etyperelation{\P}{\G'}{\apply{v_1}{v_2}}{B}
             }
@@ -455,12 +455,12 @@
 
 
     \begin{equation}
-        \D = \treerule{If}{
-            \treerule{}{\D_1}{\etyperelation{\P}{\G}{v}{\B}}
-            \s\s
-            \treerule{}{\D_2}{\etyperelation{\P}{\G}{v_1}{A}}
-            \s\s
-            \treerule{}{\D_3}{\etyperelation{\P}{\G}{v_2}{A}}
+        \D = \ntreeruleIII{If}{
+            \treeruleI{\D_1}{\etyperelation{\P}{\G}{v}{\B}}
+            }{
+            \treeruleI{\D_2}{\etyperelation{\P}{\G}{v_1}{A}}
+            }{
+            \treeruleI{\D_3}{\etyperelation{\P}{\G}{v_2}{A}}
         }{
             \etyperelation{\P}{\G}{\pifthenelse{A}{v}{v_1}{v_2}}{A}
         }
@@ -469,12 +469,12 @@
     By induction, this gives us the sub-derivations $\D_1', \D_2', \D_3'$ such that
 
     \begin{equation}
-        \D' = \treerule{If}{
-            \treerule{}{\D_1'}{\etyperelation{\P}{\G'}{v}{\B}}
-            \s\s
-            \treerule{}{\D_2'}{\etyperelation{\P}{\G'}{v_1}{A}}
-            \s\s
-            \treerule{}{\D_3'}{\etyperelation{\P}{\G'}{v_2}{A}}
+        \D' = \ntreeruleIII{If}{
+            \treeruleI{\D_1'}{\etyperelation{\P}{\G'}{v}{\B}}
+            }{
+            \treeruleI{\D_2'}{\etyperelation{\P}{\G'}{v_1}{A}}
+            }{
+            \treeruleI{\D_3'}{\etyperelation{\P}{\G'}{v_2}{A}}
         }{
             \etyperelation{\P}{\G'}{\pifthenelse{A}{v}{v_1}{v_2}}{A}
         }
@@ -485,10 +485,10 @@
 
 
     \begin{equation}
-        \D = \treerule{Bind}{
-            \treerule{}{\D_1}{\etyperelation{\P}{\G}{v_1}{\M{\E_1}{A}}}
-            \s\s
-            \treerule{}{\D_2}{\etyperelation{\P}{\G,x: A}{v_2}{\M{\e_2}{B}}}
+        \D = \ntreeruleII{Bind}{
+            \treeruleI{\D_1}{\etyperelation{\P}{\G}{v_1}{\M{\E_1}{A}}}
+            }{
+            \treeruleI{\D_2}{\etyperelation{\P}{\G,x: A}{v_2}{\M{\e_2}{B}}}
         }{
             \etyperelation{\P}{\G}{\doin{x}{v_1}{v_2}}{\M{\e_1\dot\e_2}{B}}
         }
@@ -497,10 +497,10 @@
     If $\pewrel{\w}{\G'}{\G}$ then $\pewrel{\w\x}{\G',x:A}{\gax}$, so by induction, we can derive $\D_1'$, $\D_2'$ such that:
 
     \begin{equation}
-        \D' = \treerule{Bind}{
-            \treerule{}{\D_1'}{\etyperelation{\P}{\G'}{v_1}{\M{\E_1}{A}}}
-            \s\s
-            \treerule{}{\D_2'}{\etyperelation{\P}{\G',x: A}{v_2}{\M{\e_2}{B}}}
+        \D' = \ntreeruleII{Bind}{
+            \treeruleI{\D_1'}{\etyperelation{\P}{\G'}{v_1}{\M{\E_1}{A}}}
+            }{
+            \treeruleI{\D_2'}{\etyperelation{\P}{\G',x: A}{v_2}{\M{\e_2}{B}}}
         }{
             \etyperelation{\P}{\G'}{\doin{x}{v_1}{v_2}}{\M{\e_1\dot\e_2}{B}}
         }
@@ -509,8 +509,8 @@
     \case{Effect-Abstraction}
         \bi,we have derivation $\D_1$ deriving
         \begin{equation}
-            \treerule{Effect-Abs}{
-                    \treerule{}{\D_1}{\etyperelation{\P,\a}{\G}{v}{A}}}{\gpetyperelation{\elam{\a}{v}}{\all{\a}{A}}
+            \ntreeruleI{Effect-Abs}{
+                    \treeruleI{\D_1}{\etyperelation{\P,\a}{\G}{v}{A}}}{\gpetyperelation{\elam{\a}{v}}{\all{\a}{A}}
                     }
         \end{equation}
         
@@ -519,8 +519,8 @@
 
         \begin{equation}
             \D' = 
-            \treerule{Effect-Abs}{
-                \treerule{}{\D_1}{\etyperelation{\P,\a}{\G'}{v}{A}}
+            \ntreeruleI{Effect-Abs}{
+                \treeruleI{\D_1}{\etyperelation{\P,\a}{\G'}{v}{A}}
             }{
                 \etyperelation{
                     \P
@@ -535,9 +535,9 @@
 
     \bi we have derivation $\D_1$ deriving
     \begin{equation}
-        \treerule{Effect-App}{
-            \treerule{}{\D_1}{\gpetyperelation{v}{\all{\a}{A}}}
-            \s\s
+        \ntreeruleII{Effect-App}{
+            \treeruleI{\D_1}{\gpetyperelation{v}{\all{\a}{A}}}
+            }{
            \wellformed{\P}{\e}
         }{
             \gpetyperelation{\eapp{v}{\e}}{A\ssub{\a}{\e}}
@@ -547,9 +547,9 @@
     So by induction, we have $\D_1'$ deriving
 
     \begin{equation}
-        \treerule{Effect-App}{
-            \treerule{}{\D_1'}{\etyperelation{\P}{\G'}{v}{\all{\a}{A}}}
-            \s\s
+        \ntreeruleII{Effect-App}{
+            \treeruleI{\D_1'}{\etyperelation{\P}{\G'}{v}{\all{\a}{A}}}
+            }{
            \wellformed{\P}{\e}
         }{
             \etyperelation{\P}{\G'}{\eapp{v}{\e}}{A\ssub{\a}{\e}}

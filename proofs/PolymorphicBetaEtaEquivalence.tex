@@ -3,51 +3,51 @@
     
     \subsection{Beta-Eta conversions}
             \begin{itemize}
-        \item $\treerule{Lambda-Beta}{\etyperelation{\P}{\gax}{v_2}{B}\s\s \gpetyperelation{v_1}{A}}{\gpeberelation{\apply{(\lam{x}{A}{v_1})}{v_2} }{ v_1\ssub{x}{v_2}}{B}}$
+        \item $\ntreeruleII{Lambda-Beta}{\etyperelation{\P}{\gax}{v_2}{B}}{ \gpetyperelation{v_1}{A}}{\gpeberelation{\apply{(\lam{x}{A}{v_1})}{v_2} }{ v_1\ssub{x}{v_2}}{B}}$
             
-        \item $\treerule{Lambda-Eta}{\gpetyperelation{v}{\ab}}{\gpeberelation{\lam{x}{A}{(\apply{v}{x}})}{v}{\ab}}$            
+        \item $\ntreeruleI{Lambda-Eta}{\gpetyperelation{v}{\ab}}{\gpeberelation{\lam{x}{A}{(\apply{v}{x}})}{v}{\ab}}$            
 
-        \item $\treerule{Left Unit}{\gpetyperelation{v_1}{A} \s\s \etyperelation{\P}{\gax}{v_2}{\meb}}{\gpeberelation{\doin{x}{\return{v_1}}{v_2}}{v_2\ssub{x}{v_1}}{\meb}}$
+        \item $\ntreeruleII{Left Unit}{\gpetyperelation{v_1}{A} }{ \etyperelation{\P}{\gax}{v_2}{\meb}}{\gpeberelation{\doin{x}{\return{v_1}}{v_2}}{v_2\ssub{x}{v_1}}{\meb}}$
             
-        \item $\treerule{Right Unit}{\gpetyperelation{v}{\mea}}{\gpeberelation{\doin{x}{v}{\return{x}} }{v}{\mea}}$
+        \item $\ntreeruleI{Right Unit}{\gpetyperelation{v}{\mea}}{\gpeberelation{\doin{x}{v}{\return{x}} }{v}{\mea}}$
         
-        \item $\treerule{Associativity}{\gpetyperelation{v_1}{\M{\e_1}{A}} \s\s \etyperelation{\P}{\gax}{v_2}{\M{\e_2}{B}}\s\s \etyperelation{\P}{\gby}{v_3}{\M{\e_3}{C}}}{
+        \item $\ntreeruleIII{Associativity}{\gpetyperelation{v_1}{\M{\e_1}{A}} }{ \etyperelation{\P}{\gax}{v_2}{\M{\e_2}{B}}}{ \etyperelation{\P}{\gby}{v_3}{\M{\e_3}{C}}}{
             \gpeberelation{\doin{x}{v_1}{(\doin{y}{v_2}{v_3})}}{\doin{y}{(\doin{x}{v_1}{v_2})}{v_3}}{\M{\e_1 \dot \e_2 \dot \e_3}{C}}
         }$
 
-        \item $\treerule{Unit}{\gpetyperelation{v}{\U}}{\gpeberelation{v}{\u}{\U}}$
+        \item $\ntreeruleI{Unit}{\gpetyperelation{v}{\U}}{\gpeberelation{v}{\u}{\U}}$
 
-        \item $\treerule{if-true}{\gpetyperelation{v_1}{A}\s\s\gpetyperelation{v_2}{A}}{\gpeberelation{\pifthenelse{A}{\t}{v_1}{v_2}}{v_1}{A}}$
+        \item $\ntreeruleII{if-true}{\gpetyperelation{v_1}{A}}{\gpetyperelation{v_2}{A}}{\gpeberelation{\pifthenelse{A}{\t}{v_1}{v_2}}{v_1}{A}}$
             
-        \item $\treerule{if-false}{\gpetyperelation{v_2}{A}\s\s\gpetyperelation{v_1}{A}}{\gpeberelation{\pifthenelse{A}{\f}{v_1}{v_2}}{v_2}{A}}$
+        \item $\ntreeruleII{if-false}{\gpetyperelation{v_2}{A}}{\gpetyperelation{v_1}{A}}{\gpeberelation{\pifthenelse{A}{\f}{v_1}{v_2}}{v_2}{A}}$
             
-        \item $\treerule{If-Eta}{\etyperelation{\P}{\G, x: \B}{v_2}{A}\s\s\gpetyperelation{v_1}{\B}}{\gpeberelation{\pifthenelse{A}{v_1}{v_2\ssub{x}{\t}}{v_2\ssub{x}{\f}}}{v_2\ssub{x}{v_1}}{A}}$
+        \item $\ntreeruleII{If-Eta}{\etyperelation{\P}{\G, x: \B}{v_2}{A}}{\gpetyperelation{v_1}{\B}}{\gpeberelation{\pifthenelse{A}{v_1}{v_2\ssub{x}{\t}}{v_2\ssub{x}{\f}}}{v_2\ssub{x}{v_1}}{A}}$
             
-        \item $\treerule{Effect-beta}{\wellformed{\P}{\e}\s\s\etyperelation{\P, \a}{\G}{v}{A}}{\gpeberelation{\eapp{(\elam{\a}{v}}{\e})}{v\ssub{\a}{\e}}{A\ssub{\a}{\e}}}$
+        \item $\ntreeruleII{Effect-beta}{\wellformed{\P}{\e}}{\etyperelation{\P, \a}{\G}{v}{A}}{\gpeberelation{\eapp{(\elam{\a}{v}}{\e})}{v\ssub{\a}{\e}}{A\ssub{\a}{\e}}}$
 
-        \item $\treerule{Effect-eta}{\etyperelation{\P}{\G}{v}{\all{\a}{A}}}{\gpeberelation{\elam{\a}{(\eapp{v}{\a})}}{v}{\all{\a}{A}}}$
+        \item $\ntreeruleI{Effect-eta}{\etyperelation{\P}{\G}{v}{\all{\a}{A}}}{\gpeberelation{\elam{\a}{(\eapp{v}{\a})}}{v}{\all{\a}{A}}}$
             
     \end{itemize}
         \subsection{Equivalence Relation}
     \begin{itemize}
-        \item $\treerule{Reflexive}{\gpetyperelation{v}{A}}{\gpeberelation{v}{v}{A}}$
-        \item $\treerule{Symmetric}{\gpeberelation{v_1}{v_2}{A}}{\gpeberelation{v_2}{v_1}{A}}$
-        \item $\treerule{Transitive}{\gpeberelation{v_1}{v_2}{A}\s\s\gpeberelation{v_2}{v_3}{A}}{\gpeberelation{v_1}{v_3}{A}}$
+        \item $\ntreeruleI{Reflexive}{\gpetyperelation{v}{A}}{\gpeberelation{v}{v}{A}}$
+        \item $\ntreeruleI{Symmetric}{\gpeberelation{v_1}{v_2}{A}}{\gpeberelation{v_2}{v_1}{A}}$
+        \item $\ntreeruleII{Transitive}{\gpeberelation{v_1}{v_2}{A}}{\gpeberelation{v_2}{v_3}{A}}{\gpeberelation{v_1}{v_3}{A}}$
     \end{itemize}
     \subsection{Congruences}
     \begin{itemize}
-        \item $\treerule{Effect-Abs}{\eberelation{\P, \a}{\G}{v_1}{v_2}{A}}{\gpeberelation{\elam{\a}{v_1}}{\elam{\a}{v_2}}{\all{\a}{A}}}$
-        \item $\treerule{Effect-Apply}{\gpeberelation{v_1}{v_2}{\all{\a}{A}}\s\s\wellformed{\P}{\e}}{\gpeberelation{\eapp{v_1}{\e}}{\eapp{v_2}{\e}}{A\ssub{\a}{\e}}}$
-        \item $\treerule{Lambda}{\eberelation{\P}{\gax}{v_1}{v_2}{B}}{\gpeberelation{\lam{x}{A}{v_1}}{\lam{x}{A}{v_2}}{\ab}}$
+        \item $\ntreeruleI{Effect-Abs}{\eberelation{\P, \a}{\G}{v_1}{v_2}{A}}{\gpeberelation{\elam{\a}{v_1}}{\elam{\a}{v_2}}{\all{\a}{A}}}$
+        \item $\ntreeruleII{Effect-Apply}{\gpeberelation{v_1}{v_2}{\all{\a}{A}}}{\wellformed{\P}{\e}}{\gpeberelation{\eapp{v_1}{\e}}{\eapp{v_2}{\e}}{A\ssub{\a}{\e}}}$
+        \item $\ntreeruleI{Lambda}{\eberelation{\P}{\gax}{v_1}{v_2}{B}}{\gpeberelation{\lam{x}{A}{v_1}}{\lam{x}{A}{v_2}}{\ab}}$
 
-        \item $\treerule{Return}{\gpeberelation{v_1}{v_2}{A}}{\gpeberelation{\return{v_1}}{\return{v_2}}{\moa}}$
+        \item $\ntreeruleI{Return}{\gpeberelation{v_1}{v_2}{A}}{\gpeberelation{\return{v_1}}{\return{v_2}}{\moa}}$
 
-        \item $\treerule{Apply}{\gpeberelation{v_1}{v_1'}{\ab}\s\s\gpeberelation{v_2}{v_2'}{A}}{\gpeberelation{\apply{v_1}{v_2}}{\apply{v_1'}{v_2'}}{B}}$
+        \item $\ntreeruleII{Apply}{\gpeberelation{v_1}{v_1'}{\ab}}{\gpeberelation{v_2}{v_2'}{A}}{\gpeberelation{\apply{v_1}{v_2}}{\apply{v_1'}{v_2'}}{B}}$
 
-        \item $\treerule{Bind}{\gpeberelation{v_1}{v_1'}{\M{\e_1}{A}} \s\s \eberelation{\P}{\gax}{v_2}{v_2'}{\M{\e_2}{B}}}{\gpeberelation{\doin{x}{v_1}{v_2}}{\doin{c}{v_1'}{v_2'}}{\M{\e_1 \dot \e_2}{B}}}$
+        \item $\ntreeruleII{Bind}{\gpeberelation{v_1}{v_1'}{\M{\e_1}{A}} }{ \eberelation{\P}{\gax}{v_2}{v_2'}{\M{\e_2}{B}}}{\gpeberelation{\doin{x}{v_1}{v_2}}{\doin{c}{v_1'}{v_2'}}{\M{\e_1 \dot \e_2}{B}}}$
 
-        \item $\treerule{If}{\gpeberelation{v}{v'}{\B} \s\s \gpeberelation{v_1}{v_1'}{A}\s\s\gpeberelation{v_2}{v_2'}{A}}{\gpeberelation{\pifthenelse{A}{v}{v_1}{v_2}}{\pifthenelse{A}{v}{v_1'}{v_2'}}{A}}$
-        \item $\treerule{Subtype}{\gpeberelation{v}{v'}{A} \s\s A \subtypep B}{\gpeberelation{v}{v'}{B}}$
+        \item $\ntreeruleIII{If}{\gpeberelation{v}{v'}{\B} }{ \gpeberelation{v_1}{v_1'}{A}}{\gpeberelation{v_2}{v_2'}{A}}{\gpeberelation{\pifthenelse{A}{v}{v_1}{v_2}}{\pifthenelse{A}{v}{v_1'}{v_2'}}{A}}$
+        \item $\ntreeruleII{Subtype}{\gpeberelation{v}{v'}{A} }{ A \subtypep B}{\gpeberelation{v}{v'}{B}}$
     \end{itemize}
 
 \section{Beta-Eta Equivalence Implies Both Sides Have the Same Type}
@@ -68,14 +68,14 @@
     
     \case{Lambda}
         By inversion, we have $\etyperelation{\P}{\gax}{v_1}{B}$ and $\gpetyperelation{v_2}{A}$. Hence by the typing rules, we have:
-        $$\treerule{Apply}{
-            \treerule{Lambda}{\etyperelation{\P}{\gax }{v_1}{B}}{\gpetyperelation{\lam{x}{A}{v_1}}{\ab}}
-            \s\s
+        $$\ntreeruleII{Apply}{
+            \ntreeruleI{Lambda}{\etyperelation{\P}{\gax }{v_1}{B}}{\gpetyperelation{\lam{x}{A}{v_1}}{\ab}}
+            }{
             \gpetyperelation{v_2}{A}
         }{\gpetyperelation{\apply{(\lam{x}{A}{v_1})}{v_2}}{A}}$$
 
         By the substitution rule \todo{which?}, we have 
-        $$\treerule{Substitution}{\etyperelation{\P}{\gax}{v_1}{B}\s\s\gpetyperelation{v_2}{A}}{\gpetyperelation{v_1\ssub{x}{v_2}}{B}}$$
+        $$\ntreeruleII{Substitution}{\etyperelation{\P}{\gax}{v_1}{B}}{\gpetyperelation{v_2}{A}}{\gpetyperelation{v_1\ssub{x}{v_2}}{B}}$$
         \case{Left Unit}
         By inversion, we have $\gpetyperelation{v_1}{A}$ and $\etyperelation{\P}{\gax }{v_2}{\meb}$
 
@@ -83,7 +83,7 @@
 
 
         \begin{equation}
-            \treerule{Bind}{\treerule{Return}{\gpetyperelation{v_1}{A}}{\gpetyperelation{\return{v_1}}{\moa}}\s\s\etyperelation{\P}{\gax}{v_2}{\meb}}{\gpetyperelation{\doin{x}{\return{v_1}}{v_2}}{\M{\1\dot\e}{B} = \meb}}
+            \ntreeruleII{Bind}{\ntreeruleI{Return}{\gpetyperelation{v_1}{A}}{\gpetyperelation{\return{v_1}}{\moa}}}{\etyperelation{\P}{\gax}{v_2}{\meb}}{\gpetyperelation{\doin{x}{\return{v_1}}{v_2}}{\M{\1\dot\e}{B} = \meb}}
         \end{equation}
 
         And by the substitution typing rule we have: \todo{Which Rule?}
@@ -97,10 +97,10 @@
         Hence we have:
 
         \begin{equation}
-            \treerule{Bind}{
+            \ntreeruleII{Bind}{
                 \gpetyperelation{v}{\mea}
-                \s\s
-                \treerule{Return}{\treerule{var}{}{\etyperelation{\P}{\gax}{x}{A}}}{\etyperelation{\P}{\gax}{\return{v}}{\moa}}
+                }{
+                \ntreeruleI{Return}{\ntreeruleI{var}{\oke{\P}{\gax}}{\etyperelation{\P}{\gax}{x}{A}}}{\etyperelation{\P}{\gax}{\return{v}}{\moa}}
             }{\gpetyperelation{\doin{x}{v}{\return{x}}}{\M{\e\dot\1}{A} = \mea}}
         \end{equation}
         \case{Associativity}
@@ -114,12 +114,12 @@
 
         Hence we can construct the type derivations:
         \begin{equation} 
-            \treerule{Bind}{
+            \ntreeruleII{Bind}{
                 \gpetyperelation{v_1}{\M{\e_1}{A}}
-                \s\s
-                \treerule{Bind}{
+                }{
+                \ntreeruleII{Bind}{
                     \etyperelation{\P}{\gax}{v_2}{\M{\e_2}{B}}
-                    \s\s
+                    }{
                     \etyperelation{\P}{\gax, y: B}{v_3}{\M{\e_3}{C}}
                 }{
                     \etyperelation{\P}{\gax}{\do{x}{v_2}{v_3}}{\M{\e_2 \dot \e_3}{C}}
@@ -138,15 +138,15 @@
         and 
 
         \begin{equation}
-            \treerule{Bind}{
-                \treerule{Bind}{
+            \ntreeruleII{Bind}{
+                \ntreeruleII{Bind}{
                     \gpetyperelation{v_1}{\M{\e_1}{A}}
-                    \s\s
+                    }{
                     \etyperelation{\P}{\gax}{v_2}{\M{\e_2}{B}}
                 } {
                     \gpetyperelation{\doin{x}{v_1}{v_2}}{\M{\e_1\dot\e_2}{B}}
                 }
-                \s\s
+                }{
                 \etyperelation{\P}{\gby}{v_3}{\M{\e_3}{C}}
             }{
                 \gpetyperelation{\doin{y}{(\doin{x}{v_1}{v_2})}{v_3}}{\M{\e_1\dot\e_2\dot\e_3}{C}}
@@ -160,13 +160,13 @@
         Hence, we have
 
         \begin{equation}
-            \treerule{Fn}{
-                \treerule{App}{
+            \ntreeruleI{Fn}{
+                \ntreeruleII{App}{
                     \etyperelation{\P}{(\gax)}{x}{A}
-                    \s\s
-                    \treerule{weakening}{
+                    }{
+                    \ntreeruleII{weakening}{
                         \gpetyperelation{v}{\ab}
-                        \s\s
+                        }{
                         \pewrel{\i\pi}{\gax}{\G}
                     }{
                         \etyperelation{\P}{\gax}{v}{\ab}
@@ -182,11 +182,11 @@
 
             Hence 
             \begin{equation}
-                    \treerule{If}{
+                    \ntreeruleIII{If}{
                         \gpetyperelation{\t}{\B}
-                        \s\s
+                        }{
                         \gpetyperelation{v_1}{A}
-                        \s\s
+                        }{
                         \gpetyperelation{v_2}{A}
                     }{
                         \gpetyperelation{\pifthenelse{A}{\t}{v_1}{v_2}}{A}
@@ -197,11 +197,11 @@
 
         Hence 
         \begin{equation}
-            \treerule{If}{
+            \ntreeruleIII{If}{
                 \gpetyperelation{\f}{\B}
-                \s\s
+                }{
                 \gpetyperelation{v_1}{A}
-                \s\s
+                }{
                 \gpetyperelation{v_2}{A}
             }{
                 \gpetyperelation{\pifthenelse{A}{\f}{v_1}{v_2}}{A}
@@ -225,11 +225,11 @@
         Hence by the substitution theorem, we have:
 
         \begin{equation}
-            \treerule{If}{
+            \ntreeruleIII{If}{
                 \gpetyperelation{v_1}{\B}
-                \s\s
+                }{
                 \gpetyperelation{v_2\ssub{x}{\t}}{A}
-                \s\s
+                }{
                 \gpetyperelation{v_2\ssub{x}{\f}}{A}
             }{\gpetyperelation{\pifthenelse{A}{v_1}{v_2\ssub{x}{\t}}{v_2\ssub{x}{\f}}}{A}
             }
@@ -246,9 +246,9 @@
         Then we have the following type derivation:
 
         \begin{equation}
-            \treerule{Effect-App}{
-                \treerule{Effect-Fn}{\etyperelation{\P,\a}{\G}{v}{A}}{\gpetyperelation{\elam{\a}{v}}{\all{\a}{A}}}
-                \s\s
+            \ntreeruleII{Effect-App}{
+                \ntreeruleI{Effect-Fn}{\etyperelation{\P,\a}{\G}{v}{A}}{\gpetyperelation{\elam{\a}{v}}{\all{\a}{A}}}
+                }{
                 \wellformed{\P}{\e}
             }{\gpetyperelation{\eapp{\elam{\a}{v}}{\e}}{A\ssub{\a}{\e}}}            
         \end{equation}
@@ -256,7 +256,7 @@
         And we can construct the single-effect-substitution:
 
         \begin{equation}
-            \treerule{Single Substitution}{\wellformed{\P}{\e}}{\typerelation{\P}{\ssub{\a}{\e}}{(\P,\a)}}
+            \ntreeruleI{Single Substitution}{\wellformed{\P}{\e}}{\typerelation{\P}{\ssub{\a}{\e}}{(\P,\a)}}
         \end{equation}
 
         Hence by the substitution theorem,
@@ -271,14 +271,14 @@
     So the following derivation holds:
 
     \begin{equation}
-        \treerule{Effect-Fn}{
-            \treerule{Effect-App}{
-                \treerule{Effect-weakening}{
+        \ntreeruleI{Effect-Fn}{
+            \ntreeruleII{Effect-App}{
+                \ntreeruleI{Effect-weakening}{
                     \gpetyperelation{v}{\all{\a}{A}}
                 }{
                     \etyperelation{\P,\a}{\G}{v}{\all{\a}{A}}
                 }
-            \s\s
+            }{
                 \wellformed{\P,\a}{\a}
             }{
                 \etyperelation{\P,\a}{\G}{\eapp{v}{\a}}{A\ssub{\a}{\a}=A}
@@ -398,13 +398,13 @@
     \case{Effect-Lambda}
     \bi, $\eberelation{\P,\a}{\G}{v_1}{v_2}{A}$.
     So \begin{equation}
-        \treerule{Effect-Lambda}{\etyperelation{\P,\a}{\G}{v_1}{A}}{\gpetyperelation{\elam{\a}{v_2}}{\all{\a}{A}}}
+        \ntreeruleI{Effect-Lambda}{\etyperelation{\P,\a}{\G}{v_1}{A}}{\gpetyperelation{\elam{\a}{v_2}}{\all{\a}{A}}}
     \end{equation}
 
     and
 
     \begin{equation}
-        \treerule{Effect-Lambda}{\etyperelation{\P,\a}{\G}{v_2}{A}}{\gpetyperelation{\elam{\a}{v_2}}{\all{\a}{A}}}
+        \ntreeruleI{Effect-Lambda}{\etyperelation{\P,\a}{\G}{v_2}{A}}{\gpetyperelation{\elam{\a}{v_2}}{\all{\a}{A}}}
     \end{equation}
 
 
@@ -415,13 +415,13 @@
     So 
 
     \begin{equation}
-        \treerule{Effect-App}{\gpetyperelation{v_1}{\all{\a}{A}}\s\s\wellformed{\P}{\e}}{\gpetyperelation{\eapp{v_1}{\e}}{A\ssub{\e}{\a}}}
+        \ntreeruleII{Effect-App}{\gpetyperelation{v_1}{\all{\a}{A}}}{\wellformed{\P}{\e}}{\gpetyperelation{\eapp{v_1}{\e}}{A\ssub{\e}{\a}}}
     \end{equation}
 
     and
 
     \begin{equation}
-        \treerule{Effect-App}{\gpetyperelation{v_2}{\all{\a}{A}}\s\s\wellformed{\P}{\e}}{\gpetyperelation{\eapp{v_2}{\e}}{A\ssub{\e}{\a}}}
+        \ntreeruleII{Effect-App}{\gpetyperelation{v_2}{\all{\a}{A}}}{\wellformed{\P}{\e}}{\gpetyperelation{\eapp{v_2}{\e}}{A\ssub{\e}{\a}}}
     \end{equation}
 }   
     

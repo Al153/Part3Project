@@ -42,12 +42,12 @@
     Define the relation $$\typerelation{\G'}{\si}{\G}$$ by:
 
     \begin{itemize}
-        \item $\treerule{Nil}{\ok{\G'}}{\typerelation{\G'}{\nil}{\nil}}$
-        \item $\treerule{Extend}{
+        \item $\ntreeruleI{Nil}{\ok{\G'}}{\typerelation{\G'}{\nil}{\nil}}$
+        \item $\ntreeruleIII{Extend}{
             \typerelation{\G'}{\si}{\G}
-            \s\s
+            }{
             x\notin\dom{\G}
-            \s\s
+            }{
             \typerelation{\G'}{v}{A}
         }{
             \typerelation{\G'}{(\si, x \setto v)}{(\gax)}
@@ -103,7 +103,7 @@
             By inversion, $\G = \G'', y: B, x \neq y$, and there exists $\D$ such that
  
             \begin{equation}
-                \treerule{Weaken}{\treerule{}{\D}{\typerelation{\G''}{x}{A}}}{\typerelation{\G'', y: B}{x}{A}}
+                \ntreeruleI{Weaken}{\treeruleI{\D}{\typerelation{\G''}{x}{A}}}{\typerelation{\G'', y: B}{x}{A}}
             \end{equation}
 
             By inversion, $\si = \si', y\setto v$
@@ -129,8 +129,8 @@
         By inversion, there exists $\D$ such that:
 
         \begin{equation}
-            \treerule{Fn}{
-                \treerule{}{\D}{\typerelation{\G, x:A }{C}{\meb}}
+            \ntreeruleI{Fn}{
+                \treeruleI{\D}{\typerelation{\G, x:A }{C}{\meb}}
             }{\typerelation{\G}{\lam{x}{A}{C}}{\aeb}}
         \end{equation}
         Using alpha equivalence, we pick $x\notin(\dom{\G}\cup\dom{\G'})$
@@ -143,8 +143,8 @@
         So by induction using $\si,x\setto x$, we have $\D'$ such that:
 
         \begin{equation}
-            \treerule{Fn}{
-                \treerule{}{\D'}{\typerelation{\G', x:A }{C\sub{\si, x\setto v}}{\meb}}
+            \ntreeruleI{Fn}{
+                \treeruleI{\D'}{\typerelation{\G', x:A }{C\sub{\si, x\setto v}}{\meb}}
             }{\typerelation{\G}{\lam{x}{A}{C\sub{\si, x\setto{x}}}}{\aeb}}
         \end{equation} 
         Since $\lam{x}{A}{(C\sub{\si, x\setto{x}})} = {\lam{x}{A}({C\ssi})} = (\lam{x}{A}{C})\ssi$, we have a typing derivation for $\typerelation{\G'}{(\lam{x}{A}{C})\ssi}{\aeb}$.
@@ -159,20 +159,20 @@
         \end{equation}
 
         So \begin{equation}
-            \treerule{Const}{\ok{\G'}}{\typerelation{\G'}{\const{A}}{A}}
+            \ntreeruleI{Const}{\ok{\G'}}{\typerelation{\G'}{\const{A}}{A}}
         \end{equation}
     \subsection{Computation Terms}
     \paragraph{Case Return}
         By inversion, we have $\D_1$ such that:
 
         \begin{equation}
-            \treerule{Return}{\treerule{}{\D_1}{\typerelation{\G}{v}{A}}}{\typerelation{\G}{\return{v}}{\moa}}
+            \ntreeruleI{Return}{\treeruleI{\D_1}{\typerelation{\G}{v}{A}}}{\typerelation{\G}{\return{v}}{\moa}}
         \end{equation}
 
         By induction, we have $\D_1'$ such that
 
         \begin{equation}
-            \treerule{Return}{\treerule{}{\D'_1}{\typerelation{\G'}{v\ssi}{A}}}{\typerelation{\G'}{\return{(v\ssi)}}{\moa}}
+            \ntreeruleI{Return}{\treeruleI{\D'_1}{\typerelation{\G'}{v\ssi}{A}}}{\typerelation{\G'}{\return{(v\ssi)}}{\moa}}
         \end{equation}
 
         Since $(\return{v})\ssi = \return{(v\ssi)}$, the type derivation above holds for $\typerelation{\G'}{(\return{v})\ssi}{\moa}$.
@@ -181,20 +181,20 @@
         By inversion, we have $\D_1$, $\D_2$ such that:
 
         \begin{equation}
-            \treerule{Apply}{
-                \treerule{}{\D_1}{\typerelation{\G}{v_1}{\aeb}}
-                \s\s
-                \treerule{}{\D_2}{\typerelation{\G}{v_2}{A}}
+            \ntreeruleII{Apply}{
+                \treeruleI{\D_1}{\typerelation{\G}{v_1}{\aeb}}
+                }{
+                \treeruleI{\D_2}{\typerelation{\G}{v_2}{A}}
             }{\typerelation{\G}{\apply{v_1}{v_2}}{\meb}}
         \end{equation}
 
         By induction on $\D_1, \D_2$, we have $\D_1',\D_2'$ such that
 
         \begin{equation}
-            \treerule{Apply}{
-                \treerule{}{\D'_1}{\typerelation{\G'}{v_1\ssi}{\aeb}}
-                \s\s
-                \treerule{}{\D_2'}{\typerelation{\G'}{v_2\ssi}{A}}
+            \ntreeruleII{Apply}{
+                \treeruleI{\D'_1}{\typerelation{\G'}{v_1\ssi}{\aeb}}
+                }{
+                \treeruleI{\D_2'}{\typerelation{\G'}{v_2\ssi}{A}}
             }{\typerelation{\G'}{\apply{(v_1\ssi)}{(v_2\ssi)}}{\meb}}
         \end{equation}
 
@@ -203,12 +203,12 @@
         By inversion, we have $\D_1,\D_2,\D_3$ such that:
 
         \begin{equation}
-            \treerule{If}{
-                \treerule{}{\D_1}{\typerelation{\G}{v}{\B}}
-                \s\s
-                \treerule{}{\D_2}{\typerelation{\G}{C_1}{\mea}}
-                \s\s
-                \treerule{}{\D_3}{\typerelation{\G}{C_2}{\mea}}
+            \ntreeruleIII{If}{
+                \treeruleI{\D_1}{\typerelation{\G}{v}{\B}}
+                }{
+                \treeruleI{\D_2}{\typerelation{\G}{C_1}{\mea}}
+                }{
+                \treeruleI{\D_3}{\typerelation{\G}{C_2}{\mea}}
             }{
                 \typerelation{\G}{\ifthenelse{\e}{A}{v}{C_1}{C_2}}{\mea}
             }
@@ -218,12 +218,12 @@
         $\D_1', \D_2',\D_3'$ such that:
         
         \begin{equation}
-            \treerule{If}{
-                \treerule{}{\D_1'}{\typerelation{\G'}{v\ssi}{\B}}
-                \s\s
-                \treerule{}{\D_2'}{\typerelation{\G'}{C_1\ssi}{\mea}}
-                \s\s
-                \treerule{}{\D_3'}{\typerelation{\G'}{C_2\ssi}{\mea}}
+            \ntreeruleIII{If}{
+                \treeruleI{\D_1'}{\typerelation{\G'}{v\ssi}{\B}}
+                }{
+                \treeruleI{\D_2'}{\typerelation{\G'}{C_1\ssi}{\mea}}
+                }{
+                \treeruleI{\D_3'}{\typerelation{\G'}{C_2\ssi}{\mea}}
             }{
                 \typerelation{\G'}{\ifthenelse{\e}{A}{(v\ssi)}{(C_1\ssi)}{(C_2\ssi)}}{\mea}
             }
@@ -234,20 +234,20 @@
     \paragraph{Case Bind}
         By inversion, there exist $\D_1, \D_2$ such that:
         \begin{equation}
-            \treerule{Bind}{
-                \treerule{}{\D_1}{\typerelation{\G}{C_1}{\M{\e_1}{A}}}
-                \s\s
-                \treerule{}{\D_2}{\typerelation{\G, x:A}{C_2}{\M{\e_2}{B}}}
+            \ntreeruleII{Bind}{
+                \treeruleI{\D_1}{\typerelation{\G}{C_1}{\M{\e_1}{A}}}
+                }{
+                \treeruleI{\D_2}{\typerelation{\G, x:A}{C_2}{\M{\e_2}{B}}}
             }{\typerelation{\G}{\doin{x}{C_1}{C_2}}{\M{\e_1\dot\e_2}{B}}}
         \end{equation}
 
         Using alpha-equivalence, we pick $x\notin(\dom{\G}\cup\dom{\G'})$. Hence by property 3, $$\typerelation{(\G, x: A)}{(\si, x\setto x)}{(\gax)}$$
         By induction on $\D_1, \D_2$, we have $\D_1', \D_2'$ such that:
         \begin{equation}
-            \treerule{Bind}{
-                \treerule{}{\D_1'}{\typerelation{\G'}{C_1\ssi}{\M{\e_1}{A}}}
-                \s\s
-                \treerule{}{\D_2}{\typerelation{\G', x:A}{C_2\sub{\si, x\setto x}}{\M{\e_2}{B}}}
+            \ntreeruleII{Bind}{
+                \treeruleI{\D_1'}{\typerelation{\G'}{C_1\ssi}{\M{\e_1}{A}}}
+                }{
+                \treeruleI{\D_2}{\typerelation{\G', x:A}{C_2\sub{\si, x\setto x}}{\M{\e_2}{B}}}
             }{\typerelation{\G'}{\doin{x}{(C_1\ssi)}{(C_2\sub{\si, x\setto x})}}{\M{\e_1\dot\e_2}{B}}}
         \end{equation}
 
@@ -256,24 +256,24 @@
     \paragraph{Case Sub-type}
         By inversion, there exists $\D$ such that
         \begin{equation}
-            \treerule{sub-type}{\treerule{}{\D}{\typerelation{\G}{v}{A}}\s\s A\subtype B}{\typerelation{\G}{v}{B}}
+            \ntreeruleII{sub-type}{\treeruleI{\D}{\typerelation{\G}{v}{A}}}{ A\subtype B}{\typerelation{\G}{v}{B}}
         \end{equation}
 
         By induction on $\D$ we derive $\D'$ such that:
 
         \begin{equation}
-            \treerule{sub-type}{\treerule{}{\D'}{\typerelation{\G'}{v\ssi}{A}}\s\s A\subtype B}{\typerelation{\G}{v\ssi}{B}}
+            \ntreeruleII{sub-type}{\treeruleI{\D'}{\typerelation{\G'}{v\ssi}{A}}}{ A\subtype B}{\typerelation{\G}{v\ssi}{B}}
         \end{equation}
     \paragraph{Case Sub-effect}
     By inversion, there exists $\D$ such that
     \begin{equation}
-        \treerule{sub-effect}{\treerule{}{\D}{\typerelation{\G}{C}{\M{\e_1}{A}}}\s\s A\subtype B\s\s\e_1\subtype\e_2}{\typerelation{\G}{C}{\M{\e_2}{B}}}
+        \ntreeruleII{sub-effect}{\treeruleI{\D}{\typerelation{\G}{C}{\M{\e_1}{A}}}}{ \subeffecttree{\e_1}{A}{\e_2}{B}}{\typerelation{\G}{C}{\M{\e_2}{B}}}
     \end{equation}
 
     By induction on $\D$ we derive $\D'$ such that:
 
     \begin{equation}
-        \treerule{sub-effect}{\treerule{}{\D'}{\typerelation{\G'}{C\ssi}{\M{\e_1}{A}}}\s\s A\subtype B\s\s\e_1\subtype\e_2}{\typerelation{\G'}{C\ssi}{\M{\e_2}{B}}}
+        \ntreeruleII{sub-effect}{\treeruleI{\D'}{\typerelation{\G'}{C\ssi}{\M{\e_1}{A}}}}{ \subeffecttree{\e_1}{A}{\e_2}{B}}{\typerelation{\G'}{C\ssi}{\M{\e_2}{B}}}
     \end{equation}
     \section{Semantics of Substitution}
     \subsection{Denotation of Substitutions}
@@ -282,8 +282,8 @@
         \deno{\typerelation{\G'}{\si}{\G}}: \G' \rightarrow \G
     \end{equation}
     \begin{itemize}
-        \item $\treerule{Nil}{\ok{\G'}}{\deno{\typerelation{\G'}{\nil}{\nil}} = \term{\G'}}$
-        \item $\treerule{Extend}{f = \deno{\typerelation{\G'}{\si}{\G}}\s\s g= \deno{\typerelation{\G'}{v}{A}}}{\deno{\typerelation{\G'}{(\si, x\setto v}{(\gax)}} = \pr{f}{g}:\G' \rightarrow (\G\times A)}$
+        \item $\ntreeruleI{Nil}{\ok{\G'}}{\deno{\typerelation{\G'}{\nil}{\nil}} = \term{\G'}}$
+        \item $\ntreeruleII{Extend}{f = \deno{\typerelation{\G'}{\si}{\G}}}{ g= \deno{\typerelation{\G'}{v}{A}}}{\deno{\typerelation{\G'}{(\si, x\setto v}{(\gax)}} = \pr{f}{g}:\G' \rightarrow (\G\times A)}$
     \end{itemize}
     \subsection{Extension Lemma}
     If $\typerelation{\G'}{\si}{\G}$ and $x\notin(\dom{\G'}\cup\dom{\G})$ then the substitution in property 3 has denotation:
@@ -341,7 +341,7 @@
     \paragraph{Case Var}
     By inversion $\G = \G'', x:A$
     \begin{equation}
-        \treerule{Var}{\ok{\G}}{\typerelation{\G'', x:A}{x}{A}}
+        \ntreeruleI{Var}{\ok{\G}}{\typerelation{\G'', x:A}{x}{A}}
     \end{equation}
     By inversion, $\si = \si', x\setto v$ and $\typerelation{\G'}{v}{A}$.
 
@@ -360,7 +360,7 @@
     and we have $\D_1$ deriving:
 
     \begin{equation}
-        \treerule{Weaken}{\treerule{}{\D_1}{\typerelation{\G''}{x}{A}}}{\typerelation{\G'',y: B}{x}{A}}
+        \ntreeruleI{Weaken}{\treeruleI{\D_1}{\typerelation{\G''}{x}{A}}}{\typerelation{\G'',y: B}{x}{A}}
     \end{equation}
 
     Also by inversion of the well-formed-ness of $\typerelation{\G'}{\si}{\G}$, we have $\typerelation{\G'}{\si'}{\G''}$ and 
@@ -372,7 +372,7 @@
     Hence by induction on $\D_1$ we have $\D_1'$ such that
 
     \begin{equation}
-        \treerule{}{\D_1'}{\typerelation{\G'}{x\ssi}{A}}
+        \treeruleI{\D_1'}{\typerelation{\G'}{x\ssi}{A}}
     \end{equation}
 
 
@@ -401,15 +401,15 @@
 
     By inversion, we have $\D_1$ such that
     \begin{equation}
-        \D = \treerule{Fn}{
-            \treerule{}{\D_1}{\typerelation{\G, x:A}{C}{\meb}}
+        \D = \ntreeruleI{Fn}{
+            \treeruleI{\D_1}{\typerelation{\G, x:A}{C}{\meb}}
         }{\typerelation{\G}{\lam{x}{A}{C}}{\aeb}}
     \end{equation}
 
     By induction of $\D_1$ we have $\D_1'$ such that
     \begin{equation}
-        \D' = \treerule{Fn}{
-            \treerule{}{\D_1'}{\typerelation{\G', x:A}{(C\ssi)}{\meb}}
+        \D' = \ntreeruleI{Fn}{
+            \treeruleI{\D_1'}{\typerelation{\G', x:A}{(C\ssi)}{\meb}}
         }{\typerelation{\G}{(\lam{x}{A}{C})\ssi}{\aeb}}
     \end{equation}
     By induction and the extension lemma, we have:
@@ -429,13 +429,13 @@
     By inversion, there exists derivation $\D_1$ such that:
 
     \begin{equation}
-        \D = \treerule{Sub-type}{\treerule{}{\D_1}{\typerelation{\G}{v}{A}}\s\s A\subtype B}{\typerelation{\G}{v}{B}}
+        \D = \ntreeruleII{Sub-type}{\treeruleI{\D_1}{\typerelation{\G}{v}{A}}}{ A\subtype B}{\typerelation{\G}{v}{B}}
     \end{equation}
 
     By induction on $\D_1$, we find $\D_1'$ such that $\D_1' = \D_1\after\si$ and:
 
     \begin{equation}
-        \D' = \treerule{Sub-type}{\treerule{}{\D_1'}{\typerelation{\G'}{v\ssi}{A}}\s\s A\subtype B}{\typerelation{\G'}{v\ssi}{B}}
+        \D' = \ntreeruleII{Sub-type}{\treeruleI{\D_1'}{\typerelation{\G'}{v\ssi}{A}}}{ A\subtype B}{\typerelation{\G'}{v\ssi}{B}}
     \end{equation}
 
     Hence,
@@ -450,13 +450,13 @@
 
     By inversion, we have $\D_1$ such that:
     \begin{equation}
-        \D = \treerule{Return}{\treerule{}{\D_1}{\typerelation{\G}{v}{A}}}{\typerelation{\G}{\return{v}}{\moa}}
+        \D = \ntreeruleI{Return}{\treeruleI{\D_1}{\typerelation{\G}{v}{A}}}{\typerelation{\G}{\return{v}}{\moa}}
     \end{equation}
 
     By induction on $\D_1$, we find $\D_1'$ such that $\D_1' = \D_1\after\si$ and:
 
     \begin{equation}
-        \D' = \treerule{Return}{\treerule{}{\D_1'}{\typerelation{\G'}{v\ssi}{A}}}{\typerelation{\G'}{(\return{v})\ssi}{\moa}}
+        \D' = \ntreeruleI{Return}{\treeruleI{\D_1'}{\typerelation{\G'}{v\ssi}{A}}}{\typerelation{\G'}{(\return{v})\ssi}{\moa}}
     \end{equation}
 
     Hence,
@@ -469,7 +469,7 @@
     \paragraph{Case Apply}
     By inversion, we find $\D_1, \D_2$ such that
     \begin{equation}
-        \D = \treerule{Apply}{\treerule{}{\D_1}{\typerelation{\G}{v_1}{\aeb}}\s\s\treerule{}{\D_2}{\typerelation{\G}{v_2}{A}}}{\typerelation{\G}{\apply{v_1}{v_2}}{\meb}}
+        \D = \ntreeruleII{Apply}{\treeruleI{\D_1}{\typerelation{\G}{v_1}{\aeb}}}{\treeruleI{\D_2}{\typerelation{\G}{v_2}{A}}}{\typerelation{\G}{\apply{v_1}{v_2}}{\meb}}
     \end{equation}
 
     By induction we find $\D_1', \D_2'$ such that 
@@ -480,7 +480,7 @@
 
     And
     \begin{equation}
-        \D' = \treerule{Apply}{\treerule{}{\D_1'}{\typerelation{\G'}{v_1\ssi}{\aeb}}\s\s\treerule{}{\D_2'}{\typerelation{\G'}{v_2\ssi}{A}}}{\typerelation{\G'}{(\apply{v_1}{v_2})\ssi}{\meb}}
+        \D' = \ntreeruleII{Apply}{\treeruleI{\D_1'}{\typerelation{\G'}{v_1\ssi}{\aeb}}}{\treeruleI{\D_2'}{\typerelation{\G'}{v_2\ssi}{A}}}{\typerelation{\G'}{(\apply{v_1}{v_2})\ssi}{\meb}}
     \end{equation}
 
     Hence
@@ -496,7 +496,7 @@
 
     By inversion, we find $\D_1, \D_2, \D_3$ such that
     \begin{equation}
-        \D = \treerule{If}{\treerule{}{\D_1}{\typerelation{\G}{v}{\B}}\s\s\treerule{}{\D_2}{\typerelation{\G}{C_1}{\mea}}\s\s\treerule{}{\D_3}{\typerelation{\G}{C_2}{\mea}}}{\typerelation{\G}{\ifthenelse{\e}{A}{v}{C_1}{C_2}}{\mea}}
+        \D = \ntreeruleIII{If}{\treeruleI{\D_1}{\typerelation{\G}{v}{\B}}}{\treeruleI{\D_2}{\typerelation{\G}{C_1}{\mea}}}{\treeruleI{\D_3}{\typerelation{\G}{C_2}{\mea}}}{\typerelation{\G}{\ifthenelse{\e}{A}{v}{C_1}{C_2}}{\mea}}
     \end{equation}
 
     By induction we find $\D_1', \D_2', \D_3'$ such that 
@@ -508,7 +508,7 @@
 
     And
     \begin{equation}
-        \D' = \treerule{If}{\treerule{}{\D_1'}{\typerelation{\G'}{v\ssi}{\B}}\s\s\treerule{}{\D_2'}{\typerelation{\G'}{C_1\ssi}{\mea}}\s\s\treerule{}{\D_3'}{\typerelation{\G'}{C_2\ssi}{\mea}}}{\typerelation{\G'}{(\ifthenelse{\e}{A}{v}{C_1}{C_2})\ssi}{\mea}}
+        \D' = \ntreeruleIII{If}{\treeruleI{\D_1'}{\typerelation{\G'}{v\ssi}{\B}}}{\treeruleI{\D_2'}{\typerelation{\G'}{C_1\ssi}{\mea}}}{\treeruleI{\D_3'}{\typerelation{\G'}{C_2\ssi}{\mea}}}{\typerelation{\G'}{(\ifthenelse{\e}{A}{v}{C_1}{C_2})\ssi}{\mea}}
     \end{equation}
 
     Since $\si: \G' \rightarrow \G$, \\
@@ -545,10 +545,10 @@
     By inversion, we have $\D_1, \D_2$ such that:
     
     \begin{equation}
-        \D = \treerule{Bind}{
-            \treerule{}{\D_1}{\typerelation{\G}{C_1}{\mea}}
-            \s\s
-            \treerule{}{\D_2}{\typerelation{\G, x:A }{C_1}{\meb}}
+        \D = \ntreeruleII{Bind}{
+            \treeruleI{\D_1}{\typerelation{\G}{C_1}{\mea}}
+            }{
+            \treeruleI{\D_2}{\typerelation{\G, x:A }{C_1}{\meb}}
         }{
             \typerelation{\G}{\doin{x}{C_1}{C_2}}{\M{\e_1\dot\e_2}{B}}
         }
@@ -576,10 +576,10 @@
     And:
 
     \begin{equation}
-        \D' = \treerule{Bind}{
-            \treerule{}{\D_1'}{\typerelation{\G'}{C_1\ssi}{\mea}}
-            \s\s
-            \treerule{}{\D_2'}{\typerelation{\G', x:A }{C_1\ssi}{\meb}}
+        \D' = \ntreeruleII{Bind}{
+            \treeruleI{\D_1'}{\typerelation{\G'}{C_1\ssi}{\mea}}
+            }{
+            \treeruleI{\D_2'}{\typerelation{\G', x:A }{C_1\ssi}{\meb}}
         }{
             \typerelation{\G'}{(\doin{x}{C_1}{C_2})\ssi}{\M{\e_1\dot\e_2}{B}}
         }
@@ -602,13 +602,13 @@
     By inversion, there exists derivation $\D_1$ such that:
 
     \begin{equation}
-        \D = \treerule{Sub-effect}{\treerule{}{\D_1}{\typerelation{\G}{C}{\M{\e_1}{A}}}\s\s A\subtype B\s\s \e_1\subeffect\e_2}{\typerelation{\G}{C}{\M{\e_2}{B}}}
+        \D = \ntreeruleII{Sub-effect}{\treeruleI{\D_1}{\typerelation{\G}{C}{\M{\e_1}{A}}}}{ \subeffecttree{\e_1}{A}{\e_2}{B}}{\typerelation{\G}{C}{\M{\e_2}{B}}}
     \end{equation}
 
     By induction on $\D_1$, we find $\D_1'$ such that $\D_1' = \D_1\after\si$ and:
 
     \begin{equation}
-        \D' = \treerule{Sub-effect}{\treerule{}{\D_1'}{\typerelation{\G'}{C\ssi}{\M{\e_1}{A}}}\s\s A\subtype B\s\s \e_1\subeffect\e_2}{\typerelation{\G'}{C\ssi}{\M{\e_2}{B}}}
+        \D' = \ntreeruleII{Sub-effect}{\treeruleI{\D_1'}{\typerelation{\G'}{C\ssi}{\M{\e_1}{A}}}}{ A\subtype B}{ \e_1\subeffect\e_2}{\typerelation{\G'}{C\ssi}{\M{\e_2}{B}}}
     \end{equation}
 
     Hence,
