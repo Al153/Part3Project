@@ -1,728 +1,734 @@
 \newcommand\UniqueDenotations[0]{
-    \section{Reduced Type Derivation}
-    A reduced type derivation is one where subtype and sub-effect rules must, and may only, occur at the root or directly above an \textbf{if}, or \textbf{apply} rule.
+ 
+\section{Reduced Type Derivation}
+A reduced type derivation is one where subtype and sub-effect rules must, and may only, occur at the root or directly above an \textbf{if}, or \textbf{apply} rule.
 
-    In this section, I shall prove that there is at most one reduced derivation of $\gtyperelation{t}{\tau}$. Secondly, I shall present a function for generating reduced derivations from arbitrary typing derivations, in a way that does not change the denotations. These imply that all typing derivations of a type-relation have the same denotation.
+In this section, I shall prove that there is at most one reduced derivation of $\gtyperelation{t}{\tau}$. Secondly, I shall present a function for generating reduced derivations from arbitrary typing derivations, in a way that does not change the denotations. These imply that all typing derivations of a type-relation have the same denotation.
 
-    \section{Reduced Type Derivations are Unique}
-    For each instance of the relation $\gtyperelation{t}{\tau}$,there exists at most one reduced derivation of  $\gtyperelation{t}{\tau}$. This is proved by induction over the typing rules on the bottom rule used in each derivation.
-    \subsection{Variables}
-    To find the unique derivation of $\gtyperelation{x}{A}$, we case split on the type-environment, $\G$.
+\section{Reduced Type Derivations are Unique}
+For each instance of the relation $\gtyperelation{t}{\tau}$,there exists at most one reduced derivation of  $\gtyperelation{t}{\tau}$. This is proved by induction over the typing rules on the bottom rule used in each derivation.
+\subsection{Variables}
+To find the unique derivation of $\gtyperelation{x}{A}$, we case split on the type-environment, $\G$.
 
-    \paragraph{Case $\G = \G', x: A'$}
-    Then the unique reduced derivation of $\gtyperelation{x}{A}$ is, if $A' \subtype A$, as below:
-    
-    \begin{equation}
-        \treerule{Subtype}{\treerule{Var}{\ok{\G', x: A'}}{\typerelation{\G,x: A'}{x}{A'}}\s\s A' \subtype A}{\typerelation{\G', x: A'}{x}{A}}
-    \end{equation}
+\paragraph{Case $\G = \G', x: A'$}
+Then the unique reduced derivation of $\gtyperelation{x}{A}$ is, if $A' \subtype A$, as below:
 
-    \paragraph{Case $\G = \G', y: B$} with $y \neq x$.
+\begin{equation}
+    \ntreeruleII{Subtype}{\ntreeruleI{Var}{\ok{\G', x: A'}}{\typerelation{\G,x: A'}{x}{A'}}}{ A' \subtype A}{\typerelation{\G', x: A'}{x}{A}}
+\end{equation}
 
-    Hence, if $\gtyperelation{x}{A}$ holds, then so must $\typerelation{\G'}{x}{A}$.
+\paragraph{Case $\G = \G', y: B$} with $y \neq x$.
 
-    Let 
-    \begin{equation}
-        \deltavrule{\G'}{x}{A'}{A}
-    \end{equation}
-    Be the  unique reduced derivation of $\typerelation{\G'}{x}{A}$.
+Hence, if $\gtyperelation{x}{A}$ holds, then so must $\typerelation{\G'}{x}{A}$.
 
-    Then the unique reduced derivation of $\gtyperelation{x}{A}$ is:
+Let 
+\begin{equation}
+    \deltavrule{\G'}{x}{A'}{A}
+\end{equation}
+Be the  unique reduced derivation of $\typerelation{\G'}{x}{A}$.
+
+Then the unique reduced derivation of $\gtyperelation{x}{A}$ is:
 
 
-    \begin{equation}
-        \treerule{Subtype}{
-            \treerule{Weaken}{
-                \treerule{}{\D}{\typerelation{\G, x: A'}{x}{A'}}
-            }{\gtyperelation{x}{A'}}   
-        \s\s A' \subtype A
-        }{\gtyperelation{x}{A}}
-    \end{equation}
+\begin{equation}
+    \ntreeruleII{Subtype}{
+        \ntreeruleI{Weaken}{
+            \treeruleI{\D}{\typerelation{\G, x: A'}{x}{A'}}
+        }{\gtyperelation{x}{A'}}   
+    }{ A' \subtype A
+    }{\gtyperelation{x}{A}}
+\end{equation}
+
+\subsection{Constants}
+For each of the constants, ($\const{A}$, $\t$, $\f$, $\u$), there is exactly one possible derivation for $\typerelation{\G}{c}{A}$ for a given A. I shall give examples using the case $\const{A}$
+
+
+$$
+    \ntreeruleII{Subtype}{\truleconst}{ A \subtype B}{\gtyperelation{\const{A}}{B}}
+$$
+
+If $A = B$, then the subtype relation is the identity subtype ($A \subtype A$).
+
+\subsection{Value Terms}
+\paragraph{Case Lambda}
+The reduced derivation of $\gtyperelation{\lam{x}{A}{C}}{\lamtype{A'}{\e'}{B'}}$ is:
+
+
+$$
+\ntreeruleII{Subtype}
+{\ntreeruleI{Lambda}{\treeruleI{\D}{\typerelation{\gax}{C}{\meb}}}
+{
+    \gtyperelation{\lam{x}{A}{B}}{\aeb}}
+    }{
+    \aeb \subtype \lamtype{A'}{\e'}{B'}
+}{
+   \gtyperelation{\lam{x}{A}{C}}{\lamtype{A'}{\e'}{B'}} 
+}
+$$
+
+Where 
+\begin{equation}
+    \ntreeruleII{Sub-Effect}{\treeruleI{\D}{\typerelation{\gax}{C}{\meb}}}{ B\subtype B'}{ \e \subeffect \e'}{\typerelation{\gax}{C}{\M{\e'}{B'}}}
+\end{equation}
+is the reduced derivation of $\typerelation{\gax}{C}{\M{\e'}{B}}$ if it exists.
+
+\paragraph{Case Subtype}
+\todo{Do we need to write anything here? (Probably needs an explanation)}
+
+
+\subsection{Computation Terms}
+\paragraph{Case Return}
+The reduced denotation of $\gtyperelation{\return{v}}{\meb}$ is 
+$$
+    \ntreeruleII{Subtype}
+    {
+        \ntreeruleI{Return}
+        {\treeruleI{\D}{\gtyperelation{v}{A}}}
+        {\gtyperelation{\return{v}}{\moa}}
+        }{
+        A \subtype B
+        }{
+        \1 \subeffect \e
+    }
+    {\gtyperelation{\return{v}}{\meb}}
+$$
+
+Where $$\deltavrule{\G}{v}{A}{B}$$ is the reduced derivation of $\gtyperelation{v}{B}$
+
+\paragraph{Case Apply}
+If 
+$$
+    \deltavrule{\G}{v_1}{\aeb}{\lamtype{A'}{\e'}{B'}}
+$$ and $$
+    \deltavruleprime{\G}{v_2}{A''}{A'}
+$$
+
+Are the reduced type derivations of $\gtyperelation{v_1}{\lamtype{A'}{\e'}{B'}}$ and $\gtyperelation{v_2}{A'}$
+
+
+
+Then we can construct the reduced derivation of $\gtyperelation{\apply{v_1}{v_2}}{\M{\e'}{B'}}$ as
+
+$$
+    \ntreeruleII{Subeffect}{
+        \ntreeruleII{Apply}{
+            \treeruleI{\D}{
+                \gtyperelation{v_1}{\aeb}
+            }
+            }{
+            \ntreeruleII{Subtype}{
+                \treeruleI{\D'}{
+                    \gtyperelation{v}{A''}
+                } }{ A'' \subtype A
+            }
+            {\gtyperelation{v}{A}}
+        }{
+            \gtyperelation{\apply{v_1}{v_2}}{\meb}
+        }
+        }{
+        B \subtype B'
+        }{
+        \e \subeffect \e'
+    }{
+        \gtyperelation{\apply{v_1}{v_2}}{\M{\e'}{B'}}
+    }
+$$
+\paragraph{Case If}
+Let
+
+\begin{equation}
+    \deltavrule{\G}{v}{B}{\B}
+\end{equation}
+
+\begin{equation}
+    \deltacruleprime{\G}{C_1}{\e'}{A'}{\e}{A}
+\end{equation}
+
+\begin{equation}
+    \deltacruleprimeprime{\G}{C_2}{\e''}{A''}{\e}{A}
+\end{equation}
+
+Be the unique reduced reduced derivations of $\gtyperelation{v}{\B}$, $\gtyperelation{C_1}{\mea}$, $\gtyperelation{C_2}{\mea}$.
+
+Then the only reduced derivation of $\gtyperelation{\ifthenelse{\e}{A}{v}{C_1}{C_2}}{\mea}$ is:
+
+\todo{Scale this properly}
+\begin{equation}
+    \ntreeruleII{Subtype}{
+        \ntreeruleIII{If}{
+            \deltavrule{\G}{v}{B}{\B}
+        }{
+            \deltacruleprime{\G}{C_1}{\e'}{A'}{\e}{A}
+        }{
+            \deltacruleprimeprime{\G}{C_2}{\e''}{A''}{\e}{A}
+        }{
+            \gtyperelation{\ifthenelse{\e}{A}{v}{C_1}{C_2}}{\mea}
+        }
+    }{
+        \mea\subtype\mea
+    }{
+        \gtyperelation{\ifthenelse{\e}{A}{v}{C_1}{C_2}}{\mea}}
+\end{equation}
+
+\paragraph{Case Bind}
+
+Let 
+
+\begin{equation}
+    \deltacrule{\G}{C_1}{\e_1}{A}{\e_1'}{A'}
+\end{equation}
+
+\begin{equation}
+    \deltacruleprime{\G, x:A}{C_2}{\e_2}{B}{\e_2'}{B'}
+\end{equation}
+
+Be the respective unique reduced type derivations of the sub-terms]
+
+By weakening, $\wrel{\i\x}{\G, x:A}{\G, x: A'}$ so if there's a derivation of $\typerelation{\G, x:A'}{C_2}{\meb}$, there's also one of   $\typerelation{\gax}{C_2}{\meb}$.
+
+\begin{equation}
+    \deltacruleprimeprime{\G, x:A'}{C_2}{\e_2}{B}{\e_2'}{B'}
+\end{equation}
+
+Since the effects monoid operation is monotone, if $\e_1\subeffect\e_1'$ and $\e_2\subeffect\e_2'$ then $\e_1\dot\e_2 \subeffect \e_1'\dot\e_2'$
+
+Hence the reduced type derivation of $\gtyperelation{\doin{x}{C_1}{C-2}}{\M{\e_1'\dot\e_2'}{B'}}$ is the following:
+
+\todo{Make this and the other smaller}
+\begin{equation}
+    \ntreeruleII{Subeffect} {
+        \ntreeruleII{Bind}{
+            \deltacrule{\G}{C_1}{\e_1}{A}{\e_1'}{A'}
+            }{
+            \deltacruleprimeprime{\G, x:A'}{C_2}{\e_2}{B}{\e_2'}{B'}
+        } {
+            \gtyperelation{\doin{x}{C_1}{C_2}}{\M{\e_1\dot\e_2}{B}}
+        }
+        }{
+        B\subtype B'
+        }{
+        \e_1\dot\e_2\subeffect\e_1'\dot\e_2'
+    } {
+        \gtyperelation{\doin{x}{C_1}{C-2}}{\M{\e_1'\dot\e_2'}{B'}}
+    }
+\end{equation}
+
+\section{Each type derivation has a reduced equivalent with the same denotation.}
+We introduce a function, $\reduce$ that maps each valid type derivation of $\gtyperelation{t}{\tau}$ to a reduced equivalent with the same denotation. To do this, we do case analysis over the root type rule of a derivation and prove that the denotation is not changed.
 
     \subsection{Constants}
-    For each of the constants, ($\const{A}$, $\t$, $\f$, $\u$), there is exactly one possible derivation for $\typerelation{\G}{c}{A}$ for a given A. I shall give examples using the case $\const{A}$
+        For the constants $\t, \f, \const{A}$, etc, $\reduce$ simply returns the derivation, as it is already reduced. This trivially preserves the denotation.
 
+        $\reduce(\truleconst) = \truleconst$
 
-    $$
-        \treerule{Subtype}{\truleconst\s\s A \subtype B}{\gtyperelation{\const{A}}{B}}
-    $$
+    \subsection{Value Types}
+        \paragraph{Var}
+        \begin{equation}
+            \reduce(\ntreeruleI{Var}{\ok{\G}}{\typerelation{\gax}{x}{A}}) =  \ntreeruleI{Var}{\ok{\G}}{\typerelation{\gax}{x}{A}}
+        \end{equation}
 
-    If $A = B$, then the subtype relation is the identity subtype ($A \subtype A$).
+        Preserves denotation trivially.
 
-    \subsection{Value Terms}
-    \paragraph{Case Lambda}
-    The reduced derivation of $\gtyperelation{\lam{x}{A}{C}}{\lamtype{A'}{\e'}{B'}}$ is:
+        \paragraph{Weaken}
+        \subparagraph{$\reduce$ definition}
+        To find:
+        \begin{equation}
+            \reduce(\ntreeruleI{Weaken}{\treeruleI{\D}{\gtyperelation{x}{A}}}{\typerelation{\gby}{x}{A}})
+        \end{equation}
 
+        Let 
+        \begin{equation}\label{WeakenDeltaReduction}
+            \ntreeruleII{Subtype}{\treeruleI{\D'}{\gtyperelation{x}{A}}}{ A'\subtype A}{\gtyperelation{x}{A}} = \reduce(\D)
+        \end{equation}
 
-    $$
-    \treerule{Subtype}
-    {\treerule{Lambda}{\treerule{}{\D}{\typerelation{\gax}{C}{\meb}}}
-    {
-        \gtyperelation{\lam{x}{A}{B}}{\aeb}}
-        \s\s
-        \aeb \subtype \lamtype{A'}{\e'}{B'}
-    }{
-       \gtyperelation{\lam{x}{A}{C}}{\lamtype{A'}{\e'}{B'}} 
-    }
-    $$
-
-    Where 
-    \begin{equation}
-        \treerule{Sub-Effect}{\treerule{}{\D}{\typerelation{\gax}{C}{\meb}}\s\s B\subtype B'\s\s \e \subeffect \e'}{\typerelation{\gax}{C}{\M{\e'}{B'}}}
-    \end{equation}
-    is the reduced derivation of $\typerelation{\gax}{C}{\M{\e'}{B}}$ if it exists.
-
-    \paragraph{Case Subtype}
-    \todo{Do we need to write anything here? (Probably needs an explanation)}
-
-
-    \subsection{Computation Terms}
-    \paragraph{Case Return}
-    The reduced denotation of $\gtyperelation{\return{v}}{\meb}$ is 
-    $$
-        \treerule{Subtype}
-        {
-            \treerule{Return}
-            {\treerule{}{\D}{\gtyperelation{v}{A}}}
-            {\gtyperelation{\return{v}}{\moa}}
-            \s\s
-            A \subtype B
-            \s\s
-            \1 \subeffect \e
-        }
-        {\gtyperelation{\return{v}}{\meb}}
-    $$
-
-    Where $$\deltavrule{\G}{v}{A}{B}$$ is the reduced derivation of $\gtyperelation{v}{B}$
-    
-    \paragraph{Case Apply}
-    If 
-    $$
-        \deltavrule{\G}{v_1}{\aeb}{\lamtype{A'}{\e'}{B'}}
-    $$ and $$
-        \deltavruleprime{\G}{v_2}{A''}{A'}
-    $$
-
-    Are the reduced type derivations of $\gtyperelation{v_1}{\lamtype{A'}{\e'}{B'}}$ and $\gtyperelation{v_2}{A'}$
-
-
-
-    Then we can construct the reduced derivation of $\gtyperelation{\apply{v_1}{v_2}}{\M{\e'}{B'}}$ as
-
-    $$
-        \treerule{Subeffect}{
-            \treerule{Apply}{
-                \treerule{}{\D}{
-                    \gtyperelation{v_1}{\aeb}
-                }
-                \s\s
-                \treerule{Subtype}{
-                    \treerule{}{\D'}{
-                        \gtyperelation{v}{A''}
-                    } \s\s A'' \subtype A
-                }
-                {\gtyperelation{v}{A}}
-            }{
-                \gtyperelation{\apply{v_1}{v_2}}{\meb}
-            }
-            \s\s
-            B \subtype B'
-            \s\s
-            \e \subeffect \e'
-        }{
-            \gtyperelation{\apply{v_1}{v_2}}{\M{\e'}{B'}}
-        }
-    $$
-    \paragraph{Case If}
-    Let
-
-    \begin{equation}
-        \deltavrule{\G}{v}{B}{\B}
-    \end{equation}
-
-    \begin{equation}
-        \deltacruleprime{\G}{C_1}{\e'}{A'}{\e}{A}
-    \end{equation}
-
-    \begin{equation}
-        \deltacruleprimeprime{\G}{C_2}{\e''}{A''}{\e}{A}
-    \end{equation}
-
-    Be the unique reduced reduced derivations of $\gtyperelation{v}{\B}$, $\gtyperelation{C_1}{\mea}$, $\gtyperelation{C_2}{\mea}$.
-
-    Then the only reduced derivation of $\gtyperelation{\ifthenelse{\e}{A}{v}{C_1}{C_2}}{\mea}$ is:
-
-    \todo{Scale this properly}
-    \begin{equation}
-        \treerule{Subtype}{
-            \treerule{If}{
-                \deltavrule{\G}{v}{B}{\B}
-                \s\s
-                \deltacruleprime{\G}{C_1}{\e'}{A'}{\e}{A}
-                \s\s
-                \deltacruleprimeprime{\G}{C_2}{\e''}{A''}{\e}{A}
-            }{\gtyperelation{\ifthenelse{\e}{A}{v}{C_1}{C_2}}{\mea}\s\s \e\subeffect \e\s\s A \subtype A}
-        }{\gtyperelation{\ifthenelse{\e}{A}{v}{C_1}{C_2}}{\mea}}
-    \end{equation}
-
-    \paragraph{Case Bind}
-
-    Let 
-
-    \begin{equation}
-        \deltacrule{\G}{C_1}{\e_1}{A}{\e_1'}{A'}
-    \end{equation}
-
-    \begin{equation}
-        \deltacruleprime{\G, x:A}{C_2}{\e_2}{B}{\e_2'}{B'}
-    \end{equation}
-
-    Be the respective unique reduced type derivations of the sub-terms]
-
-    By weakening, $\wrel{\i\x}{\G, x:A}{\G, x: A'}$ so if there's a derivation of $\typerelation{\G, x:A'}{C_2}{\meb}$, there's also one of   $\typerelation{\gax}{C_2}{\meb}$.
-
-    \begin{equation}
-        \deltacruleprimeprime{\G, x:A'}{C_2}{\e_2}{B}{\e_2'}{B'}
-    \end{equation}
-
-    Since the effects monoid operation is monotone, if $\e_1\subeffect\e_1'$ and $\e_2\subeffect\e_2'$ then $\e_1\dot\e_2 \subeffect \e_1'\dot\e_2'$
-
-    Hence the reduced type derivation of $\gtyperelation{\doin{x}{C_1}{C-2}}{\M{\e_1'\dot\e_2'}{B'}}$ is the following:
-
-    \todo{Make this and the other smaller}
-    \begin{equation}
-        \treerule{Subeffect} {
-            \treerule{Bind}{
-                \deltacrule{\G}{C_1}{\e_1}{A}{\e_1'}{A'}
-                \s\s
-                \deltacruleprimeprime{\G, x:A'}{C_2}{\e_2}{B}{\e_2'}{B'}
+        In 
+        \begin{equation}
+            \ntreeruleII{Subtype}{
+            \ntreeruleI{Weaken}{
+                \treeruleI{\D'}{\gtyperelation{x}{A'}}
             } {
-                \gtyperelation{\doin{x}{C_1}{C_2}}{\M{\e_1\dot\e_2}{B}}
+                \typerelation{\gby}{x}{A'}
             }
-            \s\s
-            B\subtype B'
-            \s\s
-            \e_1\dot\e_2\subeffect\e_1'\dot\e_2'
-        } {
-            \gtyperelation{\doin{x}{C_1}{C-2}}{\M{\e_1'\dot\e_2'}{B'}}
-        }
-    \end{equation}
+            }{
+            A' \subtype A
+            }{\typerelation{\gby}{x}{A}}
+        \end{equation}
 
-    \section{Each type derivation has a reduced equivalent with the same denotation.}
-    We introduce a function, $\reduce$ that maps each valid type derivation of $\gtyperelation{t}{\tau}$ to a reduced equivalent with the same denotation. To do this, we do case analysis over the root type rule of a derivation and prove that the denotation is not changed.
+        \subparagraph{Preserves Denotation}
+        Using the construction of denotations, we can find the denotation of the original derivation to be:
+        \begin{equation}
+            \deno{\ntreeruleI{Weaken}{\treeruleI{\D}{\gtyperelation{x}{A}}}{\typerelation{\gby}{x}{A}}} = \D \after \p
+        \end{equation}
 
-        \subsection{Constants}
-            For the constants $\t, \f, \const{A}$, etc, $\reduce$ simply returns the derivation, as it is already reduced. This trivially preserves the denotation.
-
-            $\reduce(\truleconst) = \truleconst$
-
-        \subsection{Value Types}
-            \paragraph{Var}
-            \begin{equation}
-                \reduce(\treerule{Var}{\ok{\G}}{\typerelation{\gax}{x}{A}}) =  \treerule{Var}{\ok{\G}}{\typerelation{\gax}{x}{A}}
-            \end{equation}
-
-            Preserves denotation trivially.
-
-            \paragraph{Weaken}
-            \subparagraph{$\reduce$ definition}
-            To find:
-            \begin{equation}
-                \reduce(\treerule{Weaken}{\treerule{}{\D}{\gtyperelation{x}{A}}}{\typerelation{\gby}{x}{A}})
-            \end{equation}
-
-            Let 
-            \begin{equation}\label{WeakenDeltaReduction}
-                \treerule{Subtype}{\treerule{}{\D'}{\gtyperelation{x}{A}}\s\s A'\subtype A}{\gtyperelation{x}{A}} = \reduce(\D)
-            \end{equation}
-
-            In 
-            \begin{equation}
-                \treerule{Subtype}{
-                \treerule{Weaken}{
-                    \treerule{}{\D'}{\gtyperelation{x}{A'}}
+        Similarly, the denotation of the reduced denotation is:
+        \begin{equation}
+            \deno{\ntreeruleII{Subtype}{
+                \ntreeruleI{Weaken}{
+                    \treeruleI{\D'}{\gtyperelation{x}{A'}}
                 } {
                     \typerelation{\gby}{x}{A'}
                 }
-                \s\s
+                }{
                 A' \subtype A
-                }{\typerelation{\gby}{x}{A}}
-            \end{equation}
-
-            \subparagraph{Preserves Denotation}
-            Using the construction of denotations, we can find the denotation of the original derivation to be:
-            \begin{equation}
-                \deno{\treerule{Weaken}{\treerule{}{\D}{\gtyperelation{x}{A}}}{\typerelation{\gby}{x}{A}}} = \D \after \p
-            \end{equation}
-
-            Similarly, the denotation of the reduced denotation is:
-            \begin{equation}
-                \deno{\treerule{Subtype}{
-                    \treerule{Weaken}{
-                        \treerule{}{\D'}{\gtyperelation{x}{A'}}
-                    } {
-                        \typerelation{\gby}{x}{A'}
-                    }
-                    \s\s
-                    A' \subtype A
-                    }{\typerelation{\gby}{x}{A}}} = \deno{A'\subtype A}\after \D' \after \p
-            \end{equation}
+                }{\typerelation{\gby}{x}{A}}} = \deno{A'\subtype A}\after \D' \after \p
+        \end{equation}
 
 
-            By induction on $\reduce$ preserving denotations and the reduction of $\D$ (\ref{WeakenDeltaReduction}), we have:
+        By induction on $\reduce$ preserving denotations and the reduction of $\D$ (\ref{WeakenDeltaReduction}), we have:
 
-            \begin{equation}
-                \D = \deno{A' \subtype A}\after\D'
-            \end{equation}
+        \begin{equation}
+            \D = \deno{A' \subtype A}\after\D'
+        \end{equation}
 
-            So the denotations of the un-reduced and reduced derivations are equal.
+        So the denotations of the un-reduced and reduced derivations are equal.
 
-            \paragraph{Lambda}
-            \subparagraph{$\reduce$ definition}
-                To find:
-            
-                \begin{equation}
-                    \reduce(\treerule{Fn}{
-                        \treerule{}{\D}{\typerelation{\gax}{C}{\M{\e_2}{B}}}
-                    }{\gtyperelation{\lam{x}{A}{C}}{\lamtype{A}{\e_2}{B}}})
-                \end{equation}
-
-                Let 
-
-                \begin{equation}
-                    \treerule{Sub-effect}{
-                        \treerule{}{\D'}{\typerelation{\gax}{C}{\M{\e_1}{B'}}}
-                        \s\s
-                        \e_1\subeffect\e_2
-                        \s\s
-                        B' \subtype B
-                    }{
-                        \typerelation{\gax}{C}{\M{\e_2}{B}}
-                    } = \reduce(\D)
-                \end{equation}
-
-                In
-
-                \begin{equation}
-                    \treerule{Sub-type}{
-                        \treerule{Fn}{
-                            \D'
-                        }{
-                            \typerelation{\gax}{C}{\M{\e_1}{B'}}
-                        }
-                        \s\s
-                        \lamtype{A}{\e_1}{B'}\subtype\lamtype{A}{\e_2}{B}
-                    } {
-                        \gtyperelation{\lam{x}{A}{C}}{\lamtype{A}{\e_2}{B}}
-                    }
-                \end{equation}
-
-            \subparagraph{Preserves Denotation}
-                Let
-                \begin{align}
-                    f &= \deno{\M{\e_1}{B'}\subtype\M{\e_2}{B}} = \db{\e_1\subeffect\e_2}_{M, B}\after\T{\e_1}{(\deno{B'\subtype B})} \\
-                    \deno{\lamtype{A}{\e_1}{B'}\subtype\lamtype{A}{\e_2}{B}} & = f^A = \cur{f\after \app}
-                \end{align}
-
-                Then
-
-                \begin{align}
-                    before & = \cur{\D} \qt{By definition}\\
-                            & = \cur{f\after\D'} \qt{By reduction of $\D$} \\
-                            & = f^A\after\cur{\D'}\qt{By the property of $f^X\after\cur{g} = \cur{f\after g}$} \\
-                            & = after \qt{By definition}\\
-                \end{align}
-
-            \paragraph{Subtype}
-            \subparagraph{$\reduce$ definition}
+        \paragraph{Lambda}
+        \subparagraph{$\reduce$ definition}
             To find:
+        
             \begin{equation}
-                \reduce(\treerule{Subtype}{\treerule{}{\D}{\gtyperelation{v}{A}}\s\s A \subtype B}{\gtyperelation{v}{B}})
-            \end{equation}
-
-            Let 
-            \begin{equation}\label{SubtypeDeltaReduction}
-                \treerule{Subtype}{\treerule{}{\D'}{\gtyperelation{x}{A}}\s\s A'\subtype A}{\gtyperelation{x}{A}} = \reduce(\D)
-            \end{equation}
-
-            In 
-            \begin{equation}
-                \treerule{Subtype}{
-                    \treerule{}{\D'}{\gtyperelation{v}{A'}}
-                \s\s
-                A' \subtype A \subtype B
-                }{\gtyperelation{v}{B}}
-            \end{equation}
-
-            \subparagraph{Preserves Denotation}
-                \begin{align}
-                    before & = \deno{A \subtype B} \after \D \\
-                    & = \deno{A \subtype B} \after (\deno{A' \subtype A} \after \D') \qt{ byDenotation of reduction of $\D$.}\\
-                    & = \deno{A' \subtype B} \after \D'\qt{Subtyping relations are unique} \\
-                    & = after \\
-                \end{align}
-        \subsection{Computation Types}
-            \paragraph{Return}
-            \subparagraph{$\reduce$ definition}
-            To find:
-            
-                \begin{equation}
-                    \reduce(\treerule{Return}{
-                        \treerule{}{\D}{\gtyperelation{v}{A}}
-                    }{\gtyperelation{\return{v}}{\moa}})
-                \end{equation}
-
-                Let 
-
-                \begin{equation}
-                    \treerule{Sub-type}{
-                        \treerule{}{\D'}{\gtyperelation{v}{A'}}
-                        \s\s
-                        A' \subtype A
-                    }{
-                        \gtyperelation{v}{A}
-                    } = \reduce(\D)
-                \end{equation}
-
-                In
-
-                \begin{equation}
-                    \treerule{Sub-effect}{
-                        \treerule{Return}{
-                            \D'
-                        }{
-                            \gtyperelation{v}{A}
-                        }
-                        \s\s
-                        \1\subeffect\1
-                        \s\s
-                        A'\subtype A
-                    } {
-                        \gtyperelation{\return{v}}{\moa}
-                    }
-                \end{equation}
-
-
-                Then
-                \begin{align}
-                    before &= \point{A}\after\D\qt{By definition}\qt{By defintion}\\
-                    &{}= \point{A}\after\deno{A'\subtype A}\after \D'\qt{BY reduction of $\D$}\\
-                    &{}=\T{\1}{\deno{A'\subtype A}}\after \point{A'}\after\D'\qt{By naturality of $\point{}$}\\
-                    &{}=\db{\1\subeffect\1}_{M, A} \after \T{\1}{\deno{A'\subtype A}}\after\point{A'}\after\D'\qt{Since $\deno{\1\subeffect\1}$ is the identity Nat-Trans }\\
-                    &{}=after\qt{By definition}\\
-                \end{align}
-            \paragraph{Apply}
-            \subparagraph{$\reduce$ definition}
-            To find:
-            \begin{equation}
-                \reduce(\treerule{Apply}{
-                    \treerule{}{\D_1}{
-                        \gtyperelation{v_1}{\aeb}
-                    }
-                    \s\s
-                    \treerule{}{\D_2}{
-                        \gtyperelation{v_2}{A}
-                    }
-                }{
-                    \gtyperelation{\apply{v_1}{v_2}}{\meb}
-                })
-            \end{equation}
-
-            Let
-            \begin{align}
-                \treerule{Subtype}{
-                    \treerule{}{\D'_1}{\gtyperelation{v_1}{\lamtype{A'}{\e'}{B'}}}
-                    \s\s
-                    \lamtype{A'}{\e'}{B'}\subtype\lamtype{A}{\e}{B}
-                }{
-                    \gtyperelation{v_1}{\aeb}
-                } & = \reduce(\D_1)\\
-                \treerule{Subtype}{
-                    \treerule{}{\D'_2}{\gtyperelation{v}{A'}}
-                    \s\s
-                    A'\subtype A
-                } {
-                    \gtyperelation{v_1}{A}
-                } & = \reduce(\D_2)
-            \end{align}
-
-            In
-            \begin{equation}
-                \treerule{Sub-effect}{
-                    \treerule{Apply}{
-                        \treerule{}{
-                            \D'_1
-                        }{
-                            \gtyperelation{v_1}{\lamtype{A'}{\e'}{B'}}
-                        }
-                    \s\s
-                        \treerule{Sub-type}{
-                            \treerule{}{\D'_2}{\gtyperelation{v_2}{A''}}
-                            \s\s
-                            A'' \subtype A \subtype A'
-                        } {
-                            \gtyperelation{v_2}{A'}
-                        }
-                    }{
-                        \gtyperelation{\apply{v_1}{v_2}}{\M{\e'}{B'}}
-                    }
-                    \s\s
-                    \e' \subeffect \e
-                    \s\s
-                    B' \subtype B
-                }{
-                    \gtyperelation{\apply{v_1}{v_2}}{\meb}
-                }
-            \end{equation}
-            \subparagraph{Preserves Denotation}
-                Let
-                \begin{align}
-                    f & = \deno{A\subtype A'}: A\rightarrow A' \\
-                    f' & = \deno{A''\subtype A}: A'' \rightarrow A \\
-                    g & = \deno{B' \subtype B}: B' \rightarrow B \\
-                    h & = \deno{\e' \subeffect \e}: \T{\e'}{} \rightarrow \T{\e}{}
-                \end{align}
-
-                Hence 
-                \begin{align}
-                    \deno{\lamtype{A'}{e'}{B'}\subtype \aeb} & = (h_B\after\T{\e'}{g})^A \after (\T{\e'}{B'})^f \\
-                    & = \cur{h_B\after\T{\e'}{g}\after \app}\after\cur{\app\after(\Id{}\times f)}\\
-                    & = \cur {h_B\after\T{\e'}{g}\after\app\after(\Id{}\times f)}
-                \end{align}
-
-                Then 
-                \begin{align}
-                    before & = \app\after\pr{\D_1}{\D_2}\qt{By definition}\\
-                    & = \app\after\pr{\cur {h_B\after\T{\e'}{g}\after\app\after(\Id{}\times f)}\after\D'_1}{f'\after\D'_2}\qt{By reductions of $\D_1, \D_2$}\\
-                    & = \app\after(\cur {h_B\after\T{\e'}{g}\after\app\after(\Id{}\times f)}\times\Id{A})\after\pr{\D'_1}{f'\after\D'_2} \qt{Factoring out}\\
-                    & = h_B\after\T{\e'}{g}\after\app\after(\Id{}\times f)\after\pr{\D'_1}{f'\after\D'_2}\qt{By the exponential property}\\
-                    & = h_B\after\T{\e'}{g}\after\app\after\pr{\D'_1}{f\after f'\after \D'_2}\\
-                    & = after\qt{By defintion}
-                \end{align}
-            \paragraph{If}
-           
-            \subparagraph{$\reduce$ definition}
-                \begin{equation}
-                    \reduce(\treerule{If}{
-                        \treerule{}{\D_1}{\gtyperelation{v}{\B}}
-                        \s\s
-                        \treerule{}{\D_2}{\gtyperelation{C_1}{\mea}}
-                        \s\s
-                        \treerule{}{\D_3}{\gtyperelation{C_2}{\mea}}
-                    }{
-                        \gtyperelation{\ifthenelse{\e}{A}{v}{C_1}{C_2}}{\mea}
-                    }) = \treerule{If}{
-                        \treerule{}{\reduce(\D_1)}{\gtyperelation{v}{\B}}
-                        \s\s
-                        \treerule{}{\reduce(\D_2)}{\gtyperelation{C_1}{\mea}}
-                        \s\s
-                        \treerule{}{\reduce(\D_3)}{\gtyperelation{C_2}{\mea}}
-                    }{
-                        \gtyperelation{\ifthenelse{\e}{A}{v}{C_1}{C_2}}{\mea}
-                    }
-                \end{equation}
-
-            \subparagraph{Preserves Denotation}
-                Since calling $\reduce{}$ on the sub-derivations preserves their denotations, this definition trivially preserves the denotation of the derivation.
-
-
-                \paragraph{Bind}
-                \subparagraph{$\reduce$ definition}
-
-                To find
-                \begin{equation}
-                    \reduce(
-                        \treerule{Bind}{
-                            \treerule{}{
-                                \D_1
-                            }{
-                                \gtyperelation{C_1}{\M{\e_1}{A}}
-                            }
-                            \s\s
-                            \treerule{}{
-                                \D_2
-                            }{
-                                \typerelation{\gax}{C_2}{\M{\e_2}{B}}
-                            }
-                        } {
-                            \gtyperelation{\doin{x}{C_1}{C_2}}{\M{\e_1\dot\e_2}{B}}
-                        }
-                    )
-                \end{equation}
-
-
-                Let \begin{equation}
-                    \treerule{Sub-effect}{
-                        \treerule{}{\D'_1}{\gtyperelation{C_1}{\M{\e'_1}{A'}}}
-                    \s\s
-                    \e_1' \subtype \e_1
-                    \s\s
-                    A' \subtype A
-                    }{
-                        \gtyperelation{C_1}{\M{\e_1}{A}}
-                    } = \reduce(\D_1)
-                \end{equation}
-
-                Since $\wrel{i,\x}{\G, x: A'}{\gax}$ if $A' \subtype A$, and by $\D_2$, $\typerelation{(\gax)}{C_2}{\M{\e_2}{B}}$, there also exists a derivation $\D_3$ of $\typerelation{(\G, x: A')}{C_2}{\M{\e_2}{B}}$. $\D_3$ is derived from $\D_2$ simply by inserting a (Sub-type) rule below all instances of the (Var) rule.
-
-                Let \begin{equation}
-                    \treerule{Sub-effect}{
-                        \treerule{}{\D'_3}{\typerelation{\G, x: A'}{C_2}{\M{\e'_2}{B'}}}
-                    \s\s
-                    \e_2' \subtype \e_2
-                    \s\s
-                    B' \subtype B
-                    }{
-                        \typerelation{\G, x: A'}{C_2}{\M{\e_2}{B}}
-                    } = \reduce(\D_3)
-                \end{equation}
-                
-
-                Since the effects monoid operation is monotone, if $\e_1\subeffect\e_1'$ and $\e_2\subeffect\e_2'$ then $\e_1\dot\e_2 \subeffect \e_1'\dot\e_2'$
-                
-
-
-                Then the result of reduction of the whole bind expression is:
-
-
-                \begin{equation}
-                    \treerule{Sub-effect}{
-                        \treerule{Bind}{
-                            \treerule{}{
-                                \D'_1
-                            }{
-                                \gtyperelation{C_1}{\M{\e_1'}{A'}}
-                            }
-                            \s\s
-                            \treerule{}{
-                                \D'_3
-                            }{
-                                \typerelation{\G, x: A'}{C_2}{\M{\e_2'}{B'}}
-                            }
-                        }{
-                        \gtyperelation{\doin{x}{C_1}{C_2}}{\M{\e_1'\dot\e_2'}{B}}
-                        }
-                        \s\s
-                        B' \subtype B
-                        \s\s
-                        \e_1'\dot\e_2'\subeffect\e_1\dot\e_2
-                    }{
-                        \gtyperelation{\doin{x}{C_1}{C_2}}{\M{\e_1\dot\e_2}{B}}
-                    }
-                \end{equation}
-                \subparagraph{Preserves Denotation}
-
-                Let \begin{align}
-                    f & = \deno{A' \subtype A}: A' \rightarrow A\\
-                    g & = \deno{B' \subtype B}: B' \rightarrow B\\
-                    h_1 & = \deno{\e_1' \subeffect \e_1} : \T{\e_1'}{} \rightarrow \T{\e_1}{} \\
-                    h_2 & = \deno{\e_2'\subeffect \e_2}:\T{\e_2'}{} \rightarrow \T{\e_2}{}\\
-                    h & = \deno{\e_1'\dot\e_2'\subeffect\e_1\dot\e_2}: \T{\e_1'\dot\e_2'}{}\rightarrow \T{\e_1\dot\e_2}{}
-                \end{align}
-
-                Due to the denotation of the weakening used to derive $\D_3$ from $\D_2$, we have 
-                \begin{equation}
-                    \D_3 = \D_2\after(\idg\times f)
-                \end{equation}
-
-                And due to the reduction of $\D_3$,
-                we have 
-                \begin{equation}
-                    \D_3 = h_{2, B} \after \T{\e_2'}{g}\after \D_3'
-                \end{equation}
-
-                So:
-
-                \begin{align}
-                    before &= \bind{\e_1}{\e_2}{B}\after \T{\e_1}{\D_2}\after\tstrength{\e_1}{\G}{A}\after\pr{\idg}{\D_1}\qt{By definition.}\\
-                    &= \bind{\e_1}{\e_2}{B}\after \T{\e_1}{\D_2}\after\tstrength{\e_1}{\G}{A}\after\pr{\idg}{h_{1, A}\after\T{\e_1'}{f}\after\D_1'}\qt{By reduction of $\D_1$.}\\
-                    &= \bind{\e_1}{\e_2}{B}\after \T{\e_1}{\D_2}\after\tstrength{\e_1}{\G}{A}\after(\idg\times h_{1, A})\after\pr{\idg}{\T{\e_1'}{f}\after\D_1'}\qt{Factor out $h_1$}\\
-                    &= \bind{\e_1}{\e_2}{B}\after \T{\e_1}{\D_2}\after
-                    h_{1, (\G\times A)}\after
-                    \tstrength{\e_1'}{\G}{A}\after\pr{\idg}{\T{\e_1'}{f}\after\D_1'}\qt{Tensor strength and sub-effecting $h_1$}\\
-                    &= \bind{\e_1}{\e_2}{B}\after 
-                    h_{1, B}\after\T{\e_1'}{\D_2}\after
-                    \tstrength{\e_1'}{\G}{A}\after\pr{\idg}{\T{\e_1'}{f}\after\D_1'}\qt{Naturality of $h_1$}\\
-                    &= \bind{\e_1}{\e_2}{B}\after 
-                    h_{1, B}\after\T{\e_1'}{\D_2}\after
-                    \tstrength{\e_1'}{\G}{A}\after(\idg\times \T{\e_1'}{f})\after\pr{\idg}{\D_1'}\qt{Factor out pairing again}\\
-                    &= \bind{\e_1}{\e_2}{B}\after 
-                    h_{1, B}\after\T{\e_1'}{(\D_2\after(\idg\times f))}\after
-                    \tstrength{\e_1'}{\G}{A'}\after\pr{\idg}{\D_1'}\qt{Tensorstrength}\\
-                    &= \bind{\e_1}{\e_2}{B}\after 
-                    h_{1, B}\after\T{\e_1'}{(\D_3)}\after
-                    \tstrength{\e_1'}{\G}{A'}\after\pr{\idg}{\D_1'}\qt{By the definition of $\D_3$}\\
-                    &= \bind{\e_1}{\e_2}{B}\after 
-                    h_{1, B}\after\T{\e_1'}{(h_{2, B}\after\T{\e_2'}{g}\after \D_3')}\after
-                    \tstrength{\e_1'}{\G}{A'}\after\pr{\idg}{\D_1'}\qt{By the reduction of $\D_3$}\\
-                    &= \bind{\e_1}{\e_2}{B}\after 
-                    h_{1, B}\after\T{\e_1'}{h_{2, B}}\after\T{\e_1'}{\T{\e_2'}{g}}\after \T{\e_1'}{\D_3'}\after
-                    \tstrength{\e_1'}{\G}{A'}\after\pr{\idg}{\D_1'}\qt{Factor out the functor}\\
-                    &= h_B\after\bind{\e_1'}{\e_2'}{B}\after\T{\e_1'}{\T{\e_2'}{g}}\after \T{\e_1'}{\D_3'}\after
-                    \tstrength{\e_1'}{\G}{A'}\after\pr{\idg}{\D_1'}\qt{By the $\mu$ and Sub-effect rule }\\
-                    & = h_B\after\T{\e_1'\dot\e_2'}{g}\after\bind{\e_1'}{\e_2'}{B'}\after \T{\e_1'}{\D_3'}\after
-                    \tstrength{\e_1'}{\G}{A'}\after\pr{\idg}{\D_1'}\qt{By naturality of $\bind{}{}{}$ }\\
-                    & = after \qt{By definition}
-                \end{align}
-
-            \paragraph{Subeffect}
-            \subparagraph{$\reduce$ definition}
-            To find:
-
-            \begin{equation}
-                \reduce(\treerule{Subeffect}{\treerule{}{\D}{\gtyperelation{C}{\M{\e'}{B'}}}\s\s\e'\subeffect\e\s\s B'\subtype B}{\gtyperelation{C}{\meb}})
+                \reduce(\ntreeruleI{Fn}{
+                    \treeruleI{\D}{\typerelation{\gax}{C}{\M{\e_2}{B}}}
+                }{\gtyperelation{\lam{x}{A}{C}}{\lamtype{A}{\e_2}{B}}})
             \end{equation}
 
             Let 
 
             \begin{equation}
-                \treerule{Subeffect}{
-                    \treerule{}{\D'}{\gtyperelation{C}{\M{\e''}{B''}}}
-                    \s\s
-                    \e'' \subeffect \e'
-                    \s\s
-                    \B'' \subtype B
+                \ntreeruleII{Sub-effect}{
+                    \treeruleI{\D'}{\typerelation{\gax}{C}{\M{\e_1}{B'}}}
+                    }{
+                    \e_1\subeffect\e_2
+                    }{
+                    B' \subtype B
                 }{
-                    \gtyperelation{C}{\M{\e'}{B}}
+                    \typerelation{\gax}{C}{\M{\e_2}{B}}
                 } = \reduce(\D)
             \end{equation}
 
-            in
+            In
 
             \begin{equation}
-                \treerule{subeffect}{
-                    \treerule{}{\D'}{\gtyperelation{C}{\M{\e''}{B''}}}
-                    \s\s
-                    \e'' \subeffect \e
-                    \s\s
-                    B'' \subtype B
+                \ntreeruleII{Sub-type}{
+                    \ntreeruleI{Fn}{
+                        \D'
+                    }{
+                        \typerelation{\gax}{C}{\M{\e_1}{B'}}
+                    }
+                    }{
+                    \lamtype{A}{\e_1}{B'}\subtype\lamtype{A}{\e_2}{B}
+                } {
+                    \gtyperelation{\lam{x}{A}{C}}{\lamtype{A}{\e_2}{B}}
+                }
+            \end{equation}
+
+        \subparagraph{Preserves Denotation}
+            Let
+            \begin{align}
+                f &= \deno{\M{\e_1}{B'}\subtype\M{\e_2}{B}} = \db{\e_1\subeffect\e_2}_{M, B}\after\T{\e_1}{(\deno{B'\subtype B})} \\
+                \deno{\lamtype{A}{\e_1}{B'}\subtype\lamtype{A}{\e_2}{B}} & = f^A = \cur{f\after \app}
+            \end{align}
+
+            Then
+
+            \begin{align}
+                before & = \cur{\D} \qt{By definition}\\
+                        & = \cur{f\after\D'} \qt{By reduction of $\D$} \\
+                        & = f^A\after\cur{\D'}\qt{By the property of $f^X\after\cur{g} = \cur{f\after g}$} \\
+                        & = after \qt{By definition}\\
+            \end{align}
+
+        \paragraph{Subtype}
+        \subparagraph{$\reduce$ definition}
+        To find:
+        \begin{equation}
+            \reduce(\ntreeruleII{Subtype}{\treeruleI{\D}{\gtyperelation{v}{A}}}{ A \subtype B}{\gtyperelation{v}{B}})
+        \end{equation}
+
+        Let 
+        \begin{equation}\label{SubtypeDeltaReduction}
+            \ntreeruleII{Subtype}{\treeruleI{\D'}{\gtyperelation{x}{A}}}{ A'\subtype A}{\gtyperelation{x}{A}} = \reduce(\D)
+        \end{equation}
+
+        In 
+        \begin{equation}
+            \ntreeruleII{Subtype}{
+                \treeruleI{\D'}{\gtyperelation{v}{A'}}
+            }{
+            A' \subtype A \subtype B
+            }{\gtyperelation{v}{B}}
+        \end{equation}
+
+        \subparagraph{Preserves Denotation}
+            \begin{align}
+                before & = \deno{A \subtype B} \after \D \\
+                & = \deno{A \subtype B} \after (\deno{A' \subtype A} \after \D') \qt{ byDenotation of reduction of $\D$.}\\
+                & = \deno{A' \subtype B} \after \D'\qt{Subtyping relations are unique} \\
+                & = after \\
+            \end{align}
+    \subsection{Computation Types}
+        \paragraph{Return}
+        \subparagraph{$\reduce$ definition}
+        To find:
+        
+            \begin{equation}
+                \reduce(\ntreeruleI{Return}{
+                    \treeruleI{\D}{\gtyperelation{v}{A}}
+                }{\gtyperelation{\return{v}}{\moa}})
+            \end{equation}
+
+            Let 
+
+            \begin{equation}
+                \ntreeruleII{Sub-type}{
+                    \treeruleI{\D'}{\gtyperelation{v}{A'}}
+                    }{
+                    A' \subtype A
                 }{
-                    \gtyperelation{C}{\meb}
+                    \gtyperelation{v}{A}
+                } = \reduce(\D)
+            \end{equation}
+
+            In
+
+            \begin{equation}
+                \ntreeruleII{Sub-effect}{
+                    \ntreeruleI{Return}{
+                        \D'
+                    }{
+                        \gtyperelation{v}{A}
+                    }
+                    }{
+                    \1\subeffect\1
+                    }{
+                    A'\subtype A
+                } {
+                    \gtyperelation{\return{v}}{\moa}
+                }
+            \end{equation}
+
+
+            Then
+            \begin{align}
+                before &= \point{A}\after\D\qt{By definition}\qt{By defintion}\\
+                &{}= \point{A}\after\deno{A'\subtype A}\after \D'\qt{BY reduction of $\D$}\\
+                &{}=\T{\1}{\deno{A'\subtype A}}\after \point{A'}\after\D'\qt{By naturality of $\point{}$}\\
+                &{}=\db{\1\subeffect\1}_{M, A} \after \T{\1}{\deno{A'\subtype A}}\after\point{A'}\after\D'\qt{Since $\deno{\1\subeffect\1}$ is the identity Nat-Trans }\\
+                &{}=after\qt{By definition}\\
+            \end{align}
+        \paragraph{Apply}
+        \subparagraph{$\reduce$ definition}
+        To find:
+        \begin{equation}
+            \reduce(\ntreeruleII{Apply}{
+                \treeruleI{\D_1}{
+                    \gtyperelation{v_1}{\aeb}
+                }
+                }{
+                \treeruleI{\D_2}{
+                    \gtyperelation{v_2}{A}
+                }
+            }{
+                \gtyperelation{\apply{v_1}{v_2}}{\meb}
+            })
+        \end{equation}
+
+        Let
+        \begin{align}
+            \ntreeruleII{Subtype}{
+                \treeruleI{\D'_1}{\gtyperelation{v_1}{\lamtype{A'}{\e'}{B'}}}
+                }{
+                \lamtype{A'}{\e'}{B'}\subtype\lamtype{A}{\e}{B}
+            }{
+                \gtyperelation{v_1}{\aeb}
+            } & = \reduce(\D_1)\\
+            \ntreeruleII{Subtype}{
+                \treeruleI{\D'_2}{\gtyperelation{v}{A'}}
+                }{
+                A'\subtype A
+            } {
+                \gtyperelation{v_1}{A}
+            } & = \reduce(\D_2)
+        \end{align}
+
+        In
+        \begin{equation}
+            \ntreeruleII{Sub-effect}{
+                \ntreeruleII{Apply}{
+                    \treeruleI{
+                        \D'_1
+                    }{
+                        \gtyperelation{v_1}{\lamtype{A'}{\e'}{B'}}
+                    }
+                }{
+                    \ntreeruleI{Sub-type}{
+                        \treeruleI{\D'_2}{\gtyperelation{v_2}{A''}}
+                        }{
+                        A'' \subtype A \subtype A'
+                    } {
+                        \gtyperelation{v_2}{A'}
+                    }
+                }{
+                    \gtyperelation{\apply{v_1}{v_2}}{\M{\e'}{B'}}
+                }
+                }{
+                \e' \subeffect \e
+                }{
+                B' \subtype B
+            }{
+                \gtyperelation{\apply{v_1}{v_2}}{\meb}
+            }
+        \end{equation}
+        \subparagraph{Preserves Denotation}
+            Let
+            \begin{align}
+                f & = \deno{A\subtype A'}: A\rightarrow A' \\
+                f' & = \deno{A''\subtype A}: A'' \rightarrow A \\
+                g & = \deno{B' \subtype B}: B' \rightarrow B \\
+                h & = \deno{\e' \subeffect \e}: \T{\e'}{} \rightarrow \T{\e}{}
+            \end{align}
+
+            Hence 
+            \begin{align}
+                \deno{\lamtype{A'}{e'}{B'}\subtype \aeb} & = (h_B\after\T{\e'}{g})^A \after (\T{\e'}{B'})^f \\
+                & = \cur{h_B\after\T{\e'}{g}\after \app}\after\cur{\app\after(\Id{}\times f)}\\
+                & = \cur {h_B\after\T{\e'}{g}\after\app\after(\Id{}\times f)}
+            \end{align}
+
+            Then 
+            \begin{align}
+                before & = \app\after\pr{\D_1}{\D_2}\qt{By definition}\\
+                & = \app\after\pr{\cur {h_B\after\T{\e'}{g}\after\app\after(\Id{}\times f)}\after\D'_1}{f'\after\D'_2}\qt{By reductions of $\D_1, \D_2$}\\
+                & = \app\after(\cur {h_B\after\T{\e'}{g}\after\app\after(\Id{}\times f)}\times\Id{A})\after\pr{\D'_1}{f'\after\D'_2} \qt{Factoring out}\\
+                & = h_B\after\T{\e'}{g}\after\app\after(\Id{}\times f)\after\pr{\D'_1}{f'\after\D'_2}\qt{By the exponential property}\\
+                & = h_B\after\T{\e'}{g}\after\app\after\pr{\D'_1}{f\after f'\after \D'_2}\\
+                & = after\qt{By defintion}
+            \end{align}
+        \paragraph{If}
+       
+        \subparagraph{$\reduce$ definition}
+            \begin{equation}
+                \reduce(\ntreeruleIII{If}{
+                    \treeruleI{\D_1}{\gtyperelation{v}{\B}}
+                    }{
+                    \treeruleI{\D_2}{\gtyperelation{C_1}{\mea}}
+                    }{
+                    \treeruleI{\D_3}{\gtyperelation{C_2}{\mea}}
+                }{
+                    \gtyperelation{\ifthenelse{\e}{A}{v}{C_1}{C_2}}{\mea}
+                }) = \ntreeruleIII{If}{
+                    \treeruleI{\reduce(\D_1)}{\gtyperelation{v}{\B}}
+                    }{
+                    \treeruleI{\reduce(\D_2)}{\gtyperelation{C_1}{\mea}}
+                    }{
+                    \treeruleI{\reduce(\D_3)}{\gtyperelation{C_2}{\mea}}
+                }{
+                    \gtyperelation{\ifthenelse{\e}{A}{v}{C_1}{C_2}}{\mea}
+                }
+            \end{equation}
+
+        \subparagraph{Preserves Denotation}
+            Since calling $\reduce{}$ on the sub-derivations preserves their denotations, this definition trivially preserves the denotation of the derivation.
+
+
+            \paragraph{Bind}
+            \subparagraph{$\reduce$ definition}
+
+            To find
+            \begin{equation}
+                \reduce(
+                    \ntreeruleI{Bind}{
+                        \treeruleI{
+                            \D_1
+                        }{
+                            \gtyperelation{C_1}{\M{\e_1}{A}}
+                        }
+                        }{
+                        \treeruleI{
+                            \D_2
+                        }{
+                            \typerelation{\gax}{C_2}{\M{\e_2}{B}}
+                        }
+                    } {
+                        \gtyperelation{\doin{x}{C_1}{C_2}}{\M{\e_1\dot\e_2}{B}}
+                    }
+                )
+            \end{equation}
+
+
+            Let \begin{equation}
+                \ntreeruleI{Sub-effect}{
+                    \treeruleI{\D'_1}{\gtyperelation{C_1}{\M{\e'_1}{A'}}}
+                }{
+                \e_1' \subtype \e_1
+                }{
+                A' \subtype A
+                }{
+                    \gtyperelation{C_1}{\M{\e_1}{A}}
+                } = \reduce(\D_1)
+            \end{equation}
+
+            Since $\wrel{i,\x}{\G, x: A'}{\gax}$ if $A' \subtype A$, and by $\D_2$, $\typerelation{(\gax)}{C_2}{\M{\e_2}{B}}$, there also exists a derivation $\D_3$ of $\typerelation{(\G, x: A')}{C_2}{\M{\e_2}{B}}$. $\D_3$ is derived from $\D_2$ simply by inserting a (Sub-type) rule below all instances of the (Var) rule.
+
+            Let \begin{equation}
+                \ntreeruleI{Sub-effect}{
+                    \treeruleI{\D'_3}{\typerelation{\G, x: A'}{C_2}{\M{\e'_2}{B'}}}
+                }{
+                \e_2' \subtype \e_2
+                }{
+                B' \subtype B
+                }{
+                    \typerelation{\G, x: A'}{C_2}{\M{\e_2}{B}}
+                } = \reduce(\D_3)
+            \end{equation}
+            
+
+            Since the effects monoid operation is monotone, if $\e_1\subeffect\e_1'$ and $\e_2\subeffect\e_2'$ then $\e_1\dot\e_2 \subeffect \e_1'\dot\e_2'$
+            
+
+
+            Then the result of reduction of the whole bind expression is:
+
+
+            \begin{equation}
+                \ntreeruleI{Sub-effect}{
+                    \ntreeruleI{Bind}{
+                        \treeruleI{
+                            \D'_1
+                        }{
+                            \gtyperelation{C_1}{\M{\e_1'}{A'}}
+                        }
+                        }{
+                        \treeruleI{
+                            \D'_3
+                        }{
+                            \typerelation{\G, x: A'}{C_2}{\M{\e_2'}{B'}}
+                        }
+                    }{
+                    \gtyperelation{\doin{x}{C_1}{C_2}}{\M{\e_1'\dot\e_2'}{B}}
+                    }
+                    }{
+                    B' \subtype B
+                    }{
+                    \e_1'\dot\e_2'\subeffect\e_1\dot\e_2
+                }{
+                    \gtyperelation{\doin{x}{C_1}{C_2}}{\M{\e_1\dot\e_2}{B}}
                 }
             \end{equation}
             \subparagraph{Preserves Denotation}
-                Let
-                \begin{align}
-                    f & = \deno{B' \subtype B}\\
-                    g & = \deno{B'' \subtype B'}\\
-                    h_1 & = \deno{\e' \subeffect \e}\\
-                    h_2 & = \deno{\e' \subeffect \e'}\\
-                    f\after g & = \deno{B'' \subtype B}\\
-                    h_1\after h_2 & = \deno{\e'' \subeffect \e'}\\
-                \end{align}
 
-                Hence we can find the denotation of the derivation before reduction.
+            Let \begin{align}
+                f & = \deno{A' \subtype A}: A' \rightarrow A\\
+                g & = \deno{B' \subtype B}: B' \rightarrow B\\
+                h_1 & = \deno{\e_1' \subeffect \e_1} : \T{\e_1'}{} \rightarrow \T{\e_1}{} \\
+                h_2 & = \deno{\e_2'\subeffect \e_2}:\T{\e_2'}{} \rightarrow \T{\e_2}{}\\
+                h & = \deno{\e_1'\dot\e_2'\subeffect\e_1\dot\e_2}: \T{\e_1'\dot\e_2'}{}\rightarrow \T{\e_1\dot\e_2}{}
+            \end{align}
 
-                \begin{align}
-                    before & = h_{1, B} \after \T{\e'}{f} \after \D \qt{By definition}\\
-                    & = (h_{1, B} \after \T{\e'}{f}) \after (h_{2, B'} \after \T{\e''}{g}) \after \D' \qt{By reduction of $\D$} \\
-                    & = (h_{1, B}\after h_{2, B}) \after (\T{\e''}{f\after g})\after \D'\qt{By naturality of $h_2$}
-                    & = after \qt{By definition.}
-                \end{align}
+            Due to the denotation of the weakening used to derive $\D_3$ from $\D_2$, we have 
+            \begin{equation}
+                \D_3 = \D_2\after(\idg\times f)
+            \end{equation}
 
-    
-    \section{Denotations are Equivalent}
-    For each type relation instance $\gtyperelation{t}{\tau}$ there exists a unique reduced derivation of the relation instance. For all derivations $\D$, $\D'$ of the type relation instance, $\deno{\D} = \deno{\reduce{\D}} = \deno{\reduce{\D'}} = \deno{\D'} $, hence the denotation $\deno{\gtyperelation{t}{\tau}}$ is unique.
-    
+            And due to the reduction of $\D_3$,
+            we have 
+            \begin{equation}
+                \D_3 = h_{2, B} \after \T{\e_2'}{g}\after \D_3'
+            \end{equation}
+
+            So:
+
+            \begin{align}
+                before &= \bind{\e_1}{\e_2}{B}\after \T{\e_1}{\D_2}\after\tstrength{\e_1}{\G}{A}\after\pr{\idg}{\D_1}\qt{By definition.}\\
+                &= \bind{\e_1}{\e_2}{B}\after \T{\e_1}{\D_2}\after\tstrength{\e_1}{\G}{A}\after\pr{\idg}{h_{1, A}\after\T{\e_1'}{f}\after\D_1'}\qt{By reduction of $\D_1$.}\\
+                &= \bind{\e_1}{\e_2}{B}\after \T{\e_1}{\D_2}\after\tstrength{\e_1}{\G}{A}\after(\idg\times h_{1, A})\after\pr{\idg}{\T{\e_1'}{f}\after\D_1'}\qt{Factor out $h_1$}\\
+                &= \bind{\e_1}{\e_2}{B}\after \T{\e_1}{\D_2}\after
+                h_{1, (\G\times A)}\after
+                \tstrength{\e_1'}{\G}{A}\after\pr{\idg}{\T{\e_1'}{f}\after\D_1'}\qt{Tensor strength and sub-effecting $h_1$}\\
+                &= \bind{\e_1}{\e_2}{B}\after 
+                h_{1, B}\after\T{\e_1'}{\D_2}\after
+                \tstrength{\e_1'}{\G}{A}\after\pr{\idg}{\T{\e_1'}{f}\after\D_1'}\qt{Naturality of $h_1$}\\
+                &= \bind{\e_1}{\e_2}{B}\after 
+                h_{1, B}\after\T{\e_1'}{\D_2}\after
+                \tstrength{\e_1'}{\G}{A}\after(\idg\times \T{\e_1'}{f})\after\pr{\idg}{\D_1'}\qt{Factor out pairing again}\\
+                &= \bind{\e_1}{\e_2}{B}\after 
+                h_{1, B}\after\T{\e_1'}{(\D_2\after(\idg\times f))}\after
+                \tstrength{\e_1'}{\G}{A'}\after\pr{\idg}{\D_1'}\qt{Tensorstrength}\\
+                &= \bind{\e_1}{\e_2}{B}\after 
+                h_{1, B}\after\T{\e_1'}{(\D_3)}\after
+                \tstrength{\e_1'}{\G}{A'}\after\pr{\idg}{\D_1'}\qt{By the definition of $\D_3$}\\
+                &= \bind{\e_1}{\e_2}{B}\after 
+                h_{1, B}\after\T{\e_1'}{(h_{2, B}\after\T{\e_2'}{g}\after \D_3')}\after
+                \tstrength{\e_1'}{\G}{A'}\after\pr{\idg}{\D_1'}\qt{By the reduction of $\D_3$}\\
+                &= \bind{\e_1}{\e_2}{B}\after 
+                h_{1, B}\after\T{\e_1'}{h_{2, B}}\after\T{\e_1'}{\T{\e_2'}{g}}\after \T{\e_1'}{\D_3'}\after
+                \tstrength{\e_1'}{\G}{A'}\after\pr{\idg}{\D_1'}\qt{Factor out the functor}\\
+                &= h_B\after\bind{\e_1'}{\e_2'}{B}\after\T{\e_1'}{\T{\e_2'}{g}}\after \T{\e_1'}{\D_3'}\after
+                \tstrength{\e_1'}{\G}{A'}\after\pr{\idg}{\D_1'}\qt{By the $\mu$ and Sub-effect rule }\\
+                & = h_B\after\T{\e_1'\dot\e_2'}{g}\after\bind{\e_1'}{\e_2'}{B'}\after \T{\e_1'}{\D_3'}\after
+                \tstrength{\e_1'}{\G}{A'}\after\pr{\idg}{\D_1'}\qt{By naturality of $\bind{}{}{}$ }\\
+                & = after \qt{By definition}
+            \end{align}
+
+        \paragraph{Subeffect}
+        \subparagraph{$\reduce$ definition}
+        To find:
+
+        \begin{equation}
+            \reduce(\ntreeruleI{Subeffect}{\treeruleI{\D}{\gtyperelation{C}{\M{\e'}{B'}}}}{\e'\subeffect\e}{ B'\subtype B}{\gtyperelation{C}{\meb}})
+        \end{equation}
+
+        Let 
+
+        \begin{equation}
+            \ntreeruleI{Subeffect}{
+                \treeruleI{\D'}{\gtyperelation{C}{\M{\e''}{B''}}}
+                }{
+                \e'' \subeffect \e'
+                }{
+                \B'' \subtype B
+            }{
+                \gtyperelation{C}{\M{\e'}{B}}
+            } = \reduce(\D)
+        \end{equation}
+
+        in
+
+        \begin{equation}
+            \ntreeruleI{subeffect}{
+                \treeruleI{\D'}{\gtyperelation{C}{\M{\e''}{B''}}}
+                }{
+                \e'' \subeffect \e
+                }{
+                B'' \subtype B
+            }{
+                \gtyperelation{C}{\meb}
+            }
+        \end{equation}
+        \subparagraph{Preserves Denotation}
+            Let
+            \begin{align}
+                f & = \deno{B' \subtype B}\\
+                g & = \deno{B'' \subtype B'}\\
+                h_1 & = \deno{\e' \subeffect \e}\\
+                h_2 & = \deno{\e' \subeffect \e'}\\
+                f\after g & = \deno{B'' \subtype B}\\
+                h_1\after h_2 & = \deno{\e'' \subeffect \e'}\\
+            \end{align}
+
+            Hence we can find the denotation of the derivation before reduction.
+
+            \begin{align}
+                before & = h_{1, B} \after \T{\e'}{f} \after \D \qt{By definition}\\
+                & = (h_{1, B} \after \T{\e'}{f}) \after (h_{2, B'} \after \T{\e''}{g}) \after \D' \qt{By reduction of $\D$} \\
+                & = (h_{1, B}\after h_{2, B}) \after (\T{\e''}{f\after g})\after \D'\qt{By naturality of $h_2$}
+                & = after \qt{By definition.}
+            \end{align}
+
+
+\section{Denotations are Equivalent}
+For each type relation instance $\gtyperelation{t}{\tau}$ there exists a unique reduced derivation of the relation instance. For all derivations $\D$, $\D'$ of the type relation instance, $\deno{\D} = \deno{\reduce{\D}} = \deno{\reduce{\D'}} = \deno{\D'} $, hence the denotation $\deno{\gtyperelation{t}{\tau}}$ is unique.
+
 }
 
 \ifdefined\NoDocument
