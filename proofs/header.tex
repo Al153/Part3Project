@@ -9,6 +9,9 @@
 \usepackage{amsmath}
 \usepackage[a4paper,includeheadfoot,margin=2.54cm]{geometry}
 
+% For typesetting tree rules
+\usepackage{mathpartir}
+
 
 \usepackage{array}   % for \newcolumntype macro
 \usepackage{tikz-cd}
@@ -45,13 +48,13 @@
 \newcommand\fixLayout[1]{\textbf{Fix Layout: #1}}
 
 \newcommand{\s}{\;}
-\newcommand{\doin}[3]{\texttt{do}\s #1 \leftarrow #2 \s\texttt{in}\s #3}
+\newcommand{\doin}[3]{\texttt{do}\s #1 \leftarrow #2 \s\texttt{in}\s #3\s}
 \newcommand\apply[2]{#1\s#2}
-\newcommand{\pifthenelse}[4]{\texttt{if}_{#1}\s#2\s \texttt{then}\s #3 \s\texttt{else} \s#4}
+\newcommand{\pifthenelse}[4]{\texttt{if}_{#1}\s#2\s \texttt{then}\s #3 \s\texttt{else} \s#4\s}
 \newcommand\ifthenelse[5]{\pifthenelse{#1, #2}{#3}{#4}{#5}}
 \newcommand\const[1]{\texttt{C}^{#1}}
-\newcommand\return[1]{\texttt{return} #1}
-\newcommand\lam[3]{\lambda #1 : #2. #3}
+\newcommand\return[1]{\texttt{return} \s#1\s}
+\newcommand\lam[3]{\lambda #1 : #2. #3\s}
 \renewcommand\u[0]{\texttt{()}}
 \newcommand{\U}[0]{\texttt{Unit}}
 \renewcommand\t[0]{\texttt{true}}
@@ -63,11 +66,40 @@
 
 % draw type relations
 \newcommand{\typerelation}[3]{#1 \vdash #2 \colon #3}
+\newcommand\wellformed[2]{#1\vdash #2}
+\newcommand\wellformedok[2]{\ok{#1\vdash #2}}
+
+
+
 \newcommand{\gtyperelation}[2]{\typerelation{\G}{#1}{#2}}
 
 %draw tree rules
 \newcommand{\treerule}[3]{(\text{#1}) \frac{#2}{#3}}
 \newcommand{\condtreerule}[4]{\treerule{#1}{#2}{#3}(\text{if } #4)}
+
+
+\newcommand\treerulez[1]{\inferrule{ }{#1}}
+\newcommand\treeruleI[2]{\inferrule{#1}{#2}}
+\newcommand\treeruleII[3]{\inferrule{#1 \\ #2}{#3}}
+\newcommand\treeruleIII[4]{\inferrule{#1 \\ #2 \\ #3}{#4}}
+\newcommand\treeruleIV[5]{\inferrule{#1 \\ #2 \\ #3 \\ #4}{#5}}
+\newcommand\treeruleV[6]{\inferrule{#1 \\ #2 \\ #3 \\ #4 \\ #5}{#6}}
+
+\newcommand\ntreerulez[2]{(\text{#1})\inferrule{ }{#2}}
+\newcommand\ntreeruleI[3]{(\text{#1})\inferrule{#2}{#3}}
+\newcommand\ntreeruleII[4]{(\text{#1})\inferrule{#2 \\ #3}{#4}}
+\newcommand\ntreeruleIII[5]{(\text{#1})\inferrule{#2 \\ #3 \\ #4}{#5}}
+\newcommand\ntreeruleIV[6]{(\text{#1})\inferrule{#2 \\ #3 \\ #4 \\ #5}{#6}}
+\newcommand\ntreeruleV[7]{(\text{#1})\inferrule{#2 \\ #3 \\ #4 \\ #5 \\ #6}{#7}}
+
+\newcommand\condtreerulez[3]{(\text{#1})\inferrule{ }{#2}(\text{if } #3)}
+\newcommand\condtreeruleI[4]{(\text{#1})\inferrule{#2}{#3}(\text{if } #4)}
+\newcommand\condtreeruleII[5]{(\text{#1})\inferrule{#2 \\ #3}{#4}(\text{if } #5)}
+\newcommand\condtreeruleIII[6]{(\text{#1})\inferrule{#2 \\ #3 \\ #4}{#5}(\text{if } #6)}
+\newcommand\condtreeruleIV[7]{(\text{#1})\inferrule{#2 \\ #3 \\ #4 \\ #5}{#6}(\text{if } #7)}
+\newcommand\condtreeruleV[8]{(\text{#1})\inferrule{ #2 \\ #3 \\ #4 \\ #5 \\ #6 }{#7}(\text{if } #8)}
+
+
 
 \newcommand{\subtype}[0]{\leq:}
 \newcommand\subeffect[0]{\leq}
@@ -150,20 +182,20 @@
 
 % Combinators for building delta-based tree proof terms
 \newcommand{\deltavrule}[4]{
-    \treerule{Subtype}{\treerule{}{\D}{\typerelation{#1}{#2}{#3}}\s\s #3 \subtype #4}{\typerelation{#1}{#2}{#4}}}
+    \ntreeruleII{Subtype}{\treeruleI{\D}{\typerelation{#1}{#2}{#3}}}{#3 \subtype #4}{\typerelation{#1}{#2}{#4}}}
 
 \newcommand{\deltavruleprime}[4]{
-    \treerule{Subtype}{\treerule{}{\D'}{\typerelation{#1}{#2}{#3}}\s\s #3 \subtype #4}{\typerelation{#1}{#2}{#4}}}
+    \ntreeruleII{Subtype}{\treeruleI{\D'}{\typerelation{#1}{#2}{#3}}}{#3 \subtype #4}{\typerelation{#1}{#2}{#4}}}
 
 \newcommand{\deltavruleprimeprime}[4]{
-        \treerule{Subtype}{\treerule{}{\D'}{\typerelation{#1}{#2}{#3}}\s\s #3 \subtype #4}{\typerelation{#1}{#2}{#4}}}
+        \ntreeruleII{Subtype}{\treeruleI{\D'}{\typerelation{#1}{#2}{#3}}\s\s #3 \subtype #4}{\typerelation{#1}{#2}{#4}}}
     
 \newcommand{\deltacrule}[6]{
-            \treerule{Subeffect}{\treerule{}{\D}{\typerelation{#1}{#2}{\M{#3}{#4}}}\s\s #4 \subtype #6\s\s #3 \subeffect #5}{\typerelation{#1}{#2}{\M{#5}{#6}}}}
+            \ntreeruleIII{Subeffect}{\treeruleI{\D}{\typerelation{#1}{#2}{\M{#3}{#4}}}}{#4 \subtype #6}{#3 \subeffect #5}{\typerelation{#1}{#2}{\M{#5}{#6}}}}
 \newcommand{\deltacruleprime}[6]{
-    \treerule{Subeffect}{\treerule{}{\D'}{\typerelation{#1}{#2}{\M{#3}{#4}}}\s\s #4 \subtype #6\s\s #3 \subeffect #5}{\typerelation{#1}{#2}{\M{#5}{#6}}}}
+    \ntreeruleIII{Subeffect}{\treeruleI{\D'}{\typerelation{#1}{#2}{\M{#3}{#4}}}}{#4 \subtype #6}{#3 \subeffect #5}{\typerelation{#1}{#2}{\M{#5}{#6}}}}
 \newcommand{\deltacruleprimeprime}[6]{
-    \treerule{Subeffect}{\treerule{}{\D''}{\typerelation{#1}{#2}{\M{#3}{#4}}}\s\s #4 \subtype #6\s\s #3 \subeffect #5}{\typerelation{#1}{#2}{\M{#5}{#6}}}}
+    \ntreeruleIII{Subeffect}{\treeruleI{\D''}{\typerelation{#1}{#2}{\M{#3}{#4}}}}{#4 \subtype #6}{#3 \subeffect #5}{\typerelation{#1}{#2}{\M{#5}{#6}}}}
                             
 
 \newcommand{\p}[0]{\pi_1}
@@ -179,10 +211,10 @@
 
 
 % Combinators to build tree proofs
-\newcommand{\truleconst}[0]{\treerule{Const}{\ok{\G}}{\gtyperelation{\const{A}}{A}}}
-\newcommand{\truleunit}[0]{\treerule{Unit}{\ok{\G}}{\typerelation{\G}{\u}{\U}}}
-\newcommand{\truletrue}[0]{\treerule{True}{\ok{\G}}{\typerelation{\G}{\t}{\B}}}
-\newcommand{\trulefalse}[0]{\treerule{False}{\ok{\G}}{\typerelation{\G}{\f}{\B}}}
+\newcommand{\truleconst}[0]{\ntreeruleI{Const}{\ok{\G}}{\gtyperelation{\const{A}}{A}}}
+\newcommand{\truleunit}[0]{\ntreeruleI{Unit}{\ok{\G}}{\typerelation{\G}{\u}{\U}}}
+\newcommand{\truletrue}[0]{\ntreeruleI{True}{\ok{\G}}{\typerelation{\G}{\t}{\B}}}
+\newcommand{\trulefalse}[0]{\ntreeruleI{False}{\ok{\G}}{\typerelation{\G}{\f}{\B}}}
 
 
 \newcommand{\E}[0]{\mathbb{E}}
@@ -232,8 +264,7 @@
 \renewcommand{\a}[0]{\alpha}
 \newcommand{\all}[2]{\forall #1. #2}
 \renewcommand{\P}[0]{\Phi}
-\newcommand\wellformed[2]{#1\vdash #2}
-\newcommand\wellformedok[2]{\ok{#1\vdash #2}}
+
 \renewcommand{\b}[0]{\beta}
 \newcommand{\g}[0]{\gamma}
 \renewcommand\d[0]{\delta}
@@ -307,8 +338,8 @@
 
 \newcommand\edeltavrule[5]{\deltavrule{#1 \mid #2}{#3}{#4}{#5}}
 
-\newcommand\subeffecttree[4]{\treerule{Computation}{
-    #1\subeffectp #3\s\s #2 \subtypep #4
+\newcommand\subeffecttree[4]{\ntreeruleII{Computation}{
+    #1\subeffectp #3}{#2 \subtypep #4
 }{\M{#1}{
     #2
 }\subtypep\M{#3}{#4}}}
@@ -320,16 +351,17 @@
         \deltavruleprimeprime{#1\mid #2}{#3}{#4}{#5}}
     
 \newcommand{\edeltacrule}[6]{
-            \treerule{Subtype}{
-                \treerule{}{
+            \ntreeruleII{Subtype}{
+                \treeruleI{
                     \D
                 }{
                     \typerelation{\P\mid#1}{#2}{\M{#3}{#4}}
                 }
-                \s\s
-                \treerule{Computation}{
+            }{
+                \ntreeruleII{Computation}{
                     #4 \subtypep #6
-                    \s\s #3 \subeffectp #5
+                    }{
+                         #3 \subeffectp #5
                 }{
                     \M{#3}{#4}\subtypep{\M{#5}{#6}}
                 }
@@ -340,16 +372,16 @@
         
 
         \newcommand{\edeltacruleprime}[6]{
-            \treerule{Subtype}{
-                \treerule{}{
+            \ntreeruleII{Subtype}{
+                \treeruleI{
                     \D'
                 }{
                     \typerelation{\P\mid #1}{#2}{\M{#3}{#4}}
                 }
-                \s\s
-                \treerule{Computation}{
+            }{
+                \ntreeruleII{Computation}{
                     #4 \subtypep #6
-                    \s\s #3 \subeffectp #5
+                }{#3 \subeffectp #5
                 }{
                     \M{#3}{#4}\subtypep{\M{#5}{#6}}
                 }
@@ -360,16 +392,16 @@
                    
 
         \newcommand{\edeltacruleprimeprime}[6]{
-            \treerule{Subtype}{
-                \treerule{}{
+            \ntreeruleII{Subtype}{
+                \treeruleI{
                     \D''
                 }{
                     \typerelation{\P\mid #1}{#2}{\M{#3}{#4}}
                 }
-                \s\s
-                \treerule{Computation}{
+            }{
+                \ntreeruleII{Computation}{
                     #4 \subtypep #6
-                    \s\s #3 \subeffectp #5
+                    }{ #3 \subeffectp #5
                 }{
                     \M{#3}{#4}\subtypep{\M{#5}{#6}}
                 }
