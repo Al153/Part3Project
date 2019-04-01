@@ -14,7 +14,7 @@
 
 \maketitle
 
-\todo{Fix Spacing}
+\todo{Fix Spacing/further fiddling to improve readability}
 
 
 \abstract
@@ -311,6 +311,8 @@ A slightly harder concept to motivate is that of tensorial (or tensor) \textit{s
         \quad
         \centering
         \begin{minipage}{0.45\textwidth}
+            \begin{tikzpicture}[baseline= (a).base]
+                \node[scale=.8] (a) at (0,0){
             \begin{tikzcd}[ampersand replacement=\&]
                 A \times \T{\e_1}{\T{\e_2}{B}} 
                 \arrow [r, "\tstrength{\e_1}{A}{\T{\e_2}{B}}"]
@@ -328,7 +330,9 @@ A slightly harder concept to motivate is that of tensorial (or tensor) \textit{s
                 \&
                 \T{\e_1 \dot \e_2}({A \times B)}
             \end{tikzcd}
-            \caption{How the tensor strength natural transformation commutes with the join natural transformation \fixLayout{Fix overflow here}}
+            };
+\end{tikzpicture}
+            \caption{How the tensor strength natural transformation commutes with the join natural transformation.}
             \label{TensorStengthJoin}
         \end{minipage}
     
@@ -538,7 +542,7 @@ In this dissertation, I show how these category theoretic building blocks can be
         \foreach \y[count=\c,evaluate={\yi=int(\c-1)}] in {2, 4, 6, 8}{
             \node[circle, draw, inner sep=1pt, fill, label=above:{$\G$}] (g\yi) at (7,\y){};
             \node[circle, draw, inner sep=1pt, fill, label=above:{$A$}] (a\yi) at (9,\y){};
-            \draw[->, dashed](g\yi) to[bend right=5] node[below]{\tiny $\deno{\etyperelation{\P_\yi}{\G}{v}{A}}$} (a\yi);
+            \draw[->](g\yi) to[bend right=5] node[below]{\tiny $\deno{\etyperelation{\P_\yi}{\G}{v}{A}}$} (a\yi);
             \node[ellipse, draw, minimum width=5cm, minimum height=15mm,label=right:$S_\yi$] (s\yi) at (8,\y){};
         }
 
@@ -552,24 +556,24 @@ In this dissertation, I show how these category theoretic building blocks can be
 
         % Draw index arrows
         \foreach \i in {0, 1, 2, 3}{
-            \draw[->] (d\i) to (s\i);
+            \draw[->, very thick] (d\i) to (s\i);
         }
 
         % draw the re-indexing functors
 
         \foreach \source[count=\dest] in {0, 1, 2, 3}{
-            \draw[->](s\source.north west) to[bend left=10] node[left]{$\pstar$} (s\dest.south west);
+            \draw[->, very thick](s\source.north west) to[bend left=10] node[left]{$\pstar$} (s\dest.south west);
         }
 
         % Draw the quantification functors
         \foreach \dest[count=\source] in {0, 1, 2, 3}{
-            \draw[->] 
+            \draw[->, very thick] 
             (s\source.south east) to[bend left=10] node[right]{$\forall_{\P_\dest}$} (s\dest.north east);
         }
 
         % Draw the internal morphisms in base category
         \foreach \dest[count=\source] in {0, 1, 2}{
-            \draw[dashed,->]
+            \draw[->]
             (d\source) to[bend right=10] node[right]{$\p$} (d\dest);
         }
 
@@ -578,7 +582,7 @@ In this dissertation, I show how these category theoretic building blocks can be
         \draw [decoration={brace,amplitude=8pt},decorate] ($(s3)+(10em,1ex)$) -- ($(s0)+(10em,-1ex)$);
         \node[text width=20mm] (Label) at (14,5){Fibres for each effect environment};
     \end{tikzpicture}
-    \caption{Diagram of the structure of an indexed category for modelling a polymorphic language. Solid arrows represent functors and dashed arrows represent internal morphisms. The left hand category is the base category. \fixLayout{dotted lines probably aren't a good idea (since they are used for unique morphisms).}
+    \caption{Diagram of the structure of an indexed category for modelling a polymorphic language. Thick arrows between categories represent functors and finer arrows withing categories represent internal morphisms. The left hand category is the base category.
     }
     \label{IndexDiagram}
 \end{figure}
@@ -2827,8 +2831,7 @@ Now we have proved that an appropriate categorical structure can model PEC, it r
 
 Suppose we have an S-category structure derived from $\set$ which models an instance of EC. That is, there exists a graded monad $\Tz{}{}, \bindmu^0, \pointz{}, \strengtht^0$ on $\set$, and there exist subtyping functions $\deno{A\subtypeg B}: A \rightarrow B$ for each instance of the ground subtyping relation, and natural transformations $\deno{\e_1 \subeffectz \e_2}: \Tz{\e_1}{} \rightarrow \Tz{\e_2}{}$ for each instance of the subeffecting relation. Further more, $\set$ is cartesian closed and has co-products for all pairs of objects. Since this structure is a model for the EC, it is graded by a pre-ordered monoid on ground effects: $(E, \subeffectz, \1, \dot)$. I have marked each of these instances of S-category structure with $0$ to indicate that they occur in the fibre induced by the empty effect-variable environment.
 
-
-\fixLayout{This spacing will be fixed once I tweak around with my macros}
+tweak around with my macros}
 Using $\alpha$-equivalence, we can see that all effect environments of the same length are equivalent. For example, $(\etyperelation{(\nil, \a, \b)}{\G}{\lam{f}{\fntype{\texttt{Int}}{\M{\a\dot\b}{\U}}}{(\apply{f}{0})}}{\M{\a\dot\b}{\U}})$ and $(\etyperelation{(\nil, \g, \d)}{\G}{\lam{f}{\fntype{\texttt{Int}}{\M{\g\dot\d}{\U}}}{(\apply{f}{0})}}{\M{\g\dot\d}{\U}})$ are equivalent under $\a$-equivalence. Hence, we can reduce an effect environment to the natural number $n$ indicating its length.
 
 

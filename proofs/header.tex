@@ -12,6 +12,9 @@
 % For typesetting tree rules
 \usepackage{mathpartir}
 
+% For colouring code
+\usepackage{xcolor}
+
 
 \usepackage{array}   % for \newcolumntype macro
 \usepackage{tikz-cd}
@@ -50,11 +53,13 @@
 \newcommand{\s}{\;}
 \newcommand{\doin}[3]{\texttt{do}\s #1 \leftarrow #2 \s\texttt{in}\s #3\s}
 \newcommand\apply[2]{#1\s#2}
-\newcommand{\pifthenelse}[4]{\texttt{if}_{#1}\s#2\s \texttt{then}\s #3 \s\texttt{else} \s#4\s}
+\newcommand{\pifthenelse}[4]{\texttt{if}_{\textcolor{gray}{#1}}\s#2\s \texttt{then}\s #3 \s\texttt{else} \s#4\s}
 \newcommand\ifthenelse[5]{\pifthenelse{#1, #2}{#3}{#4}{#5}}
 \newcommand\const[1]{\texttt{C}^{#1}}
 \newcommand\return[1]{\texttt{return} \s#1\s}
-\newcommand\lam[3]{\lambda #1 : #2. #3\s}
+
+\definecolor{gray}{rgb}{0.75, 0.75, 0.75}
+\newcommand\lam[3]{\lambda #1 : {\color{red}#2}. #3\s}
 \renewcommand\u[0]{\texttt{()}}
 \newcommand{\U}[0]{\texttt{Unit}}
 \renewcommand\t[0]{\texttt{true}}
