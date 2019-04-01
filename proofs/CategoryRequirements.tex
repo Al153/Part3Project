@@ -225,7 +225,7 @@ The denotation of ground types $\deno{\_}$ is a functor from the pre-order categ
 to $\C$. This pre-ordered sub-category of $\C$ is extended with the rule for function sub-typing to form a larger pre-ordered sub-category of $\C$.
 
 $$
-\treerule{Function Subtyping}{f = \deno{A' \subtype A} \s\s g = \deno{B \subtype B'} \s\s h=\dse{\e_1}{\e_2}}{rhs = \deno{\lamtype{A}{\e_1}{B} \subtype \lamtype{A'}{\e_2}{B'}}: (\T{\e_1}{B})^A \rightarrow (\T{\e_2}{B'})^{A'}}
+\ntreeruleIII{Function Subtyping}{f = \deno{A' \subtype A} }{ g = \deno{B \subtype B'} }{ h=\dse{\e_1}{\e_2}}{rhs = \deno{\lamtype{A}{\e_1}{B} \subtype \lamtype{A'}{\e_2}{B'}}: (\T{\e_1}{B})^A \rightarrow (\T{\e_2}{B'})^{A'}}
 $$
 
 \begin{equation}

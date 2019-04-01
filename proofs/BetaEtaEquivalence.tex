@@ -1,397 +1,384 @@
 \newcommand\BetaEtaEquivalence[0]{
-    \section{Beta and Eta Equivalence}
-    \subsection{Beta-Eta conversions}
-    \begin{itemize}
-        \item $\treerule{Lambda-Beta}{\typerelation{\gax}{C}{\meb}\s\s \gtyperelation{v}{A}}{\gberelation{\apply{(\lam{x}{A}{C})}{v} }{ C\ssub{x}{v}}{\meb}}$
-        
-        \item $\treerule{Lambda-Eta}{\gtyperelation{v}{\aeb}}{\gberelation{\lam{x}{A}{(\apply{v}{x}})}{v}{\aeb}}$
-     
-
-        \item $\treerule{Left Unit}{\gtyperelation{v}{A} \s\s \typerelation{\gax}{C}{\meb}}{\gberelation{\doin{x}{\return{v}}{C}}{C\ssub{x}{v}}{\meb}}$
-        
-        \item $\treerule{Right Unit}{\gtyperelation{C}{\mea}}{\gberelation{\doin{x}{C}{\return{x}} }{C}{\mea}}$
-        \item $\treerule{Associativity}{\gtyperelation{C_1}{\M{\e_1}{A}} \s\s \typerelation{\gax}{C_2}{\M{\e_2}{B}}\s\s \typerelation{\gby}{C_3}{\M{\e_3}{C}}}{
-            \gberelation{\doin{x}{C_1}{(\doin{y}{C_2}{C_3})}}{\doin{y}{(\doin{x}{C_1}{C_2})}{C_3}}{\M{\e_1 \dot \e_2 \dot \e_3}{C}}
-        }$
-
-        \item $\treerule{Unit}{\gtyperelation{v}{\U}}{\gberelation{v}{\u}{\U}}$
-
-        \item $\treerule{if-true}{\gtyperelation{C_1}{\mea}\s\s\gtyperelation{C_2}{\mea}}{\gberelation{\ifthenelse{\e}{A}{\t}{C_1}{C_2}}{C_1}{\mea}}$
-        
-        \item $\treerule{if-false}{\gtyperelation{C_2}{\mea}\s\s\gtyperelation{C_1}{\mea}}{\gberelation{\ifthenelse{\e}{A}{\f}{C_1}{C_2}}{C_2}{\mea}}$
-        
-        \item $\treerule{If-Eta}{\typerelation{\G, x: \B}{C}{\mea}\s\s\gtyperelation{v}{\B}}{\gberelation{\ifthenelse{\e}{A}{v}{C\ssub{x}{\t}}{C\ssub{x}{\f}}}{C\ssub{x}{v}}{\mea}}$
-        
-    \end{itemize}
-    \subsection{Equivalence Relation}
-    \begin{itemize}
-        \item $\treerule{Reflexive}{\gtyperelation{t}{\tau}}{\gberelation{t}{t}{\tau}}$
-        \item $\treerule{Symmetric}{\gberelation{t_1}{t_2}{\tau}}{\gberelation{t_2}{t_1}{\tau}}$
-        \item $\treerule{Transitive}{\gberelation{t_1}{t_2}{\tau}\s\s\gberelation{t_2}{t_3}{\tau}}{\gberelation{t_1}{t_3}{\tau}}$
-    \end{itemize}
-    \subsection{Congruences}
-    \begin{itemize}
-        \item $\treerule{Lambda}{\berelation{\gax}{C_1}{C_2}{\meb}}{\gberelation{\lam{x}{A}{C_1}}{\lam{x}{A}{C_2}}{\aeb}}$
-        
-        \item $\treerule{Return}{\gberelation{v_1}{v_2}{A}}{\gberelation{\return{v_1}}{\return{v_2}}{\moa}}$
-        
-        \item $\treerule{Apply}{\gberelation{v_1}{v_1'}{\aeb}\s\s\gberelation{v_2}{v_2'}{A}}{\gberelation{\apply{v_1}{v_2}}{\apply{v_1'}{v_2'}}{\meb}}$
-        
-        \item $\treerule{Bind}{\gberelation{C_1}{C_1'}{\M{\e_1}{A}} \s\s \berelation{\gax}{C_2}{C_2'}{\M{\e_2}{B}}}{\gberelation{\doin{x}{C_1}{C_2}}{\doin{c}{C_1'}{C_2'}}{\M{\e_1 \dot \e_2}{B}}}$
-        
-        \item $\treerule{If}{\gberelation{v}{v'}{\B} \s\s \gberelation{C_1}{C_1'}{\mea}\s\s\gberelation{C_2}{C_2'}{\mea}}{\gberelation{\ifthenelse{\e}{A}{v}{C_1}{C_2}}{\ifthenelse{\e}{A}{v}{C_1'}{C_2'}}{\mea}}$
-        \item $\treerule{Subtype}{\gberelation{v}{v'}{A} \s\s A \subtype B}{\gberelation{v}{v'}{B}}$
-        \item $\treerule{Subeffect}{\gberelation{C}{C'}{\M{\e_1}{A}}\s\s A \subtype B \s\s \e_1 \subeffect \e_2}{\gberelation{C}{C'}{\M{\e_2}{B}}}$
-    \end{itemize}
-    \section{Beta-Eta Equivalence Implies Both Sides Have the Same Type}
-    Each derivation of $\gberelation{t}{t'}{\tau}$ can be converted to a derivation of $\gtyperelation{t}{\tau}$ and $\gtyperelation{t'}{\tau}$ by induction over the beta-eta equivalence relation derivation.
-
-    \subsection{Equivalence Relations}
-    \paragraph{Case Reflexive}
-    By inversion we have a derivation of $\gtyperelation{t}{\tau}$.
-
-    \paragraph{Case Symmetric}
-    By inversion $\gberelation{t'}{t}{\tau}$. Hence by induction, derivations of $\gtyperelation{t'}{\tau}$ and $\gtyperelation{t}{\tau}$ are given.
-
-    \paragraph{Case Transitive}
-    By inversion, there exists $t_2$ such that $\gberelation{t_1}{t_2}{\tau}$ and $\gberelation{t_2}{t_3}{\tau}$.
-    Hence by induction, we have derivations of $\gtyperelation{t_1}{\tau}$ and $\gtyperelation{t_3}{\tau}$
-
-    \subsection{Beta-Eta Conversions}
     
-    \paragraph{Case Lambda}
-        By inversion, we have $\typerelation{\gax}{C}{\meb}$ and $\gtyperelation{v}{A}$. Hence by the typing rules, we have:
-        $$\treerule{Apply}{
-            \treerule{Lambda}{\typerelation{\gax }{C}{\meb}}{\gtyperelation{\lam{x}{A}{C}}{\aeb}}
-            \s\s
-            \gtyperelation{v}{A}
-        }{\gtyperelation{\apply{(\lam{x}{A}{C})}{v}}{\mea}}$$
+\section{Beta and Eta Equivalence}
+\subsection{Beta-Eta conversions}
+\begin{itemize}
+    \item $\ntreeruleII{Lambda-Beta}{\typerelation{\gax}{C}{\meb}}{\gtyperelation{v}{A}}{\gberelation{\apply{(\lam{x}{A}{C})}{v} }{ C\ssub{x}{v}}{\meb}}$
+    
+    \item $\ntreeruleI{Lambda-Eta}{\gtyperelation{v}{\aeb}}{\gberelation{\lam{x}{A}{(\apply{v}{x}})}{v}{\aeb}}$
+ 
 
-        By the substitution rule \todo{which?}, we have 
-        $$\treerule{Substitution}{\typerelation{\gax}{C}{\meb}\s\s\gtyperelation{v}{A}}{\gtyperelation{C\ssub{x}{v}}{\meb}}$$
-        \paragraph{Case Left Unit}
-        By inversion, we have $\gtyperelation{v}{A}$ and $\typerelation{\gax }{C}{\meb}$
+    \item $\ntreeruleII{Left Unit}{\gtyperelation{v}{A}}{\typerelation{\gax}{C}{\meb}}{\gberelation{\doin{x}{\return{v}}{C}}{C\ssub{x}{v}}{\meb}}$
+    
+    \item $\ntreeruleI{Right Unit}{\gtyperelation{C}{\mea}}{\gberelation{\doin{x}{C}{\return{x}} }{C}{\mea}}$
+    \item $\ntreeruleIII{Associativity}{
+            \gtyperelation{C_1}{\M{\e_1}{A}} 
+        }{
+            \typerelation{\gax}{C_2}{\M{\e_2}{B}}
+        }{
+            \typerelation{\gby}{C_3}{\M{\e_3}{C}}
+        }{
+        \gberelation{\doin{x}{C_1}{(\doin{y}{C_2}{C_3})}}{\doin{y}{(\doin{x}{C_1}{C_2})}{C_3}}{\M{\e_1 \dot \e_2 \dot \e_3}{C}}
+    }$
 
-        Hence we have:
+    \item $\ntreeruleI{Unit}{\gtyperelation{v}{\U}}{\gberelation{v}{\u}{\U}}$
+
+    \item $\ntreeruleII{if-true}{\gtyperelation{C_1}{\mea}}{\gtyperelation{C_2}{\mea}}{\gberelation{\ifthenelse{\e}{A}{\t}{C_1}{C_2}}{C_1}{\mea}}$
+    
+    \item $\ntreeruleII{if-false}{\gtyperelation{C_2}{\mea}}{\gtyperelation{C_1}{\mea}}{\gberelation{\ifthenelse{\e}{A}{\f}{C_1}{C_2}}{C_2}{\mea}}$
+    
+    \item $\ntreeruleII{If-Eta}{\typerelation{\G, x: \B}{C}{\mea}}{\gtyperelation{v}{\B}}{\gberelation{\ifthenelse{\e}{A}{v}{C\ssub{x}{\t}}{C\ssub{x}{\f}}}{C\ssub{x}{v}}{\mea}}$
+    
+\end{itemize}
+\subsection{Equivalence Relation}
+\begin{itemize}
+    \item $\ntreeruleI{Reflexive}{\gtyperelation{t}{\tau}}{\gberelation{t}{t}{\tau}}$
+    \item $\ntreeruleI{Symmetric}{\gberelation{t_1}{t_2}{\tau}}{\gberelation{t_2}{t_1}{\tau}}$
+    \item $\ntreeruleII{Transitive}{\gberelation{t_1}{t_2}{\tau}}{\gberelation{t_2}{t_3}{\tau}}{\gberelation{t_1}{t_3}{\tau}}$
+\end{itemize}
+\subsection{Congruences}
+\begin{itemize}
+    \item $\ntreeruleI{Lambda}{\berelation{\gax}{C_1}{C_2}{\meb}}{\gberelation{\lam{x}{A}{C_1}}{\lam{x}{A}{C_2}}{\aeb}}$
+    
+    \item $\ntreeruleI{Return}{\gberelation{v_1}{v_2}{A}}{\gberelation{\return{v_1}}{\return{v_2}}{\moa}}$
+    
+    \item $\ntreeruleII{Apply}{\gberelation{v_1}{v_1'}{\aeb}}{\gberelation{v_2}{v_2'}{A}}{\gberelation{\apply{v_1}{v_2}}{\apply{v_1'}{v_2'}}{\meb}}$
+    
+    \item $\ntreeruleII{Bind}{\gberelation{C_1}{C_1'}{\M{\e_1}{A}}}{\berelation{\gax}{C_2}{C_2'}{\M{\e_2}{B}}}{\gberelation{\doin{x}{C_1}{C_2}}{\doin{c}{C_1'}{C_2'}}{\M{\e_1 \dot \e_2}{B}}}$
+    
+    \item $\ntreeruleIII{If}{\gberelation{v}{v'}{\B} }{\gberelation{C_1}{C_1'}{\mea}}{\gberelation{C_2}{C_2'}{\mea}}{\gberelation{\ifthenelse{\e}{A}{v}{C_1}{C_2}}{\ifthenelse{\e}{A}{v}{C_1'}{C_2'}}{\mea}}$
+    \item $\ntreeruleII{Subtype}{\gberelation{v}{v'}{A} }{ A \subtype B}{\gberelation{v}{v'}{B}}$
+    \item $\ntreeruleIII{Subeffect}{\gberelation{C}{C'}{\M{\e_1}{A}}}{A \subtype B}{\e_1 \subeffect \e_2}{\gberelation{C}{C'}{\M{\e_2}{B}}}$
+\end{itemize}
+\section{Beta-Eta Equivalence Implies Both Sides Have the Same Type}
+Each derivation of $\gberelation{t}{t'}{\tau}$ can be converted to a derivation of $\gtyperelation{t}{\tau}$ and $\gtyperelation{t'}{\tau}$ by induction over the beta-eta equivalence relation derivation.
+
+\subsection{Equivalence Relations}
+\paragraph{Case Reflexive}
+By inversion we have a derivation of $\gtyperelation{t}{\tau}$.
+
+\paragraph{Case Symmetric}
+By inversion $\gberelation{t'}{t}{\tau}$. Hence by induction, derivations of $\gtyperelation{t'}{\tau}$ and $\gtyperelation{t}{\tau}$ are given.
+
+\paragraph{Case Transitive}
+By inversion, there exists $t_2$ such that $\gberelation{t_1}{t_2}{\tau}$ and $\gberelation{t_2}{t_3}{\tau}$.
+Hence by induction, we have derivations of $\gtyperelation{t_1}{\tau}$ and $\gtyperelation{t_3}{\tau}$
+
+\subsection{Beta-Eta Conversions}
+
+\paragraph{Case Lambda}
+    By inversion, we have $\typerelation{\gax}{C}{\meb}$ and $\gtyperelation{v}{A}$. Hence by the typing rules, we have:
+    $$\ntreeruleII{Apply}{
+        \ntreeruleI{Lambda}{\typerelation{\gax }{C}{\meb}}{\gtyperelation{\lam{x}{A}{C}}{\aeb}}
+    }{
+        \gtyperelation{v}{A}
+    }{\gtyperelation{\apply{(\lam{x}{A}{C})}{v}}{\mea}}$$
+
+    By the substitution rule \todo{which?}, we have 
+    $$\ntreeruleII{Substitution}{\typerelation{\gax}{C}{\meb}}{\gtyperelation{v}{A}}{\gtyperelation{C\ssub{x}{v}}{\meb}}$$
+    \paragraph{Case Left Unit}
+    By inversion, we have $\gtyperelation{v}{A}$ and $\typerelation{\gax }{C}{\meb}$
+
+    Hence we have:
 
 
-        \begin{equation}
-            \treerule{Bind}{\treerule{Return}{\gtyperelation{v}{A}}{\gtyperelation{\return{v}}{\moa}}\s\s\typerelation{\gax}{C}{\meb}}{\gtyperelation{\doin{x}{\return{v}}{C}}{\M{\1\dot\e}{B} = \meb}}
-        \end{equation}
+    \begin{equation}
+        \ntreeruleII{Bind}{\ntreeruleI{Return}{\gtyperelation{v}{A}}{\gtyperelation{\return{v}}{\moa}}}{\typerelation{\gax}{C}{\meb}}{\gtyperelation{\doin{x}{\return{v}}{C}}{\M{\1\dot\e}{B} = \meb}}
+    \end{equation}
 
-        And by the substitution typing rule we have: \todo{Which Rule?}
+    And by the substitution typing rule we have: \todo{Which Rule?}
 
-        \begin{equation}
-            \gtyperelation{C\ssub{x}{v}}{\meb}
-        \end{equation}
-        \paragraph{Case Right Unit}
-        By inversion, we have $\gtyperelation{C}{\mea}$.
+    \begin{equation}
+        \gtyperelation{C\ssub{x}{v}}{\meb}
+    \end{equation}
+    \paragraph{Case Right Unit}
+    By inversion, we have $\gtyperelation{C}{\mea}$.
 
-        Hence we have:
+    Hence we have:
 
-        \begin{equation}
-            \treerule{Bind}{
-                \gtyperelation{C}{\mea}
-                \s\s
-                \treerule{Return}{\treerule{var}{}{\typerelation{\gax}{x}{A}}}{\typerelation{\gax}{\return{v}}{\moa}}
-            }{\gtyperelation{\doin{x}{C}{\return{x}}}{\M{\e\dot\1}{A} = \mea}}
-        \end{equation}
-        \paragraph{Case Associativity}
-        By inversion, we have $\gtyperelation{C_1}{\M{\e_1}{A}}$, $\typerelation{\gax}{C_2}{\M{\e_2}{B}}$, and $\typerelation{\gby}{C_3}{\M{\e_3}{C}}$.
+    \begin{equation}
+        \ntreeruleII{Bind}{
+            \gtyperelation{C}{\mea}
+        }{
+            \ntreeruleI{Return}{\ntreeruleI{var}{\ok{\G}}{\typerelation{\gax}{x}{A}}}{\typerelation{\gax}{\return{v}}{\moa}}
+        }{\gtyperelation{\doin{x}{C}{\return{x}}}{\M{\e\dot\1}{A} = \mea}}
+    \end{equation}
+    \paragraph{Case Associativity}
+    By inversion, we have $\gtyperelation{C_1}{\M{\e_1}{A}}$, $\typerelation{\gax}{C_2}{\M{\e_2}{B}}$, and $\typerelation{\gby}{C_3}{\M{\e_3}{C}}$.
 
-       
-        
-        $$\wrel{(\i\pi\times)}{(\gax, y: B)}{(\gby)}$$
+   
+    
+    $$\wrel{(\i\pi\times)}{(\gax, y: B)}{(\gby)}$$
 
-        So by the weakening property \todo{which?}, $\typerelation{\gax, y: B}{C_3}{\M{\e_3}{C}}$
+    So by the weakening property \todo{which?}, $\typerelation{\gax, y: B}{C_3}{\M{\e_3}{C}}$
 
-        Hence we can construct the type derivations:
-        \begin{equation} 
-            \treerule{Bind}{
+    Hence we can construct the type derivations:
+    \begin{equation} 
+        \ntreeruleII{Bind}{
+            \gtyperelation{C_1}{\M{\e_1}{A}}
+        }{
+            \ntreeruleII{Bind}{
+                \typerelation{\gax}{C_2}{\M{\e_2}{B}}
+            }{
+                \typerelation{\gax, y: B}{C_3}{\M{\e_3}{C}}
+            }{
+                \typerelation{\gax}{\do{x}{C_2}{C_3}}{\M{\e_2 \dot \e_3}{C}}
+            }
+        }{
+            \gtyperelation{
+                \doin{x}{C_1}{
+                    (\doin{y}{C_2}{C_3})
+                }
+            }{
+                \M{\e_1\dot\e_2\dot\e_3}{C}
+            }
+        }
+    \end{equation}
+
+    and 
+
+    \begin{equation}
+        \ntreeruleII{Bind}{
+            \ntreeruleII{Bind}{
                 \gtyperelation{C_1}{\M{\e_1}{A}}
-                \s\s
-                \treerule{Bind}{
-                    \typerelation{\gax}{C_2}{\M{\e_2}{B}}
-                    \s\s
-                    \typerelation{\gax, y: B}{C_3}{\M{\e_3}{C}}
-                }{
-                    \typerelation{\gax}{\do{x}{C_2}{C_3}}{\M{\e_2 \dot \e_3}{C}}
-                }
             }{
-                \gtyperelation{
-                    \doin{x}{C_1}{
-                        (\doin{y}{C_2}{C_3})
-                    }
-                }{
-                    \M{\e_1\dot\e_2\dot\e_3}{C}
-                }
+                \typerelation{\gax}{C_2}{\M{\e_2}{B}}
+            } {
+                \gtyperelation{\doin{x}{C_1}{C_2}}{\M{\e_1\dot\e_2}{B}}
             }
-        \end{equation}
+        }{
+            \typerelation{\gby}{C_3}{\M{\e_3}{C}}
+        }{
+            \gtyperelation{\doin{y}{(\doin{x}{C_1}{C_2})}{C_3}}{\M{\e_1\dot\e_2\dot\e_3}{C}}
+        }
+    \end{equation}
 
-        and 
+    \paragraph{Case Eta}
+    By inversion, we have $\gtyperelation{v}{\aeb}$
 
-        \begin{equation}
-            \treerule{Bind}{
-                \treerule{Bind}{
-                    \gtyperelation{C_1}{\M{\e_1}{A}}
-                    \s\s
-                    \typerelation{\gax}{C_2}{\M{\e_2}{B}}
-                } {
-                    \gtyperelation{\doin{x}{C_1}{C_2}}{\M{\e_1\dot\e_2}{B}}
-                }
-                \s\s
-                \typerelation{\gby}{C_3}{\M{\e_3}{C}}
+    By weakening, we have $\wrel{\i\pi}{(\gax)}{\G}$
+    Hence, we have
+
+    \begin{equation}
+        \ntreeruleI{Fn}{
+            \ntreeruleII{App}{
+                \typerelation{(\gax)}{x}{A}
             }{
-                \gtyperelation{\doin{y}{(\doin{x}{C_1}{C_2})}{C_3}}{\M{\e_1\dot\e_2\dot\e_3}{C}}
-            }
-        \end{equation}
-
-        \paragraph{Case Eta}
-        By inversion, we have $\gtyperelation{v}{\aeb}$
-
-        By weakening, we have $\wrel{\i\pi}{(\gax)}{\G}$
-        Hence, we have
-
-        \begin{equation}
-            \treerule{Fn}{
-                \treerule{App}{
-                    \typerelation{(\gax)}{x}{A}
-                    \s\s
-                    \treerule{weakening}{
-                        \gtyperelation{v}{\aeb}
-                        \s\s
-                        \wrel{\i\pi}{\gax}{\G}
-                    }{
-                        \typerelation{\gax}{v}{\aeb}
-                    }
-                } {
-                    \typerelation{\gax}{\apply{v}{x}}{\meb}
+                \ntreeruleII{weakening}{
+                    \gtyperelation{v}{\aeb}
+                }{
+                    \wrel{\i\pi}{\gax}{\G}
+                }{
+                    \typerelation{\gax}{v}{\aeb}
                 }
-            }{\gtyperelation{\lam{x}{A}{(\apply{v}{x})}}{\aeb}}
-        \end{equation}
+            } {
+                \typerelation{\gax}{\apply{v}{x}}{\meb}
+            }
+        }{\gtyperelation{\lam{x}{A}{(\apply{v}{x})}}{\aeb}}
+    \end{equation}
 
-        \paragraph{Case If-True}
-            By inversion, we have $\gtyperelation{C_1}{\mea}$, $\gtyperelation{C_2}{\mea}$. Hence by the typing lemma \todo{Which?}, we have $\ok{\G}$ so $\gtyperelation{\t}{\B}$ by the axiom typing rule.
-
-            Hence 
-            \begin{equation}
-                    \treerule{If}{
-                        \gtyperelation{\t}{\B}
-                        \s\s
-                        \gtyperelation{C_1}{\mea}
-                        \s\s
-                        \gtyperelation{C_2}{\mea}
-                    }{
-                        \gtyperelation{\ifthenelse{\e}{A}{\t}{C_1}{C_2}}{\mea}
-                    }
-            \end{equation}
-        \paragraph{Case If-False}
-        As above,
+    \paragraph{Case If-True}
+        By inversion, we have $\gtyperelation{C_1}{\mea}$, $\gtyperelation{C_2}{\mea}$. Hence by the typing lemma \todo{Which?}, we have $\ok{\G}$ so $\gtyperelation{\t}{\B}$ by the axiom typing rule.
 
         Hence 
         \begin{equation}
-            \treerule{If}{
-                \gtyperelation{\f}{\B}
-                \s\s
-                \gtyperelation{C_1}{\mea}
-                \s\s
-                \gtyperelation{C_2}{\mea}
-            }{
-                \gtyperelation{\ifthenelse{\e}{A}{\f}{C_1}{C_2}}{\mea}
-            }
-    \end{equation}
-
-    \paragraph{Case If-Eta}
-        By inversion, we have:
-        \begin{equation}
-            \gtyperelation{v}{\B}
+                \ntreeruleIII{If}{
+                    \gtyperelation{\t}{\B}
+                }{
+                    \gtyperelation{C_1}{\mea}
+                }{
+                    \gtyperelation{C_2}{\mea}
+                }{
+                    \gtyperelation{\ifthenelse{\e}{A}{\t}{C_1}{C_2}}{\mea}
+                }
         \end{equation}
-        and
-        \begin{equation}
-            \typerelation{\G, x:\B}{C}{\mea}
-        \end{equation}
-        
-        Hence we also have $\ok{\G}$. Hence, the following also hold:
+    \paragraph{Case If-False}
+    As above,
 
-        $\gtyperelation{\t}{\B}$, and $\gtyperelation{\f}{\B}$.
-
-        Hence by the substitution theorem, we have:
-
-        \begin{equation}
-            \treerule{If}{
-                \gtyperelation{v}{\B}
-                \s\s
-                \gtyperelation{C\ssub{x}{\t}}{\mea}
-                \s\s
-                \gtyperelation{C\ssub{x}{\f}}{\mea}
-            }{\gtyperelation{\ifthenelse{\e}{A}{v}{C\ssub{x}{\t}}{C\ssub{x}{\f}}}{\mea}
-            }
-        \end{equation}
-
-        and 
-        \begin{equation}
-            \gtyperelation{C\ssub{x}{v}}{\mea}
-        \end{equation}
-
-        
-
-        \subsection{Congruences}
-    Each congruence rule corresponds exactly to a type derivation rule. To convert to a type derivation, convert all preconditions, then use the equivalent type derivation rule.
-
-    \paragraph{Case Lambda}
-        By inversion, $\berelation{\gax}{C_1}{C_2}{\meb}$. Hence by induction $\typerelation{\gax}{C_1}{\meb}$, and $\typerelation{\gax}{C_2}{\meb}$.
-
-        So 
-        \begin{equation}
-            \gtyperelation{\lam{x}{A}{C_1}}{\aeb}
-        \end{equation}
-
-        and
-        \begin{equation}
-            \gtyperelation{\lam{x}{A}{C_2}}{\aeb}
-        \end{equation}
-
-        Hold.
-    \paragraph{Case Return}
-        By inversion, $\gberelation{v_1}{v_2}{A}$, so by induction $$\gtyperelation{v_1}{A}$$ and $$\gtyperelation{v_2}{A}$$
-
-        Hence we have $$\gtyperelation{\return{v_1}}{\moa}$$
-        and
-        $$\gtyperelation{\return{v_2}}{\moa}$$
-    \paragraph{Case Apply}
-
-        By inversion, we have $\gberelation{v_1}{v_1'}{\aeb}$ and $\gberelation{v_2}{v_2'}{A}$. Hence we have by induction $\gtyperelation{v_1}{\aeb}$, $\gtyperelation{v_2}{A}$, $\gtyperelation{v_1'}{\aeb}$, and $\gtyperelation{v_2'}{A}$.
-
-        So we have:
-
-        \begin{equation}
-            \gtyperelation{\apply{v_1}{v_2}}{\meb}
-        \end{equation}
-
-        and
-
-        
-        \begin{equation}
-            \gtyperelation{\apply{v_1'}{v_2'}}{\meb}
-        \end{equation}
-
-    \paragraph{Case Bind}
-        By inversion, we have:
-        $\gberelation{C_1}{C_1'}{\M{\e_1}{A}}$ and
-        $\berelation{\gax}{C_2}{C_2'}{\M{\e_2}{B}}$.
-        Hence by induction, we have 
-        $\gtyperelation{C_1}{\M{\e_1}{A}}$,
-        $\gtyperelation{C_1'}{\M{\e_1}{A}}$,
-        $\typerelation{\gax}{C_2}{\M{\e_2}{B}}$, and 
-        $\typerelation{\gax}{C_2'}{\M{\e_2}{B}}$
-
-        Hence we have 
-        \begin{equation}
-            \gtyperelation{\doin{x}{C_1}{C_2}}{\M{\e_1\dot\e_2}{A}}
-        \end{equation}
-
-        
-        \begin{equation}
-            \gtyperelation{\doin{x}{C_1'}{C_2'}}{\M{\e_1\dot\e_2}{A}}
-        \end{equation}
-    \paragraph{Case If}
-    By inversion, we have:
-    $\gberelation{v}{v'}{\B}$,
-    $\gberelation{C_1}{C_1'}{\mea}$, and
-    $\gberelation{C_2}{C_2'}{\mea}$.
-
-    Hence by induction, we have:
-
-    $\gtyperelation{v}{\B}$,
-    $\gtyperelation{v'}{\B}$,
-
-    $\gtyperelation{C_1}{\mea}$,
-    $\gtyperelation{C_1'}{\mea}$,
-
-    
-    $\gtyperelation{C_2}{\mea}$, and
-    $\gtyperelation{C_2'}{\mea}$.
-
-    So 
+    Hence 
     \begin{equation}
-        \gtyperelation{\ifthenelse{\e}{A}{v}{C_1}{C_2}}{\mea}
+        \ntreeruleIII{If}{
+            \gtyperelation{\f}{\B}
+        }{
+            \gtyperelation{C_1}{\mea}
+        }{
+            \gtyperelation{C_2}{\mea}
+        }{
+            \gtyperelation{\ifthenelse{\e}{A}{\f}{C_1}{C_2}}{\mea}
+        }
+\end{equation}
+
+\paragraph{Case If-Eta}
+    By inversion, we have:
+    \begin{equation}
+        \gtyperelation{v}{\B}
     \end{equation}
     and
     \begin{equation}
-        \gtyperelation{\ifthenelse{\e}{A}{v}{C_1'}{C_2'}}{\mea}
+        \typerelation{\G, x:\B}{C}{\mea}
     \end{equation}
-    Hold.
-    \paragraph{Case Subtype}
-
-    By inversion, we have $A \subtype B$ and $\gberelation{v}{v'}{A}$. By induction, we therefore have $\gtyperelation{v}{A}$ and $\gtyperelation{v'}{A}$.
-
-    Hence we have 
-    \begin{equation}
-        \gtyperelation{v}{B}
-    \end{equation}
-
     
-    \begin{equation}
-        \gtyperelation{v'}{B}
-    \end{equation}
-    \paragraph{Case subeffect}
+    Hence we also have $\ok{\G}$. Hence, the following also hold:
 
-    By inversion we have: $A \subtype B$, $\e_1 \subeffect \e_2$, and $\gberelation{C}{C'}{\M{\e_1}{A}}$.
+    $\gtyperelation{\t}{\B}$, and $\gtyperelation{\f}{\B}$.
 
-    Hence by inductive hypothesis, we have $\gtyperelation{C}{\M{\e_1}{A}}$ and $\gtyperelation{C'}{\M{\e_1}{A}}$.
-
-    Hence,
+    Hence by the substitution theorem, we have:
 
     \begin{equation}
-        \gtyperelation{C}{\M{\e_2}{B}}
+        \ntreeruleIII{If}{
+            \gtyperelation{v}{\B}
+        }{
+            \gtyperelation{C\ssub{x}{\t}}{\mea}
+        }{
+            \gtyperelation{C\ssub{x}{\f}}{\mea}
+        }{\gtyperelation{\ifthenelse{\e}{A}{v}{C\ssub{x}{\t}}{C\ssub{x}{\f}}}{\mea}
+        }
     \end{equation}
 
     and 
     \begin{equation}
-        \gtyperelation{C'}{\M{\e_2}{B}}
+        \gtyperelation{C\ssub{x}{v}}{\mea}
     \end{equation}
-    hold. 
+
+    
+
+    \subsection{Congruences}
+Each congruence rule corresponds exactly to a type derivation rule. To convert to a type derivation, convert all preconditions, then use the equivalent type derivation rule.
+
+\paragraph{Case Lambda}
+    By inversion, $\berelation{\gax}{C_1}{C_2}{\meb}$. Hence by induction $\typerelation{\gax}{C_1}{\meb}$, and $\typerelation{\gax}{C_2}{\meb}$.
+
+    So 
+    \begin{equation}
+        \gtyperelation{\lam{x}{A}{C_1}}{\aeb}
+    \end{equation}
+
+    and
+    \begin{equation}
+        \gtyperelation{\lam{x}{A}{C_2}}{\aeb}
+    \end{equation}
+
+    Hold.
+\paragraph{Case Return}
+    By inversion, $\gberelation{v_1}{v_2}{A}$, so by induction $$\gtyperelation{v_1}{A}$$ and $$\gtyperelation{v_2}{A}$$
+
+    Hence we have $$\gtyperelation{\return{v_1}}{\moa}$$
+    and
+    $$\gtyperelation{\return{v_2}}{\moa}$$
+\paragraph{Case Apply}
+
+    By inversion, we have $\gberelation{v_1}{v_1'}{\aeb}$ and $\gberelation{v_2}{v_2'}{A}$. Hence we have by induction $\gtyperelation{v_1}{\aeb}$, $\gtyperelation{v_2}{A}$, $\gtyperelation{v_1'}{\aeb}$, and $\gtyperelation{v_2'}{A}$.
+
+    So we have:
+
+    \begin{equation}
+        \gtyperelation{\apply{v_1}{v_2}}{\meb}
+    \end{equation}
+
+    and
+
+    
+    \begin{equation}
+        \gtyperelation{\apply{v_1'}{v_2'}}{\meb}
+    \end{equation}
+
+\paragraph{Case Bind}
+    By inversion, we have:
+    $\gberelation{C_1}{C_1'}{\M{\e_1}{A}}$ and
+    $\berelation{\gax}{C_2}{C_2'}{\M{\e_2}{B}}$.
+    Hence by induction, we have 
+    $\gtyperelation{C_1}{\M{\e_1}{A}}$,
+    $\gtyperelation{C_1'}{\M{\e_1}{A}}$,
+    $\typerelation{\gax}{C_2}{\M{\e_2}{B}}$, and 
+    $\typerelation{\gax}{C_2'}{\M{\e_2}{B}}$
+
+    Hence we have 
+    \begin{equation}
+        \gtyperelation{\doin{x}{C_1}{C_2}}{\M{\e_1\dot\e_2}{A}}
+    \end{equation}
+
+    
+    \begin{equation}
+        \gtyperelation{\doin{x}{C_1'}{C_2'}}{\M{\e_1\dot\e_2}{A}}
+    \end{equation}
+\paragraph{Case If}
+By inversion, we have:
+$\gberelation{v}{v'}{\B}$,
+$\gberelation{C_1}{C_1'}{\mea}$, and
+$\gberelation{C_2}{C_2'}{\mea}$.
+
+Hence by induction, we have:
+
+$\gtyperelation{v}{\B}$,
+$\gtyperelation{v'}{\B}$,
+
+$\gtyperelation{C_1}{\mea}$,
+$\gtyperelation{C_1'}{\mea}$,
 
 
-    \section{Beta-Eta equivalent terms have equal denotations}
-    If $\berelation{t}{t'}{\tau}$ then $\gdenoequality{t}{t'}{\tau}$
+$\gtyperelation{C_2}{\mea}$, and
+$\gtyperelation{C_2'}{\mea}$.
 
-    By induction over Beta-eta equivalence relation.
-    \subsection{Equivalence Relation}
-    The cases over the equivalence relation laws hold by the uniqueness of denotations and the fact that equality over morphisms is an equivalence relation.
-    \paragraph{Case Reflexive}
-    Equality is reflexive, so if $\gtyperelation{t}{\tau}$ then $\deno{\gtyperelation{t}{\tau}}$ is equal to itself.
-    \paragraph{Case Symmetric}
-    By inversion, if $\gberelation{t}{t'}{\tau}$ then $\gberelation{t'}{t}{\tau}$, so by induction $\gdenoequality{t'}{t}{\tau}$ and hence $\gdenoequality{t}{t'}{\tau}$
-    \paragraph{Case Transitive}
-    There must exist $t_2$ such that $\gberelation{t_1}{t_2}{\tau}$ and $\gberelation{t_2}{t_3}{\tau}$, so by induction,
-    $\gdenoequality{t_1}{t_2}{\tau}$ and $\gdenoequality{t_2}{t_3}{\tau}$. Hence by transitivity of equality, $\gdenoequality{t_1}{t_3}{\tau}$
+So 
+\begin{equation}
+    \gtyperelation{\ifthenelse{\e}{A}{v}{C_1}{C_2}}{\mea}
+\end{equation}
+and
+\begin{equation}
+    \gtyperelation{\ifthenelse{\e}{A}{v}{C_1'}{C_2'}}{\mea}
+\end{equation}
+Hold.
+\paragraph{Case Subtype}
 
-    \subsection{Beta-Eta Conversions}
-    These cases are typically proved using the properties of a cartesian closed category with a strong graded monad.
+By inversion, we have $A \subtype B$ and $\gberelation{v}{v'}{A}$. By induction, we therefore have $\gtyperelation{v}{A}$ and $\gtyperelation{v'}{A}$.
 
-    \paragraph{Case Lambda}
-        Let $f = \deno{\typerelation{\gax}{C}{\meb}}: (\G \times A) \rightarrow\teb$
+Hence we have 
+\begin{equation}
+    \gtyperelation{v}{B}
+\end{equation}
 
-        Let $g = \deno{\gtyperelation{v}{A}}: \G \rightarrow A$
 
-        By the substitution denotation, $$\deno{\typerelation{\G}{\ssub{x}{v}}{\gax}}: \G \rightarrow (\G \times A) = \pr{\idg}{g}$$
+\begin{equation}
+    \gtyperelation{v'}{B}
+\end{equation}
+\paragraph{Case subeffect}
 
-        We have $$\deno{\gtyperelation{C\ssub{x}{v}}{\meb}} = f \after \pr{\idg}{g}$$
+By inversion we have: $A \subtype B$, $\e_1 \subeffect \e_2$, and $\gberelation{C}{C'}{\M{\e_1}{A}}$.
 
-        and hence
-        \begin{equation}
-            \begin{split}
-                \deno{\gtyperelation{\apply{(\lam{x}{A}{C})}{v}}{\meb}} & = \app\after\pr{\cur{f}}{g} \\
-                & = \app\after(\cur{f}\times\Id{A})\after\pr{\idg}{g}\\
-                & = f \after \pr{\idg}{g} \\
-                & = \deno{\gtyperelation{C\ssub{x}{v}}{\meb}}  
-            \end{split}
-        \end{equation}
-       
+Hence by inductive hypothesis, we have $\gtyperelation{C}{\M{\e_1}{A}}$ and $\gtyperelation{C'}{\M{\e_1}{A}}$.
 
-    \paragraph{Case Left Unit}
-    Let $f = \deno{\typerelation{\gax}{C}{\meb}}$
+Hence,
+
+\begin{equation}
+    \gtyperelation{C}{\M{\e_2}{B}}
+\end{equation}
+
+and 
+\begin{equation}
+    \gtyperelation{C'}{\M{\e_2}{B}}
+\end{equation}
+hold. 
+
+
+\section{Beta-Eta equivalent terms have equal denotations}
+If $\berelation{t}{t'}{\tau}$ then $\gdenoequality{t}{t'}{\tau}$
+
+By induction over Beta-eta equivalence relation.
+\subsection{Equivalence Relation}
+The cases over the equivalence relation laws hold by the uniqueness of denotations and the fact that equality over morphisms is an equivalence relation.
+\paragraph{Case Reflexive}
+Equality is reflexive, so if $\gtyperelation{t}{\tau}$ then $\deno{\gtyperelation{t}{\tau}}$ is equal to itself.
+\paragraph{Case Symmetric}
+By inversion, if $\gberelation{t}{t'}{\tau}$ then $\gberelation{t'}{t}{\tau}$, so by induction $\gdenoequality{t'}{t}{\tau}$ and hence $\gdenoequality{t}{t'}{\tau}$
+\paragraph{Case Transitive}
+There must exist $t_2$ such that $\gberelation{t_1}{t_2}{\tau}$ and $\gberelation{t_2}{t_3}{\tau}$, so by induction,
+$\gdenoequality{t_1}{t_2}{\tau}$ and $\gdenoequality{t_2}{t_3}{\tau}$. Hence by transitivity of equality, $\gdenoequality{t_1}{t_3}{\tau}$
+
+\subsection{Beta-Eta Conversions}
+These cases are typically proved using the properties of a cartesian closed category with a strong graded monad.
+
+\paragraph{Case Lambda}
+    Let $f = \deno{\typerelation{\gax}{C}{\meb}}: (\G \times A) \rightarrow\teb$
 
     Let $g = \deno{\gtyperelation{v}{A}}: \G \rightarrow A$
 
@@ -399,426 +386,446 @@
 
     We have $$\deno{\gtyperelation{C\ssub{x}{v}}{\meb}} = f \after \pr{\idg}{g}$$
 
-    And hence
-
+    and hence
     \begin{equation}
         \begin{split}
-            \deno{\gtyperelation{\doin{x}{\return{v}}{C}}{\meb}} = &  \bind{\1}{\e}{B} \after \T{\1}{f} \after \tstrength{1}{\G}{A} \after \pr{\idg}{\point{A}\after g} \\
-            = & \bind{\1}{\e}{B} \after \T{\1}{f} \after \tstrength{1}{\G}{A} \after (\idg\times \point{A}) \after \pr{\idg}{g} \\
-            = & \bind{\1}{\e}{B} \after \T{\1}{f} \after \point{(\G \times A)} \after \pr{\idg}{g} \qt{By Tensor strength + unit}\\
-            = & \bind{\1}{\e}{B}\after\point{\teb}\after f\after\pr{\idg}{g} \qt{By Naturality of $\point{}$}\\
-            = & f\after\pr{\idg}{g} \qt{By left unit law}\\
-            = & \deno{\gtyperelation{C\ssub{x}{v}}{\meb}}\\
+            \deno{\gtyperelation{\apply{(\lam{x}{A}{C})}{v}}{\meb}} & = \app\after\pr{\cur{f}}{g} \\
+            & = \app\after(\cur{f}\times\Id{A})\after\pr{\idg}{g}\\
+            & = f \after \pr{\idg}{g} \\
+            & = \deno{\gtyperelation{C\ssub{x}{v}}{\meb}}  
         \end{split}
     \end{equation}
+   
+
+\paragraph{Case Left Unit}
+Let $f = \deno{\typerelation{\gax}{C}{\meb}}$
+
+Let $g = \deno{\gtyperelation{v}{A}}: \G \rightarrow A$
+
+By the substitution denotation, $$\deno{\typerelation{\G}{\ssub{x}{v}}{\gax}}: \G \rightarrow (\G \times A) = \pr{\idg}{g}$$
+
+We have $$\deno{\gtyperelation{C\ssub{x}{v}}{\meb}} = f \after \pr{\idg}{g}$$
+
+And hence
+
+\begin{equation}
+    \begin{split}
+        \deno{\gtyperelation{\doin{x}{\return{v}}{C}}{\meb}} = &  \bind{\1}{\e}{B} \after \T{\1}{f} \after \tstrength{1}{\G}{A} \after \pr{\idg}{\point{A}\after g} \\
+        = & \bind{\1}{\e}{B} \after \T{\1}{f} \after \tstrength{1}{\G}{A} \after (\idg\times \point{A}) \after \pr{\idg}{g} \\
+        = & \bind{\1}{\e}{B} \after \T{\1}{f} \after \point{(\G \times A)} \after \pr{\idg}{g} \qt{By Tensor strength + unit}\\
+        = & \bind{\1}{\e}{B}\after\point{\teb}\after f\after\pr{\idg}{g} \qt{By Naturality of $\point{}$}\\
+        = & f\after\pr{\idg}{g} \qt{By left unit law}\\
+        = & \deno{\gtyperelation{C\ssub{x}{v}}{\meb}}\\
+    \end{split}
+\end{equation}
 
 
-    
 
-    \paragraph{Case Right Unit}
-    
-    Let $f = \deno{\gtyperelation{C}{\mea}}$ 
-        \begin{equation}
-        \begin{split}
-            \deno{\gtyperelation{\doin{x}{C}{\return{x}}}{\mea}}  & = \bind{\e}{\1}{A} \after \T{\e}{(\point{A} \after \pp)} \after \tstrength{\e}{\G}{A}\after \pr{\idg}{f} \\
-            & = \T{\e}{\pp} \after \tstrength{\e}{\G}{A} \after \pr {\idg}{f} \\
-            & = \pp \after \pr{\idg}{f}\\
-            & = f
-        \end{split}
-    \end{equation}
-    
-    
 
-    \paragraph{Case Associative}
-    Let
-    \begin{align}
-        f ={}& \deno{\gtyperelation{C_1}{\mea}}\\
-        g ={}& \deno{\typerelation{\gax}{C_2}{\meb}}\\
-        h ={}& \deno{\typerelation{\gby}{C_3}\mec}
-    \end{align}
+\paragraph{Case Right Unit}
 
-    We also have the weakening:
+Let $f = \deno{\gtyperelation{C}{\mea}}$ 
     \begin{equation}
-        \wrel{\i\pi\times}{\gax, y: B}{\gby}
-    \end{equation}
-
-    With denotation:
-
-    \begin{equation}
-        \deno{\wrel{\i\pi\times}{\gax, y: B}{\gby}} = (\p \times \Id{B})
-    \end{equation}
-
-    We need to prove that the following are equal
-
-    \begin{align}
-        &lhs =  \deno{\gtyperelation{\doin{x}{C_1}{(\doin{y}{C_2}{C_3})}}{\M{\e_1\dot\e_2\dot\e_2}}} \\
-        & = \bind{\e_1}{\e_2\dot\e_3}{C}\after\T{
-            \e_1}{(\bind{\e_2}{\e_3}{C}\after\T{\e_2}{h\after(\p \times \Id{B})}\after\tstrength{\e_2}{(\G\times A)}{B}\after\pr{\Id{(\G\times A)}}{g}
-            )}\after\tstrength{\e_1}{\G}{A}\after\pr{\idg}{f}\\
-        & rhs = \deno{\gtyperelation{\doin{y}{(\doin{x}{C_1}{C_2})}{C_3}}{\M{\e_1\dot\e_2\dot\e_2}}}  \\
-        & = \bind{\e_1\dot\e_2}{\e_3}{C}\after\T{\e_1\dot\e_2}{(h)}\after\tstrength{\e_1\dot\e_2}{\G}{B}\after\pr{\idg}{(\bind{\e_1}{\e_2}{B}\after\T{\e_1}{g}\after\tstrength{\e_1}{\G}{A}\after\pr{\idg}{f})} \\
-    \end{align}
-    Let's look at fragment $F$ of $rhs$.
-    \begin{equation}
-        F = \tstrength{\e_1\dot\e_2}{\G}{B}\after\pr{\idg}{(\bind{\e_1}{\e_2}{B}\after\T{\e_1}{g}\after\tstrength{\e_1}{\G}{A}\after\pr{\idg}{f})}
-    \end{equation}
-
-    So 
-    \begin{equation}
-        rhs = \bind{\e_1\dot\e_2}{\e_3}{C}\after\T{\e_1\dot\e_2}{(h)}\after F
-    \end{equation}
-
-    \begin{equation}
-        \begin{split}
-            F & = \tstrength{\e_1\dot\e_2}{\G}{B}\after(\idg\times\bind{\e_1}{\e_2}{B})\after(\idg\times\T{\e_1}{g})\after\pr{\idg}{\tstrength{\e_1}{\G}{A}\after\pr{\idg}{f}}\\
-            &  = \bind{\e_1}{\e_2}{(\G\times B)} \after \T{\e_1}{\tstrength{\e_2}{\G}{B}} \after\tstrength{\e_1}{\G}{(\T{\e_2}{B})} \after (\idg \after\T{\e_1}{g})\after\pr{\idg}{\tstrength{\e_1}{\G}{A}\after\pr{\idg}{f}}\qt{By \todo{ref: mu+tstrength}}
-            \\ & = \bind{\e_1}{\e_2}{(\G \times B))} \after \T{\e_1}{(\tstrength{\e_2}{\G}{B} \after (\idg \times g))} \after \tstrength{\e_1}{\G}{(\G \times A)} \after \pr{\idg}{\tstrength{\e_1}{\G}{A}\after\pr{\idg}{f}}\qt{By naturality of t-strength}
-        \end{split}
-    \end{equation}
-    Since
-    $
-        rhs = \bind{\e_1\dot\e_2}{\e_3}{C}\after\T{\e_1\dot\e_2}{(h)}\after F
-    $, 
-
-    \begin{equation}
-        \begin{split}
-            rhs = &\bind{\e_1\dot\e_2}{\e_3}{C}\after\T{\e_1\dot\e_2}{(h)}\after\bind{\e_1}{\e_2}{(\G \times B))} \after \T{\e_1}{(\tstrength{\e_2}{\G}{B} \after (\idg \times g))} \after \tstrength{\e_1}{\G}{(\G \times A)} \after \pr{\idg}{\tstrength{\e_1}{\G}{A}\after\pr{\idg}{f}}\\
-            = &\bind{\e_1\dot\e_2}{\e_3}{C}\after\bind{\e_1}{\e_2}{(\T{\e_3}{C})}\after\T{\e_1}{(\T{\e_2}{(h)} \after \tstrength{\e_2}{\G}{B} \after (\idg \times g))} \after \tstrength{\e_1}{\G}{(\G \times A)} \after \pr{\idg}{\tstrength{\e_1}{\G}{A}\after\pr{\idg}{f}}\qt{Naturality of $\mu$}\\
-            = & \bind{\e_1}{\e_2\dot\e_3}{C}\after\T{\e_1}{(\bind{\e_2}{\e_3}{C}\after \T{\e_2}{(h)} \after \tstrength{\e_2}{\G}{B} \after (\idg \times g))} \after \tstrength{\e_1}{\G}{(\G \times A)} \after \pr{\idg}{\tstrength{\e_1}{\G}{A}\after\pr{\idg}{f}}
-        \end{split}
-    \end{equation}
-
-    Let's now look at the fragment $G$ of $rhs$
-    \begin{equation}
-        G = \T{\e_1}{(\idg\times g)}\after\tstrength{\e_1}{\G}{(\G\times A)}\after\pr{\idg}{\tstrength{\e_1}{\G}{A}\after\pr{\idg}{f}}
-    \end{equation}
-
-    So
-    \begin{equation}
-        rhs = \bind{\e_1}{\e_2\dot\e_3}{C}\after\T{\e_1}{(\bind{\e_2}{\e_3}{C}\after \T{\e_2}{(h)} \after \tstrength{\e_2}{\G}{B})}\after G
-    \end{equation}
+    \begin{split}
+        \deno{\gtyperelation{\doin{x}{C}{\return{x}}}{\mea}}  & = \bind{\e}{\1}{A} \after \T{\e}{(\point{A} \after \pp)} \after \tstrength{\e}{\G}{A}\after \pr{\idg}{f} \\
+        & = \T{\e}{\pp} \after \tstrength{\e}{\G}{A} \after \pr {\idg}{f} \\
+        & = \pp \after \pr{\idg}{f}\\
+        & = f
+    \end{split}
+\end{equation}
 
 
-    By folding out the $\pr{...}{...}$, we have
-    \begin{equation}
-        G = \T{\e_1}{(\idg\times g)}\after\tstrength{\e_1}{\G}{\G \times A}\after(\idg\times\tstrength{\e_1}{\G}{A})\after\pr{\idg}{\pr{\idg}{f}}
-    \end{equation}
 
-    From the rule \todo{Ref} showing the commutativity of tensor strength with $\alpha$, the following commutes
+\paragraph{Case Associative}
+Let
+\begin{align}
+    f ={}& \deno{\gtyperelation{C_1}{\mea}}\\
+    g ={}& \deno{\typerelation{\gax}{C_2}{\meb}}\\
+    h ={}& \deno{\typerelation{\gby}{C_3}\mec}
+\end{align}
 
-    \begin{tikzcd}[ampersand replacement=\&]
-        \G 
-        \arrow [r, "\pr{\idg}{\pr{\idg}{f}}"]
-        \&
-        \G\times(\G \times \T{\e_1}{A}) 
-        \arrow [d, "\idg\times\tstrength{\e_1}{\G}{A}"]
-        \&
-        (\G \times \G) \times\T{\e_1}{A} 
-        \arrow [l, "\alpha_{\G, \G, (\T{\e_1}{A})}"]
-        \arrow [d, "\tstrength{\e_1}{(\G \times \G)}{A}"]
-        \\
-        \&
-        \G \times \T{\e_1}{(\G \times A)}
-        \arrow [d, "\tstrength{\e_1}{\G}{\G \times A}"]
-        \& \T{\e_1}{((\G \times \G)\times A)} 
-        \arrow [ld, "\T{\e_1}{\alpha_{\G, \G, A}}"]
-        \\
-        \& \T{\e_1}{(\G \times (\G \times A))}
-    \end{tikzcd}
+We also have the weakening:
+\begin{equation}
+    \wrel{\i\pi\times}{\gax, y: B}{\gby}
+\end{equation}
 
-    Where $\alpha: ((\_ \times \_) \times \_) \rightarrow (\_ \times (\_ \times \_))$ is a natural isomorphism.
+With denotation:
 
-    \begin{align}
-        \alpha & = \pr{\p\after\p}{\pr{\pp\after\p}{\pp}}\\
-        \alpha^{-1} &= \pr{\pr{\p}{\p\after\pp}}{\pp\after\pp}
-    \end{align}
+\begin{equation}
+    \deno{\wrel{\i\pi\times}{\gax, y: B}{\gby}} = (\p \times \Id{B})
+\end{equation}
 
-    So:
+We need to prove that the following are equal
 
-    \begin{equation}
-        \begin{split}
-            G = & \T{\e_1}{((\idg\times g)\after \alpha_{\G, \G, A})} \after \tstrength{\e_1}{(\G\times\G)}{A}\after\alpha^{-1}_{\G, \G, (\T{\e_1}{A})}\after\pr{\idg}{\pr{\idg}{f}} \\
-            = & \T{\e_1}{((\idg\times g)\after \alpha_{\G, \G, A})} \after \tstrength{\e_1}{(\G\times\G)}{A}\after(\pr{\idg}{\idg}\times \Id{\T{\e_1}{A}})\after\pr{\idg}{f}\qt{By definition of $\alpha$ and products}\\
-            = & \T{\e_1}{((\idg\times g)\after \alpha_{\G, \G, A}\after(\pr{\idg}{\idg}\times \Id{A}))}\after\tstrength{\e_1}{\G}{A}\after\pr{\idg}{f}\qt{By tensor strength's left-naturality}\\
-            = & \T{\e_1}{((\p\times\Id{\T{\e_2}{B}})\after\pr{\Id{(\G\times A)}}{g})}\after\tstrength{\e_1}{\G}{A}\after\pr{\idg}{f}
-        \end{split}
-    \end{equation}
-Since 
+\begin{align}
+    &lhs =  \deno{\gtyperelation{\doin{x}{C_1}{(\doin{y}{C_2}{C_3})}}{\M{\e_1\dot\e_2\dot\e_2}}} \\
+    & = \bind{\e_1}{\e_2\dot\e_3}{C}\after\T{
+        \e_1}{(\bind{\e_2}{\e_3}{C}\after\T{\e_2}{h\after(\p \times \Id{B})}\after\tstrength{\e_2}{(\G\times A)}{B}\after\pr{\Id{(\G\times A)}}{g}
+        )}\after\tstrength{\e_1}{\G}{A}\after\pr{\idg}{f}\\
+    & rhs = \deno{\gtyperelation{\doin{y}{(\doin{x}{C_1}{C_2})}{C_3}}{\M{\e_1\dot\e_2\dot\e_2}}}  \\
+    & = \bind{\e_1\dot\e_2}{\e_3}{C}\after\T{\e_1\dot\e_2}{(h)}\after\tstrength{\e_1\dot\e_2}{\G}{B}\after\pr{\idg}{(\bind{\e_1}{\e_2}{B}\after\T{\e_1}{g}\after\tstrength{\e_1}{\G}{A}\after\pr{\idg}{f})} \\
+\end{align}
+Let's look at fragment $F$ of $rhs$.
+\begin{equation}
+    F = \tstrength{\e_1\dot\e_2}{\G}{B}\after\pr{\idg}{(\bind{\e_1}{\e_2}{B}\after\T{\e_1}{g}\after\tstrength{\e_1}{\G}{A}\after\pr{\idg}{f})}
+\end{equation}
+
+So 
+\begin{equation}
+    rhs = \bind{\e_1\dot\e_2}{\e_3}{C}\after\T{\e_1\dot\e_2}{(h)}\after F
+\end{equation}
+
+\begin{equation}
+    \begin{split}
+        F & = \tstrength{\e_1\dot\e_2}{\G}{B}\after(\idg\times\bind{\e_1}{\e_2}{B})\after(\idg\times\T{\e_1}{g})\after\pr{\idg}{\tstrength{\e_1}{\G}{A}\after\pr{\idg}{f}}\\
+        &  = \bind{\e_1}{\e_2}{(\G\times B)} \after \T{\e_1}{\tstrength{\e_2}{\G}{B}} \after\tstrength{\e_1}{\G}{(\T{\e_2}{B})} \after (\idg \after\T{\e_1}{g})\after\pr{\idg}{\tstrength{\e_1}{\G}{A}\after\pr{\idg}{f}}\qt{By \todo{ref: mu+tstrength}}
+        \\ & = \bind{\e_1}{\e_2}{(\G \times B))} \after \T{\e_1}{(\tstrength{\e_2}{\G}{B} \after (\idg \times g))} \after \tstrength{\e_1}{\G}{(\G \times A)} \after \pr{\idg}{\tstrength{\e_1}{\G}{A}\after\pr{\idg}{f}}\qt{By naturality of t-strength}
+    \end{split}
+\end{equation}
+Since
+$
+    rhs = \bind{\e_1\dot\e_2}{\e_3}{C}\after\T{\e_1\dot\e_2}{(h)}\after F
+$, 
+
+\begin{equation}
+    \begin{split}
+        rhs = &\bind{\e_1\dot\e_2}{\e_3}{C}\after\T{\e_1\dot\e_2}{(h)}\after\bind{\e_1}{\e_2}{(\G \times B))} \after \T{\e_1}{(\tstrength{\e_2}{\G}{B} \after (\idg \times g))} \after \tstrength{\e_1}{\G}{(\G \times A)} \after \pr{\idg}{\tstrength{\e_1}{\G}{A}\after\pr{\idg}{f}}\\
+        = &\bind{\e_1\dot\e_2}{\e_3}{C}\after\bind{\e_1}{\e_2}{(\T{\e_3}{C})}\after\T{\e_1}{(\T{\e_2}{(h)} \after \tstrength{\e_2}{\G}{B} \after (\idg \times g))} \after \tstrength{\e_1}{\G}{(\G \times A)} \after \pr{\idg}{\tstrength{\e_1}{\G}{A}\after\pr{\idg}{f}}\qt{Naturality of $\mu$}\\
+        = & \bind{\e_1}{\e_2\dot\e_3}{C}\after\T{\e_1}{(\bind{\e_2}{\e_3}{C}\after \T{\e_2}{(h)} \after \tstrength{\e_2}{\G}{B} \after (\idg \times g))} \after \tstrength{\e_1}{\G}{(\G \times A)} \after \pr{\idg}{\tstrength{\e_1}{\G}{A}\after\pr{\idg}{f}}
+    \end{split}
+\end{equation}
+
+Let's now look at the fragment $G$ of $rhs$
+\begin{equation}
+    G = \T{\e_1}{(\idg\times g)}\after\tstrength{\e_1}{\G}{(\G\times A)}\after\pr{\idg}{\tstrength{\e_1}{\G}{A}\after\pr{\idg}{f}}
+\end{equation}
+
+So
 \begin{equation}
     rhs = \bind{\e_1}{\e_2\dot\e_3}{C}\after\T{\e_1}{(\bind{\e_2}{\e_3}{C}\after \T{\e_2}{(h)} \after \tstrength{\e_2}{\G}{B})}\after G
 \end{equation}
 
-We Have
+
+By folding out the $\pr{...}{...}$, we have
+\begin{equation}
+    G = \T{\e_1}{(\idg\times g)}\after\tstrength{\e_1}{\G}{\G \times A}\after(\idg\times\tstrength{\e_1}{\G}{A})\after\pr{\idg}{\pr{\idg}{f}}
+\end{equation}
+
+From the rule \todo{Ref} showing the commutativity of tensor strength with $\alpha$, the following commutes
+
+\begin{tikzcd}[ampersand replacement=\&]
+    \G 
+    \arrow [r, "\pr{\idg}{\pr{\idg}{f}}"]
+    \&
+    \G\times(\G \times \T{\e_1}{A}) 
+    \arrow [d, "\idg\times\tstrength{\e_1}{\G}{A}"]
+    \&
+    (\G \times \G) \times\T{\e_1}{A} 
+    \arrow [l, "\alpha_{\G, \G, (\T{\e_1}{A})}"]
+    \arrow [d, "\tstrength{\e_1}{(\G \times \G)}{A}"]
+    \\
+    \&
+    \G \times \T{\e_1}{(\G \times A)}
+    \arrow [d, "\tstrength{\e_1}{\G}{\G \times A}"]
+    \& \T{\e_1}{((\G \times \G)\times A)} 
+    \arrow [ld, "\T{\e_1}{\alpha_{\G, \G, A}}"]
+    \\
+    \& \T{\e_1}{(\G \times (\G \times A))}
+\end{tikzcd}
+
+Where $\alpha: ((\_ \times \_) \times \_) \rightarrow (\_ \times (\_ \times \_))$ is a natural isomorphism.
+
+\begin{align}
+    \alpha & = \pr{\p\after\p}{\pr{\pp\after\p}{\pp}}\\
+    \alpha^{-1} &= \pr{\pr{\p}{\p\after\pp}}{\pp\after\pp}
+\end{align}
+
+So:
+
 \begin{equation}
     \begin{split}
-        rhs ={} & \bind{\e_1}{\e_2\dot\e_3}{C}\after\T{\e_1}{(\bind{\e_2}{\e_3}{C}\after \T{\e_2}{(h)} \after \tstrength{\e_2}{\G}{B}\after(\p\times\Id{\T{\e_2}{B}})\after\pr{\Id{(\G\times A)}}{g})}\after\tstrength{\e_1}{\G}{A}\after\pr{\idg}{f}\\
-        ={} & \bind{\e_1}{\e_2\dot\e_3}{C}\after\T{\e_1}{(\bind{\e_2}{\e_3}{C}\after \T{\e_2}{(h \after (\p\times\Id{B}))}\after\tstrength{\e_2}{(\G\times A)}{B}\after\pr{\Id{(\G\times A)}}{g})}\after\tstrength{\e_1}{\G}{A}\after\pr{\idg}{f}\qt{By Left-Tensor Strength}\\
-        ={} & lhs \qt{Woohoo!}
+        G = & \T{\e_1}{((\idg\times g)\after \alpha_{\G, \G, A})} \after \tstrength{\e_1}{(\G\times\G)}{A}\after\alpha^{-1}_{\G, \G, (\T{\e_1}{A})}\after\pr{\idg}{\pr{\idg}{f}} \\
+        = & \T{\e_1}{((\idg\times g)\after \alpha_{\G, \G, A})} \after \tstrength{\e_1}{(\G\times\G)}{A}\after(\pr{\idg}{\idg}\times \Id{\T{\e_1}{A}})\after\pr{\idg}{f}\qt{By definition of $\alpha$ and products}\\
+        = & \T{\e_1}{((\idg\times g)\after \alpha_{\G, \G, A}\after(\pr{\idg}{\idg}\times \Id{A}))}\after\tstrength{\e_1}{\G}{A}\after\pr{\idg}{f}\qt{By tensor strength's left-naturality}\\
+        = & \T{\e_1}{((\p\times\Id{\T{\e_2}{B}})\after\pr{\Id{(\G\times A)}}{g})}\after\tstrength{\e_1}{\G}{A}\after\pr{\idg}{f}
     \end{split}
+\end{equation}
+Since 
+\begin{equation}
+rhs = \bind{\e_1}{\e_2\dot\e_3}{C}\after\T{\e_1}{(\bind{\e_2}{\e_3}{C}\after \T{\e_2}{(h)} \after \tstrength{\e_2}{\G}{B})}\after G
+\end{equation}
+
+We Have
+\begin{equation}
+\begin{split}
+    rhs ={} & \bind{\e_1}{\e_2\dot\e_3}{C}\after\T{\e_1}{(\bind{\e_2}{\e_3}{C}\after \T{\e_2}{(h)} \after \tstrength{\e_2}{\G}{B}\after(\p\times\Id{\T{\e_2}{B}})\after\pr{\Id{(\G\times A)}}{g})}\after\tstrength{\e_1}{\G}{A}\after\pr{\idg}{f}\\
+    ={} & \bind{\e_1}{\e_2\dot\e_3}{C}\after\T{\e_1}{(\bind{\e_2}{\e_3}{C}\after \T{\e_2}{(h \after (\p\times\Id{B}))}\after\tstrength{\e_2}{(\G\times A)}{B}\after\pr{\Id{(\G\times A)}}{g})}\after\tstrength{\e_1}{\G}{A}\after\pr{\idg}{f}\qt{By Left-Tensor Strength}\\
+    ={} & lhs \qt{Woohoo!}
+\end{split}
 \end{equation}
 
 %%%%%% END CASE ASSOCIATIVE %%%%%%%
 
-    \paragraph{Case Eta}
+\paragraph{Case Eta}
+Let 
+\begin{equation}
+    f = \deno{\gtyperelation{v}{\aeb}} : \G \rightarrow (\teb)^{A}
+\end{equation}
+
+By weakening, we have
+
+\begin{align}
+    \deno{\typerelation{\gax}{v}{\aeb}} & = f \after \p : \G \times A \rightarrow (\teb)^A \\
+    \deno{\typerelation{\gax}{\apply{v}{x}}{\meb}} & = \app\after\pr{f \after \p}{\pp} \\
+\end{align}
+
+Hence, we have 
+\begin{equation}
+    \begin{split}
+        \deno{\gtyperelation{\lam{x}{A}{(\apply{v}{x})}}{\aeb}} & = \cur{\app\after\pr{f \after \p}{\pp}}\\
+        \app\after(\deno{\gtyperelation{\lam{x}{A}{(\apply{v}{x})}}{\aeb}} \times \Id{A}) & = \app \after(\cur{\app\after\pr{f \after \p}{\pp}}\times \Id{A})\\
+        & = \app \after\pr{f\after\p}{\pp}\\
+        & = \app\after(f\times\Id{A})
+    \end{split}
+\end{equation}
+
+Hence, by the fact that $\cur{f}$ is unique in a cartesian closed category, 
+
+\begin{equation}
+    \deno{\gtyperelation{\lam{x}{A}{(\apply{v}{x})}}{\aeb}} = f =\deno{\gtyperelation{v}{\aeb}}
+\end{equation}
+
+\paragraph{Case If-True}
+Let
+\begin{align}
+    f = &\deno{\gtyperelation{C_1}{\mea}}\\
+    g = &\deno{\gtyperelation{C_2}{\mea}}\\
+\end{align}
+
+Then
+\begin{equation}
+    \begin{split}
+        \deno{\gtyperelation{\ifthenelse{\t}{A}{v}{C_1}{C_2}}{\mea}} & = \ifMorph{\inl\after\term{\G}}{f}{g} \\
+        & = \app\after((\cur{f\after\pp}\after\term{\G})\times\idg)\after\diag{\G}\\
+        & = \app\after(\cur{f\after\pp}\times\idg)\after(\term{\G}\times\idg)\after\diag{\G}\\
+        & = f\after\pp\after\pr{\term{\G}}{\idg}\\
+        & = f \\
+        & = \deno{\gtyperelation{C_1}{\mea}}\\
+    \end{split}
+\end{equation}
+
+
+\paragraph{Case If-False}
+Let
+\begin{align}
+    f = &\deno{\gtyperelation{C_1}{\mea}}\\
+    g = &\deno{\gtyperelation{C_2}{\mea}}\\
+\end{align}
+
+Then
+\begin{equation}
+    \begin{split}
+        \deno{\gtyperelation{\ifthenelse{\t}{A}{v}{C_1}{C_2}}{\mea}} & = \ifMorph{\inr\after\term{\G}}{f}{g} \\
+        & = \app\after((\cur{g\after\pp}\after\term{\G})\times\idg)\after\diag{\G}\\
+        & = \app\after(\cur{g\after\pp}\times\idg)\after(\term{\G}\times\idg)\after\diag{\G}\\
+        & = g\after\pp\after\pr{\term{\G}}{\idg}\\
+        & = g \\
+        & = \deno{\gtyperelation{C_2}{\mea}}\\
+    \end{split}
+\end{equation}
+
+\subsection{Case If-Eta}
     Let 
-    \begin{equation}
-        f = \deno{\gtyperelation{v}{\aeb}} : \G \rightarrow (\teb)^{A}
-    \end{equation}
-
-    By weakening, we have
-
     \begin{align}
-        \deno{\typerelation{\gax}{v}{\aeb}} & = f \after \p : \G \times A \rightarrow (\teb)^A \\
-        \deno{\typerelation{\gax}{\apply{v}{x}}{\meb}} & = \app\after\pr{f \after \p}{\pp} \\
+        f & = \deno{\typerelation{\G}{v}{\B}} \\
+        g & = \deno{\typerelation{\G, x: \B}{C}{\mea}} \\
     \end{align}
 
-    Hence, we have 
-    \begin{equation}
-        \begin{split}
-            \deno{\gtyperelation{\lam{x}{A}{(\apply{v}{x})}}{\aeb}} & = \cur{\app\after\pr{f \after \p}{\pp}}\\
-            \app\after(\deno{\gtyperelation{\lam{x}{A}{(\apply{v}{x})}}{\aeb}} \times \Id{A}) & = \app \after(\cur{\app\after\pr{f \after \p}{\pp}}\times \Id{A})\\
-            & = \app \after\pr{f\after\p}{\pp}\\
-            & = \app\after(f\times\Id{A})
-        \end{split}
-    \end{equation}
 
-    Hence, by the fact that $\cur{f}$ is unique in a cartesian closed category, 
-
-    \begin{equation}
-        \deno{\gtyperelation{\lam{x}{A}{(\apply{v}{x})}}{\aeb}} = f =\deno{\gtyperelation{v}{\aeb}}
-    \end{equation}
-
-    \paragraph{Case If-True}
-    Let
+    Then by the substitution theorem,
     \begin{align}
-        f = &\deno{\gtyperelation{C_1}{\mea}}\\
-        g = &\deno{\gtyperelation{C_2}{\mea}}\\
+        \deno{\typerelation{\G}{C\ssub{x}{\t}}{\mea}} & = g\after\pr{\idg}{\inl_\1\after{\term{\G}}}\\
+        \deno{\typerelation{\G}{C\ssub{x}{\f}}{\mea}} & = g\after\pr{\idg}{\inr_\1\after{\term{\G}}}\\
+        \deno{\gtyperelation{C\ssub{x}{v}}{\mea}} & = g\after\pr{\idg}{f}
     \end{align}
 
-    Then
-    \begin{equation}
-        \begin{split}
-            \deno{\gtyperelation{\ifthenelse{\t}{A}{v}{C_1}{C_2}}{\mea}} & = \ifMorph{\inl\after\term{\G}}{f}{g} \\
-            & = \app\after((\cur{f\after\pp}\after\term{\G})\times\idg)\after\diag{\G}\\
-            & = \app\after(\cur{f\after\pp}\times\idg)\after(\term{\G}\times\idg)\after\diag{\G}\\
-            & = f\after\pp\after\pr{\term{\G}}{\idg}\\
-            & = f \\
-            & = \deno{\gtyperelation{C_1}{\mea}}\\
-        \end{split}
-    \end{equation}
-
-
-    \paragraph{Case If-False}
-    Let
+    Hence we have (Using the diagonal and twist morphisms):
+ 
     \begin{align}
-        f = &\deno{\gtyperelation{C_1}{\mea}}\\
-        g = &\deno{\gtyperelation{C_2}{\mea}}\\
+        \deno{\gtyperelation{&\ifthenelse{\e}{A}{v}{C\ssub{x}{\t}}{C\ssub{x}{\f}}}{\mea}}  \\ 
+        & = \ifMorph{f}{g\after\pr{\idg}{\inl_\1\after{\term{\G}}}}{g\after\pr{\idg}{\inr_\1\after{\term{\G}}}}\\
+        & = \app\after((\fld{
+            \cur{g\after\pr{\pp}{\inl_1\after\term{\G}\after\pp}}
+        }{
+            \cur{g\after\pr{\pp}{\inr_1\after\term{\G}\after\pp}}
+        }\after f)\times \idg)\after\diag{\G}\qt{Pairing property}\\
+        &= \app\after((\fld{
+            \cur{g\after\pr{\pp}{\inl_1\after\term{\G}\after\p}}
+        }{
+            \cur{g\after\pr{\pp}{\inr_1\after\term{\G}\after\p}}
+        }\after f)\times \idg)\after\diag{\G}\qt{Terminal is unique}\\
+        &= \app\after((\fld{
+            \cur{g\after(\idg\times (\inl_\1\after\term{\1}))\after\twist{\1}{\G}}
+        }{
+            \cur{g\after(\idg\times (\inr_\1\after\term{\1}))\after\twist{\1}{\G}}
+        }\after f)\times \idg)\after\diag{\G}\qt{Definition of the twist morphism}\\
+        & = \app\after((\fld{
+            \cur{g\after(\idg\times \inl_\1)\after\twist{\1}{\G}}
+        }{
+            \cur{g\after(\idg\times \inr_\1)\after\twist{\1}{\G}}
+        }\after f)\times \idg)\after\diag{\G}\qt{Identity = $\Id{\1}$}\\
+        & = \app\after((\fld{
+            \cur{g\after\twist{\1+\1}{\G}\after(\inl_\1\times \idg)}
+        }{
+            \cur{g\after\twist{\1+\1}{\G}\after(\inr_\1\times \idg)}
+        }\after f)\times \idg)\after\diag{\G}\qt{Twist commutivity}\\
+        & = \app\after((\fld{
+            \cur{g\after\twist{\1+\1}{\G}}\after\inl_\1
+        }{
+            \cur{g\after\twist{\1+\1}{\G}}\after\inr_\1
+        }\after f)\times \idg)\after\diag{\G}\qt{Exponential property}\\
+        & = \app\after((\cur{g\after\twist{\1+\1}{\G}}\after\fld{
+            \inl_\1
+        }{
+            \inr_\1
+        }\after f)\times \idg)\after\diag{\G}\qt{Factoring out $\cur{..}$}\\
+        & = \app\after((\cur{g\after\twist{\1+\1}{\G}}\after f)\times \idg)\after\diag{\G}\qt{Since $\fld{\inl}{\inr} is the identity$}\\
+        & = \app\after(\cur{g\after\twist{\1+\1}{\G}}\times \idg)\after (f\times \idg)\after\diag{\G}\qt{Factoring}\\
+       & = g\after\twist{\1+\1}{\G} \after (f\times \idg)\after\diag{\G} \qt{Definition of $\app,\cur{..}$}\\
+       & = g\after(\idg\times f)\after \twist{\G}{\G} \after\diag{\G} \qt{Twist commutivity}\\
+       & = g\after(\idg\times f) \after\pr{\idg}{\idg} \qt{Twist, diagonal defintions} \\
+       & = g\after\pr{\idg}{f} \\
+       & = \deno{\gtyperelation{C\ssub{x}{v}}{\mea}} \\
     \end{align}
 
-    Then
-    \begin{equation}
-        \begin{split}
-            \deno{\gtyperelation{\ifthenelse{\t}{A}{v}{C_1}{C_2}}{\mea}} & = \ifMorph{\inr\after\term{\G}}{f}{g} \\
-            & = \app\after((\cur{g\after\pp}\after\term{\G})\times\idg)\after\diag{\G}\\
-            & = \app\after(\cur{g\after\pp}\times\idg)\after(\term{\G}\times\idg)\after\diag{\G}\\
-            & = g\after\pp\after\pr{\term{\G}}{\idg}\\
-            & = g \\
-            & = \deno{\gtyperelation{C_2}{\mea}}\\
-        \end{split}
-    \end{equation}
-
-    \subsection{Case If-Eta}
-        Let 
-        \begin{align}
-            f & = \deno{\typerelation{\G}{v}{\B}} \\
-            g & = \deno{\typerelation{\G, x: \B}{C}{\mea}} \\
-        \end{align}
-
-
-        Then by the substitution theorem,
-        \begin{align}
-            \deno{\typerelation{\G}{C\ssub{x}{\t}}{\mea}} & = g\after\pr{\idg}{\inl_\1\after{\term{\G}}}\\
-            \deno{\typerelation{\G}{C\ssub{x}{\f}}{\mea}} & = g\after\pr{\idg}{\inr_\1\after{\term{\G}}}\\
-            \deno{\gtyperelation{C\ssub{x}{v}}{\mea}} & = g\after\pr{\idg}{f}
-        \end{align}
-
-        Hence we have (Using the diagonal and twist morphisms):
-     
-        \begin{align}
-            \deno{\gtyperelation{&\ifthenelse{\e}{A}{v}{C\ssub{x}{\t}}{C\ssub{x}{\f}}}{\mea}}  \\ 
-            & = \ifMorph{f}{g\after\pr{\idg}{\inl_\1\after{\term{\G}}}}{g\after\pr{\idg}{\inr_\1\after{\term{\G}}}}\\
-            & = \app\after((\fld{
-                \cur{g\after\pr{\pp}{\inl_1\after\term{\G}\after\pp}}
-            }{
-                \cur{g\after\pr{\pp}{\inr_1\after\term{\G}\after\pp}}
-            }\after f)\times \idg)\after\diag{\G}\qt{Pairing property}\\
-            &= \app\after((\fld{
-                \cur{g\after\pr{\pp}{\inl_1\after\term{\G}\after\p}}
-            }{
-                \cur{g\after\pr{\pp}{\inr_1\after\term{\G}\after\p}}
-            }\after f)\times \idg)\after\diag{\G}\qt{Terminal is unique}\\
-            &= \app\after((\fld{
-                \cur{g\after(\idg\times (\inl_\1\after\term{\1}))\after\twist{\1}{\G}}
-            }{
-                \cur{g\after(\idg\times (\inr_\1\after\term{\1}))\after\twist{\1}{\G}}
-            }\after f)\times \idg)\after\diag{\G}\qt{Definition of the twist morphism}\\
-            & = \app\after((\fld{
-                \cur{g\after(\idg\times \inl_\1)\after\twist{\1}{\G}}
-            }{
-                \cur{g\after(\idg\times \inr_\1)\after\twist{\1}{\G}}
-            }\after f)\times \idg)\after\diag{\G}\qt{Identity = $\Id{\1}$}\\
-            & = \app\after((\fld{
-                \cur{g\after\twist{\1+\1}{\G}\after(\inl_\1\times \idg)}
-            }{
-                \cur{g\after\twist{\1+\1}{\G}\after(\inr_\1\times \idg)}
-            }\after f)\times \idg)\after\diag{\G}\qt{Twist commutivity}\\
-            & = \app\after((\fld{
-                \cur{g\after\twist{\1+\1}{\G}}\after\inl_\1
-            }{
-                \cur{g\after\twist{\1+\1}{\G}}\after\inr_\1
-            }\after f)\times \idg)\after\diag{\G}\qt{Exponential property}\\
-            & = \app\after((\cur{g\after\twist{\1+\1}{\G}}\after\fld{
-                \inl_\1
-            }{
-                \inr_\1
-            }\after f)\times \idg)\after\diag{\G}\qt{Factoring out $\cur{..}$}\\
-            & = \app\after((\cur{g\after\twist{\1+\1}{\G}}\after f)\times \idg)\after\diag{\G}\qt{Since $\fld{\inl}{\inr} is the identity$}\\
-            & = \app\after(\cur{g\after\twist{\1+\1}{\G}}\times \idg)\after (f\times \idg)\after\diag{\G}\qt{Factoring}\\
-           & = g\after\twist{\1+\1}{\G} \after (f\times \idg)\after\diag{\G} \qt{Definition of $\app,\cur{..}$}\\
-           & = g\after(\idg\times f)\after \twist{\G}{\G} \after\diag{\G} \qt{Twist commutivity}\\
-           & = g\after(\idg\times f) \after\pr{\idg}{\idg} \qt{Twist, diagonal defintions} \\
-           & = g\after\pr{\idg}{f} \\
-           & = \deno{\gtyperelation{C\ssub{x}{v}}{\mea}} \\
-        \end{align}
 
 
 
 
 
+\subsection{Congruences}
+These cases can be proved fairly mechanically by assuming the preconditions, using induction to prove that the matching pairs of sub-expressions have equal denotations, then constructing the denotations of the expressions using the equal denotations which gives trivially equal denotations.
 
-    \subsection{Congruences}
-    These cases can be proved fairly mechanically by assuming the preconditions, using induction to prove that the matching pairs of sub-expressions have equal denotations, then constructing the denotations of the expressions using the equal denotations which gives trivially equal denotations.
-
-    \paragraph{Case Lambda}
-        By inversion, we have $\berelation{\gax}{C_1}{C_2}{\meb}$
-        By induction, we therefore have $\deno{\typerelation{\gax}{C_1}{\meb}} = \deno{\typerelation{\gax}{C_2}{\meb}}$
-
-        Then let
-        \begin{equation}
-            f = \deno{\typerelation{\gax}{C_1}{\meb}} = \deno{\typerelation{\gax}{C_2}{\meb}}
-        \end{equation}
-
-        And so
-        \begin{equation}
-            \deno{\gtyperelation{\lam{x}{A}{C_1}}{\aeb}} = \cur{f} = \deno{\gtyperelation{\lam{x}{A}{C_2}}{\aeb}}
-        \end{equation}
-
-
-    \paragraph{Case Return}
-    By inversion, we have $\gberelation{v_1}{v_2}{A}$
-    By induction, we therefore have $\deno{\gtyperelation{v_1}{A}} = \deno{\gtyperelation{v_2}{A}}$
+\paragraph{Case Lambda}
+    By inversion, we have $\berelation{\gax}{C_1}{C_2}{\meb}$
+    By induction, we therefore have $\deno{\typerelation{\gax}{C_1}{\meb}} = \deno{\typerelation{\gax}{C_2}{\meb}}$
 
     Then let
     \begin{equation}
-        f = \deno{\gtyperelation{v_1}{A}} = \deno{\gtyperelation{v_2}{A}}
+        f = \deno{\typerelation{\gax}{C_1}{\meb}} = \deno{\typerelation{\gax}{C_2}{\meb}}
     \end{equation}
 
     And so
     \begin{equation}
-        \deno{\gtyperelation{\return{v_1}}{\M{\1}{A}}} = \point{A}\after f = \deno{\gtyperelation{\return{v_2}}{\M{\1}{A}}}
+        \deno{\gtyperelation{\lam{x}{A}{C_1}}{\aeb}} = \cur{f} = \deno{\gtyperelation{\lam{x}{A}{C_2}}{\aeb}}
     \end{equation}
 
 
-    \paragraph{Case Apply}
-    By inversion, we have $\gberelation{v_1}{v_1'}{\aeb}$ and $\gberelation{v_2}{v_2'}{A}$
-    By induction, we therefore have $\deno{\gtyperelation{v_1}{\aeb}}= \deno{\gtyperelation{v_1'}{\aeb}}$ and $\deno{\gtyperelation{v_2}{A}} = \deno{\gtyperelation{v_2'}{A}}$
+\paragraph{Case Return}
+By inversion, we have $\gberelation{v_1}{v_2}{A}$
+By induction, we therefore have $\deno{\gtyperelation{v_1}{A}} = \deno{\gtyperelation{v_2}{A}}$
 
-    Then let
-    \begin{align}
-        f &{}= \deno{\gtyperelation{v_1}{\aeb}} = \deno{\gtyperelation{v_1'}{\aeb}}\\
-        g &{}= \deno{\gtyperelation{v_2}{A}} = \deno{\gtyperelation{v_2'}{A}}
-    \end{align}
+Then let
+\begin{equation}
+    f = \deno{\gtyperelation{v_1}{A}} = \deno{\gtyperelation{v_2}{A}}
+\end{equation}
 
-
-
-    And so
-    \begin{equation}
-        \deno{\gtyperelation{\apply{v_1}{v_2}}{\M{\e}{A}}} = \app\after\pr{f}{g} = \deno{\gtyperelation{\apply{v_1'}{v_2'}}{\M{\e}{A}}}
-    \end{equation}
+And so
+\begin{equation}
+    \deno{\gtyperelation{\return{v_1}}{\M{\1}{A}}} = \point{A}\after f = \deno{\gtyperelation{\return{v_2}}{\M{\1}{A}}}
+\end{equation}
 
 
-    \paragraph{Case Bind}
-    By inversion, we have $\gberelation{C_1}{C_1'}{\mea}$ and $\berelation{\gax}{C_2}{C_2'}{\meb}$
-    By induction, we therefore have $\deno{\gtyperelation{C_1}{\mea}}= \deno{\gtyperelation{C_1'}{\mea}}$ and $\deno{\typerelation{\gax}{C_2}{\meb}} = \deno{\typerelation{\gax}{C_2'}{\meb}}$
+\paragraph{Case Apply}
+By inversion, we have $\gberelation{v_1}{v_1'}{\aeb}$ and $\gberelation{v_2}{v_2'}{A}$
+By induction, we therefore have $\deno{\gtyperelation{v_1}{\aeb}}= \deno{\gtyperelation{v_1'}{\aeb}}$ and $\deno{\gtyperelation{v_2}{A}} = \deno{\gtyperelation{v_2'}{A}}$
 
-    Then let
-    \begin{align}
-        f &{}=\deno{\gtyperelation{C_1}{\M{\e_1}{A}}}= \deno{\gtyperelation{C_1'}{\M{\e_1}{A}}}\\
-        g &{}=\deno{\typerelation{\gax}{C_2}{\M{\e_2}{B}}} = \deno{\typerelation{\gax}{C_2'}{\M{\e_2}{B}}}
-    \end{align}
+Then let
+\begin{align}
+    f &{}= \deno{\gtyperelation{v_1}{\aeb}} = \deno{\gtyperelation{v_1'}{\aeb}}\\
+    g &{}= \deno{\gtyperelation{v_2}{A}} = \deno{\gtyperelation{v_2'}{A}}
+\end{align}
 
 
 
-    And so
-    \begin{equation}
-        \begin{split}
-            \deno{\gtyperelation{\doin{x}{C_1}{C_2}}{\M{\e_1\dot\e_2}{A}}} & = \bind{\e_1}{\e_2}{B} \after \T{\e_1}{g} \after \tstrength{\e_1}{\G}{A} \after \pr{\idg}{f}\\
-             & = \deno{\gtyperelation{\doin{x}{C_1}{C_2}}{\M{\e_1\dot\e_2}{A}}}
-        \end{split}
-    \end{equation}
-    \paragraph{Case If}
-    By inversion, we have $\gberelation{v}{v'}{\B}$, $\gberelation{C_1}{C_1'}{\mea}$ and $\gberelation{C_2}{C_2'}{\mea}$
-    By induction, we therefore have $\deno{\gtyperelation{v}{\B}} = \deno{\gtyperelation{v'}{B}}$, $\deno{\gtyperelation{C_1}{\mea}}= \deno{\gtyperelation{C_1'}{\mea}}$ and $\deno{\typerelation{\gax}{C_2}{\meb}} = \deno{\typerelation{\gax}{C_2'}{\meb}}$
+And so
+\begin{equation}
+    \deno{\gtyperelation{\apply{v_1}{v_2}}{\M{\e}{A}}} = \app\after\pr{f}{g} = \deno{\gtyperelation{\apply{v_1'}{v_2'}}{\M{\e}{A}}}
+\end{equation}
 
-    Then let
-    \begin{align}
-        f &{}=\deno{\gtyperelation{v}{\B}} = \deno{\gtyperelation{v'}{B}}\\
-        g &{}=\deno{\gtyperelation{C_1}{\M{\e_1}{A}}}= \deno{\gtyperelation{C_1'}{\M{\e_1}{A}}}\\
-        h &{}=\deno{\typerelation{\gax}{C_2}{\M{\e_2}{B}}} = \deno{\typerelation{\gax}{C_2'}{\M{\e_2}{B}}}
-    \end{align}
+
+\paragraph{Case Bind}
+By inversion, we have $\gberelation{C_1}{C_1'}{\mea}$ and $\berelation{\gax}{C_2}{C_2'}{\meb}$
+By induction, we therefore have $\deno{\gtyperelation{C_1}{\mea}}= \deno{\gtyperelation{C_1'}{\mea}}$ and $\deno{\typerelation{\gax}{C_2}{\meb}} = \deno{\typerelation{\gax}{C_2'}{\meb}}$
+
+Then let
+\begin{align}
+    f &{}=\deno{\gtyperelation{C_1}{\M{\e_1}{A}}}= \deno{\gtyperelation{C_1'}{\M{\e_1}{A}}}\\
+    g &{}=\deno{\typerelation{\gax}{C_2}{\M{\e_2}{B}}} = \deno{\typerelation{\gax}{C_2'}{\M{\e_2}{B}}}
+\end{align}
 
 
 
-    And so
-    \begin{equation}
-        \begin{split}
-            \deno{\gtyperelation{\ifthenelse{\e}{A}{v}{C_1}{C_2}}} & = \ifMorph{f}{g}{h}\\
-             & = \deno{\gtyperelation{\doin{x}{C_1}{C_2}}{\M{\e_1\dot\e_2}{A}}}
-        \end{split}
-    \end{equation}
-    \paragraph{Case Subtype}
-    By inversion, we have $\gberelation{v_1}{v_2}{A}$, and $A \subtype B$ 
-    By induction, we therefore have $\deno{\gtyperelation{v_1}{A}} = \deno{\gtyperelation{v_2}{A}}$
+And so
+\begin{equation}
+    \begin{split}
+        \deno{\gtyperelation{\doin{x}{C_1}{C_2}}{\M{\e_1\dot\e_2}{A}}} & = \bind{\e_1}{\e_2}{B} \after \T{\e_1}{g} \after \tstrength{\e_1}{\G}{A} \after \pr{\idg}{f}\\
+         & = \deno{\gtyperelation{\doin{x}{C_1}{C_2}}{\M{\e_1\dot\e_2}{A}}}
+    \end{split}
+\end{equation}
+\paragraph{Case If}
+By inversion, we have $\gberelation{v}{v'}{\B}$, $\gberelation{C_1}{C_1'}{\mea}$ and $\gberelation{C_2}{C_2'}{\mea}$
+By induction, we therefore have $\deno{\gtyperelation{v}{\B}} = \deno{\gtyperelation{v'}{B}}$, $\deno{\gtyperelation{C_1}{\mea}}= \deno{\gtyperelation{C_1'}{\mea}}$ and $\deno{\typerelation{\gax}{C_2}{\meb}} = \deno{\typerelation{\gax}{C_2'}{\meb}}$
 
-    Then let
-    \begin{align}
-        f &{}=\deno{\gtyperelation{v_1}{A}} = \deno{\gtyperelation{v_2}{B}}\\
-        g &{}=\deno{A \subtype B}
-    \end{align}
+Then let
+\begin{align}
+    f &{}=\deno{\gtyperelation{v}{\B}} = \deno{\gtyperelation{v'}{B}}\\
+    g &{}=\deno{\gtyperelation{C_1}{\M{\e_1}{A}}}= \deno{\gtyperelation{C_1'}{\M{\e_1}{A}}}\\
+    h &{}=\deno{\typerelation{\gax}{C_2}{\M{\e_2}{B}}} = \deno{\typerelation{\gax}{C_2'}{\M{\e_2}{B}}}
+\end{align}
 
 
 
-    And so
-    \begin{equation}
-            \deno{\gtyperelation{v_1}{B}} = g \after f = \deno{\gtyperelation{v_1}{B}}
-    \end{equation}
-    \paragraph{Case subeffect}
-    By inversion, we have $\gberelation{C_1}{C_2}{\M{\e_1}{A}}$, and $A \subtype B$ and $\e_1 \subeffect \e_2$
-    By induction, we therefore have $\deno{\gtyperelation{C_1}{\M{\e_1}{A}}} = \deno{\gtyperelation{C_2}{\M{\e_1}{A}}}$
+And so
+\begin{equation}
+    \begin{split}
+        \deno{\gtyperelation{\ifthenelse{\e}{A}{v}{C_1}{C_2}}} & = \ifMorph{f}{g}{h}\\
+         & = \deno{\gtyperelation{\doin{x}{C_1}{C_2}}{\M{\e_1\dot\e_2}{A}}}
+    \end{split}
+\end{equation}
+\paragraph{Case Subtype}
+By inversion, we have $\gberelation{v_1}{v_2}{A}$, and $A \subtype B$ 
+By induction, we therefore have $\deno{\gtyperelation{v_1}{A}} = \deno{\gtyperelation{v_2}{A}}$
 
-    Then let
-    \begin{align}
-        f &{}=\deno{\gtyperelation{v_1}{A}} = \deno{\gtyperelation{v_2}{B}}\\
-        g &{}=\deno{A \subtype B}\\
-        h &{}=\deno{\e_1\subeffect\e_2}
-    \end{align}
+Then let
+\begin{align}
+    f &{}=\deno{\gtyperelation{v_1}{A}} = \deno{\gtyperelation{v_2}{B}}\\
+    g &{}=\deno{A \subtype B}
+\end{align}
 
-    And so
-    \begin{equation}
-            \deno{\gtyperelation{C_1}{\M{\e_2}{B}}} = h_B \after \T{\e_1}{g} \after f = \deno{\gtyperelation{C_2{\M{\e_2}{B}}}}
-    \end{equation}
 
-    $$\square$$
+
+And so
+\begin{equation}
+        \deno{\gtyperelation{v_1}{B}} = g \after f = \deno{\gtyperelation{v_1}{B}}
+\end{equation}
+\paragraph{Case subeffect}
+By inversion, we have $\gberelation{C_1}{C_2}{\M{\e_1}{A}}$, and $A \subtype B$ and $\e_1 \subeffect \e_2$
+By induction, we therefore have $\deno{\gtyperelation{C_1}{\M{\e_1}{A}}} = \deno{\gtyperelation{C_2}{\M{\e_1}{A}}}$
+
+Then let
+\begin{align}
+    f &{}=\deno{\gtyperelation{v_1}{A}} = \deno{\gtyperelation{v_2}{B}}\\
+    g &{}=\deno{A \subtype B}\\
+    h &{}=\deno{\e_1\subeffect\e_2}
+\end{align}
+
+And so
+\begin{equation}
+        \deno{\gtyperelation{C_1}{\M{\e_2}{B}}} = h_B \after \T{\e_1}{g} \after f = \deno{\gtyperelation{C_2{\M{\e_2}{B}}}}
+\end{equation}
+
+$$\square$$
 }
 
 \ifdefined\NoDocument
