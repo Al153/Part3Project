@@ -1,6 +1,6 @@
 \documentclass{Report}
 \input{../proofs/header.tex}
-
+\newcommand*{\mystrut}{\rule[-0.05\baselineskip]{0pt}{2\baselineskip}}
 
 \usepackage{graphicx}
 \newcommand\comment[1]{}
@@ -1208,53 +1208,64 @@ Another construction that is important is the denotation of subtyping. For each 
 This finally gives us the ability to express the denotations of well-typed terms in an effect environment, $\P$ as morphisms in the fibre induced by $\P$, $\C(I)$.  Writing $\G_I$ and $A_I$ for $\deno{\wellformedok{\P}{\G}}$ and $\deno{\typerelation{\P}{A}{\type}}$, we can derive $\deno{\gpetyperelation{v}{A}}$ as a morphism in $\C(I)(\G_I, A_I)$. Since each fibre is an S-category, for each ground constant, $\const{A}$, there exists $\deno{\const{A}}: \1 \rightarrow A_I$ in $\C(I)$. These denotations can be seen in figure \ref{TermDenotations}
 
 \begin{figure}
+    \footnotesize
     \begin{framed}
-
-        \fixLayout{Make these more readable/fix spacing}
         \[
             \ntreeruleI{Unit}{\wellformedok{\P}{\G}}{\deno{\etyperelation{\P}{\G}{\u}{\U}} = \term{\G} : \G_I \rightarrow \1}
             \quad
             \ntreeruleI{Const}{\wellformedok{\P}{\G}}{\deno{\etyperelation{\P}{\G}{\const{A}}{A}} = \deno{\const{A}} \after \term{\G} : \G \rightarrow \deno{A}}
         \]
-        
+        \\
+        \\        
         \[
             \ntreeruleI{True}{\wellformedok{\P}{\G}}{\deno{\etyperelation{\P}{\G}{\t}{\B}} = \inl \after \term{\G} : \G \rightarrow \deno{\B} = \1+\1}
-            \quad
+        \]
+        \\
+        \\
+        \[
             \ntreeruleI{False}{\wellformedok{\P}{\G}}{\deno{\etyperelation{\P}{\G}{\f}{\B}} = \inr \after \term{\G} : \G \rightarrow \deno{\B} = \1+\1}
         \]
-        
+        \\
+        \\        
         \[
             \ntreeruleI{Var}{\wellformedok{\P}{\G}}{\deno{\etyperelation{\P}{\gax}{x}{A}} = \pp: \G \times A \rightarrow A}
             \quad    
             \ntreeruleI{Weaken}{f = \deno{\gpetyperelation{x}{A}}: \G \rightarrow A}{\deno{\etyperelation{\P}{\gby}{x}{A}} = f \after \p: \G \times B \rightarrow A}
         \]
-        
+        \\
+        \\        
         \[
             \ntreeruleI{Lambda}{f = \deno{\etyperelation{\P}{\gax}{v}{B}} : \G \times A \rightarrow B}{\deno{\etyperelation{\P}{\G}{\lam{x}{A}{v}}{\ab}} = \cur{f} : \G \rightarrow (B)^A}
         \]
-        
+        \\
+        \\        
         \[
             \ntreeruleII{Subtype}{f = \deno{\etyperelation{\P}{\G}{v}{A}} : \G \rightarrow A}{g = \deno{A \subtypep B}}{\deno{\etyperelation{\P}{\G}{v}{B}} = g \after f : \G \rightarrow B}
             \quad 
             \ntreeruleI{Return}{f = \deno{\etyperelation{\P}{\G}{v}{A}}}{\deno{\etyperelation{\P}{\G}{\return{v}}{\moa}} = \point{A} \after f}   
         \]
-        
+        \\
+        \\        
         \[
             \ntreeruleIII{If}{f = \deno{\etyperelation{\P}{\G}{v}{\B}}: \G\rightarrow\1+\1}{g = \deno{\etyperelation{\P}{\G}{v_1}{\mea}}}{ h = \deno{\etyperelation{\P}{\G}{v_2}{\mea}}}{\deno{{\etyperelation{\P}{\G}{\ifthenelse{\e}{A}{v}{v_1}{v_2}}{\mea}}} = \app\after((\fld{\cur{g\after\pp}}{\cur{h\after\pp}}\after f)\times \idg)\after \diag{\G} : \G \rightarrow \tea}    
         \]
-        
+        \\
+        \\
         \[
             \ntreeruleII{Bind}{f = \deno{\etyperelation{\P}{\G}{v_1}{\M{\e_1}{A}} : \G \rightarrow \T{\e_1}{A}}}{{ g = \deno{\etyperelation{\P}{\gax}{v_2}{\M{\e_2}{B}}}}: \G \times A \rightarrow \T{\e_2}{B}}{\deno{\etyperelation{\P}{\G}{\doin{x}{v_1}{v_2}}{\M{\e_1 \dot \e_2}{B}}} = \bind{\e_1}{\e_2}{B} \after \T{\e_1}{g} \after \tstrength{\G}{A}{\e_1} \after \pr{\idg}{f}: \G \rightarrow \T{\e_1 \dot \e_2}{B}}  
         \]
-        
+        \\
+        \\        
         \[
             \ntreeruleII{Apply}{f = \deno{\gpetyperelation{v_1}{\ab}}: \G \rightarrow (B)^{A}}{g=\deno{\gpetyperelation{v_2}{A}}: \G \rightarrow A}{\deno{\gpetyperelation{\apply{v_1}{v_2}}{\b}}= \app\after\pr{f}{g}: \G \rightarrow B }
         \]
-        
+        \\
+        \\        
         \[
             \ntreeruleI{Effect-Lambda}{f = \deno{\etyperelation{\P,\a}{\G}{v}{A}}: \ciuw(\G, A)}{\deno{\gpetyperelation{\elam{\a}{A}}{\all{\e}{A}}} = \bar{f}: \C(I)(\G, \allI(A))}    
         \] 
-        
+        \\
+        \\
         \begin{equation}\label{EffectApplication}
             \ntreeruleII{Effect-App}{g=\deno{\gpetyperelation{v}{\all{\a}{A}}}: \C(I)(\G, \allI(A))}{ h = \deno{\typerelation{\P}{\e}{\effect}}: \ciu}{\deno{\gpetyperelation{\eapp{v}{\e}}{A\ssub{\a}{\e}}} = \pr{\Id{I}}{h}\star(\counit{\deno{\typerelation{\P,\b}{A\ssub{\a}{\b}}{\type}}})\after g: \C(I)(\G, A\ssub{\a}{\e})}
         \end{equation}                
@@ -2258,8 +2269,8 @@ In particular a reduced typing derivation is one where we only allow the subtypi
 
     Hence the reduced type derivation of $\gpetyperelation{\doin{x}{v_1}{v_2}}{\M{\e_1'\dot\e_2'}{B'}}$ is the following:
 
-    \fixLayout{Make this and the other smaller}
     \begin{equation}
+        \resizebox{.9\hsize}{!}{
         \ntreeruleII{Subtype}{
             \ntreeruleII{Bind}{
                 \treeruleI{\D}{\gpetyperelation{v_1}{\M{\e_1}{A}}}
@@ -2273,6 +2284,7 @@ In particular a reduced typing derivation is one where we only allow the subtypi
         } {
             \gpetyperelation{\doin{x}{v_1}{v_2}}{\M{\e_1'\dot\e_2'}{B'}}
         }
+    }
     \end{equation}
 
     \case{Effect-Fn}
@@ -3110,42 +3122,38 @@ Finally, we need to prove that the Beck-Chevalley conditions given in \ref{PECRe
 
 
 \begin{figure}
-    \fixLayout{fix overflow here}
-\fixLayout{Align frames}
-
-    \begin{minipage}{0.45\textwidth}
-    \begin{framed}
     \centering
-    \textbf{Unit}
-    
-    \begin{align}
-        \unit{A}:&\quad A \rightarrow \allEn\pstar A\\
-        \unit{A}(\env)=&\quad\finpr{\Id{A(\env,e)}}{\e\in E}
-    \end{align}
-    
-    \end{framed}
-\end{minipage}
-\quad
-\begin{minipage}{0.45\textwidth}
-    \begin{framed}
+    \begin{minipage}{0.45\textwidth}
+      \begin{framed}
+        \centering
+        \textbf{Unit}
+  
+        \scalebox{.9}{\parbox{\linewidth}{%
+          \begin{align*}
+            \unit{A}:&\quad A \rightarrow \allEn\pstar A\\
+            \unit{A}(\env)=&\quad\finpr{\Id{A(\env,e)}}{\e\in E}
+          \end{align*}
+        }}
+      \end{framed}
+    \end{minipage}
+    \quad
+    \begin{minipage}{0.45\textwidth}
+      \begin{framed}
         \centering
         \textbf{Co-Unit}
-        
-        \begin{align}
+  
+        \scalebox{.9}{\parbox{\linewidth}{%
+          \begin{align*}
             \counit{B} : &\quad \pstar\allEn B \rightarrow B\\
             \counit{B}(\env, \e') =&\quad \pi_{\e'} : \Pi_{e\in E}B(\env, \e)\rightarrow B(\env, \e')
-        \end{align}
-        
-            \end{framed}
-\end{minipage}
+          \end{align*}
+        }}
+      \end{framed}
+    \end{minipage}
 
-
-    \caption{The unit and co-unit of the adjunction}
+\caption{The unit and co-unit of the adjunction}
     \label{UnitCoUnitDefinition}
 \end{figure}
-
-
-
 
 
 
@@ -3154,6 +3162,7 @@ Finally, we need to prove that the Beck-Chevalley conditions given in \ref{PECRe
     \begin{framed}
         \centering
         \textbf{Verifying We Have an Adjunction}
+
         \centering
         For any $g: \pstar A \rightarrow B$,
         

@@ -243,3 +243,5 @@ TSWLatexianTemp*
 
 # Vscode settings
 */.vscode/*
+diss/example.pdf
+diss/example.tex
