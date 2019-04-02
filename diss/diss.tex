@@ -6,6 +6,7 @@
 \usepackage[nottoc]{tocbibind}
 
 \newcommand\comment[1]{}
+\newcommand\numberthis{\addtocounter{equation}{1}\tag{\theequation}}
 
 \title{A Denotational Semantics for Polymorphic Effect Systems}
 
@@ -2056,7 +2057,7 @@ Secondly, we can form the weakening theorem on term-environment substitutions.
 As with effect substitutions, it is useful to define a couple of special substitutions and lemmas on term substitutions. Firstly, we define the identity and single substitutions in an equivalent way.
 
 \begin{align*}
-    \etyperelation{\P}{\G}{\Id{\G}}{\G}\\
+    \etyperelation{\P}{\G}{&\Id{\G}}{\G}\\
     \Id{\nil} & = \nil\\
     \Id{\gax} & = (\idg, x\setto x)\\
     \ssub{x}{v} & = (\idg, x\setto v)\\
@@ -2079,9 +2080,7 @@ Furthermore, it will be useful to have an analogue of the extension lemma for te
 \end{lemma}
 
 \begin{proof}
-     Makes use of the weakening on terms (theorem \ref{TermWeakeningTerm}). If $\etyperelation{\P}{\G'}{\si}{\G}$ then $\etyperelation{\P}{(\G', x:A) }{\si}{\G}$ with denotation $\si\after\p$.
-
-     $$\square$$
+     Makes use of the weakening on terms (theorem \ref{TermWeakeningTerm}). If $\etyperelation{\P}{\G'}{\si}{\G}$ then $\etyperelation{\P}{(\G', x:A) }{\si}{\G}$ with denotation $\si\after\p$. $\square$
 \end{proof}
 
 
@@ -2099,29 +2098,28 @@ The term-weakening theorem is as so:
 \case{Effect-Lambda}
 This case makes use of the effect weakening of term weakenings.
 
-If $\D$ derives $\gpetyperelation{\elam{\a}{v}}{\all{\a}{A}}$, then by inversion, we have $\D_1$ such that
+If $\D$ derives $\gpetyperelation{\elam{\a}{v}}{\all{\a}{A}}$, then by inversion, we have $\D_1$ such that:
 
 \begin{equation}
     \D = \ntreeruleI{Effect-Fn}{\treeruleI{\D_1}{\etyperelation{\P,\a}{\G}{v}{A}}}{\gpetyperelation{\elam{\a}{v}}{\all{\e}{A}}}
 \end{equation}
 
-By induction, we derive $\D_1'$ such that
+By induction, we derive $\D_1'$ such that it completes the tree in equation \ref{TermWeakELamOne}. By induction, its denotation can be related to that of $\D_1$, as in equation \ref{EffWeakELamDenoOne}. Hence we can show that the denotation of $\D$ is preserved in equation \ref{EffWeakELamDenoResult}.
 
-\begin{equation}
+\begin{equation}\label{TermWeakELamOne}
     \D' = \ntreeruleI{Effect-Fn}{\treeruleI{\D_1'}{\etyperelation{\P,\a}{\G'}{v}{A}}}{\etyperelation{\P}{\G'}{(\elam{\a}{v})}{\all{\e}{A}}}
 \end{equation}
 
-Where 
 \begin{align*}
     \D_1' & = \D_1\after\deno{\ewrel{\P,\a}{\w}{\G'}{\G}}\\
-    & = \D_1\after\deno{\wrel{\i\pi}{\P,a}{\P}}\star(\w)\\
+    & = \D_1\after\deno{\wrel{\i\pi}{\P,a}{\P}}\star(\w) \numberthis\label{EffWeakELamDenoOne}\\
     & = \D_1\after\pstar(\w)
 \end{align*}
 
-Hence \begin{align*}
+\begin{align*}
     \D\after\w & = \bar{\D_1}\after\w\\
     & = \bar{\D_1\after\pstar(\w)}\\
-    & = \bar{\D_1'}\\
+    & = \bar{\D_1'}\numberthis\label{EffWeakELamDenoResult}\\
     & = \D'
 \end{align*}
 
@@ -2263,21 +2261,18 @@ In particular a reduced typing derivation is one where we only allow the subtypi
 \begin{proof}
     This proof proceeds by induction on the term structure, making use of the unique derivations of the subterms to show that a reduced derivation of the whole term must also be unique. There are no cases for subtyping, as it is not a syntactic feature. 
 
-    \todo{This case's diagrams are wrong}
-    \case{Bind} This case makes use of the weakening theorem on typing environments. Let the trees in equations \ref{UniqueBindOne}, \ref{UniqueBindTwo} be the respective unique reduced type derivations of the subterms. By weakening, $\ewrel{\P}{\i\x}{(\G, x:A)}{(\G, x: A')}$ so if there's a derivation of $\etyperelation{\P}{(\G, x:A')}{v_2}{B}$, there's also one of $\etyperelation{\P}{\gax}{v_2}{B}$. 
+    \case{Bind} This case makes use of the weakening theorem on typing environments. Let the trees in equations \ref{UniqueBindOne}, \ref{UniqueBindTwo} be the respective unique reduced type derivations of the subterms. By weakening, $\ewrel{\P}{\i\x}{(\G, x:A)}{(\G, x: A')}$ so if there's a derivation of $\etyperelation{\P}{(\G, x:A')}{v_2}{B}$, there's also one of $\etyperelation{\P}{\gax}{v_2}{B}$ (equation \ref{UniqueBindThree}). 
 
     \begin{equation}\label{UniqueBindOne}
         \edeltacrule{\G}{v_1}{\e_1}{A}{\e_1'}{A'}
     \end{equation}
 
     \begin{equation}\label{UniqueBindTwo}
-        \edeltacruleprime{\G, x:A}{v_2}{\e_2}{B}{\e_2'}{B'}
+        \edeltacruleprime{\G, x:A'}{v_2}{\e_2}{B}{\e_2'}{B'}
     \end{equation}
 
-   
-
-    \begin{equation}
-        \edeltacruleprimeprime{(\G, x:A')}{v_2}{\e_2}{B}{\e_2'}{B'}
+    \begin{equation}\label{UniqueBindThree}
+        \edeltacruleprimeprime{(\G, x:A)}{v_2}{\e_2}{B}{\e_2'}{B'}
     \end{equation}
 
     Since the effects monoid operation is monotone, if $\e_1\subeffectp\e_1'$ and $\e_2\subeffectp\e_2'$ then $\e_1\dot\e_2 \subeffectp \e_1'\dot\e_2'$. Hence the reduced type derivation of $\gpetyperelation{\doin{x}{v_1}{v_2}}{\M{\e_1'\dot\e_2'}{B'}}$ can be seen in equation \ref{UniqueBindResult}.
@@ -2288,7 +2283,7 @@ In particular a reduced typing derivation is one where we only allow the subtypi
             \ntreeruleII{Bind}{
                 \treeruleI{\D}{\gpetyperelation{v_1}{\M{\e_1}{A}}}
             }{
-                \treeruleI{\D''}{\etyperelation{\P}{\G, x:A'}{v_2}{\e_2}{B}}
+                \treeruleI{\D''}{\etyperelation{\P}{\G, x:A}{v_2}{\M{\e_2}{B}}}
             } {
                 \gpetyperelation{\doin{x}{v_1}{v_2}}{\M{\e_1\dot\e_2}{B}}
             }
@@ -2301,12 +2296,9 @@ In particular a reduced typing derivation is one where we only allow the subtypi
     \end{equation}
 
     \case{Effect-Fn}
+    If equation \ref{ApplyUniqueOne} is the unique reduced derivation of $\etyperelation{\P,\a}{\G}{v}{B}$, then the unique reduced derivation of $\gpetyperelation{\elam{\a}{A}}{\all{\a}{B}}$ is shown in equation \ref{ApplyUniqueResult}.
 
-    The unique reduced derivation of $\gpetyperelation{\elam{\a}{A}}{\all{\a}{B}}$
-
-    is 
-
-    \begin{equation}
+    \begin{equation}\label{ApplyUniqueResult}
         \ntreeruleII{Subtype}{
             \ntreeruleI{Effect-Fn}{
                 \treeruleI{\D}{\etyperelation{\P,\a}{\G}{v}{A}}
@@ -2320,8 +2312,7 @@ In particular a reduced typing derivation is one where we only allow the subtypi
         }
     \end{equation}
 
-    Where
-    \begin{eqnarray}
+    \begin{eqnarray}\label{ApplyUniqueOne}
         \ntreeruleII{Subtype}{
             \treeruleI{\D}{\etyperelation{\P,\a}{\G}{v}{A}}
         }{
@@ -2330,10 +2321,6 @@ In particular a reduced typing derivation is one where we only allow the subtypi
             \etyperelation{\P,\a}{\G}{v}{B}
         }
     \end{eqnarray}
-
-    Is the unique reduced derivation of $\etyperelation{\P,\a}{\G}{v}{B}$
-
-
     $$\square$$
 \end{proof}
 
@@ -2539,7 +2526,8 @@ The $\reduce$ function maps each derivation to its reduced equivalent. It does t
 
     This is a long case that makes use of the typing-environment weakening theorem on terms.
 
-    Let \begin{align*}
+    Let us define the following helper morphisms:
+    \begin{align*}
         f & = \deno{A' \subtypep A}: A' \rightarrow A\\
         g & = \deno{B' \subtypep B}: B' \rightarrow B\\
         h_1 & = \deno{\e_1' \subeffectp \e_1} : \T{\e_1'}{} \rightarrow \T{\e_1}{} \\
@@ -2552,13 +2540,13 @@ The $\reduce$ function maps each derivation to its reduced equivalent. It does t
         \D_3 = \D_2\after(\idg\times f)
     \end{equation}
 
-    And due to the reduction of $\D_3$,
+    Due to the reduction of $\D_3$,
     we have 
     \begin{equation}
         \D_3 = h_{2, B} \after \T{\e_2'}{g}\after \D_3'
     \end{equation}
 
-    So:
+    So we can look at the denotation of the whole term.
 
     \begin{align*}
         \D &= \bind{\e_1}{\e_2}{B}\after \T{\e_1}{\D_2}\after\tstrength{\e_1}{\G}{A}\after\pr{\idg}{\D_1}\qt{By definition.}\\
@@ -2734,9 +2722,7 @@ Now we can state the soundness theorem.
     I have omitted the congruence cases here as they hold through simple application of the inductive hypothesis on subterms. This occurs because this denotational semantics is compositional, meaning that denotations of terms are defined entirely in terms of the denotations of their subexpression. Similarly, the equivalence relation cases hold simply because equality on morphisms is an equivalence relation by definition. I do however, give a selection of the reduction cases to demonstrate the necessity of the S-category requirements.
 
 \case{Right Unit}
-This case makes use of the right-unit monad law.
-
-Let $f = \deno{\gpetyperelation{v}{\mea}}$ 
+This case makes use of the right-unit monad law. Let $f = \deno{\gpetyperelation{v}{\mea}}$.
     \begin{equation}
     \begin{split}
         \deno{\gpetyperelation{\doin{x}{v}{\return{x}}}{\mea}}  & = \bind{\e}{\1}{A} \after \T{\e}{(\point{A} \after \pp)} \after \tstrength{\e}{\G}{A}\after \pr{\idg}{f} \\
@@ -2747,15 +2733,8 @@ Let $f = \deno{\gpetyperelation{v}{\mea}}$
 \end{equation}
 
 \case{If-True}
-This case makes use of the co-product diagram on $\1 + \1$.
+This case makes use of the co-product diagram on $\1 + \1$. Let $f = \deno{\gpetyperelation{v_1}{A}}$  and  $g = \deno{\gpetyperelation{v_2}{A}}$. Then we can simplify the denotation of the whole expression.
 
-Let
-\begin{align*}
-    f = &\deno{\gpetyperelation{v_1}{A}}\\
-    g = &\deno{\gpetyperelation{v_2}{A}}\\
-\end{align*}
-
-Then
 \begin{equation}
     \begin{split}
         \deno{\gpetyperelation{\pifthenelse{A}{v}{v_1}{v_2}}{A}} & = \ifMorph{\inl\after\term{\G}}{f}{g} \\
@@ -2768,24 +2747,8 @@ Then
 \end{equation}
 
 \case{Effect-Beta}
-This case makes use of the adjunction properties of $\allI, \pstar$.
+This case makes use of the adjunction properties of $\allI, \pstar$. Let  $h = \deno{\typerelation{\P}{\e}{\effect}}$, $f = \deno{\etyperelation{\P,\a}{\G}{v}{A}}$, and $A = \deno{\typerelation{\P,\a}{A\ssub{\a}{\a}}{\type}}$. Then we can find the sub-term denotation $\deno{\gpetyperelation{\elam{\a}{v}}{\all{\a}{A}}} = \bar{f}$, which allows us to express the denotation of the whole expression.
 
-let 
-\begin{align*}
-    h & = \deno{\typerelation{\P}{\e}{\effect}}
-    \\
-    f & = \deno{\etyperelation{\P,\a}{\G}{v}{A}}
-    \\
-    A &= \deno{\typerelation{\P,\a}{A\ssub{\a}{\a}}{\type}}
-\end{align*}
-
-Then
-
-\begin{equation}
-    \deno{\gpetyperelation{\elam{\a}{v}}{\all{\a}{A}}} = \bar{f}\\
-\end{equation}
-
-So
 \begin{align*}
     \deno{\gpetyperelation{\eapp{(\elam{\a}{v})}{\e}}{\all{\a}{A}}} & = \pr{\Id{I}}{h}\star(\counit{A})\after\bar{f}\\
     & = \pr{\Id{I}}{h}\star(\counit{A})\after\pr{\Id{I}}{h}\star(\pstar(\bar{f}))\qt{Identity functor}\\
@@ -2795,12 +2758,8 @@ So
 \end{align*}
 
 \case{Effect-Eta}
-    Let \begin{align*}
-        f & = \deno{\gpetyperelation{v}{\all{\a}{A}}}\\
-        A & = \deno{\typerelation{\P,\a}{A}{\type}}
-    \end{align*}
+    Let $f  = \deno{\gpetyperelation{v}{\all{\a}{A}}}$, and $A  = \deno{\typerelation{\P,\a}{A}{\type}}$. We can now express the denotation of the entire expression.
 
-    so
     \begin{align*}
         \deno{\gpetyperelation{\elam{\a}{(\eapp{v}{\a})}}{\all{\a}{A}}} & = \bar{\deno{\etyperelation{\P,\a}{\G}{\eapp{v}{\a}}{A}}} \\
         & = \bar{\pr{\Id{I\times U}}{\pp}\star(\e_{\deno{\typerelation{\P,\a,\b}{A\ssub{\a}{\b}}{\type}}})\after\pstar(f)}
