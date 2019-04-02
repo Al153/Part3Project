@@ -520,7 +520,7 @@ How the fibres are derived from objects in the base category depends on the poly
 
 In this dissertation, I show how these category theoretic building blocks can be put together to give the class of categories that can model polymorphic effect systems.
 
-\begin{figure}[h!]
+\begin{figure}[ht!]
     \begin{tikzpicture}[->,>=stealth']]
         % Draw the env objects
         \foreach \y[count=\c,evaluate={\yi=int(\c-1)}] in {3, 4, 5, 6}{
@@ -1056,7 +1056,7 @@ Separately, we prove that all derivable denotations for a typing relation instan
 
 This collection of theorems finally allows us to complete all cases of the equational-equivalence soundness theorem.
 
-\begin{figure}[h!]
+\begin{figure}[ht!]
     \begin{center}
         \scalebox{0.8}{
         \begin{tikzpicture}[->,>=stealth',shorten >=1pt,auto,node distance=3cm,
@@ -2326,9 +2326,10 @@ The $\reduce$ function maps each derivation to its reduced equivalent. It does t
 \begin{figure}
     \begin{framed}
         \case{Apply}
-    To find the reduction of a tree ending in (\textit{Apply}) as seen in equation \ref{ApplyBeforeReduction}, we pattern match on the reductions of the subtrees to find trees $\D_1'$, $\D_2'$, as seen in equations \ref{ApplyReductionOne} and \ref{ApplyReductionTwo}.
+    To find the reduction of a tree ending in (\textit{Apply}) as seen in equation \ref{ApplyBeforeReduction}, we pattern match on the reductions of the subtrees to find trees $\D_1'$, $\D_2'$, as seen in equations \ref{ApplyReductionOne} and \ref{ApplyReductionTwo}. These trees allow us to build a reduced derivation tree as in equation \ref{ApplyAfterReduction}.
+
     \begin{equation}\label{ApplyBeforeReduction}
-        \scalebox{.9}{$
+        \scalebox{.8}{$
         \reduce(\ntreeruleII{Apply}{
             \treeruleI{\D_1}{
                 \gpetyperelation{v_1}{\ab}
@@ -2344,7 +2345,7 @@ The $\reduce$ function maps each derivation to its reduced equivalent. It does t
     \end{equation}
 
     \begin{equation}\label{ApplyReductionOne}
-        \scalebox{.9}{$
+        \scalebox{.8}{$
             \ntreeruleII{Subtype}{
                 \treeruleI{\D'_1}{\gpetyperelation{v_1}{\fntype{A'}{B'}}}
             }{
@@ -2356,7 +2357,7 @@ The $\reduce$ function maps each derivation to its reduced equivalent. It does t
     \end{equation}
 
     \begin{equation}\label{ApplyReductionTwo}
-        \scalebox{.9}{$
+        \scalebox{.8}{$
         \ntreeruleII{Subtype}{
             \treeruleI{\D'_2}{\gpetyperelation{v}{A'}}
         }{
@@ -2367,7 +2368,6 @@ The $\reduce$ function maps each derivation to its reduced equivalent. It does t
         $}
     \end{equation}
 
-    These trees allow us to build a reduced derivaiton tree as in equation \ref{ApplyAfterReduction}.
 
     \begin{equation}\label{ApplyAfterReduction}
         \scalebox{.8}{$
@@ -2402,7 +2402,7 @@ The $\reduce$ function maps each derivation to its reduced equivalent. It does t
 
     To find the reduction of a tree ending in a use of the (\textit{Bind}) rule as seen in equation \ref{BindBeforeReduction}, we first reduce the left-most subtree, $\D_1$ to find $\D_1'$, as seen in equation \ref{BindReductionOne}.
     \begin{equation}\label{BindBeforeReduction}
-        \scalebox{.9}{$
+        \scalebox{.8}{$
         \reduce(
             \ntreeruleII{Bind}{
                 \treeruleI{
@@ -2425,7 +2425,7 @@ The $\reduce$ function maps each derivation to its reduced equivalent. It does t
 
 
     \begin{equation}\label{BindReductionOne}
-        \scalebox{.9}{$
+        \scalebox{.8}{$
         \ntreeruleII{Subtype}{
             \treeruleI{\D'_1}{\gpetyperelation{v_1}{\M{\e'_1}{A'}}}
         }{
@@ -2439,7 +2439,7 @@ The $\reduce$ function maps each derivation to its reduced equivalent. It does t
     Since $\ewrel{\P}{(i,\x)}{(\G, x: A')}{(\gax)}$ if $A' \subtypep A$, and because $\D_2$ derives $\etyperelation{\P}{(\gax)}{v_2}{\M{\e_2}{B}}$, there also exists a derivation $\D_3$ of $\etyperelation{\P}{(\G, x: A')}{v_2}{\M{\e_2}{B}}$. $\D_3$ is derived from $\D_2$ simply by inserting a (\textit{Subtype}) rule below all instances of the (\textit{Var}) rule. Then we can reduce $\D_3$ to find $\D_3'$ in \ref{BindReductionThree}.
 
     \begin{equation}\label{BindReductionThree}
-        \scalebox{.9}{$
+        \scalebox{.8}{$
         \ntreeruleII{Subtype}{
             \treeruleI{\D'_3}{\etyperelation{\P}{\G, x: A'}{v_2}{\M{\e'_2}{B'}}}
         }{
@@ -2455,7 +2455,7 @@ The $\reduce$ function maps each derivation to its reduced equivalent. It does t
 
 
     \begin{equation}
-        \scalebox{0.9}{$
+        \scalebox{0.8}{$
         \ntreeruleII{Subtype}{
             \subeffecttree{\e_1'\dot\e_2'}{B'}{\e_1\dot\e_2}{B}
         }{
@@ -2652,8 +2652,7 @@ The equational equivalence relation is a rule based relation with three main fla
     \label{BetaEtaReductions}
 \end{figure}
 
-\begin{figure}[h!]
-   
+\begin{figure}[ht!]
    \begin{framed}
         \[
             \ntreeruleI{Effect-Abs}{\eberelation{\P, \a}{\G}{v_1}{v_2}{A}}{\gpeberelation{\elam{\a}{v_1}}{\elam{\a}{v_2}}{\all{\a}{A}}}
