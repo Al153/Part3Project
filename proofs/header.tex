@@ -206,7 +206,7 @@
 \newcommand{\pp}[0]{\pi_2}
 
 % short-hands for weakening
-\newcommand{\wrel}[3]{#1 : #2 \triangleright #3}
+\newcommand{\wrel}[3]{#1 : {\color{blue}#2} \triangleright {\color {blue} #3}}
 \newcommand{\ok}[1]{{\color{blue} #1} \texttt{ Ok}}
 \renewcommand\i[0]{\iota}
 \newcommand\w{\omega}
@@ -297,7 +297,7 @@
 \newcommand\bi[0]{By inversion}
 
 %pre-filled effect-weakening relations
-\newcommand\ewrel[4]{\wellformed{#1}{\wrel{#2}{#3}{#4}}}
+\newcommand\ewrel[4]{\wellformed{#1}{\color{black}\wrel{#2}{#3}{#4}}}
 \newcommand\pewrel[3]{\ewrel{\P}{#1}{#2}#3}
 \newcommand\ppewrel[3]{\ewrel{\P'}{#1}{#2}#3}
 

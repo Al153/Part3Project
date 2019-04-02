@@ -3,6 +3,8 @@
 \newcommand*{\mystrut}{\rule[-0.05\baselineskip]{0pt}{2\baselineskip}}
 
 \usepackage{graphicx}
+\usepackage[nottoc]{tocbibind}
+
 \newcommand\comment[1]{}
 
 \title{A Denotational Semantics for Polymorphic Effect Systems}
@@ -14,11 +16,8 @@
 
 \maketitle
 
-\todo{Fix Spacing/further fiddling to improve readability}
-
-
 \abstract
-To date, there has been limited work on the semantics of languages with polymorphic effect systems. The application, by Moggi, of strong monads to modelling the semantics of effects has become a mainstream concept in functional programming languages. This was improved upon by Katsumata \needsRef{} using a graded monad to model languages with a range of independent and dependent effects at an operational level. A categorical semantics for parametric polymorphism in types was first published by Reynolds \needsRef{} allowing a denotational analysis of languages including type parameters. There has been some work on polymorphism over the exception effect (which paper). Despite these works, there has been no work to date on the denotational semantics of languages with general parametric polymorphism over effects.
+To date, there has been limited work on the semantics of languages with polymorphic effect systems. The application, by Moggi \cite{MoggiMonads}, of strong monads to modelling the semantics of effects has become a mainstream concept in functional programming languages. This was improved upon by Katsumata (\cite{Katsumata:2014}) using a graded monad to model languages with a range of independent and dependent effects at an operational level. A categorical semantics for parametric polymorphism in types was first published by Reynolds \cite{PLCSemantics} allowing a denotational analysis of languages including type parameters. There has been some work on polymorphism over the exception effect (which paper). Despite these works, there has been no work to date on the denotational semantics of languages with general parametric polymorphism over effects.
 
 In this dissertation, I present several pieces of work. Firstly, I introduce a modern definition of a lambda-calculus-based language with an explicit graded monad to handle a variety of effects. This calculus is then extended using polymorphic terms to yield a more general polymorphic effect calculus. Next, I give an indexed-category-based denotational semantics for the language, along with an outline of a proof for the soundness of these semantics. Following this, I present a method of transforming a model of a non-polymorphic language into a model of the language with polymorphism over effects.
 
@@ -31,7 +30,7 @@ The full proofs can be found online on my github repository (\needsRef{link}), s
 
 \section{What is an Effect System?}
 
-Programs very rarely stand alone without interacting with their environment in some form. This interaction might be to receive input, such as from sensors or buttons, to write output to a file, or to halt with an error. In functional languages, manipulating mutable state can also be considered interacting with the environment. Language terms that produce these interactions are said to have \textit{effects} as they have some observable effect in the environment other than simply the value that executing the term produces. It is important to be able to reason about the effects that a program term may produce, in order to ensure the soundness of compiler transformations and formal verification. An effect system, analogously to a type system, is a formal system of rules which infers abstract information about the side-effects that a program might have. This non-concrete data may then inform tools such as a compiler of the soundness of code transformations, such as removing redundant code or reordering statements. Languages such as Haskell and the languages introduced later in this dissertation do not allow implicit effects. Instead they require the programmer to explicitly use structures called monads \needsRef{Moggi} to encode effect analysis in the type of program fragments. This has the useful result of combining the effect system with the type system of the language. For example, a program of type \texttt{Int} cannot interact with its environment to produce its result and hence always yields the same return value. However a program of type \texttt{IO Int} may perform IO operations before returning its result and hence may not always behave in exactly the same fashion.
+Programs very rarely stand alone without interacting with their environment in some form. This interaction might be to receive input, such as from sensors or buttons, to write output to a file, or to halt with an error. In functional languages, manipulating mutable state can also be considered interacting with the environment. Language terms that produce these interactions are said to have \textit{effects} as they have some observable effect in the environment other than simply the value that executing the term produces. It is important to be able to reason about the effects that a program term may produce, in order to ensure the soundness of compiler transformations and formal verification. An effect system, analogously to a type system, is a formal system of rules which infers abstract information about the side-effects that a program might have. This non-concrete data may then inform tools such as a compiler of the soundness of code transformations, such as removing redundant code or reordering statements. Languages such as Haskell and the languages introduced later in this dissertation do not allow implicit effects. Instead they require the programmer to explicitly use structures called monads \cite{MoggiMonads} to encode effect analysis in the type of program fragments. This has the useful result of combining the effect system with the type system of the language. For example, a program of type \texttt{Int} cannot interact with its environment to produce its result and hence always yields the same return value. However a program of type \texttt{IO Int} may perform IO operations before returning its result and hence may not always behave in exactly the same fashion.
 
 \section{What is Effect Polymorphism?}
 
@@ -67,7 +66,7 @@ check[Exception](ThrowException("Not Aborted"))
 
 In this example, we are reusing the same “check” function in three different situations with three different effects in a type safe manner. Hence, “check” is polymorphic in the effect parameter it receives. To analyse this language, it would be useful to have an analysis tool that can precisely model these separate, though potentially interdependent, effects. A denotational semantics that can account for the parametric polymorphism over effects would be a step towards verifying and reasoning about such tools. 
 
-A key property of effect polymorphism that distinguishes it from type polymorphism is that effects are not impredicative. That is, types are polymorphic over effects, but effects do not range over themselves. This means that the models used to interpret effect-polymorphic languages can be simpler than the models required to interpret languages with impredicative polymorphism, such as System F.
+A key property of effect polymorphism that distinguishes it from type polymorphism is that effects are not impredicative. That is, types are polymorphic over effects, but effects do not range over themselves. This means that the models used to interpret effect-polymorphic languages can be simpler than the models required to interpret languages with impredicative polymorphism, such as System F \cite{PolymorphismIsNotSetTheoretic}. 
 
 
 \section{An Introduction to Categorical Semantics}
@@ -104,15 +103,12 @@ In this dissertation, I shall introduce an effect-polymorphic language, describe
 
 
 
-In this chapter I first introduce the required category theory to understand the rest of the dissertation. In addition, I shall explain briefly how the particular category theoretic structures can be used to model particular features of various programming languages, such as the simply typed lambda calculus and the polymorphic lambda calculus. Following this, I proceed to introduce the monadic, effectful language used in the rest of the dissertation, known from now on as the Effect Calculus (EC). In the final section, I extend the EC with polymorphic syntax to yield Polymorphic Effect Calculus (PEC).
+In this chapter I first introduce the required category theory to understand the rest of the dissertation. In addition, I shall explain briefly how the particular category theoretic structures can be used to model particular features of various programming languages, such as the simply typed lambda calculus and system F. Following this, I proceed to introduce the monadic, effectful language used in the rest of the dissertation, known from now on as the Effect Calculus (EC). In the final section, I extend the EC with polymorphic syntax to yield Polymorphic Effect Calculus (PEC).
 
 \section{Required Category Theory}\label{CategoryTheoryRequirements}
 
-\needsRef{Cite Mac Lane (categories for the working mathematician)?}
 
-
-
-Before going further, it is necessary to assert a common level of category theory knowledge. This section is not intended as a tutorial but to jog the memory of the reader, and briefly introduce some new concepts.
+Before going further, it is necessary to assert a common level of category theory knowledge. This section is not intended as a tutorial but to jog the memory of the reader, and briefly introduce some new concepts. For a more detailed treatment of these concepts, please see \cite{maclane:71}.
 
 \subsection{Cartesian Closed Category}\label{CCC}
 A category is cartesian closed if it has a terminal object, products for all pairs of objects, and exponentials. These concepts will be explained below.
@@ -451,7 +447,7 @@ From this, we can specify what structures categories need to have in order to mo
     \end{tabular}
 \end{center}
 
-A single effect can be modelled by adding a strong monad to the category, as shown by Moggi \needsRef. A language with an explicit monad in its type system requires two operations: \textit{return} and \textit{bind}, the type rules for which can be seen in equation \ref{MonadTypeRules}. The $\M{}{(-)}$ type constructor represents values which have an instance of the effect associated with their computation. The \textit{return} operator lifts pure values (with no associated effects) into the effectful type constructor. The \textit{bind} operator (often supplemented with some \texttt{do .. in ...} syntax) allows us to compose together expressions which have effects. As shown by Moggi \needsRef, these two operations can be modelled using the \textit{unit} and \textit{join} natural transformations of a strong graded monad. The monad needs to be strong in order to allow access to variables in the environment from within the monadic expression. An example of this can be seen in figure \ref{MonadStrengthRequirement}. 
+A single effect can be modelled by adding a strong monad to the category, as shown by Moggi \cite{MoggiMonads}. A language with an explicit monad in its type system requires two operations: \textit{return} and \textit{bind}, the type rules for which can be seen in equation \ref{MonadTypeRules}. The $\M{}{(-)}$ type constructor represents values which have an instance of the effect associated with their computation. The \textit{return} operator lifts pure values (with no associated effects) into the effectful type constructor. The \textit{bind} operator (often supplemented with some \texttt{do .. in ...} syntax) allows us to compose together expressions which have effects. As shown by Moggi \cite{MoggiMonads}, these two operations can be modelled using the \textit{unit} and \textit{join} natural transformations of a strong graded monad. The monad needs to be strong in order to allow access to variables in the environment from within the monadic expression. An example of this can be seen in figure \ref{MonadStrengthRequirement}. 
 
 \begin{figure}
     \begin{framed}
@@ -483,14 +479,14 @@ In the \texttt{return} clause, the program makes reference to variables $x$ and 
 
 For a more precise analysis of languages with multiple effects, we can look into whether there is an algebra on the effects. For example, we might want to express what the composite effect of two sequential expressions with different effects. We could follow an expression that might throw an exception with one that accesses mutable state and a third that carries out IO transactions. We would also want some form of \textit{unit} effect for pure expressions which does nothing when composed with other effects. Finally, to make it easier to analyse branched code, such as \textit{if expressions}, some form of subtyping would be useful. This structure is modelled exactly by an appropriate pre-ordered monoidal algebra $(E, \dot, \subeffect, \1)$. The set $E$ gives the various effects that can be produced, $\1$ represents the unit effect for pure values, $\dot$ allows us to associatively compose multiple effects and the pre-order  $\subeffect$ gives us a subtyping of effects for an intuitive if-statement programming model.
 
-In order to embed this algebra-based effect analysis in the type system, we can index Moggi's monadic type constructor $\M{}{}$ with the effect $\e$ that is produced when the corresponding expression is evaluated. Further more, when we use the \textit{return} operation to lift pure values into the monadic type constructor, the resulting monadic type should have an index of $\1$ indicating that the effect produced is pure. Finally, when we \textit{bind} together effectful expressions, the resulting effect should be the composition of the effects of the subexpressions. Putting together these requirements yields the new type rules given in equation \ref{GradedMonadTypeRules}. By suitably extending the monad laws to account for this new indexing, we find that we require a strong graded monad to model these features using category theory.
+In order to embed this algebra-based effect analysis in the type system, we can index Moggi's monadic type constructor $\M{}{}$ with the effect $\e$ that is produced when the corresponding expression is evaluated. Further more, when we use the \textit{return} operation to lift pure values into the monadic type constructor, the resulting monadic type should have an index of $\1$ indicating that the effect produced is pure. Finally, when we \textit{bind} together effectful expressions, the resulting effect should be the composition of the effects of the subexpressions. Putting together these requirements yields the new type rules given in equation \ref{GradedMonadTypeRules}. By suitably extending the monad laws to account for this new indexing, we find that we require a strong graded monad to model these features using category theory. This construct was first documented in the context of semantics by Katsumata (\cite{Katsumata:2014}).
 
 \begin{eqnarray}\label{GradedMonadTypeRules}
     \ntreeruleI{Return}{\typerelation{\G}{v}{A}}{\typerelation{\G}{\return{v}}{\moa}} & \ntreeruleII{Bind}{\typerelation{\G}{v_1}{\M{\e_1}{A}}}{\typerelation{\gax}{v_2}{\M{\e_2}{B}}}{\typerelation{\G}{\doin{x}{v_1}{v_2}}{\M{\e_1 \dot \e_2}{B}}}
 \end{eqnarray}
 
 
-Polymorphism is a harder concept to explain intuitively. The particular flavour of polymorphism that this dissertation discusses is System-F-Style parametric polymorphism. For a given type-system feature $F$, such as types, effects, type constructors, or some other language specific feature, we can add parametric polymorphism over $F$ by allowing instances of $F$ to be replaced by $F$ variables and introducing certain type expressions to modify the types. For example, let us look at the system F \needsRef{Link to a good definition of system F}. System F has polymorphism over types. This means that we can replace a type expression with a type variable parameter. We also need to be able to syntactically generalise over type parameters and to be able to specify a particular type parameter's value. This requires us to extend the syntax of the simply typed lambda calculus with the appropriate specialisation and generalisation terms as well as parameterised types, as seen in figure \ref{SystemFTermsTypes}.
+Polymorphism is a harder concept to explain intuitively. The particular flavour of polymorphism that this dissertation discusses is System-F-Style parametric polymorphism. For a given type-system feature $F$, such as types, effects, type constructors, or some other language specific feature, we can add parametric polymorphism over $F$ by allowing instances of $F$ to be replaced by $F$ variables and introducing certain type expressions to modify the types. For example, let us look at system F \cite{SystemFIntroduction}. System F has polymorphism over types. This means that we can replace a type expression with a type variable parameter. We also need to be able to syntactically generalise over type parameters and to be able to specify a particular type parameter's value. This requires us to extend the syntax of the simply typed lambda calculus with the appropriate specialisation and generalisation terms as well as parameterised types, as seen in figure \ref{SystemFTermsTypes}.
 
 \begin{figure}
     \begin{framed}
@@ -520,7 +516,7 @@ To correctly account for these new terms and types in the type system, we need t
 
 If we can model the language without the polymorphic terms, with each specific $F$ environment, then we can instantiate a collection of categories, each of which models the language at a given $F$ environment. This collection of categories (or fibres) can be indexed by a base category, the structure of which models the $F$ environments and relationships between them. We can hence construct an indexed category, whereby each $F$ environment in the base category is mapped to the fibre modelling the semantics at the specific environment, and morphisms between $F$ environments correspond to functors between the respective fibres. Figure \ref{IndexDiagram} demonstrates this construction. If we model an $F$ environment $\P, \a$ as a product, then the $\p$ morphism represents removing $\a$ from the environment and the $\pstar$ functor conversely increases the size of the environment. As will be show later in this dissertation, if $\pstar$ has a right adjoint (see section \ref{WhatsAnAdjunction}), $\forall$, then this adjunction can be used to model generalisation and specialisation of polymorphic terms. This will be explained in the next chapter. 
 
-How the fibres are derived from objects in the base category depends on the polymorphic properties of the language being modelled. For example, in the polymorphic lambda calculus (System-F) types are impredicative. That is, types can quantify over any other types, including themselves. This means that there has to be a strong coupling between the base category, which represents type-variable environments and transformations upon them and objects in the fibres, which represent types. This typically manifests in the set of objects  in each fibre being in bijection with the set of morphisms from the appropriate type-variable environment in the base category. Since, in effect-polymorphic languages, types quantify over effects, but effects do not quantify over themselves, we can conceptually decouple the objects in the fibres from the base category, meaning that effect-polymorphic models are simpler to define. 
+How the fibres are derived from objects in the base category depends on the polymorphic properties of the language being modelled. For example, in system F, types are impredicative. That is, types can quantify over any other types, including themselves. This means that there has to be a strong coupling between the base category, which represents type-variable environments and transformations upon them and objects in the fibres, which represent types. This typically manifests in the set of objects  in each fibre being in bijection with the set of morphisms from the appropriate type-variable environment in the base category. Since, in effect-polymorphic languages, types quantify over effects, but effects do not quantify over themselves, we can conceptually decouple the objects in the fibres from the base category, meaning that effect-polymorphic models are simpler to define. 
 
 In this dissertation, I show how these category theoretic building blocks can be put together to give the class of categories that can model polymorphic effect systems.
 
@@ -939,11 +935,7 @@ In this chapter, I  describe the category structure required to interpret an ins
 
 \section{Semantics for EC in an S-Category}\label{SCategoryIntro}
 
-As suggested in section \ref{LanguageFeatureRequirements}, since EC contains multiple effects, STLC terms, and \texttt{if} expressions, we should be able to interpret its semantics in a cartesian closed category with an appropriate strong graded monad and the co-product $\1 + \1$. With the addition of some extra category structure to handle subtyping, which I shall explain shortly, it is indeed possible to interpret EC. This section contains a fairly high-level treatment of the semantics. This is because the concepts introduced are a subset of those required for the semantics of PEC, which I shall explain in more detail later.
-
-\needsRef{
-    Denotational semantic for similar languages have been presented before
-}
+As suggested in section \ref{LanguageFeatureRequirements}, since EC contains multiple effects, STLC terms, and \texttt{if} expressions, we should be able to interpret its semantics in a cartesian closed category with an appropriate strong graded monad and the co-product $\1 + \1$. With the addition of some extra category structure to handle subtyping, which I shall explain shortly, it is indeed possible to interpret EC. This section contains a fairly high-level treatment of the semantics. This is because the concepts introduced are a subset of those required for the semantics of PEC, which I shall explain in more detail later. Semantics for similar languages to EC have been given using an S-category-style construct, such as by Katsumata \cite{Katsumata:2014}.
 
 
 \begin{framed}
@@ -1149,7 +1141,7 @@ We are now equipped to define the denotations of structures in the language. Fir
 \deno{\nil} = \1 \quad\quad \deno{\P, \a} = \deno{\P}\times U    
 \]
 
-Hence, the denotation of an  effect-variable environment $\P$ is given by a finite product on $U$ of width $n$ where $n$ is the length of $\P$. In order to de-clutter the notation used going forwards, inheriting from R. L. Crole \needsRef, I shall write $I$ as shorthand for $\deno{\P}$.  
+Hence, the denotation of an  effect-variable environment $\P$ is given by a finite product on $U$ of width $n$ where $n$ is the length of $\P$. In order to de-clutter the notation used going forwards, inheriting from R. L. Crole (\cite{crole_1994}), I shall write $I$ as shorthand for $\deno{\P}$.  
 
 
 As stated earlier, the denotation of a well-formed effect is a morphism $\deno{\typerelation{\P}{\e}{\effect}}: I \rightarrow U$ in $\C$.
@@ -1278,7 +1270,7 @@ This finally gives us the ability to express the denotations of well-typed terms
     \label{TermDenotations}
 \end{figure}
 
-The least intuitive of these denotations is that of effect application (specialisation) in equation \ref{EffectApplication}. As explained later \needsRef{} the re-indexing functor represents application of the substitution (\todo{I don't think this is circular logic, but would like another pair of eyes if possible}) $\ssub{\b}{\e}$. By doing type analysis on the co-unit morphism $ \counit{\deno{\typerelation{\P,\b}{A\ssub{\a}{\b}}{\type}}}$, as in figure \ref{CoUnitType}  we can see that before the application of the substitution, the co-unit natural transformation takes a quantified type to a substituted type under an extended effect environment. By applying the substitution re-indexing functor in figure \ref{ReIndexedCoUnitType}, we substitute $\e$ for the extra effect variable, $\b$. In the case of the quantified type, as $\b$ is not used, the substitution has no effect, but in the case of the substituted type, the substitutions compose to yield the substitution $\ssub{\a}{\e}$. This composes with the expression denotation $g$ to give the applied denotation in figure \ref{EffectSpecComp}.
+The least intuitive of these denotations is that of effect application (specialisation) in equation \ref{EffectApplication}. As explained later in section \ref{SubsAndWeakening} the re-indexing functor represents application of the substitution (\todo{I don't think this is circular logic, but would like another pair of eyes if possible}) $\ssub{\b}{\e}$. By doing type analysis on the co-unit morphism $ \counit{\deno{\typerelation{\P,\b}{A\ssub{\a}{\b}}{\type}}}$, as in figure \ref{CoUnitType}  we can see that before the application of the substitution, the co-unit natural transformation takes a quantified type to a substituted type under an extended effect environment. By applying the substitution re-indexing functor in figure \ref{ReIndexedCoUnitType}, we substitute $\e$ for the extra effect variable, $\b$. In the case of the quantified type, as $\b$ is not used, the substitution has no effect, but in the case of the substituted type, the substitutions compose to yield the substitution $\ssub{\a}{\e}$. This composes with the expression denotation $g$ to give the applied denotation in figure \ref{EffectSpecComp}.
 
 
 \begin{figure}
@@ -1326,7 +1318,7 @@ The least intuitive of these denotations is that of effect application (speciali
 
 
 
-\section{Substitution and Weakening Theorems}
+\section{Substitution and Weakening Theorems}\label{SubsAndWeakening}
 
 In this section, I introduce and prove a series of utility theorems, which will help us prove cases in future theorems. These weakening and substitution theorems are concerned with a change in environment of typing derivations and their associated denotations. If $\gpetyperelation{v}{A}$, then it should be the case that $\etyperelation{\P}{\gax}{v}{A}$ if $x$ is fresh in $\G$. We also want to know what happens to the denotation when we change the type environment in this way. In this section, I introduce the tools for manipulating the type and effect environments in this way.
 
@@ -2489,7 +2481,7 @@ The $\reduce$ function maps each derivation to its reduced equivalent. It does t
     \end{equation}
     \end{framed}
 
-    \caption{Some cases of the reduce function}
+    \caption{Some cases of the reduce function.}
     \label{ReduceFunctionCases}
 \end{figure}
 
@@ -2837,7 +2829,7 @@ This completes the proof of soundness for this semantics.
 
 \chapter{Instantiating a Model of PEC}
 
-Now we have proved that an appropriate categorical structure can model PEC, it remains to show that it is feasible to construct such an indexed category. There exist $\set$-based models for the semantics of many effectful languages with a graded monad, such as a certain instantiations of the Effect Calculus \needsRef{}. More specifically, it is possible to treat $\set$ as an S-category. Hence, I use a $\set$ based S-category as a starting point. In this section, I  demonstrate how to construct an strictly indexed S-category, which can model the PEC, from such an S-category.
+Now we have proved that an appropriate categorical structure can model PEC, it remains to show that it is feasible to construct such an indexed category. There exist $\set$-based models for the semantics of many effectful languages with a graded monad, such as a certain instantiations of the Effect Calculus \cite{Katsumata:2014}. More specifically, it is possible to treat $\set$ as an S-category. Hence, I use a $\set$ based S-category as a starting point. In this section, I  demonstrate how to construct an strictly indexed S-category, which can model the PEC, from such an S-category.
 
 Suppose we have an S-category structure derived from $\set$ which models an instance of EC. That is, there exists a graded monad $\Tz{}{}, \bindmu^0, \pointz{}, \strengtht^0$ on $\set$, and there exist subtyping functions $\deno{A\subtypeg B}: A \rightarrow B$ for each instance of the ground subtyping relation, and natural transformations $\deno{\e_1 \subeffectz \e_2}: \Tz{\e_1}{} \rightarrow \Tz{\e_2}{}$ for each instance of the subeffecting relation. Further more, $\set$ is cartesian closed and has co-products for all pairs of objects. Since this structure is a model for the EC, it is graded by a pre-ordered monoid on ground effects: $(E, \subeffectz, \1, \dot)$. I have marked each of these instances of S-category structure with $0$ to indicate that they occur in the fibre induced by the empty effect-variable environment.
 
@@ -2853,7 +2845,7 @@ We also need to define the base category. This shall be $\Eff$, a sub category o
 
 Morphisms $E^n \rightarrow E$ in $\Eff$ are monotone functions taking $n$ ground-effect parameters and returning a ground effect.
 
-Next we must pick our fibre categories for non-zero values of $n$. A simple instantiation is to pick each fibre $\C(E^n)$ to be the functor category $[E^n, \set]$,  where $E^n$ is a discrete category (a category that only contains the identity morphisms). That is, the category of functions returning an object in $\set$ given $n$ ground effects. Morphisms between objects are functions which, given a collection of ground effects, yield a morphism (function) in $C$. If $m\in [E^n, \set](A, B)$ then $m\ev\in\set(A\ev, B\ev)$. The fibres, $[E^n, C]$ are S-categories. This can be proved by constructing the S-category structures pointwise with respect to their parameter $\ev \in E^n$ as seen in figures \ref{HowToBuildCCC} - \ref{HowToBuildSubtyping}. Full proofs of the naturality and monad laws can be found \needsRef{}.
+Next we must pick our fibre categories for non-zero values of $n$. A simple instantiation is to pick each fibre $\C(E^n)$ to be the functor category $[E^n, \set]$,  where $E^n$ is a discrete category (a category that only contains the identity morphisms). That is, the category of functions returning an object in $\set$ given $n$ ground effects. Morphisms between objects are functions which, given a collection of ground effects, yield a morphism (function) in $C$. If $m\in [E^n, \set](A, B)$ then $m\ev\in\set(A\ev, B\ev)$. The fibres, $[E^n, C]$ are S-categories. This can be proved by constructing the S-category structures pointwise with respect to their parameter $\ev \in E^n$ as seen in figures \ref{HowToBuildCCC} - \ref{HowToBuildSubtyping}. Full proofs of the naturality and monad laws can be found \needsRef{link/appendix}.
 
 
 
@@ -3035,7 +3027,7 @@ Now we need to define the required morphisms between fibres. Firstly, for any fu
         \textbf{Re-Indexing Functors are S-Preserving}
                 
         \begin{theorem}
-            The re-indexing functors are also S-preserving. That is all the S-category features in $[E^n, \set]$ are preserved by $\theta\star$ in $[E^m, \set]$. For a full list of features please see appendix \needsRef.
+            The re-indexing functors are also S-preserving. That is all the S-category features in $[E^n, \set]$ are preserved by $\theta\star$ in $[E^m, \set]$. For a full list of features please see appendix \needsRef{}.
         \end{theorem}
         
         
@@ -3070,7 +3062,7 @@ Now we need to define the required morphisms between fibres. Firstly, for any fu
     \label{PrecompositionSClosure}
 \end{figure}
 
-Next, the re-indexing functor $\pstar$ should have a right adjoint, $\allEn$. Under the current construction, the only option for such a right adjoint is for $\allEn$ to be defined as a product over the set of effects (figure \ref{ProductQuantification}). This is possible because types and effects are not impredicative (that is, they quantify over themselves), meaning that the set of effects is countable or finite.
+Next, the re-indexing functor $\pstar$ should have a right adjoint, $\allEn$. Under the current construction, the only option for such a right adjoint is for $\allEn$ to be defined as a product over the set of effects (figure \ref{ProductQuantification}). This is possible because types and effects are not impredicative (that is, they do not quantify over themselves), meaning that the set of effects is countable or finite.
 
 \begin{figure}
     \begin{framed}
@@ -3251,4 +3243,7 @@ This dissertation has introduced a denotational semantics for polymorphic effect
 
 This work forms a potential foundation for more precise analysis tools which could be used to improve compilers and interpreters in the future. A more precise analysis of programs allows more specific optimisations to be made, such as code re-ordering or removal of dead code, where they would not be considered sound under a non-polymorphic system.
 
+
+\bibliography{diss} 
+\bibliographystyle{ieeetr}
 \end{document}
