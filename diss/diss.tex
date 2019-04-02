@@ -308,7 +308,7 @@ A slightly harder concept to motivate is that of tensorial (or tensor) \textit{s
         \centering
         \begin{minipage}{0.45\textwidth}
             \begin{tikzpicture}[baseline= (a).base]
-                \node[scale=.8] (a) at (0,0){
+                \node[scale=.7] (a) at (0,0){
             \begin{tikzcd}[ampersand replacement=\&]
                 A \times \T{\e_1}{\T{\e_2}{B}} 
                 \arrow [r, "\tstrength{\e_1}{A}{\T{\e_2}{B}}"]
@@ -356,7 +356,7 @@ A slightly harder concept to motivate is that of tensorial (or tensor) \textit{s
 \begin{figure}
     \centering
     \begin{framed}
-        \begin{minipage}{0.45\textwidth}
+        \centering
             \begin{tikzcd}[ampersand replacement=\&]
                 (A\times B)\times \T{\e}{C} 
                 \arrow [rr, "\tstrength{\e}{(A\times B)}{C}"]
@@ -372,7 +372,6 @@ A slightly harder concept to motivate is that of tensorial (or tensor) \textit{s
                 \& \T{\e}{(A \times (B \times C))}
                 \\
             \end{tikzcd}
-        \end{minipage}
     \end{framed}
     \caption{Tensorial strength commutes with the reordering natural transformation.}
     \label{TensorStrengthAlpha}
@@ -521,63 +520,66 @@ How the fibres are derived from objects in the base category depends on the poly
 In this dissertation, I show how these category theoretic building blocks can be put together to give the class of categories that can model polymorphic effect systems.
 
 \begin{figure}[ht!]
-    \begin{tikzpicture}[->,>=stealth']]
-        % Draw the env objects
-        \foreach \y[count=\c,evaluate={\yi=int(\c-1)}] in {3, 4, 5, 6}{
-            \node[fill,circle,inner sep=2pt,label=left:{\small $\P_\yi$}] (d\yi) at (0,\y) {};
-        }
-
-        % draw the ... above the env objects
-        \foreach \y[count=\c,evaluate={\yi=int(\c-1)}] in {7, 7.5, 8}{
-            \node[fill, circle, inner sep=1pt] (dd\yi) at (0,\y){};
-        }
-        % Draw the index category
-        \node[fit=(d0) (d1) (d2) (d3) (dd0) (dd1) (dd2),ellipse,draw,minimum width=2cm] {};
-
-        %draw the s-category stack
-        \foreach \y[count=\c,evaluate={\yi=int(\c-1)}] in {2, 4, 6, 8}{
-            \node[circle, draw, inner sep=1pt, fill, label=above:{$\G$}] (g\yi) at (7,\y){};
-            \node[circle, draw, inner sep=1pt, fill, label=above:{$A$}] (a\yi) at (9,\y){};
-            \draw[->](g\yi) to[bend right=5] node[below]{\tiny $\deno{\etyperelation{\P_\yi}{\G}{v}{A}}$} (a\yi);
-            \node[ellipse, draw, minimum width=5cm, minimum height=15mm,label=right:$S_\yi$] (s\yi) at (8,\y){};
-        }
-
-        % Hidden ellipse to draw functors to
-        \node[ellipse, minimum width=5cm, minimum height=15mm] (s4) at (8,10){};
-
-        %Draw the ... for the s-category stack
-        \foreach \y[count=\c,evaluate={\yi=int(\c-1)}] in {9.5, 10, 10.5}{
-            \node[fill, circle, inner sep=1pt] (p\yi) at (8, \y){};
-        }
-
-        % Draw index arrows
-        \foreach \i in {0, 1, 2, 3}{
-            \draw[->, very thick] (d\i) to (s\i);
-        }
-
-        % draw the re-indexing functors
-
-        \foreach \source[count=\dest] in {0, 1, 2, 3}{
-            \draw[->, very thick](s\source.north west) to[bend left=10] node[left]{$\pstar$} (s\dest.south west);
-        }
-
-        % Draw the quantification functors
-        \foreach \dest[count=\source] in {0, 1, 2, 3}{
-            \draw[->, very thick] 
-            (s\source.south east) to[bend left=10] node[right]{$\forall_{\P_\dest}$} (s\dest.north east);
-        }
-
-        % Draw the internal morphisms in base category
-        \foreach \dest[count=\source] in {0, 1, 2}{
-            \draw[->]
-            (d\source) to[bend right=10] node[right]{$\p$} (d\dest);
-        }
-
-        %Draw the bracket
-
-        \draw [decoration={brace,amplitude=8pt},decorate] ($(s3)+(10em,1ex)$) -- ($(s0)+(10em,-1ex)$);
-        \node[text width=20mm] (Label) at (14,5){Fibres for each effect environment};
-    \end{tikzpicture}
+    \scalebox{0.9}{
+        \begin{tikzpicture}[->,>=stealth']]
+            % Draw the env objects
+            \foreach \y[count=\c,evaluate={\yi=int(\c-1)}] in {3, 4, 5, 6}{
+                \node[fill,circle,inner sep=2pt,label=left:{\small $\P_\yi$}] (d\yi) at (0,\y) {};
+            }
+    
+            % draw the ... above the env objects
+            \foreach \y[count=\c,evaluate={\yi=int(\c-1)}] in {7, 7.5, 8}{
+                \node[fill, circle, inner sep=1pt] (dd\yi) at (0,\y){};
+            }
+            % Draw the index category
+            \node[fit=(d0) (d1) (d2) (d3) (dd0) (dd1) (dd2),ellipse,draw,minimum width=2cm] {};
+    
+            %draw the s-category stack
+            \foreach \y[count=\c,evaluate={\yi=int(\c-1)}] in {2, 4, 6, 8}{
+                \node[circle, draw, inner sep=1pt, fill, label=above:{$\G$}] (g\yi) at (7,\y){};
+                \node[circle, draw, inner sep=1pt, fill, label=above:{$A$}] (a\yi) at (9,\y){};
+                \draw[->](g\yi) to[bend right=5] node[below]{\tiny $\deno{\etyperelation{\P_\yi}{\G}{v}{A}}$} (a\yi);
+                \node[ellipse, draw, minimum width=5cm, minimum height=15mm,label=right:$S_\yi$] (s\yi) at (8,\y){};
+            }
+    
+            % Hidden ellipse to draw functors to
+            \node[ellipse, minimum width=5cm, minimum height=15mm] (s4) at (8,10){};
+    
+            %Draw the ... for the s-category stack
+            \foreach \y[count=\c,evaluate={\yi=int(\c-1)}] in {9.5, 10, 10.5}{
+                \node[fill, circle, inner sep=1pt] (p\yi) at (8, \y){};
+            }
+    
+            % Draw index arrows
+            \foreach \i in {0, 1, 2, 3}{
+                \draw[->, very thick] (d\i) to (s\i);
+            }
+    
+            % draw the re-indexing functors
+    
+            \foreach \source[count=\dest] in {0, 1, 2, 3}{
+                \draw[->, very thick](s\source.north west) to[bend left=10] node[left]{$\pstar$} (s\dest.south west);
+            }
+    
+            % Draw the quantification functors
+            \foreach \dest[count=\source] in {0, 1, 2, 3}{
+                \draw[->, very thick] 
+                (s\source.south east) to[bend left=10] node[right]{$\forall_{\P_\dest}$} (s\dest.north east);
+            }
+    
+            % Draw the internal morphisms in base category
+            \foreach \dest[count=\source] in {0, 1, 2}{
+                \draw[->]
+                (d\source) to[bend right=10] node[right]{$\p$} (d\dest);
+            }
+    
+            %Draw the bracket
+    
+            \draw [decoration={brace,amplitude=8pt},decorate] ($(s3)+(10em,1ex)$) -- ($(s0)+(10em,-1ex)$);
+            \node[text width=20mm] (Label) at (14,5){Fibres for each effect environment};
+        \end{tikzpicture}
+    }
+    
     \caption{Diagram of the structure of an indexed category for modelling a polymorphic language. Thick arrows between categories represent functors and finer arrows withing categories represent internal morphisms. The left hand category is the base category.
     }
     \label{IndexDiagram}
@@ -832,7 +834,9 @@ We assume that the set of ground types with a subtyping pre-order relation $\sub
     \]
 
 Using this ground type relation, we can then construct a subtyping relation between pairs of types $A, B$ with respect to an effect environment $\P$.
+
 \[
+    \scalebox{0.85}{$
     \ntreeruleI{ground}{A \subtype_{\ground} B}{A \subtypep B}
     \quad
     \ntreeruleII{Fn}{A \subtypep A'}{B' \subtypep B }{\fntype{A'}{B'} \subtypep \ab}
@@ -840,6 +844,7 @@ Using this ground type relation, we can then construct a subtyping relation betw
     \condtreeruleI{All}{A\subtypep A'}{\all{\a}{A}\subtypepa\all{\a}{A'}}{\a\notin\P}
     \quad
     \ntreeruleII{Effect}{A\subtypep B}{ \e_1\subeffectp\e_2}{\M{\e_1}{A}\subtypep\M{\e_2}{B}}
+    $}
 \]
 
 Since the ground subtyping and subeffecting relations are pre-order, it is fairly simple to prove by induction that the new relation is also a pre-order.
@@ -849,6 +854,7 @@ Since the ground subtyping and subeffecting relations are pre-order, it is fairl
 We define a fairly standard set of type rules on the language.
 
 \[
+    \scalebox{0.85}{$
     \ntreeruleII{Const}{\oke{\P}{\G}}{\wellformed{\P}{A}}{\gpetyperelation{\const{A}}{A}} 
     \quad
     \ntreeruleI{Unit}{\oke{\P}{\G}}{\gpetyperelation{\u}{\U}} 
@@ -856,30 +862,39 @@ We define a fairly standard set of type rules on the language.
     \ntreeruleI{True}{\oke{\P}{\G}}{\gpetyperelation{\t}{\B}}
     \quad
     \ntreeruleI{False}{\oke{\P}{\G}}{\gpetyperelation{\f}{\B}}
+    $}
 \]
 \[
+    \scalebox{0.85}{$
 \ntreeruleI{Var}{\oke{\P}{\gax}}{\etyperelation{\P}{\gax}{x}{A}}
 \quad
 \condtreeruleII{Weaken}{\etyperelation{\P}{\G}{x}{A}}{\wellformed{\P}{B}}{\etyperelation{\P}{\gby}{x}{A}}{x \neq y, y\notin\dom{\G}}
 \quad
 \ntreeruleI{Fn}{\etyperelation{\P}{\gax}{v}{B}}{\etyperelation{\P}{\G}{\lam{x}{A}{v}}{\ab}}
+$}
 \]
 \[
+    \scalebox{0.85}{$
     \ntreeruleII{Sub}{\etyperelation{\P}{\G}{v}{A}}{A \subtypep B}{\etyperelation{\P}{\G}{v}{B}}
     \quad
     \ntreeruleI{Effect-Abs}{\etyperelation{\P,\a}{\G}{v}{A}}{\gpetyperelation{\elam{\a}{v}}{\all{\a}{A}}}
     \quad
     \ntreeruleII{Effect-apply}{\gpetyperelation{v}{\all{\a}A}}{\wellformed{\P}{\e}}{\gpetyperelation{\eapp{v}{\e}}{A\ssub{\a}{\e}}}
+    $}
 \]
 \[
+    \scalebox{0.85}{$
     \ntreeruleI{Return}{\gpetyperelation{v}{A}}{\gpetyperelation{\return{v}}{\moa}}
     \quad
     \ntreeruleII{Apply}{\gpetyperelation{v_1}{\ab}}{\gpetyperelation{v_2}{A}}{\gpetyperelation{\apply{v_1}{v_2}}{B}}
+    $}
 \]
 \[
+    \scalebox{0.85}{$
     \ntreeruleIII{If}{\gpetyperelation{v}{\B} }{ \gpetyperelation{v_1}{A}}{\gpetyperelation{v_2}{A}}{\gpetyperelation{\pifthenelse{A}{V}{v_1}{v_2}}{A}}
     \quad
     \ntreeruleII{Do}{\gpetyperelation{v_1}{\M{\e_1}{A}}}{\etyperelation{\P}{\gax}{v_2}{\M{\e_2}{B}}}{\gpetyperelation{\doin{x}{v_1}{v_2}}{\M{\e_1 \dot \e_2}{B}}}
+    $}
 \]
 
 \subsubsection{Ok Lemmas}
@@ -962,6 +977,7 @@ A full derivation and proof of soundness of the semantics of the Effect Calculus
 \end{minipage}  
 \quad
 \begin{minipage}{0.45\textwidth}
+\scalebox{0.8}{    
 \begin{tikzcd}[ampersand replacement=\&]
     \T{\e_1}{\T{\e_2}{}} 
     \arrow [rr, "\T{\e_1}{\deno{\e_2\subeffect\e_2'}
@@ -980,6 +996,7 @@ A full derivation and proof of soundness of the semantics of the Effect Calculus
      \& \&
     \T{\e_1'\dot\e_2'}{}
 \end{tikzcd}
+}
 \caption{The interaction of the subeffect natural transformation with the graded monad  bind natural transformation.}
 \label{SubeffectBind}
 \end{minipage}  
@@ -1894,7 +1911,9 @@ Now we are at a point to start considering weakenings and substitution of the ty
     \ntreeruleI{Id}{\wellformedok{\P}{\G}}{\pewrel{\i}{\G}{\G}}
     \quad  
     \condtreeruleI{Project}{\pewrel{\w}{\G'}{\G}}{\pewrel{\w \pi}{\G, x: A}{\G}}{x \notin \dom{\G'}}
-    \quad
+\]
+
+\[
     \condtreeruleII{Extend}{\pewrel{\w}{\G'}{\G}}{ A \subtype B}{\pewrel{\w \x}{\G', x: A}{\G, x: B}}{x \notin \dom{\G'}}
 \]
 
@@ -1928,9 +1947,11 @@ Type-environment substitutions are also derived inductively with respect to a ef
 Denotations of type-environment substitutions are morphisms in the appropriate fibre category: $\deno{\etyperelation{\P}{\G'}{\si}{\G}}: \G' \rightarrow \G \in \C(I)$ and are defined as so:
 
 \[
+    \scalebox{0.9}{$
     \deno{\etyperelation{\P}{\G'}{\nil}{\nil}} = \term{\G'}: \G' \rightarrow \1
     \quad
     \deno{\etyperelation{\P}{\G'}{(\si, x \setto v)}{\gax}} = \pr{\deno{\etyperelation{\P}{\G'}{\G}}}{\deno{\etyperelation{\P}{\G'}{v}{A}}}: \G' \rightarrow \G\times \1
+    $}
 \]
 
 We also need to explain the action of these term substitutions on terms. We define the action of applying a substitution $\si$  on term $v$ as $v\ssi$. The property $x\#\si$ indicates tha x does not occur in the domain of $\si$ or as a free variable in any of its substituted terms.
@@ -2054,7 +2075,7 @@ Furthermore, it will be useful to have an analogue of the extension lemma for te
 
 
 \begin{lemma}[Extension Lemma on Term Substitutions]
-    If $\etyperelation{\P}{\G'}{\si}{\G}$ and $x\#\si$ then $\etyperelation{\P}{(\G',x: A)}{(\si, x\setto x)}{(\gax)}$ with denotation $\deno{\etyperelation{\P}{(\G',x: A)}{(\si, x\setto x)}{(\gax)}} = \deno{\etyperelation{\P}{\G'}{\si}{\G}} \times \Id{A}$
+    If $\etyperelation{\P}{\G'}{\si}{\G}$ and $x\#\si$\\ then $\etyperelation{\P}{(\G',x: A)}{(\si, x\setto x)}{(\gax)}$ with denotation $$\deno{\etyperelation{\P}{(\G',x: A)}{(\si, x\setto x)}{(\gax)}} = \deno{\etyperelation{\P}{\G'}{\si}{\G}} \times \Id{A}$$
 \end{lemma}
 
 \begin{proof}
@@ -2243,29 +2264,25 @@ In particular a reduced typing derivation is one where we only allow the subtypi
     This proof proceeds by induction on the term structure, making use of the unique derivations of the subterms to show that a reduced derivation of the whole term must also be unique. There are no cases for subtyping, as it is not a syntactic feature. 
 
     \todo{This case's diagrams are wrong}
-    \case{Bind} This case makes use of the weakening theorem on typing environments.
+    \case{Bind} This case makes use of the weakening theorem on typing environments. Let the trees in equations \ref{UniqueBindOne}, \ref{UniqueBindTwo} be the respective unique reduced type derivations of the subterms. By weakening, $\ewrel{\P}{\i\x}{(\G, x:A)}{(\G, x: A')}$ so if there's a derivation of $\etyperelation{\P}{(\G, x:A')}{v_2}{B}$, there's also one of $\etyperelation{\P}{\gax}{v_2}{B}$. 
 
-    Let 
-
-    \begin{equation}
+    \begin{equation}\label{UniqueBindOne}
         \edeltacrule{\G}{v_1}{\e_1}{A}{\e_1'}{A'}
     \end{equation}
 
-    \begin{equation}
+    \begin{equation}\label{UniqueBindTwo}
         \edeltacruleprime{\G, x:A}{v_2}{\e_2}{B}{\e_2'}{B'}
     \end{equation}
 
-    Be the respective unique reduced type derivations of the subterms. By weakening, $\ewrel{\P}{\i\x}{(\G, x:A)}{(\G, x: A')}$ so if there's a derivation of $\etyperelation{\P}{(\G, x:A')}{v_2}{B}$, there's also one of $\etyperelation{\P}{\gax}{v_2}{B}$.
+   
 
     \begin{equation}
         \edeltacruleprimeprime{(\G, x:A')}{v_2}{\e_2}{B}{\e_2'}{B'}
     \end{equation}
 
-    Since the effects monoid operation is monotone, if $\e_1\subeffectp\e_1'$ and $\e_2\subeffectp\e_2'$ then $\e_1\dot\e_2 \subeffectp \e_1'\dot\e_2'$
+    Since the effects monoid operation is monotone, if $\e_1\subeffectp\e_1'$ and $\e_2\subeffectp\e_2'$ then $\e_1\dot\e_2 \subeffectp \e_1'\dot\e_2'$. Hence the reduced type derivation of $\gpetyperelation{\doin{x}{v_1}{v_2}}{\M{\e_1'\dot\e_2'}{B'}}$ can be seen in equation \ref{UniqueBindResult}.
 
-    Hence the reduced type derivation of $\gpetyperelation{\doin{x}{v_1}{v_2}}{\M{\e_1'\dot\e_2'}{B'}}$ is the following:
-
-    \begin{equation}
+    \begin{equation}\label{UniqueBindResult}
         \resizebox{.9\hsize}{!}{
         \ntreeruleII{Subtype}{
             \ntreeruleII{Bind}{
@@ -2611,42 +2628,44 @@ The equational equivalence relation is a rule based relation with three main fla
     
     \begin{framed}
         \[
+            \scalebox{0.8}{$
             \ntreeruleII{Lambda-Beta}{\etyperelation{\P}{\gax}{v_2}{B}}{\gpetyperelation{v_1}{A}}{\gpeberelation{\apply{(\lam{x}{A}{v_1})}{v_2} }{ v_1\ssub{x}{v_2}}{B}}
             \quad
             \ntreeruleI{Lambda-Eta}{\gpetyperelation{v}{\ab}}{\gpeberelation{\lam{x}{A}{(\apply{v}{x}})}{v}{\ab}}
+            $}
         \]
     
-        \[
+        \[\scalebox{0.8}{$
             \ntreeruleII{Left Unit}{\gpetyperelation{v_1}{A} }{ \etyperelation{\P}{\gax}{v_2}{\meb}}{\gpeberelation{\doin{x}{\return{v_1}}{v_2}}{v_2\ssub{x}{v_1}}{\meb}}
             \quad
             \ntreeruleI{Right Unit}{\gpetyperelation{v}{\mea}}{\gpeberelation{\doin{x}{v}{\return{x}} }{v}{\mea}}
-        \]
+        $}\]
     
-        \[
+        \[\scalebox{0.8}{$
             \ntreeruleIII{Associativity}{\gpetyperelation{v_1}{\M{\e_1}{A}} }{\etyperelation{\P}{\gax}{v_2}{\M{\e_2}{B}}}{ \etyperelation{\P}{\gby}{v_3}{\M{\e_3}{C}}}{
                 \gpeberelation{\doin{x}{v_1}{(\doin{y}{v_2}{v_3})}}{\doin{y}{(\doin{x}{v_1}{v_2})}{v_3}}{\M{\e_1 \dot \e_2 \dot \e_3}{C}}
             }
-        \]
+        $}\]
     
-        \[
+        \[\scalebox{0.8}{$
             \ntreeruleI{Unit}{\gpetyperelation{v}{\U}}{\gpeberelation{v}{\u}{\U}}
-        \]
+        $}\]
     
-        \[
+        \[\scalebox{0.8}{$
             \ntreeruleII{If-True}{\gpetyperelation{v_1}{A}}{\gpetyperelation{v_2}{A}}{\gpeberelation{\pifthenelse{A}{\t}{v_1}{v_2}}{v_1}{A}}
             \quad
             \ntreeruleII{If-False}{\gpetyperelation{v_2}{A}}{\gpetyperelation{v_1}{A}}{\gpeberelation{\pifthenelse{A}{\f}{v_1}{v_2}}{v_2}{A}}    
-        \]
+        $}\]
     
-        \[
+        \[\scalebox{0.8}{$
             \ntreeruleII{If-Eta}{\etyperelation{\P}{\G, x: \B}{v_2}{A}}{\gpetyperelation{v_1}{\B}}{\gpeberelation{\pifthenelse{A}{v_1}{v_2\ssub{x}{\t}}{v_2\ssub{x}{\f}}}{v_2\ssub{x}{v_1}}{A}}
-        \]
+        $}\]
     
-        \[
+        \[\scalebox{0.8}{$
             \ntreeruleII{Effect-beta}{\wellformed{\P}{\e}}{\etyperelation{\P, \a}{\G}{v}{A}}{\gpeberelation{\eapp{(\elam{\a}{v}}{\e})}{v\ssub{\a}{\e}}{A\ssub{\a}{\e}}}
             \quad 
             \\ntreeruleI{Effect-eta}{\etyperelation{\P}{\G}{v}{\all{\a}{A}}}{\gpeberelation{\elam{\a}{(\eapp{v}{\a})}}{v}{\all{\a}{A}}}
-        \]
+        $}\]
     \end{framed}
     \caption{The reduction rules for PEC}
     \label{BetaEtaReductions}
@@ -2654,29 +2673,29 @@ The equational equivalence relation is a rule based relation with three main fla
 
 \begin{figure}[ht!]
    \begin{framed}
-        \[
+        \[\scalebox{0.8}{$
             \ntreeruleI{Effect-Abs}{\eberelation{\P, \a}{\G}{v_1}{v_2}{A}}{\gpeberelation{\elam{\a}{v_1}}{\elam{\a}{v_2}}{\all{\a}{A}}}
             \quad
             \ntreeruleII{Effect-Apply}{\gpeberelation{v_1}{v_2}{\all{\a}{A}}}{\wellformed{\P}{\e}}{\gpeberelation{\eapp{v_1}{\e}}{\eapp{v_2}{\e}}{A\ssub{\a}{\e}}}
-        \]
+        $}\]
     
-        \[
+        \[\scalebox{0.8}{$
             \ntreeruleI{Lambda}{\eberelation{\P}{\gax}{v_1}{v_2}{B}}{\gpeberelation{\lam{x}{A}{v_1}}{\lam{x}{A}{v_2}}{\ab}}
             \quad
             \ntreeruleI{Return}{\gpeberelation{v_1}{v_2}{A}}{\gpeberelation{\return{v_1}}{\return{v_2}}{\moa}}
-        \]
+        $}\]
     
-        \[
+        \[\scalebox{0.8}{$
             \ntreeruleII{Apply}{\gpeberelation{v_1}{v_1'}{\ab}}{\gpeberelation{v_2}{v_2'}{A}}{\gpeberelation{\apply{v_1}{v_2}}{\apply{v_1'}{v_2'}}{B}}
             \quad   
             \ntreeruleII{Bind}{\gpeberelation{v_1}{v_1'}{\M{\e_1}{A}} }{\eberelation{\P}{\gax}{v_2}{v_2'}{\M{\e_2}{B}}}{\gpeberelation{\doin{x}{v_1}{v_2}}{\doin{x}{v_1'}{v_2'}}{\M{\e_1 \dot \e_2}{B}}} 
-        \]
+        $}\]
     
-        \[
+        \[\scalebox{0.8}{$
             \ntreeruleIII{If}{\gpeberelation{v}{v'}{\B} }{ \gpeberelation{v_1}{v_1'}{A}}{\gpeberelation{v_2}{v_2'}{A}}{\gpeberelation{\pifthenelse{A}{v}{v_1}{v_2}}{\pifthenelse{A}{v'}{v_1'}{v_2'}}{A}}
             \quad    
             \ntreeruleII{Subtype}{\gpeberelation{v}{v'}{A}}{A \subtypep B}{\gpeberelation{v}{v'}{B}}
-        \]
+        $}\]
    \end{framed}
     \caption{The congruence rules for PEC}
     \label{BetaEtaCongruence}
@@ -2832,7 +2851,13 @@ Now we have proved that an appropriate categorical structure can model PEC, it r
 
 Suppose we have an S-category structure derived from $\set$ which models an instance of EC. That is, there exists a graded monad $\Tz{}{}, \bindmu^0, \pointz{}, \strengtht^0$ on $\set$, and there exist subtyping functions $\deno{A\subtypeg B}: A \rightarrow B$ for each instance of the ground subtyping relation, and natural transformations $\deno{\e_1 \subeffectz \e_2}: \Tz{\e_1}{} \rightarrow \Tz{\e_2}{}$ for each instance of the subeffecting relation. Further more, $\set$ is cartesian closed and has co-products for all pairs of objects. Since this structure is a model for the EC, it is graded by a pre-ordered monoid on ground effects: $(E, \subeffectz, \1, \dot)$. I have marked each of these instances of S-category structure with $0$ to indicate that they occur in the fibre induced by the empty effect-variable environment.
 
-Using $\alpha$-equivalence, we can see that all effect environments of the same length are equivalent. For example, $(\etyperelation{(\nil, \a, \b)}{\G}{\lam{f}{\fntype{\texttt{Int}}{\M{\a\dot\b}{\U}}}{(\apply{f}{0})}}{\M{\a\dot\b}{\U}})$ and $(\etyperelation{(\nil, \g, \d)}{\G}{\lam{f}{\fntype{\texttt{Int}}{\M{\g\dot\d}{\U}}}{(\apply{f}{0})}}{\M{\g\dot\d}{\U}})$ are equivalent under $\a$-equivalence. Hence, we can reduce an effect environment to the natural number $n$ indicating its length.
+Using $\a$-equivalence, we can see that all effect environments of the same length are equivalent. For example, the terms in equation \ref{AlphaEquivalence} are $\a$-equivalent. Hence, we can reduce an effect environment to the natural number $n$ indicating its length.
+
+\begin{equation}\label{AlphaEquivalence}
+    \scalebox{.8}{$
+    (\etyperelation{(\nil, \a, \b)}{\G}{\lam{f}{\fntype{\texttt{Int}}{\M{\a\dot\b}{\U}}}{(\apply{f}{0})}}{\M{\a\dot\b}{\U}})  =_\a(\etyperelation{(\nil, \g, \d)}{\G}{\lam{f}{\fntype{\texttt{Int}}{\M{\g\dot\d}{\U}}}{(\apply{f}{0})}}{\M{\g\dot\d}{\U}})
+    $}
+\end{equation}
 
 
 We also need to define the base category. This shall be $\Eff$, a sub category of $\set$, populated by the set of ground effects $E$ as the effect object $U$, its finite products, and monotone functions between them.
@@ -3126,7 +3151,7 @@ Finally, we need to prove that the Beck-Chevalley conditions given in \ref{PECRe
 
 \begin{figure}
     \centering
-    \begin{minipage}{0.45\textwidth}
+    \begin{minipage}{0.47\textwidth}
       \begin{framed}
         \centering
         \textbf{Unit}
@@ -3140,7 +3165,7 @@ Finally, we need to prove that the Beck-Chevalley conditions given in \ref{PECRe
       \end{framed}
     \end{minipage}
     \quad
-    \begin{minipage}{0.45\textwidth}
+    \begin{minipage}{0.47\textwidth}
       \begin{framed}
         \centering
         \textbf{Co-Unit}
