@@ -37,6 +37,9 @@
 
 \usepackage{tikz}
 
+\definecolor{grey}{rgb}{0.75, 0.75, 0.75}
+\definecolor{DarkGreen}{rgb}{0.1, 0.4, 0.1}
+
 \usetikzlibrary{shapes.geometric,fit}
 \usetikzlibrary{arrows,automata,positioning}
 \usetikzlibrary{decorations.pathreplacing,calc}
@@ -53,13 +56,13 @@
 \newcommand{\s}{\;}
 \newcommand{\doin}[3]{\texttt{do}\s #1 \leftarrow #2 \s\texttt{in}\s #3\s}
 \newcommand\apply[2]{#1\s#2}
-\newcommand{\pifthenelse}[4]{\texttt{if}_{\textcolor{gray}{#1}}\s#2\s \texttt{then}\s #3 \s\texttt{else} \s#4\s}
+\newcommand{\pifthenelse}[4]{\texttt{if}_{\textcolor{grey}{#1}}\s#2\s \texttt{then}\s #3 \s\texttt{else} \s#4\s}
 \newcommand\ifthenelse[5]{\pifthenelse{#1, #2}{#3}{#4}{#5}}
-\newcommand\const[1]{\texttt{C}^{#1}}
+\newcommand\const[1]{\texttt{C}^{\color{grey} #1}}
 \newcommand\return[1]{\texttt{return} \s#1\s}
 
-\definecolor{gray}{rgb}{0.75, 0.75, 0.75}
-\newcommand\lam[3]{\lambda #1 : {\color{red}#2}. #3\s}
+
+\newcommand\lam[3]{\lambda #1 : {\color{grey}#2}. #3\s}
 \renewcommand\u[0]{\texttt{()}}
 \newcommand{\U}[0]{\texttt{Unit}}
 \renewcommand\t[0]{\texttt{true}}
@@ -70,9 +73,9 @@
 
 
 % draw type relations
-\newcommand{\typerelation}[3]{#1 \vdash #2 \colon #3}
-\newcommand\wellformed[2]{#1\vdash #2}
-\newcommand\wellformedok[2]{\ok{#1\vdash #2}}
+\newcommand{\typerelation}[3]{{\color{DarkGreen}#1} \vdash #2 \colon {\color{blue}#3}}
+\newcommand\wellformed[2]{{\color{DarkGreen}#1}\vdash {\color{blue}#2}}
+\newcommand\wellformedok[2]{\ok{{\color{DarkGreen}#1}\vdash {\color{blue} #2}}}
 
 
 
@@ -204,7 +207,7 @@
 
 % short-hands for weakening
 \newcommand{\wrel}[3]{#1 : #2 \triangleright #3}
-\newcommand{\ok}[1]{#1 \texttt{Ok}}
+\newcommand{\ok}[1]{{\color{blue} #1} \texttt{ Ok}}
 \renewcommand\i[0]{\iota}
 \newcommand\w{\omega}
 \newcommand\dom[1]{\texttt{dom}(#1)}
@@ -273,7 +276,7 @@
 \renewcommand{\b}[0]{\beta}
 \newcommand{\g}[0]{\gamma}
 \renewcommand\d[0]{\delta}
-\newcommand\oke[2]{\wellformed{#1}{\ok{#2}}}
+\newcommand\oke[2]{\wellformedok{#1}{#2}}
 \newcommand\etyperelation[4]{\typerelation{#1\mid#2}{#3}{#4}}
 \newcommand{\gpetyperelation}[2]{\etyperelation{\P}{\G}{#1}{#2}}
 \newcommand{\gppetyperelation}[2]{\etyperelation{\P'}{\G}{#1}{#2}}
@@ -343,7 +346,7 @@
 
 \newcommand\edeltavrule[5]{\deltavrule{#1 \mid #2}{#3}{#4}{#5}}
 
-\newcommand\subeffecttree[4]{\ntreeruleII{Computation}{
+\newcommand\subeffecttree[4]{\ntreeruleII{Effect}{
     #1\subeffectp #3}{#2 \subtypep #4
 }{\M{#1}{
     #2

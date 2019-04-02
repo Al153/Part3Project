@@ -361,7 +361,7 @@ hold.
 
 
 \section{Beta-Eta equivalent terms have equal denotations}
-If $\berelation{t}{t'}{\tau}$ then $\gdenoequality{t}{t'}{\tau}$
+If $\gberelation{t}{t'}{\tau}$ then $\gdenoequality{t}{t'}{\tau}$
 
 By induction over Beta-eta equivalence relation.
 \subsection{Equivalence Relation}
@@ -439,9 +439,9 @@ Let $f = \deno{\gtyperelation{C}{\mea}}$
 \paragraph{Case Associative}
 Let
 \begin{align}
-    f ={}& \deno{\gtyperelation{C_1}{\mea}}\\
-    g ={}& \deno{\typerelation{\gax}{C_2}{\meb}}\\
-    h ={}& \deno{\typerelation{\gby}{C_3}\mec}
+    f ={}& \deno{\gtyperelation{C_1}{\M{\e_1}{A}}}\\
+    g ={}& \deno{\typerelation{\gax}{C_2}{\M{\e_2}{B}}}\\
+    h ={}& \deno{\typerelation{\gby}{C_3}{\M{\e_3}{C}}}
 \end{align}
 
 We also have the weakening:
@@ -458,11 +458,11 @@ With denotation:
 We need to prove that the following are equal
 
 \begin{align}
-    &lhs =  \deno{\gtyperelation{\doin{x}{C_1}{(\doin{y}{C_2}{C_3})}}{\M{\e_1\dot\e_2\dot\e_2}}} \\
+    lhs & =  \deno{\gtyperelation{\doin{x}{C_1}{(\doin{y}{C_2}{C_3})}}{\M{\e_1\dot\e_2\dot\e_3}{C}}} \\
     & = \bind{\e_1}{\e_2\dot\e_3}{C}\after\T{
         \e_1}{(\bind{\e_2}{\e_3}{C}\after\T{\e_2}{h\after(\p \times \Id{B})}\after\tstrength{\e_2}{(\G\times A)}{B}\after\pr{\Id{(\G\times A)}}{g}
         )}\after\tstrength{\e_1}{\G}{A}\after\pr{\idg}{f}\\
-    & rhs = \deno{\gtyperelation{\doin{y}{(\doin{x}{C_1}{C_2})}{C_3}}{\M{\e_1\dot\e_2\dot\e_2}}}  \\
+        rhs &  = \deno{\gtyperelation{\doin{y}{(\doin{x}{C_1}{C_2})}{C_3}}{\M{\e_1\dot\e_2\dot\e_2}{C}}}  \\
     & = \bind{\e_1\dot\e_2}{\e_3}{C}\after\T{\e_1\dot\e_2}{(h)}\after\tstrength{\e_1\dot\e_2}{\G}{B}\after\pr{\idg}{(\bind{\e_1}{\e_2}{B}\after\T{\e_1}{g}\after\tstrength{\e_1}{\G}{A}\after\pr{\idg}{f})} \\
 \end{align}
 Let's look at fragment $F$ of $rhs$.
