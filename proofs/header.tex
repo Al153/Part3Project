@@ -62,7 +62,7 @@
 \newcommand\return[1]{\texttt{return} \s#1\s}
 
 
-\newcommand\lam[3]{\lambda #1 : {\color{grey}#2}. #3\s}
+\newcommand\lam[3]{\lambda #1 \colon {\color{grey}#2}. #3\s}
 \renewcommand\u[0]{\texttt{()}}
 \newcommand{\U}[0]{\texttt{Unit}}
 \renewcommand\t[0]{\texttt{true}}
@@ -105,7 +105,7 @@
 
 
 
-\newcommand{\subtype}[0]{\leq:}
+\newcommand{\subtype}[0]{\leq\colon}
 \newcommand\subeffect[0]{\leq}
 
 \newcommand{\M}[2]{\texttt{M}_{#1}{#2}}
@@ -126,7 +126,7 @@
 
 \newcommand\T[2]{T_{#1}{#2}}
 
-\newcommand\pr[2]{\left\langle#1, #2\right\rangle}
+\newcommand\pr[2]{\langle#1, #2\rangle}
 \newcommand\finpr[2]{\langle #1\rangle_{#2}}
 
 \newcommand\strengtht[0]{\texttt{t}}
@@ -176,8 +176,8 @@
 \newcommand\aeb[0]{\lamtype{A}{\e}{B}}
 
 % Shorthand for Gammas
-\newcommand{\gax}[0]{\G, x: A}
-\newcommand{\gby}[0]{\G, y: B}
+\newcommand{\gax}[0]{\G, x\colon A}
+\newcommand{\gby}[0]{\G, y\colon B}
 
 % reduction function
 \newcommand{\reduce}[0]{reduce}
@@ -195,18 +195,20 @@
         \ntreeruleII{Subtype}{\treeruleI{\D'}{\typerelation{#1}{#2}{#3}}}{#3 \subtype #4}{\typerelation{#1}{#2}{#4}}}
     
 \newcommand{\deltacrule}[6]{
-            \ntreeruleIII{Subeffect}{\treeruleI{\D}{\typerelation{#1}{#2}{\M{#3}{#4}}}}{#4 \subtype #6}{#3 \subeffect #5}{\typerelation{#1}{#2}{\M{#5}{#6}}}}
+            \ntreeruleII{Subeffect}{\treeruleI{\D}{\typerelation{#1}{#2}{\M{#3}{#4}}}}{\subeffecttree{#3}{#4}{#5}{#6}}{\typerelation{#1}{#2}{\M{#5}{#6}}}}
 \newcommand{\deltacruleprime}[6]{
-    \ntreeruleIII{Subeffect}{\treeruleI{\D'}{\typerelation{#1}{#2}{\M{#3}{#4}}}}{#4 \subtype #6}{#3 \subeffect #5}{\typerelation{#1}{#2}{\M{#5}{#6}}}}
+    \ntreeruleII{Subeffect}{\treeruleI{\D'}{\typerelation{#1}{#2}{\M{#3}{#4}}}}{
+    \subeffecttree{#3}{#4}{#5}{#6}}{\typerelation{#1}{#2}{\M{#5}{#6}}}}
 \newcommand{\deltacruleprimeprime}[6]{
-    \ntreeruleIII{Subeffect}{\treeruleI{\D''}{\typerelation{#1}{#2}{\M{#3}{#4}}}}{#4 \subtype #6}{#3 \subeffect #5}{\typerelation{#1}{#2}{\M{#5}{#6}}}}
+    \ntreeruleII{Subtype}{\treeruleI{\D''}{\typerelation{#1}{#2}{\M{#3}{#4}}}}{
+        \subeffecttree{#3}{#4}{#5}{#6}}{\typerelation{#1}{#2}{\M{#5}{#6}}}}
                             
 
 \newcommand{\p}[0]{\pi_1}
 \newcommand{\pp}[0]{\pi_2}
 
 % short-hands for weakeningc
-\newcommand{\wrel}[3]{#1 : {\color{blue}#2} \triangleright {\color {blue} #3}}
+\newcommand{\wrel}[3]{#1 \colon {\color{blue}#2} \triangleright {\color {blue} #3}}
 \newcommand{\ok}[1]{{\color{blue} #1} \texttt{ Ok}}
 \renewcommand\i[0]{\iota}
 \newcommand\w{\omega}
@@ -227,7 +229,7 @@
 
 \newcommand{\E}[0]{\mathbb{E}}
 \renewcommand{\dot}{\cdot}
-\newcommand{\gens}[0]{::=}
+\newcommand{\gens}[0]{\colon\colon=}
 \newcommand{\nil}[0]{\diamond}
 \newcommand{\ground}[0]{\gamma}
 
@@ -249,7 +251,7 @@
 \newcommand{\ifnt}[1]{\texttt{If}_{#1}}
 
 
-\newcommand{\setto}{:=}
+\newcommand{\setto}{\colon=}
 \newcommand{\fv}[1]{\texttt{fv}(#1)}
 
 % shorthand for inserting text to equations
@@ -346,11 +348,17 @@
 
 \newcommand\edeltavrule[5]{\deltavrule{#1 \mid #2}{#3}{#4}{#5}}
 
-\newcommand\subeffecttree[4]{\ntreeruleII{Effect}{
+\newcommand\subeffecttreep[4]{\ntreeruleII{Effect}{
     #1\subeffectp #3}{#2 \subtypep #4
 }{\M{#1}{
     #2
 }\subtypep\M{#3}{#4}}}
+\newcommand\subeffecttree[4]{\ntreeruleII{Effect}{
+    #1\subeffect #3}{#2 \subtype #4
+}{\M{#1}{
+    #2
+}\subtype\M{#3}{#4}}}
+
 
 \newcommand{\edeltavruleprime}[5]{
         \deltavruleprime{#1\mid #2}{#3}{#4}{#5}}

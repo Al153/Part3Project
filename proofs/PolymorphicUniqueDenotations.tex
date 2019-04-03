@@ -88,7 +88,7 @@ $$
             \gpetyperelation{\return{v}}{\moa}
         }
     }{   
-        \subeffecttree{\1}{A}{\e}{B}        
+        subeffecttreep{\1}{A}{\e}{B}        
     }{
         \gpetyperelation{\return{v}}{B}
     }
@@ -127,7 +127,7 @@ $$
             \gpetyperelation{\apply{v_1}{v_2}}{B}
         }
          }{ 
-        \subeffecttree{\e}{B}{\e'}{B'}
+        subeffecttreep{\e}{B}{\e'}{B'}
     }{
         \gpetyperelation{\apply{v_1}{v_2}}{\M{\e'}{B'}}
     }
@@ -209,7 +209,7 @@ Hence the reduced type derivation of $\gpetyperelation{\doin{x}{v_1}{v-2}}{\M{\e
             \gpetyperelation{\doin{x}{v_1}{v_2}}{\M{\e_1\dot\e_2}{B}}
         }
          }{ 
-        \subeffecttree{\e_1\dot\e_2}{B}{\e_1'\dot\e_2'}{B'}
+        subeffecttreep{\e_1\dot\e_2}{B}{\e_1'\dot\e_2'}{B'}
     } {
         \gpetyperelation{\doin{x}{v_1}{v-2}}{\M{\e_1'\dot\e_2'}{B'}}
     }
@@ -406,7 +406,7 @@ We introduce a function, $\reduce$ that maps each valid type derivation of $\gpe
                         \gpetyperelation{\return{v}{\M{\1}{A'}}}
                     }
                 }{ 
-                    \subeffecttree{\1}{A'}{\1}{A}
+                    subeffecttreep{\1}{A'}{\1}{A}
                 }{
                     \gpetyperelation{\return{v}}{\moa}
                 }
@@ -468,7 +468,7 @@ We introduce a function, $\reduce$ that maps each valid type derivation of $\gpe
                     \gpetyperelation{\apply{v_1}{v_2}}{\M{\e'}{B'}}
                 }
                  }{ 
-                \subeffecttree{\e'}{B'}{\e}{B}
+                subeffecttreep{\e'}{B'}{\e}{B}
             }{
                 \gpetyperelation{\apply{v_1}{v_2}}{B}
             }
@@ -528,7 +528,7 @@ We introduce a function, $\reduce$ that maps each valid type derivation of $\gpe
                 \ntreeruleII{Sub-Type}{
                     \treeruleI{\D'_1}{\gpetyperelation{v_1}{\M{\e'_1}{A'}}}
                  }{ 
-                \subeffecttree{\e_1'}{A'}{\e_1}{A}
+                subeffecttreep{\e_1'}{A'}{\e_1}{A}
                 }{
                     \gpetyperelation{v_1}{\M{\e_1}{A}}
                 } = \reduce(\D_1)
@@ -540,7 +540,7 @@ We introduce a function, $\reduce$ that maps each valid type derivation of $\gpe
                 \ntreeruleII{Sub-Type}{
                     \treeruleI{\D'_3}{\etyperelation{\P}{\G, x: A'}{v_2}{\M{\e'_2}{B'}}}
                  }{ 
-                \subeffecttree{\e_2'}{B'}{\e_2}{B}
+                subeffecttreep{\e_2'}{B'}{\e_2}{B}
                 }{
                     \etyperelation{\P}{\G, x: A'}{v_2}{\M{\e_2}{B}}
                 } = \reduce(\D_3)
@@ -572,7 +572,7 @@ We introduce a function, $\reduce$ that maps each valid type derivation of $\gpe
                     \gpetyperelation{\doin{x}{v_1}{v_2}}{\M{\e_1'\dot\e_2'}{B}}
                     }
                      }{ 
-                    \subeffecttree{\e_1'\dot\e_2'}{B'}{\e_1\dot\e_2}{B}
+                    subeffecttreep{\e_1'\dot\e_2'}{B'}{\e_1\dot\e_2}{B}
                 }{
                     \gpetyperelation{\doin{x}{v_1}{v_2}}{\M{\e_1\dot\e_2}{B}}
                 }

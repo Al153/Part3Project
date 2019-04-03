@@ -2087,7 +2087,7 @@ We induct over the structure of typing derivations of $\gpetyperelation{v}{A}$, 
             {\treeruleI{\D}{\gpetyperelation{v}{A}}}
             {\gpetyperelation{\return{v}}{\moa}}
             }{
-            \subeffecttree{\1}{A}{\e}{B}
+            \subeffecttreep{\1}{A}{\e}{B}
         }
         {\gpetyperelation{\return{v}}{\meb}}
     $$
@@ -2197,7 +2197,7 @@ We induct over the structure of typing derivations of $\gpetyperelation{v}{A}$, 
                 \gpetyperelation{\doin{x}{v_1}{v_2}}{\M{\e_1\dot\e_2}{B}}
             }
             }{
-            \subeffecttree{\e_1\dot\e_2}{B}{\e_1'\dot\e_2'}{B'}
+            \subeffecttreep{\e_1\dot\e_2}{B}{\e_1'\dot\e_2'}{B'}
         } {
             \gpetyperelation{\doin{x}{v_1}{v_2}}{\M{\e_1'\dot\e_2'}{B'}}
         }
@@ -2448,7 +2448,7 @@ We induct over the structure of typing derivations of $\gpetyperelation{v}{A}$, 
                             \gpetyperelation{v}{A}
                         }}{\gpetyperelation{\return{v}}{\M{\1}{A'}}}
                         }{
-                        \subeffecttree{\1}{A'}{\1}{A}
+                        \subeffecttreep{\1}{A'}{\1}{A}
                     } {
                         \gpetyperelation{\return{v}}{\moa}
                     }
@@ -2604,7 +2604,7 @@ We induct over the structure of typing derivations of $\gpetyperelation{v}{A}$, 
                     \ntreeruleII{Sub-type}{
                         \treeruleI{\D'_1}{\gpetyperelation{v_1}{\M{\e'_1}{A'}}}
                     }{
-                    \subeffecttree{\e_1'}{A'}{\e_1}{A}
+                    \subeffecttreep{\e_1'}{A'}{\e_1}{A}
                     }{
                         \gpetyperelation{v_1}{\M{\e_1}{A}}
                     } = \reduce(\D_1)
@@ -2616,7 +2616,7 @@ We induct over the structure of typing derivations of $\gpetyperelation{v}{A}$, 
                     \ntreeruleII{Sub-type}{
                         \treeruleI{\D'_3}{\etyperelation{\P}{\G, x: A'}{v_2}{\M{\e'_2}{B'}}}
                     }{
-                    \subeffecttree{\e_1'}{B'}{\e_2}{B}
+                    \subeffecttreep{\e_1'}{B'}{\e_2}{B}
                     }{
                         \etyperelation{\P}{\G, x: A'}{v_2}{\M{\e_2}{B}}
                     } = \reduce(\D_3)
@@ -2648,7 +2648,7 @@ We induct over the structure of typing derivations of $\gpetyperelation{v}{A}$, 
                         \gpetyperelation{\doin{x}{v_1}{v_2}}{\M{\e_1'\dot\e_2'}{B}}
                         }
                         }{
-                        \subeffecttree{\e_1'\dot\e_2'}{B'}{\e_1\dot\e_2}{B}
+                        \subeffecttreep{\e_1'\dot\e_2'}{B'}{\e_1\dot\e_2}{B}
                     }{
                         \gpetyperelation{\doin{x}{v_1}{v_2}}{\M{\e_1\dot\e_2}{B}}
                     }

@@ -2288,7 +2288,7 @@ In particular a reduced typing derivation is one where we only allow the subtypi
                 \gpetyperelation{\doin{x}{v_1}{v_2}}{\M{\e_1\dot\e_2}{B}}
             }
         }{
-            \subeffecttree{\e_1\dot\e_2}{B}{\e_1'\dot\e_2'}{B'}
+            subeffecttreep{\e_1\dot\e_2}{B}{\e_1'\dot\e_2'}{B'}
         } {
             \gpetyperelation{\doin{x}{v_1}{v_2}}{\M{\e_1'\dot\e_2'}{B'}}
         }
@@ -2433,7 +2433,7 @@ The $\reduce$ function maps each derivation to its reduced equivalent. It does t
         \ntreeruleII{Subtype}{
             \treeruleI{\D'_1}{\gpetyperelation{v_1}{\M{\e'_1}{A'}}}
         }{
-        \subeffecttree{\e_1'}{A'}{\e_1}{A}
+        subeffecttreep{\e_1'}{A'}{\e_1}{A}
         }{
             \gpetyperelation{v_1}{\M{\e_1}{A}}
         } = \reduce(\D_1)
@@ -2447,7 +2447,7 @@ The $\reduce$ function maps each derivation to its reduced equivalent. It does t
         \ntreeruleII{Subtype}{
             \treeruleI{\D'_3}{\etyperelation{\P}{\G, x: A'}{v_2}{\M{\e'_2}{B'}}}
         }{
-        \subeffecttree{\e_1'}{B'}{\e_2}{B}
+        subeffecttreep{\e_1'}{B'}{\e_2}{B}
         }{
             \etyperelation{\P}{\G, x: A'}{v_2}{\M{\e_2}{B}}
         } = \reduce(\D_3)
@@ -2461,7 +2461,7 @@ The $\reduce$ function maps each derivation to its reduced equivalent. It does t
     \begin{equation}
         \scalebox{0.8}{$
         \ntreeruleII{Subtype}{
-            \subeffecttree{\e_1'\dot\e_2'}{B'}{\e_1\dot\e_2}{B}
+            subeffecttreep{\e_1'\dot\e_2'}{B'}{\e_1\dot\e_2}{B}
         }{
             \ntreeruleII{Bind}{
                 \treeruleI{
