@@ -960,7 +960,7 @@ As suggested in section \ref{LanguageFeatureRequirements}, since EC contains mul
     \end{definition}
 \end{framed}
 
-A full derivation and proof of soundness of the semantics of the Effect Calculus can be found online \needsRef{Link} as it is too long to include here and many of the concepts are repeated later in the remainder of this dissertation anyway. The categorical semantics of the Effect Calculus requires an S-category not only to simply model all of the features of EC but also to use the various commutivity diagrams and rules to manipulate the expressions encountered when proving properties of the semantics. Again, as all these manipulations are also applied when proving the semantics of PEC, I shall not go into further detail here.
+A full derivation and proof of soundness of the semantics of the Effect Calculus can be found online on my github repository\footnote{https://github.com/Al153/Part3Project/blob/master/diss/AppendixECSemantics.pdf} as it is too long to include here and many of the concepts are repeated later in the remainder of this dissertation anyway. The categorical semantics of the Effect Calculus requires an S-category not only to simply model all of the features of EC but also to use the various commutivity diagrams and rules to manipulate the expressions encountered when proving properties of the semantics. Again, as all these manipulations are also applied when proving the semantics of PEC, I shall not go into further detail here.
 
 
 
@@ -2288,7 +2288,7 @@ In particular a reduced typing derivation is one where we only allow the subtypi
                 \gpetyperelation{\doin{x}{v_1}{v_2}}{\M{\e_1\dot\e_2}{B}}
             }
         }{
-            subeffecttreep{\e_1\dot\e_2}{B}{\e_1'\dot\e_2'}{B'}
+            \subeffecttreep{\e_1\dot\e_2}{B}{\e_1'\dot\e_2'}{B'}
         } {
             \gpetyperelation{\doin{x}{v_1}{v_2}}{\M{\e_1'\dot\e_2'}{B'}}
         }
@@ -2433,7 +2433,7 @@ The $\reduce$ function maps each derivation to its reduced equivalent. It does t
         \ntreeruleII{Subtype}{
             \treeruleI{\D'_1}{\gpetyperelation{v_1}{\M{\e'_1}{A'}}}
         }{
-        subeffecttreep{\e_1'}{A'}{\e_1}{A}
+        \subeffecttreep{\e_1'}{A'}{\e_1}{A}
         }{
             \gpetyperelation{v_1}{\M{\e_1}{A}}
         } = \reduce(\D_1)
@@ -2447,7 +2447,7 @@ The $\reduce$ function maps each derivation to its reduced equivalent. It does t
         \ntreeruleII{Subtype}{
             \treeruleI{\D'_3}{\etyperelation{\P}{\G, x: A'}{v_2}{\M{\e'_2}{B'}}}
         }{
-        subeffecttreep{\e_1'}{B'}{\e_2}{B}
+        \subeffecttreep{\e_1'}{B'}{\e_2}{B}
         }{
             \etyperelation{\P}{\G, x: A'}{v_2}{\M{\e_2}{B}}
         } = \reduce(\D_3)
@@ -2826,7 +2826,28 @@ We also need to define the base category. This shall be $\Eff$, a sub category o
     E^{n+1} &= E^n \times E
 \end{align*}
 
-Morphisms $E^n \rightarrow E$ in $\Eff$ are monotone functions taking $n$ ground-effect parameters and returning a ground effect.
+Morphisms $E^n \rightarrow E$ in $\Eff$ are monotone functions taking $n$ ground-effect parameters and returning a ground effect. We also need to define a monoidal operation $\Mul: \Eff(E^n, E) \times \Eff(E^n, E) \rightarrow \Eff(E^n, E)$ that is natural as described in section \ref{PECRequirements}. A patent choice for $\Mul$ and proof of the naturality property is shown in figure \ref{MulDefinition}.
+
+\begin{figure}
+    \centering
+    \begin{framed}
+        \centering\textbf{The Monoidal Mul Operator}
+        \begin{align*}
+            \Mul(f, g)(\ev) & = (f\ev)\dot(g\ev)
+        \end{align*}
+        
+        This satisfies naturality of $\Mul$.
+        
+        \begin{equation*}
+            (\Mul(f, g)\after \theta)\ev = (f(\theta\ev))\dot(g(\theta\ev)) = (\Mul(f\after\theta), (g\after\theta))\ev
+        \end{equation*}
+
+        $\Mul$ is monoidal as required as a result of the monoid structure of the operator $\dot$ on ground effects.
+    \end{framed}
+    
+    \caption{Definition of the $\Mul$ operator}
+    \label{MulDefinition}
+\end{figure}
 
 Next we must pick our fibre categories for non-zero values of $n$. A simple instantiation is to pick each fibre $\C(E^n)$ to be the functor category $[E^n, \set]$,  where $E^n$ is a discrete category (a category that only contains the identity morphisms). That is, the category of functions returning an object in $\set$ given $n$ ground effects. Morphisms between objects are functions which, given a collection of ground effects, yield a morphism (function) in $C$. If $m\in [E^n, \set](A, B)$ then $m\ev\in\set(A\ev, B\ev)$. The fibres, $[E^n, C]$ are S-categories. This can be proved by constructing the S-category structures pointwise with respect to their parameter $\ev \in E^n$ as seen in figures \ref{HowToBuildCCC} - \ref{HowToBuildSubtyping}. Full proofs of the naturality and monad laws can be found \needsRef{link/appendix}.
 
