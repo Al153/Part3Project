@@ -5,26 +5,9 @@
 % Appendix document proving the S-category properties of the functor categories [E^n, \Set]
 
 \begin{document}
-    
+\section{Base Category is Monoidal}
 
-Given a set based S-Category which is a model of the non-polymorphic effect calculus, we generate an indexed category capable of modelling the polymorphic effect calculus.
-\section{The Non-Polymorphic Model}
-Since $\set$ is a model of the non-polymorphic calculus,
-\begin{itemize}
-    \item $\set$ is cartesian closed.
-    \item $\set$ has a strong graded monad: $\Tz{}{}: (E, \dot, \subeffect_0, \1) \rightarrow [\set, \set]$
-    \item $\set$ has a co-product on the terminal object $\1$.
-\end{itemize}
-
-In addition, we require that 
-\begin{itemize}
-    \item $E$ should be small.
-\end{itemize}
-
-
-\section{Base Category}
-
-We construct the base category, $\Eff$ as follows:
+We construct the base category, $\Eff$, as follows:
 
 \begin{itemize}
     \item $U = E$, the set of ground effects in the non-polymorphic language.
@@ -32,38 +15,67 @@ We construct the base category, $\Eff$ as follows:
     \item $U^n = E^n$, set of $n$-wide tuples of effects, $\vec{\e}$
 \end{itemize}
 
-Hence when we treat effects that are well formed in $\P$ as morphisms, $E^n \rightarrow E$ in $\Eff$, we should treat them as functions $f: E^n \rightarrow E$. Ground effects become point functions: $e: \1 \rightarrow E$, so the denotation of a ground effect is the constant value function: $\deno{\typerelation{\P}{e}{\effect}} = \ev \mapsto e$
+Hence when we treat effects that are well formed in $\P$ as morphisms, $E^n \rightarrow E$ in $\Eff$, we should treat them as functions $f: E^n \rightarrow E$. Ground effects become point functions: $e: \1 \rightarrow E$, so the denotation of a ground effect is the constant value function: $\deno{\typerelation{\P}{e}{\effect}} = \ev \mapsto e$. We extend the multiplication of ground effects to multiplication on effect functions, giving us our $\Mul_n$ operation $\Mul_n(f, g)(\ev) = (f\ev)\dot(g\ev)$. This $\Mul_n$ satisfies the naturality and monoidal requirements, as seen in figure \ref{MulMonoidAndNatural}. It is also trivially the case that $\Mul_n(\deno{\typerelation{\P}{e_1}{\effect}}, \deno{\typerelation{\P}{e_2}{\effect}}) = \deno{\typerelation{\P}{e_1\dot e_2}{\effect}}$.
 
-We extend the multiplication of ground effects to multiplication on effect functions, giving us our $\Mul$ operation
+\begin{figure}
+    \begin{framed}
+        \begin{framed}
+            \centering\textbf{Naturality} 
+            \begin{equation*}
+                (\Mul_m(f, g)\after \theta)\ev = (f(\theta\ev))\dot(g(\theta\ev)) = (\Mul_n(f\after\theta), (g\after\theta))\ev
+            \end{equation*}
+        \end{framed} 
+        
+        \begin{framed}
+            \centering\textbf{Left and Right Identity}
+            \begin{minipage}{.45\textwidth}
+                \begin{align*}
+                    \Mul_n(\deno{\typerelation{\P}{\1}{\effect}}, f)(\ev) & = (\1\ev)\dot(f\ev)\\
+                    & = (\1)\dot(f\ev)\\
+                    & = f\ev\\
+                \end{align*}
+            \end{minipage}
+            \quad
+            \begin{minipage}{.45\textwidth}
+                \begin{align*}
+                    \Mul_n(f, \deno{\typerelation{\P}{\1}{\effect}})(\ev) & = (f\ev)\dot(\1\ev)\\
+                    & = (f\ev)\dot(\1)\\
+                    & = f\ev\\
+                \end{align*}
+            \end{minipage}
+        \end{framed}
 
-\begin{align}
-    \Mul(f, g) & = f\dot g\\
-    (f\dot g)(\ev) & = (f\ev)\dot(g\ev)\\
-\end{align}
+        \begin{framed}
+            \centering\textbf{Monoid Associativity}
 
-This satisfies naturality of $\Mul$.
-
-\begin{equation}
-    ((f\dot g)\after \theta)\ev = (f(\theta\ev))\dot(g(\theta\ev)) = ((f\after\theta)\dot(g\after\theta))\ev
-\end{equation}
+            \begin{align*}
+                \Mul_n(f, \Mul_n(g, h))(\ev) & = (f\ev)\dot((g\ev)\dot(h\ev))\\
+                & = ((f\ev)\dot(g\ev))\dot(h\ev)\\
+                & = \Mul_n(\Mul_n(f,g), h)(\ev)
+            \end{align*}
+        \end{framed}
+    \end{framed}
+    
+    
+    \caption{Our pick for $\Mul$ is natural and is a monoid at each $n$.}
+    \label{MulMonoidAndNatural}
+\end{figure}
 
 \section{S-Categories}
-The semantic category, $[E^0, \set]$ of the effect-environment $\nil$ is isomorphic to $\set$. Since each effect-environment is alpha equivalent to a natural number, the semantic category for $\P$ shall be represented as $\C(\P) = \C(n) = [E^n, \set]$, the category of functions $E^n\rightarrow \set$. Objects in $[E^n, \set]$ are functions and we describe them by their actions on a generic vector of ground effects, $\ev$.
+The semantic category, $[E^0, \set]$ of the effect-environment $\nil$ is isomorphic to $\set$. Since each effect-environment is alpha equivalent to a natural number, the semantic category for $\P$ shall be represented as $\C(\P) = \C(n) = [E^n, \set]$, the category of functions $E^n\rightarrow \set$. Objects in $[E^n, \set]$ are functions and we describe them by their actions on a generic vector of ground effects, $\ev$. Morphisms in $[E^n, \set]$ are natural transformations between the functions. So:
 
-Morphisms in $[E^n, \set]$ are natural transformations between the functions. So:
-
-\begin{align}
+\begin{align*}
     m:\quad&A \rightarrow B \qt{ In $[E^n, \set]$}\\
     m\ev:\quad& A\ev \rightarrow B\ev \qt{In $\set$}\\
     (f\after g)\ev =\quad& (f\ev)\after(g\ev)\\
-    \1(\ev) =\quad& \1
-\end{align}
+    \Id{A}(\ev) =\quad& \Id{A\ev}
+\end{align*}
 
 So morphisms are dependently typed functions from a vector of ground effects to morphisms in $\set$.
 \subsection{Each S-Category is a CCC}
 Since $\set$ is complete and a CCC, and $E^n$ is small, since $E$ is small, $[E^n, \set]$ is a CCC.
 
-\begin{align}
+\begin{align*}
     (A\times B)\ev & = (A\ev)\times(B\ev)\\
     \1\ev & = \1\\
     (B^A)\ev &= (B\ev)^{(A\ev)}\\
@@ -72,30 +84,30 @@ Since $\set$ is complete and a CCC, and $E^n$ is small, since $E$ is small, $[E^
     \app\ev & = \app\\
     \cur{f}\ev & = \cur{f\ev}\\
     \pr{f}{g}\ev & = \pr{f\ev}{g\ev}\\
-\end{align}
+\end{align*}
 
 \subsection{The Terminal Co-Product}
 
 We can define the co-product point-wise.
 
-\begin{align}
+\begin{align*}
     (\1 + \1)\ev & = (\1\ev + \1\ev)\\
     & = (\1 + \1)\\
     \inl\ev &= \inl\\
     \inr\ev &= \inr\\
     [f, g]\ev &= [f\ev, g\ev]\\
-\end{align}
+\end{align*}
 
 This preserves the co-product diagram.
 
-\begin{align}
+\begin{align*}
     ([f, g]\after\inl)\ev & = [f\ev, g\ev]\after \inl\\
     & = f\ev\\
     & \square\\
     ([f, g]\after\inr)\ev& = [f\ev, g\ev]\after \inr\\
     & = f\ev\\
     & \square\\
-\end{align}
+\end{align*}
 
 $[f, g]$ is also unique in $[E^n, \set]$. Suppose $l \after \inl = f$ and $l\after \inr = g$ in $[E^n, \set]$. Then $l\ev \after \inl = f\ev$ and $l\ev \after\inr = g\ev$. Hence by the co-product in $\set$, $l = [f\ev, g\ev]$ so $l = [f, g]$.
 
@@ -103,499 +115,619 @@ $[f, g]$ is also unique in $[E^n, \set]$. Suppose $l \after \inl = f$ and $l\aft
 \subsection{Ground Types and Terms}
 Each ground type in the non-polymorphic calculus has a fixed denotation $\deno{\g}\in\obj\set$. The ground type in the polymorphic calculus hence has a denotation represented by the constant function.
 
-\begin{align}
+\begin{align*}
     \deno{\g}:&\quad E^n\rightarrow \obj\set\\
     \ev \mapsto&\quad  \deno{\g}\\
-\end{align}
+\end{align*}
 
 Each constant term $\const{A}$ in the non-polymorphic calculus has a fixed denotation $\deno{\const{A}}\in\set(\1, A)$. So the morphism $\deno{\const{A}}$ in $[E^n, \set]$ is the corresponding constant dependently typed morphism returning the $\deno{\const{A}}$ function in $\set$.
 
-\begin{align}
+\begin{align*}
     \deno{\const{A}}:&\quad[E^n, \set](\1, A)\\
     \ev\mapsto&\quad\deno{\const{A}}
-\end{align}
+\end{align*}
 
 \subsection{Graded Monad}
 Given the strong graded monad $(\Tz{}{}, \pointz{}{}{}, \bindmu^0, \strengtht^0)$ on $\set$, we can construct an appropriate graded monad $(\Tn{}{}, \pointn{}{}{}, \bindmu^n,\strengtht^n)$ on $[E^n, \set]$. Through some mechanical proof and the naturality of the $\set$ strong graded monad, these morphisms are natural in their type parameters and form a strong graded monad in $[E^n, \set]$.
 
-\begin{align}
+\begin{align*}
     \Tn{}{}:&\quad(E^n, \dot, \subeffect_n, \1_n) \rightarrow [[E^n, \set], [E^n, \set]]\\
     (\Tn{f}{A})\ev=&\quad \Tz{(f\ev)}{A\ev}\\
     (\pointn{A})\ev=&\quad\pointz{A\ev}\\
     (\bindn{f}{g}{A})\ev=&\quad\bindz{(f\ev)}{(g\ev)}{(A\ev)}\\
     (\tstrengthn{f}{A}{B})\ev=&\quad\tstrengthz{(f\ev)}{(A\ev)}{(B\ev)}
-\end{align}
+\end{align*}
+
+\begin{figure}
+    \begin{framed}
+        \centering\textbf{Naturality of the Graded Monad Transformations}
+
+
+        \begin{minipage}{.45\textwidth}
+            \centering
+            \begin{tikzcd}[column sep=huge]
+                A\ev 
+                \arrow{r}{\pointz{(A\ev)}}
+                \arrow{d}{f\ev}
+                &
+                \Tz{\1}{(A\ev)}
+                \arrow{d}{\Tz{\1}{(f\ev)}}
+                \\
+                B\ev
+                \arrow{r}{\pointz{(B\ev)}}
+                &
+                \Tz{\1}{(B\ev)}
+            \end{tikzcd}
+        \end{minipage}
+        \quad\begin{minipage}{.45\textwidth}
+            \centering
+            \begin{tikzcd}[column sep=huge]
+                \Tz{(f\ev)}{\Tz{(g\ev)}{(A\ev)}}
+                \arrow{r}{\bindz{f\ev}{g\ev}{(B\ev)}}
+                \arrow{d}{\Tz{f\ev}{\Tz{g\ev}{m\ev}}}
+                &
+                \Tz{(f\ev)\dot(g\ev)}{(A\ev)}
+                \arrow{d}{\Tz{(f\ev)\dot(g\ev)}{m\ev}}
+                \\
+                \Tz{(f\ev)}{\Tz{(g\ev)}{(B\ev)}}
+                \arrow{r}{\bindz{f\ev}{g\ev}{(B\ev)}}
+                &
+                \Tz{(f\ev)\dot(g\ev)}{(A\ev)}
+            \end{tikzcd}
+        \end{minipage}
+        \\
+
+
+        
+       \begin{minipage}{.45\textwidth}
+        \centering
+            \begin{tikzcd}[column sep=huge]
+                A\ev \times \Tz{f\ev}{(B\ev)}
+                \arrow{r}{\tstrengthz{f\ev}{(A\ev)}{(B\ev)}}
+                \arrow{d}{(m\ev\times\Id{\Tz{f\ev}{B}})}
+                &
+                \Tz{f\ev}{(A\ev\times B\ev)}
+                \arrow{d}{\Tz{(f\ev)}{(m\ev\times \Id{B\ev})}}
+                \\
+                A'\ev \times \Tz{f\ev}{(B\ev)}
+                \arrow{r}{\tstrengthz{f\ev}{(A'\ev)}{(B\ev)}}
+                &
+                \Tz{f\ev}{(A'\ev\times B\ev)}
+            \end{tikzcd}
+        \end{minipage}
+        \quad\begin{minipage}{.45\textwidth}
+            \centering
+            \begin{tikzcd}[column sep=huge]
+                A\ev \times \Tz{f\ev}{(B\ev)}
+                \arrow{r}{\tstrengthz{f\ev}{(A\ev)}{(B\ev)}}
+                \arrow{d}{(\Id{A\ev}\times \Tz{f\ev}{(m\ev)})}
+                &
+                \Tz{f\ev}{(A\ev\times B\ev)}
+                \arrow{d}{\Tz{(f\ev)}{(\Id{A\ev} \times m\ev)}}
+                \\
+                A\ev \times \Tz{f\ev}{(B'\ev)}
+                \arrow{r}{\tstrengthz{f\ev}{(A\ev)}{(B'\ev)}}
+                &
+                \Tz{f\ev}{(A\ev\times B'\ev)}
+            \end{tikzcd}
+        \end{minipage}
+    \end{framed}
+    \caption{Naturality Squares for the graded monad natural transformations. The naturality of each transformation $\a$ in $[E^n, \set]$ derives from the naturality of each of its component transformations $\a\ev$ in $\set$}
+    \label{NaturalitySquares}
+\end{figure}
+
+\begin{figure}
+\begin{framed}
+        \centering\textbf{Monad Laws}
+    
+        \begin{minipage}{.45\textwidth}
+            \centering\textbf{Left Unit}
+    
+    
+            \begin{align*}
+                (\bindn{\1}{g}{A}\after\pointn{\Tn{f}{A}})\ev &= \bindz{\1}{(f\ev)}{(A\ev)} \after (\pointz{\Tz{f\ev}{A\ev}})\\
+                &= \Id{\Tz{f\ev}{A\ev}}\\
+                &=(\Id{\Tn{f}{A}})\ev
+            \end{align*}
+        \end{minipage}\quad
+        \begin{minipage}{.45\textwidth}
+            \centering\textbf{Right Unit}
+    
+    
+            \begin{align*}
+                (\bindn{f}{\1}{A}\after\Tn{f}{\pointn{A}})\ev &= \bindz{(f\ev)}{\1}{(A\ev)} \after \Tz{f\ev}{(\pointz{A\ev})}\\
+                &= \Id{\Tz{f\ev}{A\ev}}\\
+                &=(\Id{\Tn{f}{A}})\ev
+            \end{align*}
+        \end{minipage}
+        \\
+    
+        \begin{minipage}{\textwidth}
+            \centering\textbf{Monad Associativity} 
+    
+    
+            \begin{align*}
+                ((\bindn{f}{(g\dot h)}{A})\after\Tn{f}{(\bindn{g}{h}{A})})\ev &= \bindz{(f\ev)}{((g\ev)\dot(h\ev))}{(A\ev)}\after\Tz{f\ev}{\bindz{(h\ev)}{(g\ev)}{A\ev}}\\
+                &= \bindz{((f\ev)\dot(g\ev))}{(h\ev)}{(A\ev)}\after\bindz{(f\ev)}{(g\ev)}{(\Tz{h\ev}{(A\ev)})}\\
+                & = (\bindn{f\dot g}{h}{A}\after\bindn{f}{g}{\Tz{h}{A}})\ev
+            \end{align*}
+        \end{minipage}
+\end{framed}
+    
+    \caption{The monad laws for the graded monad $(\Tn{}{}, \pointn{}{}{}, \bindmu^n,\strengtht^n)$ can be proved component-wise from the graded monad $(\Tz{}{})$ on $\set$.}
+    \label{MonadLaws}
+\end{figure}
+
+\begin{figure}
+\begin{framed}
+\centering\textbf{Tensor Strength Laws}
+
+        \begin{framed}
+            \centering
+            \textbf{Bind Law}
+    
+            \begin{minipage}{.45\textwidth}
+                \centering
+                \begin{tikzpicture}[baseline= (a).base]
+                    \node[scale=.7] (a) at (0,0){
+                \begin{tikzcd}
+                    A \times \Tn{f}{\Tn{g}{B}} 
+                    \arrow [r, "\tstrength{f}{A}{\Tn{g}{B}}"]
+                    \arrow [dr, "\Id{A} \times \bindn{f}{g}{B}"]
+                    & 
+                    \Tn{f}{(A \times \Tn{g}{B})} 
+                    \arrow [r, "\Tn{f}{\tstrength{g}{A}{B}}"]
+                    & 
+                    \Tn{f}{\Tn{g}{(A \times B)}} 
+                    \arrow [d, "\bindn{f}{g}{A \times B}"]
+                    \\
+                    &
+                    A \times \Tn{f \dot g}{B}  
+                    \arrow [r, "\tstrength{f \dot g}{A}{B}"] 
+                    &
+                    \Tn{f \dot g}({A \times B)}
+                \end{tikzcd}};
+            \end{tikzpicture}
+            \end{minipage}
+            \quad
+            \begin{minipage}{.45\textwidth}
+                \centering
+                \scalebox{.75}{\parbox{\linewidth}{%
+                    \begin{align*}
+                        & (\tstrengthn{(f\dot g)}{A}{B}\after (\Id{A}\times \bindn{f}{g}{B}))\ev \\
+                        & = (\tstrengthz{((f\ev)\dot (g\ev))}{(A\ev)}{(B\ev)}\after (\Id{A\ev}\times \bindn{(f\ev)}{(g\ev)}{(B\ev)}))\\
+                        & = \bindz{(f\ev)}{(g\ev)}{(A\times B)\ev}\after\Tz{f\ev}{(\tstrengthz{(g\ev)}{(A\ev)}{(B\ev)})}\after\tstrengthz{(f\ev)}{(A\ev)}{\Tz{g\ev}{(B\ev)}}\\
+                        & = (\bindn{f}{g}{(A\times B)}\after\Tn{f}{(\tstrengthn{g}{A}{B})}\after\tstrengthn{f}{A}{\Tn{g}{(B)}})\ev
+                    \end{align*}
+                }}
+            \end{minipage}
+        \end{framed}
+    
+        \begin{framed}
+            \centering
+            \textbf{Commutativity with Unit}
+    
+            \begin{minipage}{.45\textwidth}
+                \centering
+                \begin{tikzpicture}[baseline= (a).base]
+                    \node[scale=.7] (a) at (0,0){
+                
+                    \begin{tikzcd}
+                        A \times B
+                        \arrow [r, "\Id{A} \times \point{B}"]
+                        \arrow [rd, "\point{A \times B}"]
+                        &
+                        A \times \tob 
+                        \arrow [d, "\tstrength{\1}{A}{B}"]
+                        \\
+                        &
+                        \Tn{\1}{(A \times B)}
+                    \end{tikzcd}
+                };
+            \end{tikzpicture}
+            \end{minipage}
+            \quad
+            \begin{minipage}{.45\textwidth}
+                \centering
+                \scalebox{.75}{\parbox{\linewidth}{%
+                \begin{align*}
+                    (\tstrengthn{\1}{A}{B}\after(\Id{A}\times \pointn{A}))\ev & = \tstrengthz{\1}{(A\ev)}{(B\ev)}\after(\Id{A\ev}\times \pointz{A\ev})\\
+                    & = \pointz{A\ev\times B\ev}\\
+                    & = (\pointn{A\times B})\ev
+                \end{align*}
+                }}
+            \end{minipage}
+        \end{framed}
+    
+        \begin{framed}
+            \centering
+            \textbf{Commutativity with $\alpha$}
+
+            Let $\alpha_{A, B, C} = \pr{\p\after\p}{\pr{\pp\after\p}{\pp}}: ((A \times B) \times C) \rightarrow (A \times (B \times C))$
+    
+    
+            \begin{minipage}{.45\textwidth}
+                \centering
+                \begin{tikzpicture}[baseline= (a).base]
+                    \node[scale=.7] (a) at (0,0){
+                    \begin{tikzcd}
+                        (A\times B)\times \Tn{\e}{C} 
+                        \arrow [rr, "\tstrength{\e}{(A\times B)}{C}"]
+                        \arrow [d, "\alpha_{A, B, \Tn{\e}{C}}"]
+                        & & \Tn{\e}{((A \times B)\times C)}
+                        \arrow [d, "\Tn{\e}{\alpha_{A, B, C}}"]
+                        \\
+                        A \times (B \times \Tn{\e}{C}) 
+                        \arrow [r, "\Id{A}\times\tstrength{\e}{B}{C}"]
+                        &
+                        A\times\Tn{\e}{(B \times C)} 
+                        \arrow [r, "\tstrength{\e}{A}{(B \times C)}"]
+                        & \Tn{\e}{(A \times (B \times C))}
+                        \\
+                    \end{tikzcd}
+                };
+            \end{tikzpicture}
+            \end{minipage}
+            \quad
+            \begin{minipage}{.45\textwidth}
+                \centering
+                \scalebox{.75}{\parbox{\linewidth}{%
+                \begin{align*}
+                    & (\Tn{f}{\alpha_{A, B, C}}\after\tstrengthn{f}{A\times B}{C})\ev \\
+                    & = \Tz{f\ev}{\alpha_{A\ev, B\ev, C\ev}} \after\tstrengthz{(f\ev)}{(A\times B)\ev}{(C\ev)}\\
+                    & = \tstrengthz{(f\ev)}{(A\ev)}{(B\ev\times C\ev)}\after(\Id{A\ev}\times \tstrengthz{(f\ev)}{(B\ev)}{(C\ev)})\after\alpha_{A\ev, B\ev, C\ev}\\
+                    & = (\tstrengthn{f}{A}{(B\times C)}\after(\Id{A}\times \tstrengthn{f}{B}{C})\after\alpha_{A, B, C})\ev\\
+                \end{align*}            
+                }}
+            \end{minipage}
+        \end{framed}
+\end{framed}
+
+    \caption{The tensor strength laws can be proved component wise from the strength of the monad $\Tz{}{}$}
+    \label{TensorStength}
+\end{figure}
 
 
 
-\subsubsection{Naturality}
+\subsection{Subeffecting}
+Given a collection of subeffecting natural transformation in $\set$, $\deno{\e_1\subeffectz \e_2}: \quad \Tz{\e_1}{} \rightarrow \Tz{\e_2}{}$ we can form subeffect natural transformations in $[E^n, \set]$ as seen in figure \ref{SubEffecting}. This natural transformation has all the required properties. These are proved in figure \ref{SubeffectProperties}.
 
-\begin{tikzcd}
-    A\ev 
-    \arrow{r}{\pointz{(A\ev)}}
-    \arrow{d}{f\ev}
-    &
-    \Tz{\1}{(A\ev)}
-    \arrow{d}{\Tz{\1}{(f\ev)}}
-    \\
-    B\ev
-    \arrow{r}{\pointz{(B\ev)}}
-    &
-    \Tz{\1}{(B\ev)}
-\end{tikzcd}
+\begin{figure}
+    \begin{framed}
+        \centering\textbf{Subeffect Natural Transformation}
+    
+        \begin{align*}
+            \deno{f\subeffectn g}:&\quad\Tn{f}{}\rightarrow \Tn{g}{}\\
+            \deno{f\subeffectn g} A \ev:&\quad\Tn{f\ev}{(A\ev)}\rightarrow \Tn{g\ev}{(B\ev)}\\
+            =&\quad \deno{f\ev\subeffectz g\ev}A\ev
+        \end{align*}
+    \end{framed}
+    \caption{Definition of subeffecting natural transformations}
+    \label{SubEffecting}
+\end{figure}
 
-\begin{tikzcd}
-    \Tz{(f\ev)}{\Tz{(g\ev)}{(A\ev)}}
-    \arrow{r}{\bindz{f\ev}{g\ev}{(B\ev)}}
-    \arrow{d}{\Tz{f\ev}{\Tz{g\ev}{m\ev}}}
-    &
-    \Tz{(f\ev)\dot(g\ev)}{(A\ev)}
-    \arrow{d}{\Tz{(f\ev)\dot(g\ev)}{m\ev}}
-    \\
-    \Tz{(f\ev)}{\Tz{(g\ev)}{(B\ev)}}
-    \arrow{r}{\bindz{f\ev}{g\ev}{(B\ev)}}
-    &
-    \Tz{(f\ev)\dot(g\ev)}{(A\ev)}
-\end{tikzcd}
+\begin{figure}
+    \begin{framed}
+        \centering\textbf{Subeffect Natural Transformation Properties}
 
+        \begin{framed}
+            \centering
+            \textbf{Naturality}
+            
+            \begin{tikzcd}[column sep=large]
+                \Tz{f\ev}{A\ev}
+                \arrow{r}{\deno{f\ev\subeffectz g\ev}A\ev}
+                \arrow{d}{\Tz{f\ev}{m\ev}}
+                &
+                \Tz{g\ev}{A\ev}
+                \arrow{d}{\Tz{g\ev}{m\ev}}
+                \\
+                \Tz{f\ev}{B\ev}
+                \arrow{r}{\deno{f\ev\subeffectz g\ev}B\ev}
+                &
+                \Tz{g\ev}{B\ev}
+            \end{tikzcd}
+        \end{framed}
 
-\begin{tikzcd}
-    A\ev \times \Tz{f\ev}{(B\ev)}
-    \arrow{r}{\tstrengthz{f\ev}{(A\ev)}{(B\ev)}}
-    \arrow{d}{(m\ev\times\Id{\Tz{f\ev}{B}})}
-    &
-    \Tz{f\ev}{(A\ev\times B\ev)}
-    \arrow{d}{\Tz{(f\ev)}{(m\ev\times \Id{B\ev})}}
-    \\
-    A'\ev \times \Tz{f\ev}{(B\ev)}
-    \arrow{r}{\tstrengthz{f\ev}{(A'\ev)}{(B\ev)}}
-    &
-    \Tz{f\ev}{(A'\ev\times B\ev)}
-\end{tikzcd}
-
-\begin{tikzcd}
-    A\ev \times \Tz{f\ev}{(B\ev)}
-    \arrow{r}{\tstrengthz{f\ev}{(A\ev)}{(B\ev)}}
-    \arrow{d}{(\Id{A\ev}\times \Tz{f\ev}{(m\ev)})}
-    &
-    \Tz{f\ev}{(A\ev\times B\ev)}
-    \arrow{d}{\Tz{(f\ev)}{(\Id{A\ev} \times m\ev)}}
-    \\
-    A\ev \times \Tz{f\ev}{(B'\ev)}
-    \arrow{r}{\tstrengthz{f\ev}{(A\ev)}{(B'\ev)}}
-    &
-    \Tz{f\ev}{(A\ev\times B'\ev)}
-\end{tikzcd}
-
-
-\subsubsection{Monad Laws}
-\paragraph{Left Unit}
-
-\begin{align}
-    (\bindn{f}{\1}{A}\after\Tn{f}{\pointn{A}})\ev &= \bindz{(f\ev)}{\1}{(A\ev)} \after \Tz{f\ev}{(\pointz{A\ev})}\\
-    &= \Id{\Tz{f\ev}{A\ev}}\\
-    &=(\Id{\Tn{f}{A}})\ev
-\end{align}
-
-\paragraph{Right Unit}
-
-\begin{align}
-    (\bindn{\1}{g}{A}\after\pointn{\Tn{f}{A}})\ev &= \bindz{\1}{(f\ev)}{(A\ev)} \after (\pointz{\Tz{f\ev}{A\ev}})\\
-    &= \Id{\Tz{f\ev}{A\ev}}\\
-    &=(\Id{\Tn{f}{A}})\ev
-\end{align}
-
-
-\paragraph{Monad Associativity}
-
-\begin{align}
-    ((\bindn{f}{(g\dot h)}{A})\after\Tn{f}{(\bindn{g}{h}{A})})\ev &= \bindz{(f\ev)}{((g\ev)\dot(h\ev))}{(A\ev)}\after\Tz{f\ev}{\bindz{(h\ev)}{(g\ev)}{A\ev}}\\
-    &= \bindz{((f\ev)\dot(g\ev))}{(h\ev)}{(A\ev)}\after\bindz{(f\ev)}{(g\ev)}{(\Tz{h\ev}{(A\ev)})}\\
-    & = (\bindn{f\dot g}{h}{A}\after\bindn{f}{g}{\Tz{h}{A}})\ev
-\end{align}
-\subsubsection{Tensorial Strength}
-
-\paragraph{Unitor Law}
-\begin{align}
-    (\Tn{f}{\pp})\ev&= \Tz{(f\ev)}{(\pp\ev)}\\
-    & =  \Tz{(f\ev)}{(\pp)}\\
-    & = \pp\\
-    &= \pp\ev
-\end{align}
-
-\paragraph{Bind Law}
-
-\begin{tikzcd}[ampersand replacement=\&]
-    A \times \Tn{f}{\Tn{g}{B}} 
-    \arrow [r, "\tstrength{f}{A}{\Tn{g}{B}}"]
-    \arrow [dr, "\Id{A} \times \bindn{f}{g}{B}"]
-    \& 
-    \Tn{f}{(A \times \Tn{g}{B})} 
-    \arrow [r, "\Tn{f}{\tstrength{g}{A}{B}}"]
-    \& 
-    \Tn{f}{\Tn{g}{(A \times B)}} 
-    \arrow [d, "\bindn{f}{g}{A \times B}"]
-    \\
-    \&
-    A \times \Tn{f \dot g}{B}  
-    \arrow [r, "\tstrength{f \dot g}{A}{B}"] 
-    \&
-    \Tn{f \dot g}({A \times B)}
-\end{tikzcd}
-
-\begin{align}
-    (\tstrengthn{(f\dot g)}{A}{B}\after (\Id{A}\times \bindn{f}{g}{B}))\ev & = (\tstrengthz{((f\ev)\dot (g\ev))}{(A\ev)}{(B\ev)}\after (\Id{A\ev}\times \bindn{(f\ev)}{(g\ev)}{(B\ev)}))\\
-    & = \bindz{(f\ev)}{(g\ev)}{(A\times B)\ev}\after\Tz{f\ev}{(\tstrengthz{(g\ev)}{(A\ev)}{(B\ev)})}\after\tstrengthz{(f\ev)}{(A\ev)}{\Tz{g\ev}{(B\ev)}}\\
-    & = (\bindn{f}{g}{(A\times B)}\after\Tn{f}{(\tstrengthn{g}{A}{B})}\after\tstrengthn{f}{A}{\Tn{g}{(B)}})\ev
-\end{align}
+        \begin{framed}
+            \centering
+            \textbf{Commutes With Tensor Strength}
 
 
 
-\paragraph{Commutativity with Unit}
 
-\begin{tikzcd}[ampersand replacement=\&]
-    A \times B
-    \arrow [r, "\Id{A} \times \point{B}"]
-    \arrow [rd, "\point{A \times B}"]
-    \&
-    A \times \tob 
-    \arrow [d, "\tstrength{\1}{A}{B}"]
-    \\
-    \&
-    \Tn{\1}{(A \times B)}
-\end{tikzcd}
+    
+            \begin{minipage}{.45\textwidth}
+                \centering
+                \begin{tikzpicture}[baseline= (a).base]
+                    \node[scale=.7] (a) at (0,0){\begin{tikzcd}
+                        A \times \Tn{f}{B} \arrow [r, "\Id{A} \times \dsen{f}{g}_B"] \arrow [d, "\tstrengthn{f}{A}{B}"] &
+                        A \times \Tn{g}{B} \arrow [d, "\tstrengthn{g}{A}{B}"] \\
+                        \Tn{f}{(A \times B)} \arrow [r, "\dsen{f}{g}_{ A \times B}"] &
+                        \Tn{g}{(A \times B)} 
+                    \end{tikzcd}
+                    };
+            \end{tikzpicture}
+            \end{minipage}
+            \quad
+            \begin{minipage}{.45\textwidth}
+                \centering
+                \scalebox{.75}{\parbox{\linewidth}{%
+                \begin{align*}
+                    & (\tstrengthn{g}{A}{B}\after(\Id{A}\times \db{f\subeffectn g}_B))\ev \\
+                    &= \tstrengthz{(g\ev)}{(A\ev)}{(B\ev)}\after(\Id{A\ev}\times \db{f\ev \subeffectz g\ev}_{B\ev})\\
+                    & = \db{f\ev \subeffectz g\ev}_{(A\times B)\ev} \after\tstrengthz{(f\ev)}{(A\ev)}{(B\ev)}\\
+                    & = (\db{f \subeffectn g}_{(A\times B)} \after\tstrengthn{f}{A}{B})\ev\\
+                \end{align*}
+                }}
+            \end{minipage}
+        \end{framed}
 
-\begin{align}
-    (\tstrengthn{\1}{A}{B}\after(\Id{A}\times \pointn{A}))\ev & = \tstrengthz{\1}{(A\ev)}{(B\ev)}\after(\Id{A\ev}\times \pointz{A\ev})\\
-    & = \pointz{A\ev\times B\ev}\\
-    & = (\pointn{A\times B})\ev
-\end{align}
+        \begin{framed}
+            \centering
+            \textbf{Commutes with Join}
 
-\paragraph{Commutativity with $\alpha$}
-Let $\alpha_{A, B, C} = \pr{\p\after\p}{\pr{\pp\after\p}{\pp}}: ((A \times B) \times C) \rightarrow (A \times (B \times C))$
+            \begin{minipage}{.45\textwidth}
+                \centering
+                \begin{tikzpicture}[baseline= (a).base]
+                    \node[scale=.7] (a) at (0,0){
+                    \begin{tikzcd}
+                        \Tn{f}{\Tn{g}{}} 
+                        \arrow [rr, "\Tn{f}{\deno{g\subeffectn g'}
+                        }"]
+                        \arrow [d, "\bindn{f}{g}{}"]
+                        &  &
+                        \Tn{f}{\Tn{g'}{}}
+                        \arrow [rr, "\db{f \subeffectn f'}_{M, \Tn{g'}{}}"]
+                        & &
+                         \Tn{f'}{\Tn{g'}{}} 
+                         \arrow [d, "\bindn{f'}{g'}{}"]
+                         \\
+                        \Tn{f\dot g}{}
+                        \arrow [rrrr, "\deno{f\dot g\subeffectn f'\dot g'}"]
+                        & &
+                         & &
+                        \Tn{f'\dot g'}{}
+                    \end{tikzcd}                    
+                    };
+            \end{tikzpicture}
+            \end{minipage}
+            \quad
+            \begin{minipage}{.45\textwidth}
+                \centering
+                \scalebox{.75}{\parbox{\linewidth}{%
+                \begin{align*}
+                    & (\dsen{f\dot g}{f'\dot g'}_A\after\bindn{f}{g}{A})\ev \\ & = \dsez{(f\ev)\dot(g\ev)}{(f'\ev)\dot (g\ev)}_{A\ev}\after\bindz{(f\ev)}{(g\ev)}{(A\ev)}\\
+                    & = \bindz{(f\ev)}{(g\ev)}{(A\ev)}\after\dsez{f\ev}{f'\ev}_{\Tz{g'\ev}{(A\ev)}}\after \Tz{f\ev}{\dsez{g\ev}{g'\ev}}_{(A\ev)}\\
+                    &= \bindn{f}{g}{A}\after\dsen{f}{f'}_{\Tn{g'}{A}}\after\Tn{f}{\dsen{g}{g'}}_A
+                \end{align*}
+                }}
+            \end{minipage}
+        \end{framed}
+        
+    \end{framed}
+    \caption{The required properties of the subeffect natural transformations can be proved component-wise from the appropriate of the subeffect natural transformation on $\set$.}
+    \label{SubeffectProperties}
+\end{figure}
 
-
-\begin{tikzcd}[ampersand replacement=\&]
-    (A\times B)\times \Tn{\e}{C} 
-    \arrow [rr, "\tstrength{\e}{(A\times B)}{C}"]
-    \arrow [d, "\alpha_{A, B, \Tn{\e}{C}}"]
-    \& \& \Tn{\e}{((A \times B)\times C)}
-    \arrow [d, "\Tn{\e}{\alpha_{A, B, C}}"]
-    \\
-    A \times (B \times \Tn{\e}{C}) 
-    \arrow [r, "\Id{A}\times\tstrength{\e}{B}{C}"]
-    \&
-    A\times\Tn{\e}{(B \times C)} 
-    \arrow [r, "\tstrength{\e}{A}{(B \times C)}"]
-    \& \Tn{\e}{(A \times (B \times C))}
-    \\
-\end{tikzcd}
-
-\begin{align}
-    (\Tn{f}{\alpha_{A, B, C}}\after\tstrengthn{f}{A\times B}{C})\ev & = \Tz{f\ev}{\alpha_{A\ev, B\ev, C\ev}} \after\tstrengthz{(f\ev)}{(A\times B)\ev}{(C\ev)}\\
-    & = \tstrengthz{(f\ev)}{(A\ev)}{(B\ev\times C\ev)}\after(\Id{A\ev}\times \tstrengthz{(f\ev)}{(B\ev)}{(C\ev)})\after\alpha_{A\ev, B\ev, C\ev}\\
-    & = (\tstrengthn{f}{A}{(B\times C)}\after(\Id{A}\times \tstrengthn{f}{B}{C})\after\alpha_{A, B, C})\ev\\
-\end{align}
-
-
-\subsection{Sub-Effecting}
-Given a collection of sub-effecting natural transformation in $\set$,
-
-\begin{align}
-    \deno{\e_1\subeffectz \e_2}:&\quad \Tz{\e_1}{} \rightarrow \Tz{\e_2}{}
-\end{align}
-
-We can form sub-effect natural transformations in $[E^n, \set]$:
-
-\begin{align}
-    \deno{f\subeffectn g}:&\quad\Tn{f}{}\rightarrow \Tn{g}{}\\
-    \deno{f\subeffectn g} A \ev:&\quad\Tn{f\ev}{(A\ev)}\rightarrow \Tn{g\ev}{(B\ev)}\\
-    =&\quad \deno{f\ev\subeffectz g\ev}A\ev
-\end{align}
-
-\subsubsection{Naturality}
-
-\begin{tikzcd}
-    \Tz{f\ev}{A\ev}
-    \arrow{r}{\deno{f\ev\subeffectz g\ev}A\ev}
-    \arrow{d}{\Tz{f\ev}{m\ev}}
-    &
-    \Tz{g\ev}{A\ev}
-    \arrow{d}{\Tz{g\ev}{m\ev}}
-    \\
-    \Tz{f\ev}{B\ev}
-    \arrow{r}{\deno{f\ev\subeffectz g\ev}B\ev}
-    &
-    \Tz{g\ev}{B\ev}
-\end{tikzcd}
-
-\subsubsection{Commutes With Tensor Strength}
-
-\begin{tikzcd}[ampersand replacement=\&]
-    A \times \Tn{f}{B} \arrow [r, "\Id{A} \times \dsen{f}{g}_B"] \arrow [d, "\tstrengthn{f}{A}{B}"] \&
-    A \times \Tn{g}{B} \arrow [d, "\tstrengthn{g}{A}{B}"] \\
-    \Tn{f}{(A \times B)} \arrow [r, "\dsen{f}{g}_{ A \times B}"] \&
-    \Tn{g}{(A \times B)} 
-\end{tikzcd}
-
-\begin{align}
-    (\tstrengthn{g}{A}{B}\after(\Id{A}\times \db{f\subeffectn g}_B))\ev & = \tstrengthz{(g\ev)}{(A\ev)}{(B\ev)}\after(\Id{A\ev}\times \db{f\ev \subeffectz g\ev}_{B\ev})\\
-    & = \db{f\ev \subeffectz g\ev}_{(A\times B)\ev} \after\tstrengthz{(f\ev)}{(A\ev)}{(B\ev)}\\
-    & = (\db{f \subeffectn g}_{(A\times B)} \after\tstrengthn{f}{A}{B})\ev\\
-\end{align}
-
-\subsubsection{Commutes with Join}
-
-\begin{tikzcd}[ampersand replacement=\&]
-    \Tn{f}{\Tn{g}{}} 
-    \arrow [rr, "\Tn{f}{\deno{g\subeffectn g'}
-    }"]
-    \arrow [d, "\bindn{f}{g}{}"]
-    \&  \&
-    \Tn{f}{\Tn{g'}{}}
-    \arrow [rr, "\db{f \subeffectn f'}_{M, \Tn{g'}{}}"]
-    \& \&
-     \Tn{f'}{\Tn{g'}{}} 
-     \arrow [d, "\bindn{f'}{g'}{}"]
-     \\
-    \Tn{f\dot g}{}
-    \arrow [rrrr, "\deno{f\dot g\subeffectn f'\dot g'}"]
-    \& \&
-     \& \&
-    \Tn{f'\dot g'}{}
-\end{tikzcd}
-
-\begin{align}
-    (\dsen{f\dot g}{f'\dot g'}_A\after\bindn{f}{g}{A})\ev & = \dsez{(f\ev)\dot(g\ev)}{(f'\ev)\dot (g\ev)}_{A\ev}\after\bindz{(f\ev)}{(g\ev)}{(A\ev)}\\
-    & = \bindz{(f\ev)}{(g\ev)}{(A\ev)}\after\dsez{f\ev}{f'\ev}_{\Tz{g'\ev}{(A\ev)}}\after \Tz{f\ev}{\dsez{g\ev}{g'\ev}}_{(A\ev)}\\
-    &= \bindn{f}{g}{A}\after\dsen{f}{f'}_{\Tn{g'}{A}}\after\Tn{f}{\dsen{g}{g'}}_A
-\end{align}
-
-\subsection{Sub-Typing}
-Sub-typing in $[E^n, \set]$ holds via sub-typing in $\set$
-
-\begin{align}
-    \deno{A\subtype_n B}:&\quad A\rightarrow B\\
-    \deno{A\subtype_n B}\ev=&\quad \deno{A\ev\subtype_0 B\ev}
-\end{align}
-
-So the subtyping relation $A \subtype B$ forms a morphism in $[E^n, \set]$
-
-\section{Functors Between S-Categories}
+\section{Re-indexing Functors}
+\label{ReindexingFunctorProperties}
 For a function $\theta: E^m \rightarrow E^n$ , the re-indexing functor $\theta\star$ is defined as follows:
 
-\begin{align}
+\begin{align*}
     \theta\star:\quad& [E^n, \set] \rightarrow [E^m, \set]\\
     \theta\star(A)\emv=&\quad A(\theta (\emv))\\
     f:\quad& A \rightarrow B \in[E^n, \set]\\
     \theta\star(f)\emv =&\quad f(\theta(\emv)): A(\theta(\emv)\rightarrow B(\theta(\emv)))
-\end{align}
+\end{align*}
+
+This functor preserves all the S-category properties.
+These can be seen in figures \ref{PreservesCCC}-\ref{PreservesSubtypingSubeffecting}
+
+
+\begin{figure}
+    \centering
+        \begin{framed}
+            \centering\textbf{$\theta\star$ is Cartesian Closed}
+
+            \begin{minipage}{.45\linewidth}
+                \begin{align*}
+                    (\theta\star(A\times B))\ev & = (A\times B)(\theta\ev)\\
+                    & = (A(\theta \ev)\times B(\theta\ev))\\
+                    & = (\theta\star A\times \theta\star B)\ev\\
+                \end{align*}              
+            \end{minipage}
+            \quad
+            \begin{minipage}{.45\linewidth}
+                \begin{align*}
+                    (\theta\star \p)\ev & = \p(\theta\ev)\\
+                    & = \p \qt{Constant function}\\
+                    & = \p\ev
+                \end{align*}                
+            \end{minipage}
+
+
+            \begin{minipage}{.45\linewidth}
+                \begin{align*}
+                    (\theta\star \pp)\ev & = \pp(\theta\ev)\\
+                    & = \pp \qt{Constant function}\\
+                    & = \pp\ev
+                \end{align*}                
+            \end{minipage}
+            \quad
+            \begin{minipage}{.45\linewidth}
+                \begin{align*}
+                    (\theta\star\pr{f}{g})\ev & = (\pr{f}{g})(\theta\ev)\\
+                    & = \pr{f(\theta\ev)}{g(\theta\ev)}\\
+                    &= \pr{\theta\star f}{\theta\star g}\ev
+                \end{align*}
+            \end{minipage}
+
+            \begin{minipage}{.45\linewidth}
+                \begin{align*}
+                    (\theta\star(A^B))\ev & = (A^B)(\theta\ev)\\
+                     & = (A (\theta\ev))^{(B (\theta\ev))}\\
+                     & = (\theta\star A)^{(\theta\star B)}\ev\\
+                \end{align*}                
+            \end{minipage}
+            \quad
+            \begin{minipage}{.45\linewidth}
+                \begin{align*}
+                (\theta\star \app)\ev & = \app(\theta\ev)\\
+                & = \app \qt{Constant fn}\\
+                & = \app\ev
+            \end{align*}
+            \end{minipage}
+
+        \begin{minipage}{.45\linewidth}
+            \begin{align*}
+                (\theta\star\cur{f})\ev & = \cur{f}(\theta\ev)\\
+                & = \cur{f(\theta\ev)}\\
+                & = \cur{\theta\star f}
+            \end{align*}             
+        \end{minipage}
+        \quad
+        \begin{minipage}{.45\linewidth}
+            \begin{align*}
+                (\theta\star \1)\ev & = \1(\theta\ev)\\
+                & = \1 \\
+                & = \1 \ev\\
+            \end{align*}
+        \end{minipage}      
+        
+        \begin{minipage}{\linewidth}
+            \begin{align*}
+                (\theta\star\term{A})\ev & = \term{A}(\theta\ev)\\
+                & = \term{A(\theta\ev)}\\
+                & = \term{\theta\star A}\ev
+            \end{align*}
+        \end{minipage}        
+    \end{framed}
+    
+    \caption{Proof of the CCC-preserving property of re-indexing functors.}
+    \label{PreservesCCC}
+\end{figure}
+
+\begin{figure}
+    \centering
+    \begin{framed}
+        \centering\textbf{$\theta\star$ Preserves Co-products}
+
+        \begin{minipage}{.45\textwidth}
+            \begin{align*}
+                (\theta\star(\1 + \1))\ev & = (\1 + \1)(\theta\ev)\\
+                & = (\1 + \1)\qt{Constant function}\\
+                & = (\1 + \1)\ev
+            \end{align*}
+        \end{minipage}
+        \quad
+        \begin{minipage}{.45\textwidth}
+            \begin{align*}
+                (\theta\star\inl )\ev & = \inl(\theta\ev)\\
+                & = \inl \qt{Constant Fn}\\
+                & = \inl \ev
+            \end{align*}
+        \end{minipage}
+
+        \begin{minipage}{.45\textwidth}
+            \begin{align*}
+                (\theta\star\inr )\ev & = \inr(\theta\ev)\\
+                & = \inr \qt{Constant Fn}\\
+                & = \inr \ev
+            \end{align*}
+        \end{minipage}
+        \quad
+        \begin{minipage}{.45\textwidth}
+            \begin{align*}
+                (\theta\star [f, g])\ev & = [f, g](\theta\ev)\\
+                & = [f (\theta\ev), g(\theta\ev)]\\
+                & = [\theta\star f, \theta\star g]\ev\\
+            \end{align*}
+        \end{minipage}        
+    \end{framed}
+    
+    \caption{Proof that re-indexing functors preserve the $\1 + \1$ co-product.}
+    \label{PreservesCoProduct}
+\end{figure}
 
 
 
-\subsection{$\theta\star$ is S-closed.}
+\begin{figure}
+    \centering
+    \begin{framed}
+        \centering\textbf{$\theta\star$ Preserves the Graded Monad}
 
-\subsubsection{CCC}
+        \begin{minipage}{.45\textwidth}
+            \begin{align*}
+                (\theta\star\Tn{f}{A})\ev & = \Tn{f}{A}(\theta\ev) \\
+                & = \Tz{(f(\theta\ev))}{(A(\theta\ev))}\\
+                & = (\Tm{(f\after\theta)}{\theta\star A})\ev\\
+            \end{align*}
+        \end{minipage}
+        \quad
+        \begin{minipage}{.45\textwidth}
+            \begin{align*}
+                (\theta\star\pointn{A})\ev & = \pointn{A}(\theta\ev) \\
+                & = \pointz{A(\theta\ev)}\\
+                & = \pointm{\theta\star A}\ev\\
+            \end{align*}
+        \end{minipage}
 
-\begin{align}
-    (\theta\star(A\times B))\ev & = (A\times B)(\theta\ev)\\
-    & = (A(\theta \ev)\times B(\theta\ev))\\
-    & = (\theta\star A\times \theta\star B)\ev\\
-\end{align}
+        \begin{minipage}{.45\textwidth}
+            \begin{align*}
+                (\theta\star \bindn{f}{g}{A})\ev & = \bindn{f}{g}{A}(\theta\ev)\\
+                & = \bindz{f(\theta\ev)}{g(\theta\ev)}{A(\theta\ev)}\\
+                & = \bindm{f\after\theta}{g\after\theta}{\theta\star(A)}(\ev)
+            \end{align*}
+        \end{minipage}
+        \quad
+        \begin{minipage}{.45\textwidth}
+            \begin{align*}
+                (\theta\star \tstrengthn{f}{A}{B})\ev & = \tstrengthn{f}{A}{B}(\theta \ev)\\
+                & = \tstrengthz{(f(\theta\ev))}{(A(\theta\ev))}{(B(\theta\ev))}\\
+                & = \tstrengthm{f\after\theta}{\theta\star A}{\theta\star B}\ev\\
+            \end{align*}
+        \end{minipage}        
+    \end{framed}
+    
+    \caption{Re-indexing functors preserve the graded monad structure}
+    \label{GradedMonadPreserved}
+\end{figure}
 
-\begin{align}
-    (\theta\star \p)\ev & = \p(\theta\ev)\\
-    & = \p \qt{Constant function}\\
-    & = \p\ev
-\end{align}
+\begin{figure}
+    \begin{framed}
+        \centering\textbf{$\theta\star$ preserves Ground Subtyping and Subeffecting}
 
+        \begin{minipage}{.45\textwidth}
+            \begin{align*}
+                \theta\star(\deno{A\subtypeg B})\ev  & = \deno{A\subtypeg B}(\theta\ev)\\
+                & = \deno{A\subtype B} \qt{Constant Function}\\
+                & = \deno{A\subtype B} \ev\\
+            \end{align*}
+        \end{minipage}
+        \quad
+        \begin{minipage}{.45\textwidth}
+            \begin{align*}
+                (\theta\star(\dsen{f}{g} A))\ev & = (\dsen{f}{g} A)(\theta \ev)\\
+                & = (\dsen{f(\theta\ev)}{g(\theta\ev)}(A(\theta\ev)))\\
+                & = (\dsem{\theta\star f}{\theta\star g} (\theta\star A)) \ev\\
+            \end{align*}
+        \end{minipage}
+    \end{framed}
+    \caption{Re-indexing functors preserve the ground subtyping and subeffecting morphisms.}
+    \label{PreservesSubtypingSubeffecting}
+\end{figure}
 
-\begin{align}
-    (\theta\star \pp)\ev & = \pp(\theta\ev)\\
-    & = \pp \qt{Constant function}\
-    & = \pp\ev
-\end{align}
-
-\begin{align}
-    (\theta\star\pr{f}{g})\ev & = (\pr{f}{g})(\theta\ev)\\
-    & = \pr{f(\theta\ev)}{g(\theta\ev)}\\
-    &= \pr{\theta\star f}{\theta\star g}\ev
-\end{align}
-
-\begin{align}
-    (\theta\star(A^B))\ev & = (A^B)(\theta\ev)\\
-     & = (A (\theta\ev))^{(B (\theta\ev))}\\
-     & = (\theta\star A)^{(\theta\star B)}\ev\\
-\end{align}
-
-\begin{align}
-    (\theta\star \app)\ev & = \app(\theta\ev)\\
-    & = \app \qt{Constant fn}\\
-    & = \app\ev
-\end{align}
-
-\begin{align}
-    (\theta\star\cur{f})\ev & = \cur{f}(\theta\ev)\\
-    & = \cur{f(\theta\ev)}\\
-    & = \cur{\theta\star f}
-\end{align}
-
-
-\begin{align}
-    (\theta\star \1)\ev & = \1(\theta\ev)\\
-    & = \1 \\
-    & = \1 \ev\\
-\end{align}
-
-\begin{align}
-    (\theta\star\term{A})\ev & = \term{A}(\theta\ev)\\
-    & = \term{A(\theta\ev)}\\
-    & = \term{\theta\star A}\ev
-\end{align}
-
-
-\subsubsection{Co-Product}
-
-\begin{align}
-    (\theta\star(\1 + \1))\ev & = (\1 + \1)(\theta\ev)\\
-    & = (\1 + \1)\qt{Constant function}\\
-    & = (\1 + \1)\ev
-\end{align}
-
-\begin{align}
-    (\theta\star\inl )\ev & = \inl(\theta\ev)\\
-    & = \inl \qt{Constant Fn}\\
-    & = \inl \ev
-\end{align}
-
-\begin{align}
-    (\theta\star\inr )\ev & = \inr(\theta\ev)\\
-    & = \inr \qt{Constant Fn}\\
-    & = \inr \ev
-\end{align}
-
-\begin{align}
-    (\theta\star [f, g])\ev & = [f, g](\theta\ev)\\
-    & = [f (\theta\ev), g(\theta\ev)]\\
-    & = [\theta\star f, \theta\star g]\ev\\
-\end{align}
-
-
-
-
-\subsubsection{Strong Graded Monad}
-\begin{align}
-    (\theta\star\Tn{f}{A})\ev & = \Tn{f}{A}(\theta\ev) \\
-    & = \Tz{(f(\theta\ev))}{(A(\theta\ev))}\\
-    & = (\Tm{(f\after\theta)}{\theta\star A})\ev\\
-\end{align}
-
-\begin{align}
-    (\theta\star\pointn{A})\ev & = \pointn{A}(\theta\ev) \\
-    & = \pointz{A(\theta\ev)}\\
-    & = \pointm{\theta\star A}\ev\\
-\end{align}
-
-\begin{align}
-    (\theta\star \tstrengthn{f}{A}{B})\ev & = \tstrengthn{f}{A}{B}(\theta \ev)\\
-    & = \tstrengthz{(f(\theta\ev))}{(A(\theta\ev))}{(B(\theta\ev))}\\
-    & = \tstrength{f\after\theta}{\theta\star A}{\theta\star B}\ev\\
-\end{align}
-
-\subsubsection{Sub-Effecting}
-\begin{align}
-    (\theta\star(\dsen{f}{g} A))\ev & = (\dsen{f}{g} A)(\theta \ev)\\
-    & = (\dsen{f(\theta\ev)}{g(\theta\ev)}(A(\theta\ev)))\\
-    & = (\dsem{\theta\star f}{\theta\star g} (\theta\star A)) \ev\\
-\end{align}
-
-\subsubsection{Ground Sub-Typing}
-\begin{align}
-    \theta\star(\deno{A\subtypeg B})\ev  & = \deno{A\subtypeg B}(\theta\ev)\\
-    & = \deno{A\subtype B} \qt{Constant Function}\\
-    & = \deno{A\subtype B} \ev\\
-\end{align}
 
 \subsection{Quantification}
 We need to define $\allEn: [E^{n+1}, \set]\rightarrow[E^n, \set]$
 
 So
-\begin{align}
+\begin{align*}
     (\allEn A)\env =&\quad \Pi_{\e\in E} A(\env, \e)\\
     m:&\quad A\rightarrow B\\
     (\allEn m):&\quad \allEn A\rightarrow \allEn B\\
     (\allEn m)\env =&\Pi_{\e\in E} m(\env, \e)\\
-\end{align}
-
-\subsection{Adjunction}
-It is the case that:
-$$\pstar \dashv \allEn$$
-
-With unit:
-
-\begin{align}
-    \unit{A}:&\quad A \rightarrow \allEn\pstar A\\
-    \unit{A}(\env)=&\quad\finpr{\Id{A(\env,e)}}{\e\in E}
-\end{align}
-
-
-And co-unit
-
-
-\begin{align}
-    \counit{B} : &\quad \pstar\allEn B \rightarrow B\\
-    \counit{B}(\env, \e) =&\quad \pi_\e : \Pi_{e\in E}B(\env, \e)\rightarrow \Pi_{e\in E}B(\env, \e)
-\end{align}
-
-
-We then define the natural bijection as so:
-
-\begin{equation}
-    \bar{(-)}: [E^{n_1}, \set](\pstar A, B) \leftrightarrow [E^n,\set] (A, \allEn B): \widehat{(-)}
-\end{equation}
-
-\begin{align}
-    m:&\quad \pstar A \rightarrow B\\
-    \bar{m}:&\quad A\rightarrow \allEn B\\
-    \bar{m}(\env) =&\quad \finpr{m(\env, \e)}{e\in E}
-\end{align}
-
-
-\begin{align}
-    n:&\quad A \rightarrow \allEn B\\
-    \widehat{n}:&\quad \pstar A\rightarrow B\\
-    \widehat{n}(\env, \e_{n+1}) =&\quad\pi_\e\after g(\env)
-\end{align}
-
-\subsubsection{This is an Adjunction}
-For any $g: \pstar A \rightarrow B$,
-
-\begin{align}
-    (\counit{B}\after\pstar(\bar{g}))(\env, \e_{n+1}) & = \pi_{\e_{n+1}}\after\finpr{g(\env, \e')}{\e'\in E}\\
-    &= g(\env, \e_{n+1})
-\end{align}
-
-\subsection{Beck-Chevalley Condition}
-
-For $\theta: E^m \rightarrow E^n$:
-\begin{align}
-    ((\theta\star\after\allEn)A)\env &= \theta\star(\allEn A)\env\\
-    &= (\allEn A)(\theta(\env))\\
-    &= \Pi_{\e\in E}(A(\theta(\env), \e))\\
-    &= \Pi_{\e\in E}(((\theta\times \Id{U})\star A)(\env, \e))\\
-    &= \allEm((\theta\times\Id{E})\star A)\env\\
-    &= ((\allEm\after(\theta\times\Id{E})\star)A)\env
-\end{align}
-
-And $\bar{(\theta\times\Id{U})\star \counit{}} = \Id{\theta\star\after\allI}$.
-
-\begin{align}
-    \bar{(\theta\times\Id{U})\star \counit{A}} \ev  & = \finpr{(\theta\times\Id{U})\star\counit{A}(\ev, \e)}{\e\in E}\\
-    & = \finpr{\counit{A}(\theta\ev, \e)}{e\in E}\\
-    & = \finpr{\pi_\e}{\e\in E}: \Pi_{\e\in E}A(\theta\ev, \e) \rightarrow \Pi_{\e\in E}A(\theta\ev, \e)\\
-    & = \Id{\Pi_{\e\in E}A(\theta\ev, \e)}\\
-    & = \Id{\allII\after(\theta\times\Id{U})\star A}\ev\\
-    & = \Id{\theta\star\after\allI}
-\end{align}
+\end{align*}
 
 \end{document}
