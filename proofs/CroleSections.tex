@@ -322,9 +322,9 @@ For each instance of the well-formed relation on type environments, define an ob
 
 \newcommand\termDenotations[1]{
     
-For each instance of the typing relation, define a denotation morphism: $\deno{\gpetyperelation{v}{A}}: replaceme(\G_I, A_I)$. Writing $\G_I$ and $A_I$ for $\deno{\wellformedok{\P}{\G}}$ and $\deno{\typerelation{\P}{A}{\type}}$.
+For each instance of the typing relation, define a denotation morphism: $\deno{\gpetyperelation{v}{A}}: #1(\G_I, A_I)$. Writing $\G_I$ and $A_I$ for $\deno{\wellformedok{\P}{\G}}$ and $\deno{\typerelation{\P}{A}{\type}}$.
 
-For each ground constant, $\const{A}$, there exists $c: \1 \rightarrow A_I$ in $replaceme$.
+For each ground constant, $\const{A}$, there exists $c: \1 \rightarrow A_I$ in $#1$.
 
 \begin{itemize}
     \item $\ntreeruleI{Unit}{\wellformedok{\P}{\G}}{\deno{\etyperelation{\P}{\G}{\u}{\U}} = \term{\G} : \G_I \rightarrow \1}$
@@ -349,9 +349,9 @@ For each ground constant, $\const{A}$, there exists $c: \1 \rightarrow A_I$ in $
     \item $\ntreeruleII{Bind}{f = \deno{\etyperelation{\P}{\G}{v_1}{\M{\e_1}{A}} : \G \rightarrow \T{\e_1}{A}}}{{ g = \deno{\etyperelation{\P}{\gax}{v_2}{\M{\e_2}{B}}}}: \G \times A \rightarrow \T{\e_2}{B}}{\deno{\etyperelation{\P}{\G}{\doin{x}{v_1}{v_2}}{\M{\e_1 \dot \e_2}{B}}} = \bind{\e_1}{\e_2}{B} \after \T{\e_1}{g} \after \tstrength{\G}{A}{\e_1} \after \pr{\idg}{f}: \G \rightarrow \T{\e_1 \dot \e_2}{B}}$ 
    
     \item $\ntreeruleII{Apply}{f = \deno{\gpetyperelation{v_1}{\ab}}: \G \rightarrow (B)^{A} }{ g=\deno{\gpetyperelation{v_2}{A}}: \G \rightarrow A}{\deno{\gpetyperelation{\apply{v_1}{v_2}}{\b}}= \app\after\pr{f}{g}: \G \rightarrow B }$
-    \item $\ntreeruleI{Effect-Lambda}{f = \deno{\etyperelation{\P,\a}{\G}{v}{A}}: \ciuw(\G, A)}{\deno{\gpetyperelation{\elam{\a}{A}}{\all{\e}{A}}} = \bar{f}: replaceme(\G, \allI(A))}$
+    \item $\ntreeruleI{Effect-Lambda}{f = \deno{\etyperelation{\P,\a}{\G}{v}{A}}: \ciuw(\G, A)}{\deno{\gpetyperelation{\elam{\a}{A}}{\all{\e}{A}}} = \bar{f}: #1(\G, \allI(A))}$
     
-    \item $\ntreeruleII{Effect-App}{g=\deno{\gpetyperelation{v}{\all{\a}{A}}}: replaceme(\G, \allI(A))}{ h = \deno{\typerelation{\P}{\e}{\effect}}: \ciu}{\deno{\gpetyperelation{\eapp{v}{\e}}{A\ssub{\a}{\e}}} = \pr{\Id{I}}{h}\star(\e_{\deno{\typerelation{\P,\b}{A\ssub{\a}{\b}}{\type}}})\after g: replaceme(\G, A\ssub{\a}{\e})}$
+    \item $\ntreeruleII{Effect-App}{g=\deno{\gpetyperelation{v}{\all{\a}{A}}}: #1(\G, \allI(A))}{ h = \deno{\typerelation{\P}{\e}{\effect}}: \ciu}{\deno{\gpetyperelation{\eapp{v}{\e}}{A\ssub{\a}{\e}}} = \pr{\Id{I}}{h}\star(\e_{\deno{\typerelation{\P,\b}{A\ssub{\a}{\b}}{\type}}})\after g: #1(\G, A\ssub{\a}{\e})}$
 \end{itemize}
 }
 
@@ -3211,7 +3211,7 @@ Then
     \end{align}
 
     \case{Effect-Eta}
-    \todo{Use reindexing functors rather than post composition}
+    \todo{Use re-indexing functors rather than post composition}
     Let \begin{align}
         f & = \deno{\gpetyperelation{v}{\all{\a}{A}}}\\
         A & = \deno{\typerelation{\P,\a}{A}{\type}}
