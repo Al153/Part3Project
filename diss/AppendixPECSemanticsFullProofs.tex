@@ -420,32 +420,35 @@ Here are some simple corollaries of the adjunction between $\pstar$ and $\allI$.
             \wrelw{\P'}{\P} \wedge \ok{\P}\Rightarrow \ok{\P'}
         \end{equation}
         \end{property}
-        \begin{proof}
-
-        \subcase{$\i$}
-        $$\ok{\P} \wedge\wrel{\i}{\P}{\P} \Rightarrow \ok{\P}$$ 
-        \subcase{$\w\pi$}
-        \bi,
-        \begin{equation}
-            \wrelw{\P'}{\P} \wedge \a\notin\P'
-        \end{equation}
-
-        So, by induction, $\ok{\P'}$ and hence $\ok{(\P', \a)}$
-
-        \subcase{$\w\x$}
-        \bi, 
-        \begin{equation}
-            \wrelw{\P'}{\P} \wedge \a\notin\P'
-        \end{equation}
-
-        So
-        \begin{align*}
-            \ok{(\P, \a)} & \Rightarrow \ok{\P} \\
-            & \Rightarrow \ok{\P'}\\
-            & \Rightarrow \ok{(\P', \a)}\\
-        \end{align*}
-
-        \end{proof}
+        \begin{framed}
+            
+            \begin{proof}
+    
+            \subcase{$\i$}
+            $$\ok{\P} \wedge\wrel{\i}{\P}{\P} \Rightarrow \ok{\P}$$ 
+            \subcase{$\w\pi$}
+            \bi,
+            \begin{equation}
+                \wrelw{\P'}{\P} \wedge \a\notin\P'
+            \end{equation}
+    
+            So, by induction, $\ok{\P'}$ and hence $\ok{(\P', \a)}$
+    
+            \subcase{$\w\x$}
+            \bi, 
+            \begin{equation}
+                \wrelw{\P'}{\P} \wedge \a\notin\P'
+            \end{equation}
+    
+            So
+            \begin{align*}
+                \ok{(\P, \a)} & \Rightarrow \ok{\P} \\
+                & \Rightarrow \ok{\P'}\\
+                & \Rightarrow \ok{(\P', \a)}\\
+            \end{align*}
+    
+            \end{proof}
+        \end{framed}
 
         \begin{property}[Domain Lemma]
 
@@ -586,7 +589,7 @@ Type environment weakenings are inductively defined with respect to an effect en
         \quad\quad
         \condtreeruleII{Extend}{\typerelation{\P'}{\si}{\P}}{\wellformed{\P'}{\e}}{\typerelation{\P'}{\si, \a \setto\e}{(\P, \a)}}{\a\notin\P}
     \]
-                 
+
     \subsection{Action on Terms}
          We define the action of applying a term substitution $\si$ as 
          $$v\ssi$$
@@ -754,439 +757,455 @@ For each instance of the effect-environment substitution relation, define a deno
 In this section, we state and prove a theorem that the action of a simultaneous effect-variable substitution upon a structure in the language has a consistent effect upon the denotation of the language. More formally, for the denotation morphism $\D$ of some relation, the denotation of the substituted relation, $\D' = \si\star(\D)$.
 
 
-\section{Substitution Preserves the Wellformedness of Effects}
-
-I.e. \begin{equation}
-    \wellformed{\P}{\e}\wedge\typerelation{\P'}{\i}{\P} \implies \wellformed{\P'}{\si(\e)}
-\end{equation}
-
-\proof
-\case{Ground}
-$\si(e) = e$, so $\wellformed{\P'}{\si(\e)}$ holds.
-\case{Multiply}
-\bi, $\wellformed{\P}{\e_1}$ and $\wellformed{\P}{\e_2}$ so $\wellformed{\P'}{\si(\e_1)}$ and $\wellformed{\P'}{\si(\e_2)}$ by induction and hence $\wellformed{\P'}{\si(\e_1\dot\e_2)}$
-\case{Var}
-\bi, $\P=\P'',\a$ and $\ok{\P'',\a}$. Hence byu case splitting on $\i$, we see that $\si=\si', \a\setto\e$.
-
-So by inversion, $\wellformed{\si}{\e}$ so $\wellformed{\P'}{\si(\a)=\e}$
-\case{Weaken}
-\bi $\P=\P'', \b$ and $\wellformed{\P''}{\a}$, so $\si=\si'\b\setto\e$.
-
-So $\typerelation{\P'}{\si'}{\P''}$.
-
-hence by induction, $\wellformed{\P'}{\si'(a)}$, so $\wellformed{\P'}{\si(\a)}$ since $\a\neq\b)$
-
-\section{Effect Substitution preserves the subeffect relation}
-
-If $\typerelation{\P'}{\si}{\P}$ and $\e_1\subeffectp\e_2$, then $\e_1\ssi\subeffect_{\P'}\e_2\ssi$.
-
-\proof
-For any ground substitution $\si'$ of $\P'$, then $\si\si'$ (the substitution $\si'$ applied after $\si$) is also a ground substitution.
-
-So $\e_1\ssi\sub{\si'}\subeffect\e_2\ssi\sub{\si'}$. 
-
-So $\e_1\ssi\subeffect_{\P'}\e_2\ssi$.
-
 \section{Effects}
-If $\si = \deno{\typerelation{\P'}{\si}{\P}}$ then $\deno{\typerelation{\P'}{\si(\e)}{\effect}} = \si\star\deno{\typerelation{\P}{\e}{\effect}} = \deno{\typerelation{\P}{\e}{\effect}}\after\si$.
 
-\proof
-By induction on the derivation on $\deno{\typerelation{\P}{\e}{\effect}}$
+\begin{theorem}[Effect Substitution Preserves Effect Wellformedness]
+    If $\wellformed{\P}{\e}$ and $\typerelation{\P'}{\i}{\P}$ then $\wellformed{\P'}{\si(\e)}$   
+\end{theorem}
+
+\begin{framed}
+    \begin{proof}
+        \case{Ground}
+        $\si(e) = e$, so $\wellformed{\P'}{\si(\e)}$ holds.
+        \case{Multiply}
+        \bi, $\wellformed{\P}{\e_1}$ and $\wellformed{\P}{\e_2}$ so $\wellformed{\P'}{\si(\e_1)}$ and $\wellformed{\P'}{\si(\e_2)}$ by induction and hence $\wellformed{\P'}{\si(\e_1\dot\e_2)}$
+        \case{Var}
+        \bi, $\P=\P'',\a$ and $\ok{\P'',\a}$. Hence byu case splitting on $\i$, we see that $\si=\si', \a\setto\e$.
+        
+        So by inversion, $\wellformed{\si}{\e}$ so $\wellformed{\P'}{\si(\a)=\e}$
+        \case{Weaken}
+        \bi $\P=\P'', \b$ and $\wellformed{\P''}{\a}$, so $\si=\si'\b\setto\e$.
+        
+        So $\typerelation{\P'}{\si'}{\P''}$.
+        
+        hence by induction, $\wellformed{\P'}{\si'(a)}$, so $\wellformed{\P'}{\si(\a)}$ since $\a\neq\b)$
+    \end{proof}
+    
+\end{framed}
+\begin{theorem}[Effect Substitution Preserves the Subeffect Relation]
+    If $\typerelation{\P'}{\si}{\P}$ and $\e_1\subeffectp\e_2$, then $\e_1\ssi\subeffect_{\P'}\e_2\ssi$.
+\end{theorem}
+
+
+\begin{framed}  
+    \begin{proof}
+        For any ground substitution $\si'$ of $\P'$, then $\si\si'$ (the substitution $\si'$ applied after $\si$) is also a ground substitution.
+        
+        So $\e_1\ssi\sub{\si'}\subeffect\e_2\ssi\sub{\si'}$. 
+        
+        So $\e_1\ssi\subeffect_{\P'}\e_2\ssi$.
+        
+    \end{proof}
+\end{framed}
+
+\begin{theorem}[Effect Substitution and Effect Denotation]
+    If $\si = \deno{\typerelation{\P'}{\si}{\P}}$ then $\deno{\typerelation{\P'}{\si(\e)}{\effect}} = \si\star\deno{\typerelation{\P}{\e}{\effect}} = \deno{\typerelation{\P}{\e}{\effect}}\after\si$.
+    
+\end{theorem}
+
+
+
+\begin{framed}
+    \begin{proof}
+        By induction on the derivation on $\deno{\typerelation{\P}{\e}{\effect}}$
+        
+        \case{Ground}
+        \begin{align*}
+            \deno{\typerelation{\P}{e}{\effect}}\after\si & = \deno{e}\after\term{I}\after\si \\
+            & = \deno{e}\after\term{I'} \\
+            & = \deno{\typerelation{\P'}{e}{\type}}\\
+        \end{align*}
+        
+        \case{Var}
+        \begin{align*}
+            \deno{\typerelation{\P,\a}{\a}{\effect}}\after\si' &= \pp\after\pr{\si}{\deno{\typerelation{\P'}{\e}{\effect}}}\qt{By inversion, $\si' = (\si, \a\setto\e)$}\\
+            & =\deno{\typerelation{\P'}{\e}{\effect}} \\
+            &= \deno{\typerelation{\P'}{\si'(\a)}{\effect}}\\
+        \end{align*}
+        
+        \case{Weaken}
+        \begin{align*}
+            \deno{\typerelation{\P, \b}{\a}{\type}}\after\si' &= \deno{\typerelation{\P}{\a}{\type}} \after \p\after\pr{\si}{\deno{\typerelation{\P'}{\e}{\effect}}}\qt{By inversion, $\si' = (\si, \b\setto\e)$}\\
+            & = \deno{\typerelation{\P}{\a}{\type}}\after\si\\
+            & = \deno{\typerelation{\P'}{\si(\a)}{\type}}\\
+            & = \deno{\typerelation{\P'}{\si'(\a)}{\type}}\\
+        \end{align*}
+        
+        \case{Multiply}
+        \begin{align*}
+            \deno{\typerelation{\P}{\e_1\dot\e_2}{\type}} \after\si &=
+            \Mul(\deno{\typerelation{\P}{\e_1}{\effect}}, \deno{\typerelation{\P}{\e_2}{\effect}})\after \si \\
+            & = \Mul(\deno{\typerelation{\P}{\e_1}{\effect}}\after \si, \deno{\typerelation{\P}{\e_2}{\effect}}\after \si)\qt{By Naturality}\\
+            & = \Mul(\deno{\typerelation{\P'}{\si(\e_1)}{\effect}}, \deno{\typerelation{\P}{\si(\e_2)}{\effect}})\\
+            & = \deno{\typerelation{\P'}{\si(\e_1)\dot\si(\e_2)}{\effect}}\\
+            & = \deno{\typerelation{\P'}{\si(\e_1\dot\e_2)}{\effect}}\\
+        \end{align*}
+        
+    \end{proof}
+    
+\end{framed}\section{Types}
+
+\begin{theorem}[Effect Substitution Preserves Type Welfformedness]
+    If $\typerelation{\P'}{\si}{\P}$ and $\wellformed{\P}{A}$ then $\wellformed{\P'}{A\ssi}$
+\end{theorem}
+
+
+\begin{framed}    
+    \begin{proof}
+        \case{Ground}
+        
+        $\ok{\P'}$ so $\wellformed{\P'}{\g}$ and $\g\ssi=\g$.
+        
+        Hence $\wellformed{\P'}{\g\ssi}$.
+        
+        \case {Lambda}
+        
+        \bi $\wellformed{\P}{A}$ and $\wellformed{\P}{B}$.
+        
+        So by induction, $\wellformed{\P'}{A\ssi}$ and $\wellformed{\P'}{B\ssi}$.
+        
+        So \begin{equation}
+            \wellformed{\P'}{\fntype{(A\ssi)}{(B\ssi)}}
+        \end{equation}
+        
+        So \begin{equation}
+            \wellformed{\P'}{(\ab)\ssi}
+        \end{equation}
+        
+        
+        
+        \case{Computation}
+        
+        \bi, $\wellformed{\P}{\e}$ and $\wellformed{\P}{A}$ so by induction and substitution of effect preserving effect-wellformedness, 
+        
+        $\wellformed{\P'}{\si(\e)}$ and $\wellformed{\P'}{A\ssi}$ so $\wellformed{\P}{\M{\si(\e)}{A\ssi}}$ so $\wellformed{\P'}{(\mea)\ssi}$
+        
+        \case{For All}
+        \bi, $\wellformed{\P,\a}{A}$. So by picking $\a\notin\P\wedge\a\notin\P'$ using $\a$-equivalence, we have $\typerelation{(\P',\a)}{(\si\a\setto\a)}{(\P,\a)}$.
+        
+        So by induction $\wellformed{(\P, \a)}{A\sub{\si,\a\setto\a}}$
+        
+        So $\wellformed{(\P',\a)}{A\ssi}$
+        
+        So $\wellformed{\P'}{(\all{\a}{A})\ssi}$
+        
+    \end{proof}
+    
+\end{framed}\begin{theorem}[Effect Substitution and Type Denotations]
+    If $\si = \deno{\typerelation{\P'}{\si}{\P}}$ then $\deno{\typerelation{\P'}{A\ssi}{\type}} = \si\star\deno{\typerelation{\P}{A}{\type}}$.
+\end{theorem}
+
+\begin{framed}
+    \begin{proof}
+        By induction on the derivation on $\deno{\typerelation{\P}{A}{\type}}$. Making use of the S-Closure of the re-indexing functor.
+        
+        \case{Ground}
+        \begin{align*}
+            \si\star\deno{\typerelation{\P}{\g}{\type}} &= \si\star\deno{\g}\\
+            & =  \deno{\g}\qt{By S-Closure}\\
+            & = \deno{\typerelation{\P'}{\g\ssi}{\type}}
+        \end{align*}
+        
+        \case{Monad}
+        \begin{align*}
+            \si\star\deno{\typerelation{\P}{\mea}{\type}} & =  \si\star(\T{\deno{\typerelation{\P}{\e}{\effect}}}{\deno{\typerelation{\P}{A}{\type}}})\\
+            &= \T{\si\star(\deno{\typerelation{\P}{\e}{\effect}})}{\si\star(\deno{\typerelation{\P}{A}{\type}})}\\
+            & = \deno{\typerelation{\P'}{(\mea)\ssi}{\type}}
+        \end{align*}
+        \case{Quantification}
+            \begin{align*}
+                \si\star\deno{\typerelation{\P}{\all{\a}A}{\type}} & = \si\star(\allI(\deno{\typerelation{\P,\a}{A}{\type}}))\\
+                & = \allI((\si\times\Id{U})\star\deno{\typerelation{\P,\a}{A}{\type}})\qt{By Beck-Chevalley}\\
+                & = \allI(\deno{\typerelation{\P',\a}{A\sub{\si, \a\setto\a}}{\type}})\\
+                & = \allI(\deno{\typerelation{\P',\a}{A\ssi}{\type}})\\
+                & = \deno{\typerelation{\P'}{\all{\a}{A\ssi}}{\type}}\\
+                & = \deno{\typerelation{\P'}{(\all{\a}{A})\ssi}{\type}}\\
+            \end{align*}
+        
+        \case{Function}
+        \begin{align*}
+            \si\star\deno{\typerelation{\P}{\ab}{\type}} &= \si\star(\deno{\typerelation{\P}{B}{\type}}^{\deno{\typerelation{\P}{A}{\type}}})\\
+            &=\si\star(\deno{\typerelation{\P}{B}{\type}})^{\si\star(\deno{\typerelation{\P}{A}{\type}})}\\
+            & = \deno{\typerelation{\P'}{B\ssi}{\type}}^{\deno{\typerelation{\P'}{A\ssi}{\type}}}\\
+            & = \deno{\typerelation{\P'}{\fntype{(A\ssi)}{(B\ssi)}}{\type}}\\
+            & = \deno{\typerelation{\P'}{(\ab)\ssi}{\type}}\\
+        \end{align*}
+    \end{proof}
+\end{framed}
+
+\section{Subtyping}
+
+\begin{theorem}[Effect Substitution Preserves the Subtyping Relation] 
+    If $\typerelation{\P'}{\si}{\P}$ and $A\subtypep B$ then $A\ssi\subtypepp B\ssi$    
+\end{theorem}
+\begin{framed}
+    \begin{proof}
+        By induction on the subtyping relation
+        
+        \case{Ground}
+        \bi, $A\subtypeg B$, so $A, B$ are ground types.
+        Hence $A\ssi = A$ and $B\ssi = B$.
+        So $A\ssi\subtypepp B\ssi$
+        
+        \case{Fn}
+        \bi, $A'\subtypep A$ and $B\subtypep B'$.
+        
+        So by induction, $A'\ssi\subtypepp A\ssi$ and $B\ssi\subtypepp B'\ssi$.
+        
+        So $\fntype{(A\ssi)}{(B\ssi)}\subtypepp \fntype{(A'\ssi)}{(B'\ssi)}$
+        
+        So $(\ab)\ssi\subtypepp (\fntype{A'}{B'})\ssi$
+        
+        \case{Computation}
+        
+        \bi, $A\subtypep B$, $\e_1\subeffectp\e_2$.
+        
+        So by induction and substitution preserving the subeffect relation, 
+        
+        $A\ssi\subtypepp B\ssi$ and $\si(\e_1)\subeffectpp\si(\e_2)$
+        
+        So $\M{\si(\e_1)}{(A\ssi)} \subtypepp\M{\si(\e_2)}{(B\ssi)}$
+        
+        So $(\M{\e_1}{A})\ssi \subtypepp(\M{\e_2}{B})\ssi$
+        
+        $$\square$$
+    \end{proof}
+    
+\end{framed}
+
+\begin{theorem}[Effect Substitution and Subtyping Denotations]
+    If $\si = \deno{\typerelation{\P'}{\si}{\P}}$ then $\deno{A\ssi\subtypepp B\ssi} = \si\star\deno{A\subtypep B}: \C(I')(A, B)$.    
+\end{theorem}
+\begin{framed}
+    
+    \begin{proof}
+        
+        By induction on the derivation on $\deno{A\subtypep B}$. Using S-closure of $\si\star$ 
+        
+        \case{Ground}
+        \begin{align*}
+            \si\star(\g_1\subtypeg\g_2) &= (\g_1\subtypeg\g_2)
+        \end{align*}
+        
+        Since $\si\star$ is s-closed.
+        
+        \case{Monad}
+        \begin{align*}
+            \si\star\deno{\M{\e_1}{A} \subtypep \M{\e_2}{B}} & = \si\star(\deno{\e_1\subeffectp\e_2})\after\si\star(\T{\e_1}(\deno{A\subtypep B})) \\ 
+             &= \deno{\si(\e_1)\subeffectpp\si(\e_2)} \after \T{\si(\e_1)}{\deno{A\ssi\subtypepp B\ssi}}\qt{By S-Closure}\\
+             &= \deno{\M{\si(\e_1)}{A\ssi}\subtypepp\M{\si(\e_2)}{B\ssi}}\\
+             &= \deno{(\M{\e_1}{A})\ssi\subtypepp\M{\e_2}{B}\ssi}\\
+        \end{align*}
+        
+        \case{For All}
+            \begin{align*}
+                \si\star\deno{\all{\a}{A}\subtypep\all{\a}{B}} &= \si\star(\allI(\deno{A\subtypepa B})) \\
+                &=\allII((\si\times\Id{U})\star(\deno{A\subtypepa B}))\\
+                &=\allII(\deno{A\sub{\si,\a\setto\a}\subtypeppa B\sub{\si,\a\setto\a}})\\
+                &= \deno{(\all{\a}{A})\ssi \subtypepp(\all{\a}{B})\ssi}\\
+            \end{align*}
+        
+        \case{Fn}
+        \begin{align*}
+            \si\star\deno{(\ab)\subtypep\fntype{A'}{B'}} &= \si\star(\deno{B\subtypep B'}^{A'}\after B^{\deno{A'\subtypep A}})\\
+            &= \si\star(\cur{\deno{B\subtypep B'}\after\app})\after\si\star(\cur{\app\after(\Id{B}\times\deno{A'\subtypep A})})\\
+            & = \cur{\si\star(\deno{B\subtypep B'})\after\app}\after\cur{\app\after(\Id{B}\times\si\star(\deno{A'\subtypep A}))}\\
+            & = \cur{\deno{B\ssi\subtypepp B'\ssi}\after\app}\after\cur{\app\after(\Id{B\ssi}\times\deno{A'\ssi\subtypepp A\ssi})}\\
+            &= \deno{\fntype{(A\ssi)}{(B\ssi)}\subtypepp\fntype{(A'\ssi)}{(B'\ssi)}}\\
+            &= \deno{(\ab)\ssi\subtypepp(\fntype{A'}{B'})\ssi}
+        \end{align*}
+    \end{proof}
+\end{framed}
+
+\section{Typing Environments}
+
+\begin{theorem}[Effect Substitution Preserves Typing-Environment wellformedness]
+    If $\wellformedok{\P}{\G}$ and $\typerelation{\P'}{\si}{\P}$ then $\wellformedok{\P'}{\G\ssi}$
+    
+\end{theorem}
+
+\begin{framed}   
+    \begin{proof}
+        \case{Nil}
+        $\ok{\P}\implies\ok{\P'}$ so $\wellformedok{\P'}{\nil}$
+        and $\nil\ssi = \nil$
+        \case{Var}
+        \bi, $\wellformedok{\P}{\G}$ and $\wellformed{\P}{A}$.
+        
+        By induction and substitution preserving wellformedness of types, $\wellformedok{\P'}{\G'\ssi}$ and $\wellformed{\P'}{A\ssi}$.
+        
+        
+        So $\wellformedok{\P'}{(\G'\ssi, x: A\ssi)}$.
+        
+        Hence $\wellformedok{\P'}{\gax\ssi}$.
+    \end{proof}
+    
+\end{framed}
+
+
+\begin{theorem}[Effect Substitution and Typing Environment Denotations]
+    If $\si = \deno{\typerelation{\P'}{\si}{\P}}$ then $\deno{\wellformedok{\P'}{\G\ssi}} = \si\star\deno{\wellformedok{\P}{\G}}\in\obj\C(I')$.
+\end{theorem}
+
+\begin{framed}
+    \begin{proof}
+        By induction on the derivation on $\deno{\wellformedok{\P}{\G}}$. Using the S-Closure of the re-indexing functor.
+        
+        \case{Nil}
+        \begin{align*}
+            \si\star\deno{\wellformedok{\P}{\nil}} &=\si\star\1\\
+            & = \1\qt{By S-closure}\\
+            &= \deno{\wellformedok{\P'}{\nil}}\\
+            &= \deno{\wellformedok{\P'}{\nil\ssi}}\\
+        \end{align*}
+        
+        \case{Var}
+        \begin{align*}
+           \si\star\deno{\wellformedok{\P}{\gax}} &= \si\star(\deno{\wellformedok{\P}{\G}} \times \deno{\typerelation{\P}{A}{\type}}) \\
+           & = (\si\star\deno{\wellformedok{\P}{\G}} \times \si\star\deno{\typerelation{\P}{A}{\type}})\\
+            & = (\deno{\wellformedok{\P'}{\G\ssi}} \times \deno{\typerelation{\P'}{A\ssi}{\type}})\\
+            & = \deno{\wellformedok{\P'}{\G\ssi, x: A\ssi}}\\
+            & = \deno{\wellformedok{\P'}{(\gax)\ssi}}\\
+        \end{align*}
+    \end{proof}
+\end{framed}
 
-\case{Ground}
-\begin{align*}
-    \deno{\typerelation{\P}{e}{\effect}}\after\si & = \deno{e}\after\term{I}\after\si \\
-    & = \deno{e}\after\term{I'} \\
-    & = \deno{\typerelation{\P'}{e}{\type}}\\
-\end{align*}
 
-\case{Var}
-\begin{align*}
-    \deno{\typerelation{\P,\a}{\a}{\effect}}\after\si' &= \pp\after\pr{\si}{\deno{\typerelation{\P'}{\e}{\effect}}}\qt{By inversion, $\si' = (\si, \a\setto\e)$}\\
-    & =\deno{\typerelation{\P'}{\e}{\effect}} \\
-    &= \deno{\typerelation{\P'}{\si'(\a)}{\effect}}\\
-\end{align*}
-
-\case{Weaken}
-\begin{align*}
-    \deno{\typerelation{\P, \b}{\a}{\type}}\after\si' &= \deno{\typerelation{\P}{\a}{\type}} \after \p\after\pr{\si}{\deno{\typerelation{\P'}{\e}{\effect}}}\qt{By inversion, $\si' = (\si, \b\setto\e)$}\\
-    & = \deno{\typerelation{\P}{\a}{\type}}\after\si\\
-    & = \deno{\typerelation{\P'}{\si(\a)}{\type}}\\
-    & = \deno{\typerelation{\P'}{\si'(\a)}{\type}}\\
-\end{align*}
-
-\case{Multiply}
-\begin{align*}
-    \deno{\typerelation{\P}{\e_1\dot\e_2}{\type}} \after\si &=
-    \Mul(\deno{\typerelation{\P}{\e_1}{\effect}}, \deno{\typerelation{\P}{\e_2}{\effect}})\after \si \\
-    & = \Mul(\deno{\typerelation{\P}{\e_1}{\effect}}\after \si, \deno{\typerelation{\P}{\e_2}{\effect}}\after \si)\qt{By Naturality}\\
-    & = \Mul(\deno{\typerelation{\P'}{\si(\e_1)}{\effect}}, \deno{\typerelation{\P}{\si(\e_2)}{\effect}})\\
-    & = \deno{\typerelation{\P'}{\si(\e_1)\dot\si(\e_2)}{\effect}}\\
-    & = \deno{\typerelation{\P'}{\si(\e_1\dot\e_2)}{\effect}}\\
-\end{align*}
-
-
-
-\section{Types}
-
-\subsection{Substitution preserves wellformedness of Types}
-\begin{equation}
-    \typerelation{\P'}{\si}{\P} \wedge \wellformed{\P}{A} \implies \wellformed{\P'}{A\ssi}
-\end{equation}
-\proof
-\case{Ground}
-
-$\ok{\P'}$ so $\wellformed{\P'}{\g}$ and $\g\ssi=\g$.
-
-Hence $\wellformed{\P'}{\g\ssi}$.
-
-\case {Lambda}
-
-\bi $\wellformed{\P}{A}$ and $\wellformed{\P}{B}$.
-
-So by induction, $\wellformed{\P'}{A\ssi}$ and $\wellformed{\P'}{B\ssi}$.
-
-So \begin{equation}
-    \wellformed{\P'}{\fntype{(A\ssi)}{(B\ssi)}}
-\end{equation}
-
-So \begin{equation}
-    \wellformed{\P'}{(\ab)\ssi}
-\end{equation}
-
-
-
-\case{Computation}
-
-\bi, $\wellformed{\P}{\e}$ and $\wellformed{\P}{A}$ so by induction and substitution of effect preserving effect-wellformedness, 
-
-$\wellformed{\P'}{\si(\e)}$ and $\wellformed{\P'}{A\ssi}$ so $\wellformed{\P}{\M{\si(\e)}{A\ssi}}$ so $\wellformed{\P'}{(\mea)\ssi}$
-
-\case{For All}
-\bi, $\wellformed{\P,\a}{A}$. So by picking $\a\notin\P\wedge\a\notin\P'$ using $\a$-equivalence, we have $\typerelation{(\P',\a)}{(\si\a\setto\a)}{(\P,\a)}$.
-
-So by induction $\wellformed{(\P, \a)}{A\sub{\si,\a\setto\a}}$
-
-So $\wellformed{(\P',\a)}{A\ssi}$
-
-So $\wellformed{\P'}{(\all{\a}{A})\ssi}$
-
-\subsection{Substitution of effects preserves Subtyping Relation}
-
-If $\typerelation{\P'}{\si}{\P}$ and $A\subtypep B$ then $A\ssi\subtypepp B\ssi$
-
-\proof
-By induction on the subtyping relation
-
-\case{Ground}
-\bi, $A\subtypeg B$, so $A, B$ are ground types.
-Hence $A\ssi = A$ and $B\ssi = B$.
-So $A\ssi\subtypepp B\ssi$
-
-\case{Fn}
-\bi, $A'\subtypep A$ and $B\subtypep B'$.
-
-So by induction, $A'\ssi\subtypepp A\ssi$ and $B\ssi\subtypepp B'\ssi$.
-
-So $\fntype{(A\ssi)}{(B\ssi)}\subtypepp \fntype{(A'\ssi)}{(B'\ssi)}$
-
-So $(\ab)\ssi\subtypepp (\fntype{A'}{B'})\ssi$
-
-\case{Computation}
-
-\bi, $A\subtypep B$, $\e_1\subeffectp\e_2$.
-
-So by induction and substitution preserving the subeffect relation, 
-
-$A\ssi\subtypepp B\ssi$ and $\si(\e_1)\subeffectpp\si(\e_2)$
-
-So $\M{\si(\e_1)}{(A\ssi)} \subtypepp\M{\si(\e_2)}{(B\ssi)}$
-
-So $(\M{\e_1}{A})\ssi \subtypepp(\M{\e_2}{B})\ssi$
-
-
-If $\si = \deno{\typerelation{\P'}{\si}{\P}}$ then $\deno{\typerelation{\P'}{A\ssi}{\type}} = \si\star\deno{\typerelation{\P}{A}{\type}}$.
-
-\proof
-By induction on the derivation on $\deno{\typerelation{\P}{A}{\type}}$. Making use of the S-Closure of the re-indexing functor.
-
-\case{Ground}
-\begin{align*}
-    \si\star\deno{\typerelation{\P}{\g}{\type}} &= \si\star\deno{\g}\\
-    & =  \deno{\g}\qt{By S-Closure}\\
-    & = \deno{\typerelation{\P'}{\g\ssi}{\type}}
-\end{align*}
-
-\case{Monad}
-\begin{align*}
-    \si\star\deno{\typerelation{\P}{\mea}{\type}} & =  \si\star(\T{\deno{\typerelation{\P}{\e}{\effect}}}{\deno{\typerelation{\P}{A}{\type}}})\\
-    &= \T{\si\star(\deno{\typerelation{\P}{\e}{\effect}})}{\si\star(\deno{\typerelation{\P}{A}{\type}})}\\
-    & = \deno{\typerelation{\P'}{(\mea)\ssi}{\type}}
-\end{align*}
-\case{Quantification}
-    \begin{align*}
-        \si\star\deno{\typerelation{\P}{\all{\a}A}{\type}} & = \si\star(\allI(\deno{\typerelation{\P,\a}{A}{\type}}))\\
-        & = \allI((\si\times\Id{U})\star\deno{\typerelation{\P,\a}{A}{\type}})\qt{By Beck-Chevalley}\\
-        & = \allI(\deno{\typerelation{\P',\a}{A\sub{\si, \a\setto\a}}{\type}})\\
-        & = \allI(\deno{\typerelation{\P',\a}{A\ssi}{\type}})\\
-        & = \deno{\typerelation{\P'}{\all{\a}{A\ssi}}{\type}}\\
-        & = \deno{\typerelation{\P'}{(\all{\a}{A})\ssi}{\type}}\\
-    \end{align*}
-
-\case{Function}
-\begin{align*}
-    \si\star\deno{\typerelation{\P}{\ab}{\type}} &= \si\star(\deno{\typerelation{\P}{B}{\type}}^{\deno{\typerelation{\P}{A}{\type}}})\\
-    &=\si\star(\deno{\typerelation{\P}{B}{\type}})^{\si\star(\deno{\typerelation{\P}{A}{\type}})}\\
-    & = \deno{\typerelation{\P'}{B\ssi}{\type}}^{\deno{\typerelation{\P'}{A\ssi}{\type}}}\\
-    & = \deno{\typerelation{\P'}{\fntype{(A\ssi)}{(B\ssi)}}{\type}}\\
-    & = \deno{\typerelation{\P'}{(\ab)\ssi}{\type}}\\
-\end{align*}
-
-\section{Substitution of effects preserves Subtyping Relation}
-
-If $\typerelation{\P'}{\si}{\P}$ and $A\subtypep B$ then $A\ssi\subtypepp B\ssi$
-
-\proof
-By induction on the subtyping relation
-
-\case{Ground}
-\bi, $A\subtypeg B$, so $A, B$ are ground types.
-Hence $A\ssi = A$ and $B\ssi = B$.
-So $A\ssi\subtypepp B\ssi$
-
-\case{Fn}
-\bi, $A'\subtypep A$ and $B\subtypep B'$.
-
-So by induction, $A'\ssi\subtypepp A\ssi$ and $B\ssi\subtypepp B'\ssi$.
-
-So $\fntype{(A\ssi)}{(B\ssi)}\subtypepp \fntype{(A'\ssi)}{(B'\ssi)}$
-
-So $(\ab)\ssi\subtypepp (\fntype{A'}{B'})\ssi$
-
-\case{Computation}
-
-\bi, $A\subtypep B$, $\e_1\subeffectp\e_2$.
-
-So by induction and substitution preserving the subeffect relation, 
-
-$A\ssi\subtypepp B\ssi$ and $\si(\e_1)\subeffectpp\si(\e_2)$
-
-So $\M{\si(\e_1)}{(A\ssi)} \subtypepp\M{\si(\e_2)}{(B\ssi)}$
-
-So $(\M{\e_1}{A})\ssi \subtypepp(\M{\e_2}{B})\ssi$
-
-$$\square$$
-
-If $\si = \deno{\typerelation{\P'}{\si}{\P}}$ then $\deno{A\ssi\subtypepp B\ssi} = \si\star\deno{A\subtypep B}: \C(I')(A, B)$.
-
-\proof
-By induction on the derivation on $\deno{A\subtypep B}$. Using S-closure of $\si\star$ 
-
-\case{Ground}
-\begin{align*}
-    \si\star(\g_1\subtypeg\g_2) &= (\g_1\subtypeg\g_2)
-\end{align*}
-
-Since $\si\star$ is s-closed.
-
-\case{Monad}
-\begin{align*}
-    \si\star\deno{\M{\e_1}{A} \subtypep \M{\e_2}{B}} & = \si\star(\deno{\e_1\subeffectp\e_2})\after\si\star(\T{\e_1}(\deno{A\subtypep B})) \\ 
-     &= \deno{\si(\e_1)\subeffectpp\si(\e_2)} \after \T{\si(\e_1)}{\deno{A\ssi\subtypepp B\ssi}}\qt{By S-Closure}\\
-     &= \deno{\M{\si(\e_1)}{A\ssi}\subtypepp\M{\si(\e_2)}{B\ssi}}\\
-     &= \deno{(\M{\e_1}{A})\ssi\subtypepp\M{\e_2}{B}\ssi}\\
-\end{align*}
-
-\case{For All}
-    \begin{align*}
-        \si\star\deno{\all{\a}{A}\subtypep\all{\a}{B}} &= \si\star(\allI(\deno{A\subtypepa B})) \\
-        &=\allII((\si\times\Id{U})\star(\deno{A\subtypepa B}))\\
-        &=\allII(\deno{A\sub{\si,\a\setto\a}\subtypeppa B\sub{\si,\a\setto\a}})\\
-        &= \deno{(\all{\a}{A})\ssi \subtypepp(\all{\a}{B})\ssi}\\
-    \end{align*}
-
-\case{Fn}
-\begin{align*}
-    \si\star\deno{(\ab)\subtypep\fntype{A'}{B'}} &= \si\star(\deno{B\subtypep B'}^{A'}\after B^{\deno{A'\subtypep A}})\\
-    &= \si\star(\cur{\deno{B\subtypep B'}\after\app})\after\si\star(\cur{\app\after(\Id{B}\times\deno{A'\subtypep A})})\\
-    & = \cur{\si\star(\deno{B\subtypep B'})\after\app}\after\cur{\app\after(\Id{B}\times\si\star(\deno{A'\subtypep A}))}\\
-    & = \cur{\deno{B\ssi\subtypepp B'\ssi}\after\app}\after\cur{\app\after(\Id{B\ssi}\times\deno{A'\ssi\subtypepp A\ssi})}\\
-    &= \deno{\fntype{(A\ssi)}{(B\ssi)}\subtypepp\fntype{(A'\ssi)}{(B'\ssi)}}\\
-    &= \deno{(\ab)\ssi\subtypepp(\fntype{A'}{B'})\ssi}
-\end{align*}
-
-\section{Type Environments}
-
-
-\subsection{Substitution preserves wellformedness of Type Environments}
-
-If $\wellformedok{\P}{\G}$ and $\typerelation{\P'}{\si}{\P}$ then $\wellformedok{\P'}{\G\ssi}$
-
-\proof
-\case{Nil}
-$\ok{\P}\implies\ok{\P'}$ so $\wellformedok{\P'}{\nil}$
-and $\nil\ssi = \nil$
-\case{Var}
-\bi, $\wellformedok{\P}{\G}$ and $\wellformed{\P}{A}$.
-
-By induction and substitution preserving wellformedness of types, $\wellformedok{\P'}{\G'\ssi}$ and $\wellformed{\P'}{A\ssi}$.
-
-
-So $\wellformedok{\P'}{(\G'\ssi, x: A\ssi)}$.
-
-Hence $\wellformedok{\P'}{\gax\ssi}$.
-
-
-If $\si = \deno{\typerelation{\P'}{\si}{\P}}$ then $\deno{\wellformedok{\P'}{\G\ssi}} = \si\star\deno{\wellformedok{\P}{\G}}\in\obj\C(I')$.
-
-\proof
-By induction on the derivation on $\deno{\wellformedok{\P}{\G}}$. Using the S-Closure of the re-indexing functor.
-
-\case{Nil}
-\begin{align*}
-    \si\star\deno{\wellformedok{\P}{\nil}} &=\si\star\1\\
-    & = \1\qt{By S-closure}\\
-    &= \deno{\wellformedok{\P'}{\nil}}\\
-    &= \deno{\wellformedok{\P'}{\nil\ssi}}\\
-\end{align*}
-
-\case{Var}
-\begin{align*}
-   \si\star\deno{\wellformedok{\P}{\gax}} &= \si\star(\deno{\wellformedok{\P}{\G}} \times \deno{\typerelation{\P}{A}{\type}}) \\
-   & = (\si\star\deno{\wellformedok{\P}{\G}} \times \si\star\deno{\typerelation{\P}{A}{\type}})\\
-    & = (\deno{\wellformedok{\P'}{\G\ssi}} \times \deno{\typerelation{\P'}{A\ssi}{\type}})\\
-    & = \deno{\wellformedok{\P'}{\G\ssi, x: A\ssi}}\\
-    & = \deno{\wellformedok{\P'}{(\gax)\ssi}}\\
-\end{align*}
 
 \section{Terms}
-
-\subsection{Effect-Substitution Preserves the Typing Relation}
-
-If $\typerelation{\P'}{\si}{\P}$ and $\gpetyperelation{v}{A}$, then $\etyperelation{\P'}{\G\ssi}{v\ssi}{A\ssi}$
-
-
-\proof
-\case{Const}
-\bi, $\wellformedok{\P}{\G}$.
-
-So $\wellformedok{\P'}{\G}$
-
-So $\etyperelation{\P'}{\G\ssi}{\const{A\ssi}}{A\ssi}$
-\case{True, False, Unit}
-The logic is the same for each of these cases, so we look at the case $\t$ only.
-
-\bi, $\wellformedok{\P}{\G}$.
-
-So $\wellformedok{\P'}{\G}$
-
-So $\etyperelation{\P'}{\G\ssi}{\t}{\B}$
-
-Since $\t\ssi=\t$ and $\B\ssi=\B$.
-
-\case{Var}
-\bi $\G = \G', x:A$ and $\wellformedok{\P}{\G', x:A}$.
-
-So since substitution preserves wellformedness of type environments, $\wellformedok{\P'}{\G'\ssi, x:A\ssi}$
-
-So $\etyperelation{\P'}{\G\ssi}{x}{A\ssi}$
-
-Since $x\ssi = x$
-
-\case{Weaken}
-\bi $\G = \G', y:B$, $\wellformed{\P}{B}$, and $\etyperelation{\P}{\G'}{x}{A}$. $x \neq y$
-
-By induction and the theorem that effect-substitution preserves type wellformedness, we have: $\etyperelation{\P'}{\G'\ssi}{x}{A\ssi}$ and $\wellformed{\P'}{B\ssi}$
-
-So $\etyperelation{\P'}{\G\ssi}{x\ssi}{A\ssi}$
-
-Since $x\ssi = x$, $\G\ssi = (\G'\ssi, y:B\ssi)$
+\begin{theorem}[Effect-Substitution Preserves the Typing Relation]
+    If $\typerelation{\P'}{\si}{\P}$ and $\gpetyperelation{v}{A}$, then $\etyperelation{\P'}{\G\ssi}{v\ssi}{A\ssi}$ 
+\end{theorem}
 
 
-\case{Lambda}
-\bi $\etyperelation{\P}{\gax}{v}{B}$.
+\begin{framed}
+    \begin{proof}
+        
+    \case{Const}
+    \bi, $\wellformedok{\P}{\G}$.
+    
+    So $\wellformedok{\P'}{\G}$
+    
+    So $\etyperelation{\P'}{\G\ssi}{\const{A\ssi}}{A\ssi}$
+    \case{True, False, Unit}
+    The logic is the same for each of these cases, so we look at the case $\t$ only.
+    
+    \bi, $\wellformedok{\P}{\G}$.
+    
+    So $\wellformedok{\P'}{\G}$
+    
+    So $\etyperelation{\P'}{\G\ssi}{\t}{\B}$
+    
+    Since $\t\ssi=\t$ and $\B\ssi=\B$.
+    
+    \case{Var}
+    \bi $\G = \G', x:A$ and $\wellformedok{\P}{\G', x:A}$.
+    
+    So since substitution preserves wellformedness of type environments, $\wellformedok{\P'}{\G'\ssi, x:A\ssi}$
+    
+    So $\etyperelation{\P'}{\G\ssi}{x}{A\ssi}$
+    
+    Since $x\ssi = x$
+    
+    \case{Weaken}
+    \bi $\G = \G', y:B$, $\wellformed{\P}{B}$, and $\etyperelation{\P}{\G'}{x}{A}$. $x \neq y$
+    
+    By induction and the theorem that effect-substitution preserves type wellformedness, we have: $\etyperelation{\P'}{\G'\ssi}{x}{A\ssi}$ and $\wellformed{\P'}{B\ssi}$
+    
+    So $\etyperelation{\P'}{\G\ssi}{x\ssi}{A\ssi}$
+    
+    Since $x\ssi = x$, $\G\ssi = (\G'\ssi, y:B\ssi)$
+    
+    
+    \case{Lambda}
+    \bi $\etyperelation{\P}{\gax}{v}{B}$.
+    
+    So, by induction $\etyperelation{\P'}{(\gax)\ssi}{v\ssi}{B\ssi}$.
+    
+    So, $\etyperelation{\P}{\G\ssi, x:A\ssi}{v\ssi}{B\ssi}$.
+    
+    Hence by the lambda type rule,
+    
+    $\etyperelation{\P'}{\G\ssi}{\lam{x}{A\ssi}{v\ssi}}{\fntype{(A\ssi)}{(B\ssi)}}$
+    
+    So
+    
+    $\etyperelation{\P'}{\G\ssi}{(\lam{x}{A}{v})\ssi}{(\ab)\ssi)}$
+    
+    \case{Apply}
+    \bi, $\gpetyperelation{v_1}{\ab}$, $\gpetyperelation{V_2}{A}$.
+    
+    So by induction, $\etyperelation{\P'}{\G\ssi}{v_1\ssi}{\fntype{(A\ssi)}{(B\ssi)}}$.
+    
+    So $\etyperelation{\P'}{\G\ssi}{\apply{(v_1\ssi)}{(v_2\ssi)}}{B\ssi}$.
+    
+    So $\etyperelation{\P'}{\G\ssi}{(\apply{v_1}{v_2})\ssi}{(\ab)\ssi}$
+    \case{Subtype}
+    
+    \bi, $\gpetyperelation{v}{A}$ and $\wellformed{\P}{A\subtype B}$
+    
+    So by induction and effect-substitution preserving subtyping, $\etyperelation{\P'}{\G\ssi}{v\ssi}{A\ssi}$ and $\wellformed{\P'}{A\ssi\subtype B\ssi}$
+    
+    So $\etyperelation{\P'}{\G\ssi}{v\ssi}{B\ssi}$
+    \case{Return}
+    \bi, $\gpetyperelation{v}{A}$
+    
+    So by induction, $\etyperelation{\P'}{\G\ssi}{v\ssi}{A\ssi}$
+    
+    So $\etyperelation{\P'}{\G\ssi}{\return{(v\ssi)}}{\M{\1}{(A\ssi)}}$
+    
+    Hence $\etyperelation{\P'}{\G\ssi}{(\return{v})\ssi}{(\moa)\ssi}$
+    \case{Bind}
+    
+    \bi, $\gpetyperelation{v_1}{\M{\e_1}{A}}$ and $\etyperelation{\P}{\gax}{v_2}{\M{\e_2}{B}}$.
+    
+    So by induction: $\etyperelation{\P'}{\G\ssi}{v_1\ssi}{\M{\si(\e_1)}{(A\ssi)}}$, and $\etyperelation{\P'}{\G\ssi, x:A\ssi}{v_2}{\M{\si(\e_2)}{(B\ssi)}}$.
+    
+    And so $\etyperelation{\P'}{\G\ssi}{\doin{x}{(v_1\ssi)}{(v_2\ssi)}}{\M{\si(\e_1)\dot(\e_2\ssi)}{B\ssi}}$
+    
+    
+    \case{If}
+    
+    \bi, $\gpetyperelation{v}{\B}$, $\gpetyperelation{v_1}{A}$, and $\gpetyperelation{v_2}{A}$
+    
+    So by induction $\etyperelation{\P'}{\G\ssi}{v\ssi}{\B}$, $\etyperelation{\P'}{\G\ssi}{v_1}{A\ssi}$, and $\etyperelation{\P'}{\G\ssi}{v\ssi}{\B}$, $\etyperelation{\P'}{\G\ssi}{v_2}{A\ssi}$.
+    (Since $\B\ssi = \B$)
+    
+    Hence:
+    
+    $\etyperelation{\P'}{\G\ssi}{\pifthenelse{A\ssi}{v\ssi}{v_1\ssi}{v_2\ssi}}{A\ssi}$
+    
+    So $\etyperelation{\P'}{\G\ssi}{(\pifthenelse{A}{v}{v_1}{v_2})\ssi}{A\ssi}$
+    
+    \case{Effect-Gen}
+    \bi, $\etyperelation{\P,\a}{\G}{v}{A}$.
+    
+    So by the substitution property 3 (\todo{Is this correct/reference correctly}), pick $\a\notin\P'\wedge\a\notin\P$ so we have:
+    
+    $$\typerelation{(\P',\a)}{(\si, \a\setto\a)}{(\P,\a)}$$
+    
+    So by induction, $\etyperelation{\P', \a}{\G\sub{\si, \a\setto\a}}{v\sub{\si,\a\setto\a}}{A\sub{\si, \a\setto\a}}$
+    
+    So $\etyperelation{\P',\a}{\G\ssi}{v\ssi}{A\ssi}$ since $\a\notin\P' \wedge\a\notin\P$.
+    
+    So $\etyperelation{\P'}{\G\ssi}{v\ssi}{(\all{\a}{A})\ssi}$
+    
+    \case{Effect-Spec}
+    \bi, $\gpetyperelation{v}{\all{\a}{A}}$, $\wellformed{\P}{\e}$.
+    
+    So by induction and effect-substitution preserving wellformedness of effects: $\etyperelation{\P'}{\G\ssi}{v\ssi}{(\all{\a}{A})\ssi}$ and $\wellformed{\P'}{\si(\e)}$
+    
+    So $\etyperelation{\P'}{\G\ssi}{\eapp{(v\ssi)}{(\si(\e))}}{A\ssi\ssub{\a}{\si(\e)}}$.
+    
+    Since $\a\#\si$, we can commute the applications of substitution. \todo{Do I need to prove this?}
+    
+    So, $\etyperelation{\P'}{\G\ssi}{(\eapp{v}{\e})\ssi}{A\ssub{\a}{\e}\ssi}$
+    
+    \end{proof}
+\end{framed}
 
-So, by induction $\etyperelation{\P'}{(\gax)\ssi}{v\ssi}{B\ssi}$.
-
-So, $\etyperelation{\P}{\G\ssi, x:A\ssi}{v\ssi}{B\ssi}$.
-
-Hence by the lambda type rule,
-
-$\etyperelation{\P'}{\G\ssi}{\lam{x}{A\ssi}{v\ssi}}{\fntype{(A\ssi)}{(B\ssi)}}$
-
-So
-
-$\etyperelation{\P'}{\G\ssi}{(\lam{x}{A}{v})\ssi}{(\ab)\ssi)}$
-
-\case{Apply}
-\bi, $\gpetyperelation{v_1}{\ab}$, $\gpetyperelation{V_2}{A}$.
-
-So by induction, $\etyperelation{\P'}{\G\ssi}{v_1\ssi}{\fntype{(A\ssi)}{(B\ssi)}}$.
-
-So $\etyperelation{\P'}{\G\ssi}{\apply{(v_1\ssi)}{(v_2\ssi)}}{B\ssi}$.
-
-So $\etyperelation{\P'}{\G\ssi}{(\apply{v_1}{v_2})\ssi}{(\ab)\ssi}$
-\case{Subtype}
-
-\bi, $\gpetyperelation{v}{A}$ and $\wellformed{\P}{A\subtype B}$
-
-So by induction and effect-substitution preserving subtyping, $\etyperelation{\P'}{\G\ssi}{v\ssi}{A\ssi}$ and $\wellformed{\P'}{A\ssi\subtype B\ssi}$
-
-So $\etyperelation{\P'}{\G\ssi}{v\ssi}{B\ssi}$
-\case{Return}
-\bi, $\gpetyperelation{v}{A}$
-
-So by induction, $\etyperelation{\P'}{\G\ssi}{v\ssi}{A\ssi}$
-
-So $\etyperelation{\P'}{\G\ssi}{\return{(v\ssi)}}{\M{\1}{(A\ssi)}}$
-
-Hence $\etyperelation{\P'}{\G\ssi}{(\return{v})\ssi}{(\moa)\ssi}$
-\case{Bind}
-
-\bi, $\gpetyperelation{v_1}{\M{\e_1}{A}}$ and $\etyperelation{\P}{\gax}{v_2}{\M{\e_2}{B}}$.
-
-So by induction: $\etyperelation{\P'}{\G\ssi}{v_1\ssi}{\M{\si(\e_1)}{(A\ssi)}}$, and $\etyperelation{\P'}{\G\ssi, x:A\ssi}{v_2}{\M{\si(\e_2)}{(B\ssi)}}$.
-
-And so $\etyperelation{\P'}{\G\ssi}{\doin{x}{(v_1\ssi)}{(v_2\ssi)}}{\M{\si(\e_1)\dot(\e_2\ssi)}{B\ssi}}$
-
-
-\case{If}
-
-\bi, $\gpetyperelation{v}{\B}$, $\gpetyperelation{v_1}{A}$, and $\gpetyperelation{v_2}{A}$
-
-So by induction $\etyperelation{\P'}{\G\ssi}{v\ssi}{\B}$, $\etyperelation{\P'}{\G\ssi}{v_1}{A\ssi}$, and $\etyperelation{\P'}{\G\ssi}{v\ssi}{\B}$, $\etyperelation{\P'}{\G\ssi}{v_2}{A\ssi}$.
-(Since $\B\ssi = \B$)
-
-Hence:
-
-$\etyperelation{\P'}{\G\ssi}{\pifthenelse{A\ssi}{v\ssi}{v_1\ssi}{v_2\ssi}}{A\ssi}$
-
-So $\etyperelation{\P'}{\G\ssi}{(\pifthenelse{A}{v}{v_1}{v_2})\ssi}{A\ssi}$
-
-\case{Effect-Gen}
-\bi, $\etyperelation{\P,\a}{\G}{v}{A}$.
-
-So by the substitution property 3 (\todo{Is this correct/reference correctly}), pick $\a\notin\P'\wedge\a\notin\P$ so we have:
-
-$$\typerelation{(\P',\a)}{(\si, \a\setto\a)}{(\P,\a)}$$
-
-So by induction, $\etyperelation{\P', \a}{\G\sub{\si, \a\setto\a}}{v\sub{\si,\a\setto\a}}{A\sub{\si, \a\setto\a}}$
-
-So $\etyperelation{\P',\a}{\G\ssi}{v\ssi}{A\ssi}$ since $\a\notin\P' \wedge\a\notin\P$.
-
-So $\etyperelation{\P'}{\G\ssi}{v\ssi}{(\all{\a}{A})\ssi}$
-
-\case{Effect-Spec}
-\bi, $\gpetyperelation{v}{\all{\a}{A}}$, $\wellformed{\P}{\e}$.
-
-So by induction and effect-substitution preserving wellformedness of effects: $\etyperelation{\P'}{\G\ssi}{v\ssi}{(\all{\a}{A})\ssi}$ and $\wellformed{\P'}{\si(\e)}$
-
-So $\etyperelation{\P'}{\G\ssi}{\eapp{(v\ssi)}{(\si(\e))}}{A\ssi\ssub{\a}{\si(\e)}}$.
-
-Since $\a\#\si$, we can commute the applications of substitution. \todo{Do I need to prove this?}
-
-So, $\etyperelation{\P'}{\G\ssi}{(\eapp{v}{\e})\ssi}{A\ssub{\a}{\e}\ssi}$
-
+\begin{theorem}[Effect Substitution and Term Denotations]
+    
 If 
 \begin{align*}
     \si &= \deno{\typerelation{\P'}{\si}{\P}}\\
@@ -1197,251 +1216,257 @@ If
 Then \begin{eqnarray}
     \D' = \si\star(\D)
 \end{eqnarray}
-
-\proof
-By induction over the derivation of $\D$. Using the S-Closure of $\si\star$. We use $\G_I$ to indicate $\deno{\wellformedok{\P}{\G}}$, an $A_I$ to indicate $\deno{\typerelation{\P}{A}{\type}}$
-
-\case{Unit}
-
-\begin{equation}
-    \D = \term{\G_I}
-\end{equation}
-
-So
-
-\begin{equation}
-    \si\star(\D) = \term{\G_I\ssi} = \D'
-\end{equation}
-
-\case{True, False}
-Giving the case for true as false is the same but using $\inr$
-\begin{equation}
-    \D = \inl\after\term{\G_I}
-\end{equation}
-
-So
-
-\begin{equation}
-    \si\star(\D) = \inl\after \term{\G_I\ssi} = \D'
-\end{equation}
-
-Since $\si\star$ is S-closed.
-
-\case{Constant}
-
-
-\begin{equation}
-    \D = \deno{\const{A}}\after\term{\G_I}
-\end{equation}
-
-So
-
-\begin{equation}
-    \si\star(\D) = \si\star\deno{\const{A}}\after \term{\G_I\ssi}=\deno{\const{A\ssi}}\after \term{\G_I\ssi}  = \D'
-\end{equation}
-
-Since $\si\star$ is S-closed.
-
-\case{Subtype}
-
-Let \begin{equation}
-    \D_1 = \deno{\gpetyperelation{v}{A}}
-\end{equation}
-
-Then
-
-\begin{equation}
-    \D = \deno{A\subtypep B}\after \D_1\\
-\end{equation}
-
-So 
-\begin{align*}
-    \si\star(\D) & = \si\star{\deno{A\subtypep B}}\after\si\star\D_1 \\
-    & = \deno{A\ssi\subtypepp B\ssi}\after\D_1'\qt{By induction}\\
-    & = D'
-\end{align*}
-
-\case{Lambda}
-Let \begin{equation}
-    \D_1 = \deno{\etyperelation{\P}{\gax}{v}{B}}
-\end{equation}
-
-Then
-
-\begin{equation}
-    \D = \cur(\D_1)\\
-\end{equation}
-
-So
-\begin{align*}
-    \si\star(\D) & = \si\star(\cur{\D_1})\\
-    & = \cur{\si\star(\D_1)}\qt{By S-closure}\\
-    & = \cur{\D_1'}\qt{By induction}\\
-    & = \D'
-\end{align*}
-
-\case{Application}
-Let \begin{align*}
-    \D_1 &= \deno{\gpetyperelation{v_1}{\ab}}\\
-    \D_2 &= \deno{\gpetyperelation{v_2}{A}}
-\end{align*}
-
-Then
-
-\begin{equation}
-    \D = \app\after\pr{\D_1}{\D_2}\\
-\end{equation}
-
-So
-
-\begin{align*}
-    \si\star\D & = \si\star(\app\after\pr{\D_1}{\D_2})\\
-    & = \app\after\pr{\si\star(\D_1)}{\si\star(\D_2)}\qt{By S-closure}\\
-    & = \app\after\pr{\D_1'}{\D_2'}\qt{By Induction}\\
-    & = \D'
-\end{align*}
-
-\case{Return}
-Let \begin{equation}
-    \D_1 = \deno{\gpetyperelation{v}{A}}
-\end{equation}
-
-Then
-
-\begin{equation}
-    \D = \point{A_I}\after \D_1\\
-\end{equation}
-
-So
-
-\begin{align*}
-    \si\star(\D) &= \si\star(\point{A_I}\after \D_1)\\
-            & = \point{A_{I'}} \after\si\star(\D_1)\qt{By S-closure}\\
-            & = \point{A_{I'}} \after\D_1'\\
-            & = \D'
-\end{align*}
-
-\case{Bind}
-Let \begin{align*}
-    \D_1 &= \deno{\gpetyperelation{v_1}{\M{\e_1}{A}}}\\
-    \D_2 &= \deno{\etyperelation{\P}{\gax}{v_2}{\M{\e_2}{B}}}
-\end{align*}
-
-Then
-
-\begin{equation}
-    \D = \M{\e_1}{\e_2}{A_I}\after\T{\e_1}{\D_2}\after\tstrength{\e_1}{\G_I}{A_I}\after\pr{\Id{\G_{I}}}{\D_1}\\
-\end{equation}
-
-So
-
-\begin{align*}
-    \si\star(\D) &= \si\star(\bind{\e_1}{\e_2}{A}\after\T{\e_1}{\D_2}\after\tstrength{\e_1}{\G}{A}\after\pr{\Id{\G}}{\D_1})\\
-    & = \si\star(\bind{\e_1}{\e_2}{A})\after\si\star(\T{\e_1}{\D_2})\after\si\star(\tstrength{\e_1}{\G}{A})\after\pr{\si\star(\Id{\G_{I})}}{\si\star(\D_1)}\qt{By S-Closure}\\
-    &= \bind{\si(\e_1)}{\si(\e_2)}{A\ssi'}\after\T{\si(\e_1)}{\si\star(\D_2)}\after\tstrength{\si(\e_1)}{\G\ssi}{A\ssi}\after\pr{\si\star(\Id{\G_{I})}}{\si\star(\D_1)}\qt{By S-Closure}\\
-    &= \bind{\si(\e_1)}{\si(\e_2)}{A\ssi'}\after\T{\si(\e_1)}{\D_2'}\after\tstrength{\si(\e_1)}{\G\ssi}{A\ssi}\after\pr{\si\star(\Id{\G_{I})}}{\D_1'}\qt{By Induction}\\
-    &= \D'\\
-\end{align*}
-
-\case{If}
-
-Let \begin{align*}
-    \D_1 &= \deno{\gpetyperelation{v}{\B}}\\
-    \D_2 &= \deno{\gpetyperelation{v_1}{A}}\\
-    \D_3 &= \deno{\gpetyperelation{v_2}{A}}\\
-\end{align*}
-
-Then
-
-\begin{equation}
-    \D = \app\after(([\cur{\D_2\after\pp}, \cur{\D_3\after\pp}]\after\D_1)\times\Id{\G})\after\diag{\G}\\
-\end{equation}
-
-So
-
-\begin{align*}
-    \si\star(\D) &= \si\star(\app\after(([\cur{\D_2\after\pp}, \cur{\D_3\after\pp}]\after\D_1)\times\Id{\G})\after\diag{\G})\\
-    &= \app\after(([\cur{\si\star(\D_2)\after\pp}, \cur{\si\star(\D_3)\after\pp}]\after\si\star(\D_1))\times\Id{\G\ssi})\after\diag{\G\ssi}\qt{By S-Closure}\\
-    &= \app\after(([\cur{\D_2'\after\pp}, \cur{\D_3'\after\pp}]\after\D_1')\times\Id{\G\ssi})\after\diag{\G\ssi}\qt{By Induction}\\
-    & = \D'\\
-\end{align*}
-
-
-\case{Effect-Gen}
-
-Let \begin{equation}
-    \D_1 = \deno{\etyperelation{\P,\a}{\G}{v}{A}}
-\end{equation}
-
-Then
-
-\begin{equation}
-    \D = \widehat{\D_1}\\
-\end{equation}
-
-And also
-
-\begin{equation}
-    \si\times\Id{} = \deno{\typerelation{(\P',\a)}{(\si, \a\setto\e)}{(\P,\a)}}
-\end{equation}
-
-So
-\begin{align*}
-    \si\star\D &= \si\star(\widehat{\D_1})\\
-    & = \widehat{(\si\times\Id{U})\star\D_1}\qt{By naturality}\\
-    & = \widehat{\D_1'}\qt{By induction}\\
-    & = \D'
-\end{align*}
-
-\case{Effect-Spec}
-
-Let \begin{align*}
-    \D_1 &= \deno{\gpetyperelation{v}{\all{\a}{A}}}\\
-    h &= \deno{\typerelation{\P}{\e}{\effect}}\\
-\end{align*}
-
-Then
-
-\begin{equation}
-    \D = \pr{\Id{\G}}{h}\star(\e_{\deno{\typerelation{\P,\b}{A\ssub{\a}{\b}}{\type}}})\after\D_1\\
-\end{equation}
-
-So
-Due to the substitution theorem on effects
-\begin{equation}
-    h\after\si = \deno{\typerelation{\P}{\e}{\effect}}\after\si = \deno{\typerelation{\P'}{\si(\e)}{\effect}} = h'
-\end{equation}
-
-\begin{align*}
-    \si\star{\D} & = \si\star(\pr{\Id{\G}}{h}\star(\e_{\deno{\typerelation{\P,\b}{A\ssub{\a}{\b}}{\type}}})\after\D_1)\\
-    & = (\pr{\Id{\G}}{h}\after\si)\star(\e_{\deno{\typerelation{\P,\b}{A\ssub{\a}{\b}}{\type}}})\after\si\star(\D_1)\\
-    & = ((\si\times\Id{U})\after\pr{\Id{\G}}{h\after\si})\star(\e_{\deno{\typerelation{\P,\b}{A\ssub{\a}{\b}}{\type}}})\after\D_1')\\
-    & = (\pr{\Id{\G}}{h'})\star((\si\times\Id{U})\star\e_{\deno{\typerelation{\P,\b}{A\ssub{\a}{\b}}{\type}}})\after\D_1')\\
-\end{align*}
-
-Looking at the inner part of the functor application:
-Let \begin{align*}
-    A & = \deno{\typerelation{\P,\b}{A\ssub{\a}{\b}}{\type}}\\
-\end{align*}
-\begin{align*}
-    (\si\times\Id{U})\star\e_{\deno{\typerelation{\P,\b}{A\ssub{\a}{\b}}{\type}}} &= (\si\times\Id{U})\star\e_{A}\\
-    & = (\si\times\Id{U})\star(\widehat{\Id{\allI(A)}})\\
-    & = \widehat{\bar{(\si\times\Id{U})\star(\widehat{\Id{\allI(A)}})}}\qt{By bijection}\\
-    & = \widehat{\si\star(\bar{\widehat{\Id{\allI(A)}}})}\qt{By naturality}\\
-    & = \widehat{\si\star(\Id{\allI(A)})}\qt{By bijection}\\
-    & = \widehat{\Id{\allII(A\after(\si\times\Id{U}))}}\qt{By S-Closure, naturality}\\
-    & = \widehat{\Id{\allII(A\sub{\si,\a\setto\a})}}\qt{By Substitution theorem}\\
-    & = \e_{A\ssi}
-\end{align*}
-
-Going back to the original expression:
-
-\begin{align*}
-    \si\star{\D} & = (\pr{\Id{\G}}{h'})\star(\e_{A\ssi})\after\D_1')\\
-    & = \D'\\
-\end{align*}
-
-
+\end{theorem}
+
+
+\begin{framed}
+    \begin{proof}
+        
+    By induction over the derivation of $\D$. Using the S-Closure of $\si\star$. We use $\G_I$ to indicate $\deno{\wellformedok{\P}{\G}}$, an $A_I$ to indicate $\deno{\typerelation{\P}{A}{\type}}$
+    
+    \case{Unit}
+    
+    \begin{equation}
+        \D = \term{\G_I}
+    \end{equation}
+    
+    So
+    
+    \begin{equation}
+        \si\star(\D) = \term{\G_I\ssi} = \D'
+    \end{equation}
+    
+    \case{True, False}
+    Giving the case for true as false is the same but using $\inr$
+    \begin{equation}
+        \D = \inl\after\term{\G_I}
+    \end{equation}
+    
+    So
+    
+    \begin{equation}
+        \si\star(\D) = \inl\after \term{\G_I\ssi} = \D'
+    \end{equation}
+    
+    Since $\si\star$ is S-closed.
+    
+    \case{Constant}
+    
+    
+    \begin{equation}
+        \D = \deno{\const{A}}\after\term{\G_I}
+    \end{equation}
+    
+    So
+    
+    \begin{equation}
+        \si\star(\D) = \si\star\deno{\const{A}}\after \term{\G_I\ssi}=\deno{\const{A\ssi}}\after \term{\G_I\ssi}  = \D'
+    \end{equation}
+    
+    Since $\si\star$ is S-closed.
+    
+    \case{Subtype}
+    
+    Let \begin{equation}
+        \D_1 = \deno{\gpetyperelation{v}{A}}
+    \end{equation}
+    
+    Then
+    
+    \begin{equation}
+        \D = \deno{A\subtypep B}\after \D_1\\
+    \end{equation}
+    
+    So 
+    \begin{align*}
+        \si\star(\D) & = \si\star{\deno{A\subtypep B}}\after\si\star\D_1 \\
+        & = \deno{A\ssi\subtypepp B\ssi}\after\D_1'\qt{By induction}\\
+        & = D'
+    \end{align*}
+    
+    \case{Lambda}
+    Let \begin{equation}
+        \D_1 = \deno{\etyperelation{\P}{\gax}{v}{B}}
+    \end{equation}
+    
+    Then
+    
+    \begin{equation}
+        \D = \cur(\D_1)\\
+    \end{equation}
+    
+    So
+    \begin{align*}
+        \si\star(\D) & = \si\star(\cur{\D_1})\\
+        & = \cur{\si\star(\D_1)}\qt{By S-closure}\\
+        & = \cur{\D_1'}\qt{By induction}\\
+        & = \D'
+    \end{align*}
+    
+    \case{Application}
+    Let \begin{align*}
+        \D_1 &= \deno{\gpetyperelation{v_1}{\ab}}\\
+        \D_2 &= \deno{\gpetyperelation{v_2}{A}}
+    \end{align*}
+    
+    Then
+    
+    \begin{equation}
+        \D = \app\after\pr{\D_1}{\D_2}\\
+    \end{equation}
+    
+    So
+    
+    \begin{align*}
+        \si\star\D & = \si\star(\app\after\pr{\D_1}{\D_2})\\
+        & = \app\after\pr{\si\star(\D_1)}{\si\star(\D_2)}\qt{By S-closure}\\
+        & = \app\after\pr{\D_1'}{\D_2'}\qt{By Induction}\\
+        & = \D'
+    \end{align*}
+    
+    \case{Return}
+    Let \begin{equation}
+        \D_1 = \deno{\gpetyperelation{v}{A}}
+    \end{equation}
+    
+    Then
+    
+    \begin{equation}
+        \D = \point{A_I}\after \D_1\\
+    \end{equation}
+    
+    So
+    
+    \begin{align*}
+        \si\star(\D) &= \si\star(\point{A_I}\after \D_1)\\
+                & = \point{A_{I'}} \after\si\star(\D_1)\qt{By S-closure}\\
+                & = \point{A_{I'}} \after\D_1'\\
+                & = \D'
+    \end{align*}
+    
+    \case{Bind}
+    Let \begin{align*}
+        \D_1 &= \deno{\gpetyperelation{v_1}{\M{\e_1}{A}}}\\
+        \D_2 &= \deno{\etyperelation{\P}{\gax}{v_2}{\M{\e_2}{B}}}
+    \end{align*}
+    
+    Then
+    
+    \begin{equation}
+        \D = \M{\e_1}{\e_2}{A_I}\after\T{\e_1}{\D_2}\after\tstrength{\e_1}{\G_I}{A_I}\after\pr{\Id{\G_{I}}}{\D_1}\\
+    \end{equation}
+    
+    So
+    
+    \begin{align*}
+        \si\star(\D) &= \si\star(\bind{\e_1}{\e_2}{A}\after\T{\e_1}{\D_2}\after\tstrength{\e_1}{\G}{A}\after\pr{\Id{\G}}{\D_1})\\
+        & = \si\star(\bind{\e_1}{\e_2}{A})\after\si\star(\T{\e_1}{\D_2})\after\si\star(\tstrength{\e_1}{\G}{A})\after\pr{\si\star(\Id{\G_{I})}}{\si\star(\D_1)}\qt{By S-Closure}\\
+        &= \bind{\si(\e_1)}{\si(\e_2)}{A\ssi'}\after\T{\si(\e_1)}{\si\star(\D_2)}\after\tstrength{\si(\e_1)}{\G\ssi}{A\ssi}\after\pr{\si\star(\Id{\G_{I})}}{\si\star(\D_1)}\qt{By S-Closure}\\
+        &= \bind{\si(\e_1)}{\si(\e_2)}{A\ssi'}\after\T{\si(\e_1)}{\D_2'}\after\tstrength{\si(\e_1)}{\G\ssi}{A\ssi}\after\pr{\si\star(\Id{\G_{I})}}{\D_1'}\qt{By Induction}\\
+        &= \D'\\
+    \end{align*}
+    
+    \case{If}
+    
+    Let \begin{align*}
+        \D_1 &= \deno{\gpetyperelation{v}{\B}}\\
+        \D_2 &= \deno{\gpetyperelation{v_1}{A}}\\
+        \D_3 &= \deno{\gpetyperelation{v_2}{A}}\\
+    \end{align*}
+    
+    Then
+    
+    \begin{equation}
+        \D = \app\after(([\cur{\D_2\after\pp}, \cur{\D_3\after\pp}]\after\D_1)\times\Id{\G})\after\diag{\G}\\
+    \end{equation}
+    
+    So
+    
+    \begin{align*}
+        \si\star(\D) &= \si\star(\app\after(([\cur{\D_2\after\pp}, \cur{\D_3\after\pp}]\after\D_1)\times\Id{\G})\after\diag{\G})\\
+        &= \app\after(([\cur{\si\star(\D_2)\after\pp}, \cur{\si\star(\D_3)\after\pp}]\after\si\star(\D_1))\times\Id{\G\ssi})\after\diag{\G\ssi}\qt{By S-Closure}\\
+        &= \app\after(([\cur{\D_2'\after\pp}, \cur{\D_3'\after\pp}]\after\D_1')\times\Id{\G\ssi})\after\diag{\G\ssi}\qt{By Induction}\\
+        & = \D'\\
+    \end{align*}
+    
+    
+    \case{Effect-Gen}
+    
+    Let \begin{equation}
+        \D_1 = \deno{\etyperelation{\P,\a}{\G}{v}{A}}
+    \end{equation}
+    
+    Then
+    
+    \begin{equation}
+        \D = \widehat{\D_1}\\
+    \end{equation}
+    
+    And also
+    
+    \begin{equation}
+        \si\times\Id{} = \deno{\typerelation{(\P',\a)}{(\si, \a\setto\e)}{(\P,\a)}}
+    \end{equation}
+    
+    So
+    \begin{align*}
+        \si\star\D &= \si\star(\widehat{\D_1})\\
+        & = \widehat{(\si\times\Id{U})\star\D_1}\qt{By naturality}\\
+        & = \widehat{\D_1'}\qt{By induction}\\
+        & = \D'
+    \end{align*}
+    
+    \case{Effect-Spec}
+    
+    Let \begin{align*}
+        \D_1 &= \deno{\gpetyperelation{v}{\all{\a}{A}}}\\
+        h &= \deno{\typerelation{\P}{\e}{\effect}}\\
+    \end{align*}
+    
+    Then
+    
+    \begin{equation}
+        \D = \pr{\Id{\G}}{h}\star(\e_{\deno{\typerelation{\P,\b}{A\ssub{\a}{\b}}{\type}}})\after\D_1\\
+    \end{equation}
+    
+    So
+    Due to the substitution theorem on effects
+    \begin{equation}
+        h\after\si = \deno{\typerelation{\P}{\e}{\effect}}\after\si = \deno{\typerelation{\P'}{\si(\e)}{\effect}} = h'
+    \end{equation}
+    
+    \begin{align*}
+        \si\star{\D} & = \si\star(\pr{\Id{\G}}{h}\star(\e_{\deno{\typerelation{\P,\b}{A\ssub{\a}{\b}}{\type}}})\after\D_1)\\
+        & = (\pr{\Id{\G}}{h}\after\si)\star(\e_{\deno{\typerelation{\P,\b}{A\ssub{\a}{\b}}{\type}}})\after\si\star(\D_1)\\
+        & = ((\si\times\Id{U})\after\pr{\Id{\G}}{h\after\si})\star(\e_{\deno{\typerelation{\P,\b}{A\ssub{\a}{\b}}{\type}}})\after\D_1')\\
+        & = (\pr{\Id{\G}}{h'})\star((\si\times\Id{U})\star\e_{\deno{\typerelation{\P,\b}{A\ssub{\a}{\b}}{\type}}})\after\D_1')\\
+    \end{align*}
+    
+    Looking at the inner part of the functor application:
+    Let \begin{align*}
+        A & = \deno{\typerelation{\P,\b}{A\ssub{\a}{\b}}{\type}}\\
+    \end{align*}
+    \begin{align*}
+        (\si\times\Id{U})\star\e_{\deno{\typerelation{\P,\b}{A\ssub{\a}{\b}}{\type}}} &= (\si\times\Id{U})\star\e_{A}\\
+        & = (\si\times\Id{U})\star(\widehat{\Id{\allI(A)}})\\
+        & = \widehat{\bar{(\si\times\Id{U})\star(\widehat{\Id{\allI(A)}})}}\qt{By bijection}\\
+        & = \widehat{\si\star(\bar{\widehat{\Id{\allI(A)}}})}\qt{By naturality}\\
+        & = \widehat{\si\star(\Id{\allI(A)})}\qt{By bijection}\\
+        & = \widehat{\Id{\allII(A\after(\si\times\Id{U}))}}\qt{By S-Closure, naturality}\\
+        & = \widehat{\Id{\allII(A\sub{\si,\a\setto\a})}}\qt{By Substitution theorem}\\
+        & = \e_{A\ssi}
+    \end{align*}
+    
+    Going back to the original expression:
+    
+    \begin{align*}
+        \si\star{\D} & = (\pr{\Id{\G}}{h'})\star(\e_{A\ssi})\after\D_1')\\
+        & = \D'\\
+    \end{align*}
+    
+    \end{proof}
+    
+\end{framed}
 \chapter{Effect Weakening Theorem}
 In this section, we state and prove a theorem that the action of a simultaneous effect-weakening upon a structure in the language has a consistent effect upon the denotation of the language. More formally, for the denotation morphism $\D$ of some relation, the denotation of the weakened relation, $\D' = \w\star(\D)$.
 
