@@ -793,7 +793,7 @@ The $\ok{}$ predicate on effect environments asserts that the effect environment
     \condtreeruleI{Extend}{\ok{\P}}{\ok{\P, \a}}{\a\notin \P}
 \]
 
-Using this, we can define the well-formedness relation on effects, $\wellformed{\P}{\e}$. In short, this relation ensures that effects do not reference variables that are not in the effect environment.
+Using this, we can define the well-formedness relation on effects, $\wellformed{\P}{\e}$. In short, this relation ensures that effects do not reference variables that are not in the effect environment. This is equivalent to saying that $\wellformed{\P}{\e}$ means that $\e\in E_\P$.
 
 \[
     \ntreeruleI{Ground}{\ok{\P}}{\wellformed{\P}{e}}
@@ -848,7 +848,7 @@ Using this ground type relation, we can then construct a subtyping relation betw
     $}
 \]
 
-Since the ground subtyping and subeffecting relations are pre-order, it is fairly simple to prove by induction that the new relation is also a pre-order.
+Since the ground subtyping and subeffecting relations are pre-order, it is fairly simple to prove by induction that the new relation is also a pre-order. By induction, it is also easy to prove that if $A \subtypep B$ and $\wellformed{\P}{A}$ then $\wellformed{\P}{B}$. This last property comes about because the labelled subeffecting relation $\subeffectp$ only holds between effects in $E_\P$.
 
 
 \subsubsection{Type Rules}
@@ -1911,7 +1911,7 @@ Now we are at a point to start considering weakenings and substitution of the ty
 \[
     \ntreeruleI{Id}{\wellformedok{\P}{\G}}{\pewrel{\i}{\G}{\G}}
     \quad  
-    \condtreeruleI{Project}{\pewrel{\w}{\G'}{\G}}{\pewrel{\w \pi}{\G, x: A}{\G}}{x \notin \dom{\G'}}
+    \condtreeruleII{Project}{\pewrel{\w}{\G'}{\G}}{\typerelation{\P}{A}{\type}}{\pewrel{\w \pi}{\G, x: A}{\G}}{x \notin \dom{\G'}}
 \]
 
 \[
