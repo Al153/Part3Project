@@ -16,9 +16,7 @@
 \begin{document}
 
 \maketitle
-\todo{Be consistent in theorem names (Typing-environment substitution, etc)}
-\todo{, Effect-Gen + other rule names}
-\todo{Be consistent in N-T names (unit/point/pure, bind/join)}
+
 \abstract
 To date, there has been limited work on the semantics of languages with polymorphic effect systems. The application, by Moggi \cite{MoggiMonads}, of strong monads to modelling the semantics of effects has become a mainstream concept in functional programming languages. This was improved upon by Katsumata (\cite{Katsumata:2014}) using a graded monad to model languages with a range of independent and dependent effects at an operational level. A categorical semantics for parametric polymorphism in types was first published by Reynolds \cite{PLCSemantics} allowing a denotational analysis of languages including type parameters. There has been some work on polymorphism over the exception effect (which paper). Despite these works, there has been no work to date on the denotational semantics of languages with general parametric polymorphism over effects.
 
@@ -190,7 +188,7 @@ A \textit{natural transformation} $\theta$ between two functors $F, G: \C \right
 
 
 \subsection{Monad}
-A \textit{monad} consists of a functor, $T: \C \rightarrow C$, from $\C$ onto itself, also known as an \textit{endofunctor}, which represents the collection of effectful values, and a pair of natural transformations. The first is the the \textit{unit} natural transformation $\point{A}: A\rightarrow T(A)$, which is used to treat pure values as an effectful expression. The second is the \textit{join} (also known as bind) natural transformation, $\mu_{A}: T(T(A)) \rightarrow T(A)$ ,  which is used to model the sequential composition of effectful subexpressions. In addition, there is the requirement that the diagrams in figures \ref{MonadAssociativity}, \ref{MonadUnits} commute.
+A \textit{monad} consists of a functor, $T: \C \rightarrow C$, from $\C$ onto itself, also known as an \textit{endofunctor}, which represents the collection of effectful values, and a pair of natural transformations. The first is the the \textit{unit} natural transformation $\point{A}: A\rightarrow T(A)$, which is used to treat pure values as an effectful expression. The second is the \textit{join} natural transformation, $\mu_{A}: T(T(A)) \rightarrow T(A)$,  which is used to model the sequential composition of effectful subexpressions. In addition, there is the requirement that the diagrams in figures \ref{MonadAssociativity}, \ref{MonadUnits} commute.
 
 
 \begin{figure}
@@ -1034,7 +1032,7 @@ A full derivation and proof of soundness of the semantics of the Effect Calculus
     \T{\e_1'\dot\e_2'}{}
 \end{tikzcd}
 }
-\caption{The interaction of the subeffect natural transformation with the graded monad  bind natural transformation.}
+\caption{The interaction of the subeffect natural transformation with the graded monad join natural transformation.}
 \label{SubeffectBind}
 \end{minipage}  
 \end{figure}
