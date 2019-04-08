@@ -1427,6 +1427,7 @@ We have the following non-trivial property of substitution:
                     \ntreeruleI{Weaken}{\treeruleI{\D}{\typerelation{\G''}{x}{A}}}{\typerelation{\G'', y: B}{x}{A}}
                 \end{equation}
         
+            
                 By inversion, $\si = \si', y\setto v$
                 and:
         
@@ -2474,11 +2475,12 @@ And $v_1\ssub{x}{v} = v_1\sub{I_{\G}, x\setto{v}}$
             rhs = \bind{\e_1\dot\e_2}{\e_3}{C}\after\T{\e_1\dot\e_2}{(h)}\after F
         \end{equation}
         
-        \scalebox{0.8}{\parbox{1.2\linewidth}{%
+    
+        \scalebox{0.6}{\parbox{1.4\linewidth}{%
         \begin{align*}
                 F & = \tstrength{\e_1\dot\e_2}{\G}{B}\after(\idg\times\bind{\e_1}{\e_2}{B})\after(\idg\times\T{\e_1}{g})\after\pr{\idg}{\tstrength{\e_1}{\G}{A}\after\pr{\idg}{f}}\\
                 &  = \bind{\e_1}{\e_2}{(\G\times B)} \after \T{\e_1}{\tstrength{\e_2}{\G}{B}} \after\tstrength{\e_1}{\G}{(\T{\e_2}{B})} \after (\idg \after\T{\e_1}{g})\after\pr{\idg}{\tstrength{\e_1}{\G}{A}\after\pr{\idg}{f}}\qt{By commutativity of bind and tensor-strength}
-                \\ & = \bind{\e_1}{\e_2}{(\G \times B))} \after \T{\e_1}{(\tstrength{\e_2}{\G}{B} \after (\idg \times g))} \after \tstrength{\e_1}{\G}{(\G \times A)} \after \pr{\idg}{\tstrength{\e_1}{\G}{A}\after\pr{\idg}{f}}\qt{By naturality of v-strength}
+                \\ & = \bind{\e_1}{\e_2}{(\G \times B))} \after \T{\e_1}{(\tstrength{\e_2}{\G}{B} \after (\idg \times g))} \after \tstrength{\e_1}{\G}{(\G \times A)} \after \pr{\idg}{\tstrength{\e_1}{\G}{A}\after\pr{\idg}{f}}\qt{By naturality of t-strength}
         \end{align*}
         }}
         
