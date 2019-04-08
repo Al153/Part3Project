@@ -6,7 +6,7 @@
 \abstract
 
 This (online only) document contains full proofs and derivations of all of the theorems for the soundness of PEC semantics. It is not intended to have the same polish as the dissertation.
-\todo{Index $\Mul$}
+
 \tableofcontents
 
 \chapter{Language Definition}
@@ -180,12 +180,12 @@ We also have the following natural operations on morphisms in $\C$.
 Let $I = U^n$.
 
 \begin{itemize}
-    \item $\Mul:\ciu\times\ciu\rightarrow\ciu$ - Generates multiplication of effects.
+    \item $\Mul_I:\ciu\times\ciu\rightarrow\ciu$ - Generates multiplication of effects.
 \end{itemize}
 
 With naturality conditions which mean, for $\theta: U^m \rightarrow U^n (I' \rightarrow I)$,
 \begin{itemize}
-    \item $\Mul(\phi,\psi)\after\theta = \Mul(\phi\after\theta,\psi\after\theta)$
+    \item $\Mul_{I}(\phi,\psi)\after\theta = \Mul_{I'}(\phi\after\theta,\psi\after\theta)$
 \end{itemize}
 
 
@@ -196,10 +196,10 @@ Each instance of the wellformedness relation on effects, $\wellformed{\P}{\e}$ h
 \end{equation}
 
 It should also be the case that \begin{equation}
-    \Mul(\deno{\typerelation{\P}{\e_1}{\effect}}, \deno{\typerelation{\P}{\e_2}{\effect}}) = \deno{\typerelation{\P}{\e_1\dot\e_2}{\effect}} \in \ciu
+    \Mul_I(\deno{\typerelation{\P}{\e_1}{\effect}}, \deno{\typerelation{\P}{\e_2}{\effect}}) = \deno{\typerelation{\P}{\e_1\dot\e_2}{\effect}} \in \ciu
 \end{equation}
 
-That is, $\Mul$ should be have identity $\deno{\typerelation{\P}{\1}{\effect}}$ and be associative.
+That is, $\Mul_I$ should be have identity $\deno{\typerelation{\P}{\1}{\effect}}$ and be associative.
 
 
 \section{Substitution and Weakening of the Effect Environment}
@@ -229,7 +229,7 @@ Each set of morphisms $\C(I)$ corresponds to a semantic-closed (S-closed) catego
     \item Co-product of the terminal object with itself ($\1 + \1$)
     \item Ground morphisms for each ground constant ($\const{A}: \1\rightarrow A$)
     \item Partial order morphisms on ground types ($\deno{A\subtypeg} B$)
-    \item A strong, monad, graded by the po-monoid $(\ciu, \Mul, \subeffectp, \deno{\1})$.
+    \item A strong, monad, graded by the po-monoid $(\ciu, \Mul_I, \subeffectp, \deno{\1})$.
 \end{itemize}
 
 
@@ -635,7 +635,7 @@ For each instance of the wellformedness relation on effects, we define a morphis
     
     \item $\deno{\typerelation{\P, \b}{\a}{\effect}} = \deno{\typerelation{\P}{\a}{\effect}}\after\p: I\times U\rightarrow U$
     
-    \item $\deno{\typerelation{\P}{\e_1\dot \e_2}{\effect}} = \Mul(\deno{\typerelation{\P}{\e_2}{\effect}},\deno{\typerelation{\P}{\e_1}{\effect}}): I \rightarrow U$
+    \item $\deno{\typerelation{\P}{\e_1\dot \e_2}{\effect}} = \Mul_I(\deno{\typerelation{\P}{\e_2}{\effect}},\deno{\typerelation{\P}{\e_1}{\effect}}): I \rightarrow U$
 \end{itemize}
 
 \section{Types}
@@ -828,9 +828,9 @@ In this section, we state and prove a theorem that the action of a simultaneous 
         \case{Compose}
         \begin{align*}
             \deno{\typerelation{\P}{\e_1\dot\e_2}{\type}} \after\si &=
-            \Mul(\deno{\typerelation{\P}{\e_1}{\effect}}, \deno{\typerelation{\P}{\e_2}{\effect}})\after \si \\
-            & = \Mul(\deno{\typerelation{\P}{\e_1}{\effect}}\after \si, \deno{\typerelation{\P}{\e_2}{\effect}}\after \si)\qt{By Naturality}\\
-            & = \Mul(\deno{\typerelation{\P'}{\si(\e_1)}{\effect}}, \deno{\typerelation{\P}{\si(\e_2)}{\effect}})\\
+            \Mul_{I}(\deno{\typerelation{\P}{\e_1}{\effect}}, \deno{\typerelation{\P}{\e_2}{\effect}})\after \si \\
+            & = \Mul_{I'}(\deno{\typerelation{\P}{\e_1}{\effect}}\after \si, \deno{\typerelation{\P}{\e_2}{\effect}}\after \si)\qt{By Naturality}\\
+            & = \Mul_{I'}(\deno{\typerelation{\P'}{\si(\e_1)}{\effect}}, \deno{\typerelation{\P}{\si(\e_2)}{\effect}})\\
             & = \deno{\typerelation{\P'}{\si(\e_1)\dot\si(\e_2)}{\effect}}\\
             & = \deno{\typerelation{\P'}{\si(\e_1\dot\e_2)}{\effect}}\\
         \end{align*}
@@ -964,8 +964,8 @@ In this section, we state and prove a theorem that the action of a simultaneous 
         
         So $(\M{\e_1}{A})\ssi \subtypepp(\M{\e_2}{B})\ssi$
         
-
-        \todo{Quantified Case}
+        \case{Quantification}
+        By inversion, $A\subtypepa B$ and $\ok{\P,\a}$. Picking $\a\notin\P'$ by $\a$ equivalence, and by the extension lemma \ref{EffectSubsPropertyThree}, $\typerelation{(\P,\a)}{(\si, \a\setto\a)}{(\P,\a)}$. Hence, by induction $A\sub{\si, \a\setto\a}\subtypeppa B\sub{\si, \a\setto\a}$, so $\all{\a}{A}\subtypepp\all{\a}{B}$.
         $$\square$$
     \end{proof}
     
@@ -1614,9 +1614,9 @@ In this section, we state and prove a theorem that the action of a simultaneous 
         \case{Compose}
         \begin{align*}
             \deno{\typerelation{\P}{\e_1\dot\e_2}{\type}} \after\w &=
-            \Mul(\deno{\typerelation{\P}{\e_1}{\effect}}, \deno{\typerelation{\P}{\e_2}{\effect}})\after \w \\
-            & = \Mul(\deno{\typerelation{\P}{\e_1}{\effect}}\after \w, \deno{\typerelation{\P}{\e_2}{\effect}}\after \w)\qt{By Naturality}\\
-            & = \Mul(\deno{\typerelation{\P'}{\e_1}{\effect}}, \deno{\typerelation{\P}{\e_2}{\effect}})\\
+            \Mul_I(\deno{\typerelation{\P}{\e_1}{\effect}}, \deno{\typerelation{\P}{\e_2}{\effect}})\after \w \\
+            & = \Mul_{I'}(\deno{\typerelation{\P}{\e_1}{\effect}}\after \w, \deno{\typerelation{\P}{\e_2}{\effect}}\after \w)\qt{By Naturality}\\
+            & = \Mul_{I'}(\deno{\typerelation{\P'}{\e_1}{\effect}}, \deno{\typerelation{\P}{\e_2}{\effect}})\\
             & = \deno{\typerelation{\P}{\e_1\dot\e_2}{\effect}}
         \end{align*}
     \end{proof}
