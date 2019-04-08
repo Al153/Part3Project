@@ -28,7 +28,7 @@ This document contains a terse explanation of the semantics of the Effect Calcul
 
 \section{Type System}
 \subsection{Effects}
-The effects should form a monotonous, pre-ordered monoid $(E, \dot, \1, \subeffect)$ with elements $\e$
+The effects should form a monotonous, partially-ordered monoid $(E, \dot, \1, \subeffect)$ with elements $\e$
 \subsection{Types}
     \paragraph{Ground Types}
         There exists a set $\ground$ of ground types, including \U, \B
@@ -36,7 +36,7 @@ The effects should form a monotonous, pre-ordered monoid $(E, \dot, \1, \subeffe
     $$ A, B, C \gens \ground \mid \mea \mid \ab $$
 
 \subsection{Subtyping}
-    There exists a subtyping pre-order relation $\subtype_{\ground}$ over ground types that is:
+    There exists a subtyping partial-order relation $\subtype_{\ground}$ over ground types that is:
     \begin{itemize}
         \item $\ntreerulez{Reflexive}{A \subtype_{\ground} A}$
         \item $\ntreeruleII{Transitive}{A \subtype_{\ground} B }{ B \subtype_{\ground} C}{A \subtype_{\ground} C}$
@@ -45,9 +45,9 @@ The effects should form a monotonous, pre-ordered monoid $(E, \dot, \1, \subeffe
     We extend this relation with the function subtyping rule to yield the full subtyping relation $\subtype$
 
     \begin{itemize}
-        \item $\ntreeruleI{ground}{A \subtype_{\ground} B}{A \subtype B}$
+        \item $\ntreeruleI{Ground}{A \subtype_{\ground} B}{A \subtype B}$
         \item $\ntreeruleII{Fn}{A \subtype A' }{ B' \subtype B }{\fntype{A'}{B'} \subtype \ab}$
-        \item $\ntreeruleII{Monad}{A\subtype A'}{\e\subeffect\e'}{\mea\subtype\M{\e'}{A'}}$
+        \item $\ntreeruleII{Effect}{A\subtype A'}{\e\subeffect\e'}{\mea\subtype\M{\e'}{A'}}$
     \end{itemize}
 \subsection{Type Environments}
 An environment, $G \gens \nil \mid \gax$ 
@@ -58,7 +58,7 @@ An environment, $G \gens \nil \mid \gax$
 \end{itemize}
 \paragraph{$\ok{}$ Predicate}
 \begin{itemize}
-    \item $\ntreerulez{Atom}{\ok{\nil}}$
+    \item $\ntreerulez{Nil}{\ok{\nil}}$
     \item $\ntreeruleII{Var}{\ok{\G} }{ x\notin \dom{\G}}{\ok{\gax}}$
 \end{itemize}
 
@@ -77,7 +77,7 @@ An environment, $G \gens \nil \mid \gax$
     \item $\ntreeruleII{Sub}{\typerelation{\G}{v}{A}}{ A \subtype B}{\typerelation{\G}{v}{B}}$
     \item $\ntreeruleI{Return}{\typerelation{\G}{v}{A}}{\typerelation{\G}{\return{v}}{\moa}}$
     \item $\ntreeruleII{Apply}{\typerelation{\G}{v_1}{\ab}}{\typerelation{\G}{v_2}{A}}{\typerelation{\G}{\apply{v_1}{v_2}}{B}}$
-    \item $\ntreeruleIII{if}{\typerelation{\G}{v}{\B} }{ \typerelation{\G}{v_1}{ A}}{\typerelation{\G}{v_2}{ A}}{\typerelation{\G}{\pifthenelse{A}{V}{v_1}{v_2}}{ A}}$
+    \item $\ntreeruleIII{If}{\typerelation{\G}{v}{\B} }{ \typerelation{\G}{v_1}{ A}}{\typerelation{\G}{v_2}{ A}}{\typerelation{\G}{\pifthenelse{A}{V}{v_1}{v_2}}{ A}}$
     \item $\ntreeruleII{Do}{\typerelation{\G}{v_1}{\M{\e_1}{A}} }{ \typerelation{\gax}{v_2}{\M{\e_2}{B}}}{\typerelation{\G}{\doin{x}{v_1}{v_2}}{\M{\e_1 \dot \e_2}{B}}}$
 \end{itemize}
 
@@ -165,7 +165,7 @@ Denotations are defined recursively over the typing derivation of a term. Hence,
         
     \item $\ntreeruleI{Var}{\ok{\G}}{\deno{\typerelation{\gax}{x}{A}} = \pp: \G \times A \rightarrow A}$
     \item $\ntreeruleI{Weaken}{f = \deno{\gtyperelation{x}{A}}: \G \rightarrow A}{\deno{\typerelation{\gby}{x}{A}} = f \after \p: \G \times B \rightarrow A}$
-    \item $\ntreeruleI{Lambda}{f = \deno{\typerelation{\gax}{v}{B}} : \G \times A \rightarrow B}{\deno{\typerelation{\G}{\lam{x}{A}{v}}{A \rightarrow B}} = \cur{f} : \G \rightarrow (B)^A}$
+    \item $\ntreeruleI{Fn}{f = \deno{\typerelation{\gax}{v}{B}} : \G \times A \rightarrow B}{\deno{\typerelation{\G}{\lam{x}{A}{v}}{A \rightarrow B}} = \cur{f} : \G \rightarrow (B)^A}$
     
     \item $\ntreeruleII{Subtype}{f = \deno{\typerelation{\G}{v}{A}} : \G \rightarrow A}{ g = \deno{A \subtype B}}{\deno{\typerelation{\G}{v}{B}} = g \after f : \G \rightarrow B}$
   
@@ -182,7 +182,7 @@ Denotations are defined recursively over the typing derivation of a term. Hence,
 \chapter{Unique Denotations}
  
 \section{Reduced Type Derivation}
-A reduced type derivation is one where instances of the subtype rule must, and may only, occur at the root or directly above an \textbf{if}, or \textbf{apply} rule.
+A reduced type derivation is one where instances of the subtype rule must, and may only, occur at the root or directly above an \textbf{If}, or \textbf{Apply} rule.
 
 In this section, I shall prove that there is at most one reduced derivation of $\gtyperelation{v}{A}$. Secondly, I shall present a function for generating reduced derivations from arbitrary typing derivations, in a way that does not change the denotations. These imply that all typing derivations of a type-relation have the same denotation.
 
@@ -230,13 +230,13 @@ $$
 
 If $A = B$, then the subtype relation is the identity subtype ($A \subtype A$).
 
-\case{Lambda}
+\case{Fn}
 The reduced derivation of $\gtyperelation{\lam{x}{A}{v}}{\fntype{A'}{B'}}$ is:
 
 
 $$
 \ntreeruleII{Subtype}
-{\ntreeruleI{Lambda}{\treeruleI{\D}{\typerelation{\gax}{v}{B}}}
+{\ntreeruleI{Fn}{\treeruleI{\D}{\typerelation{\gax}{v}{B}}}
 {
     \gtyperelation{\lam{x}{A}{B}}{\ab}}
     }{
@@ -321,11 +321,13 @@ Let
 
 Be the unique reduced reduced derivations of $\gtyperelation{v}{\B}$, $\gtyperelation{v_1}{ A}$, $\gtyperelation{v_2}{ A}$.
 
-Then the only reduced derivation of $\gtyperelation{\pifthenelse{A}{v}{v_1}{v_2}}{ A}$ is:
+Then the only reduced derivation of $\gtyperelation{\pifthenelse{A}{v}{v_1}{v_2}}{ B}$ is:
+
+\todo{Boxify}
 
 \begin{equation}
 \scalebox{.8}{$
-    \ntreeruleI{Subtype}{
+    \ntreeruleII{Subtype}{
         \ntreeruleIII{If}{
             \scalebox{.5}{$\deltavrule{\G}{v}{B}{\B}$}
         }{
@@ -333,10 +335,12 @@ Then the only reduced derivation of $\gtyperelation{\pifthenelse{A}{v}{v_1}{v_2}
         }{
             \scalebox{.5}{$\deltacruleprimeprime{\G}{v_2}{\e''}{A''}{\e}{A}$}
         }{
-            \gtyperelation{\pifthenelse{A}{v}{v_1}{v_2}}{ A} \\ A\subtype A
+            \gtyperelation{\pifthenelse{A}{v}{v_1}{v_2}}{ A} 
         } 
     }{
-        \gtyperelation{\pifthenelse{A}{v}{v_1}{v_2}}{A}
+        A\subtype B
+    }{
+        \gtyperelation{\pifthenelse{A}{v}{v_1}{v_2}}{B}
         }
         $}
 \end{equation}
@@ -452,7 +456,7 @@ We introduce a function, $\reduce$ that maps each valid type derivation of $\gty
 
         So the denotations of the un-reduced and reduced derivations are equal.
 
-        \case{Lambda}
+        \case{Fn}
         \subparagraph{$\reduce$ definition}
             To find:
         
@@ -624,7 +628,7 @@ We introduce a function, $\reduce$ that maps each valid type derivation of $\gty
                         \gtyperelation{v_1}{\fntype{A'}{B'}}
                     }
                 }{
-                    \ntreeruleI{Subtype}{
+                    \ntreeruleII{Subtype}{
                         \treeruleI{\D'_2}{\gtyperelation{v_2}{A''}}
                         }{
                         A'' \subtype A \subtype A'
@@ -701,7 +705,7 @@ We introduce a function, $\reduce$ that maps each valid type derivation of $\gty
             To find
             \begin{equation}
                 \reduce(
-                    \ntreeruleI{Bind}{
+                    \ntreeruleII{Bind}{
                         \treeruleI{
                             \D_1
                         }{
@@ -750,8 +754,8 @@ We introduce a function, $\reduce$ that maps each valid type derivation of $\gty
 
 
             \begin{equation}
-                \ntreeruleI{Subtype}{
-                    \ntreeruleI{Bind}{
+                \ntreeruleII{Subtype}{
+                    \ntreeruleII{Bind}{
                         \treeruleI{
                             \D'_1
                         }{
@@ -983,7 +987,7 @@ The denotation of a weakening relation is defined as follows:
         
             \begin{equation}
                 \ntreeruleII{Subtype}{
-                    \ntreeruleI{var}{}{\typerelation{\G''', x: B}{x}{B}}
+                    \ntreeruleI{Var}{ }{\typerelation{\G''', x: B}{x}{B}}
                     }{
                     B \subtype A
                 }{
@@ -1057,7 +1061,7 @@ The denotation of a weakening relation is defined as follows:
         \end{align*}
         
         
-        \case{Lambda}
+        \case{Fn}
         By inversion, we have a derivation $\D_1$ giving
         
         \begin{equation}
@@ -1419,7 +1423,7 @@ We have the following non-trivial property of substitution:
                 \begin{equation}
                     \typerelation{\G'}{x\sub{\si}}{A}
                 \end{equation}
-        \case{Lambda}
+        \case{Fn}
             By inversion, there exists $\D$ such that:
         
             \begin{equation}
@@ -1697,7 +1701,7 @@ We have the following non-trivial property of substitution:
                 & = c\after\term{G}\after\si\qt{Terminal property}\\
                 & = \D\after\si\qt{By definition}
         \end{align*}
-        \case{Lambda}
+        \case{Fn}
         
         By inversion, we have $\D_1$ such that
         \begin{equation}
@@ -1969,9 +1973,9 @@ Since $\deno{\gtyperelation{(I_{\G}, x\setto v)}{(\gax)}} = \pr{\idg}{\deno{\gty
 And $v_1\ssub{x}{v} = v_1\sub{I_{\G}, x\setto{v}}$
 
 
-\chapter{Beta Eta Equivalence (Soundness)}
-\section{Beta and Eta Equivalence}
-\subsection{Beta-Eta conversions}
+\chapter{Soundness}
+\section{Equational Equivalence}
+\subsection{Reduction Conversions}
 \begin{itemize}
     \item $\ntreeruleII{Lambda-Beta}{\typerelation{\gax}{v_1}{B}}{\gtyperelation{v_2}{A}}{\gberelation{\apply{(\lam{x}{A}{v_1})}{v_2} }{ v_1\ssub{x}{v_2}}{B}}$
     
@@ -1993,9 +1997,9 @@ And $v_1\ssub{x}{v} = v_1\sub{I_{\G}, x\setto{v}}$
 
     \item $\ntreeruleI{Unit}{\gtyperelation{v}{\U}}{\gberelation{v}{\u}{\U}}$
 
-    \item $\ntreeruleII{If-true}{\gtyperelation{v_1}{ A}}{\gtyperelation{v_2}{ A}}{\gberelation{\pifthenelse{A}{\t}{v_1}{v_2}}{v_1}{ A}}$
+    \item $\ntreeruleII{If-True}{\gtyperelation{v_1}{ A}}{\gtyperelation{v_2}{ A}}{\gberelation{\pifthenelse{A}{\t}{v_1}{v_2}}{v_1}{ A}}$
     
-    \item $\ntreeruleII{If-false}{\gtyperelation{v_2}{ A}}{\gtyperelation{v_1}{ A}}{\gberelation{\pifthenelse{A}{\f}{v_1}{v_2}}{v_2}{ A}}$
+    \item $\ntreeruleII{If-False}{\gtyperelation{v_2}{ A}}{\gtyperelation{v_1}{ A}}{\gberelation{\pifthenelse{A}{\f}{v_1}{v_2}}{v_2}{ A}}$
     
     \item $\ntreeruleII{If-Eta}{\typerelation{\G, x: \B}{v_1}{ A}}{\gtyperelation{v_2}{\B}}{\gberelation{\pifthenelse{A}{v_2}{v_1\ssub{x}{\t}}{v_1\ssub{x}{\f}}}{v_1\ssub{x}{v_2}}{ A}}$
     
@@ -2008,7 +2012,7 @@ And $v_1\ssub{x}{v} = v_1\sub{I_{\G}, x\setto{v}}$
 \end{itemize}
 \subsection{Congruences}
 \begin{itemize}
-    \item $\ntreeruleI{Lambda}{\berelation{\gax}{v_1}{v_2}{B}}{\gberelation{\lam{x}{A}{v_1}}{\lam{x}{A}{v_2}}{\ab}}$
+    \item $\ntreeruleI{Fn}{\berelation{\gax}{v_1}{v_2}{B}}{\gberelation{\lam{x}{A}{v_1}}{\lam{x}{A}{v_2}}{\ab}}$
     
     \item $\ntreeruleI{Return}{\gberelation{v_1}{v_2}{A}}{\gberelation{\return{v_1}}{\return{v_2}}{\moa}}$
     
@@ -2018,11 +2022,10 @@ And $v_1\ssub{x}{v} = v_1\sub{I_{\G}, x\setto{v}}$
     
     \item $\ntreeruleIII{If}{\gberelation{v}{v'}{\B} }{\gberelation{v_1}{v_1'}{ A}}{\gberelation{v_2}{v_2'}{ A}}{\gberelation{\pifthenelse{A}{v}{v_1}{v_2}}{\pifthenelse{A}{v}{v_1'}{v_2'}}{ A}}$
     \item $\ntreeruleII{Subtype}{\gberelation{v}{v'}{A} }{ A \subtype B}{\gberelation{v}{v'}{B}}$
-    \item $\ntreeruleII{Subtype}{\gberelation{v}{v'}{\M{\e_1}{A}}}{\subeffecttree{\e_1}{A}{\e_2}{B}}{\gberelation{v}{v'}{\M{\e_2}{B}}}$
 \end{itemize}
-\section{Beta-Eta Equivalence Implies Both Sides Have the Same Type}
+\section{Equational Equivalence Implies Both Sides Have the Same Type}
 
-\begin{theorem}[Beta-Eta Equivalence Implies Both Sides Have the Same Type]
+\begin{theorem}[Equational Equivalence Implies Both Sides Have the Same Type]
     Each derivation of $\gberelation{v}{v'}{A}$ can be converted to a derivation of $\gtyperelation{v}{A}$ and $\gtyperelation{v'}{A}$ by induction over the beta-eta equivalence relation derivation.    
 \end{theorem}
 
@@ -2042,12 +2045,12 @@ And $v_1\ssub{x}{v} = v_1\sub{I_{\G}, x\setto{v}}$
         By inversion, there exists $v_2$ such that $\gberelation{v_1}{v_2}{A}$ and $\gberelation{v_2}{v_3}{A}$.
         Hence by induction, we have derivations of $\gtyperelation{v_1}{A}$ and $\gtyperelation{v_3}{A}$
         
-        \subsection{Beta-Eta Conversions}
+        \subsection{Reduction Conversions}
         
-        \case{Lambda}
+        \case{Fn}
             By inversion, we have $\typerelation{\gax}{v}{B}$ and $\gtyperelation{v}{A}$. Hence by the typing rules, we have:
             $$\ntreeruleII{Apply}{
-                \ntreeruleI{Lambda}{\typerelation{\gax }{v_1}{B}}{\gtyperelation{\lam{x}{A}{v_1}}{\ab}}
+                \ntreeruleI{Fn}{\typerelation{\gax }{v_1}{B}}{\gtyperelation{\lam{x}{A}{v_1}}{\ab}}
             }{
                 \gtyperelation{v_2}{A}
             }{\gtyperelation{\apply{(\lam{x}{A}{v_1})}{v_2}}{B}}$$
@@ -2081,7 +2084,7 @@ And $v_1\ssub{x}{v} = v_1\sub{I_{\G}, x\setto{v}}$
                 \ntreeruleII{Bind}{
                     \gtyperelation{v}{\mea}
                 }{
-                    \ntreeruleI{Return}{\ntreeruleI{var}{\ok{\G}}{\typerelation{\gax}{x}{A}}}{\typerelation{\gax}{\return{v}}{\moa}}
+                    \ntreeruleI{Return}{\ntreeruleI{Var}{\ok{\G}}{\typerelation{\gax}{x}{A}}}{\typerelation{\gax}{\return{v}}{\moa}}
                 }{\gtyperelation{\doin{x}{v}{\return{x}}}{\M{\e\dot\1}{A} = \mea}}
             \end{equation}
             \case{Associativity}
@@ -2226,7 +2229,7 @@ And $v_1\ssub{x}{v} = v_1\sub{I_{\G}, x\setto{v}}$
             \subsection{Congruences}
         Each congruence rule corresponds exactly to a type derivation rule. To convert to a type derivation, convert all preconditions, then use the equivalent type derivation rule.
         
-        \case{Lambda}
+        \case{Fn}
             By inversion, $\berelation{\gax}{v_1}{v_2}{B}$. Hence by induction $\typerelation{\gax}{v_1}{B}$, and $\typerelation{\gax}{v_2}{B}$.
         
             So 
@@ -2327,9 +2330,9 @@ And $v_1\ssub{x}{v} = v_1\sub{I_{\G}, x\setto{v}}$
 \end{framed}
 
 
-\section{Beta-Eta equivalent terms have equal denotations}
+\section{Equationally Equivalent Terms Have Equal Denotations}
 
-\begin{theorem}[Beta-Eta equivalent Terms Have Equal Denotations]
+\begin{theorem}[Equationally Equivalent Terms Have Equal Denotations]
     If $\gberelation{v}{v'}{A}$ then $\gdenoequality{v}{v'}{A}$
 \end{theorem}
 
@@ -2348,10 +2351,10 @@ And $v_1\ssub{x}{v} = v_1\sub{I_{\G}, x\setto{v}}$
         There must exist $v_2$ such that $\gberelation{v_1}{v_2}{A}$ and $\gberelation{v_2}{v_3}{A}$, so by induction,
         $\gdenoequality{v_1}{v_2}{A}$ and $\gdenoequality{v_2}{v_3}{A}$. Hence by transitivity of equality, $\gdenoequality{v_1}{v_3}{A}$
         
-        \subsection{Beta-Eta Conversions}
+        \subsection{Reduction Conversions}
         These cases are typically proved using the properties of a cartesian closed category with a strong graded monad.
         
-        \case{Lambda}
+        \case{Fn}
             Let $f = \deno{\typerelation{\gax}{v_1}{B}}: (\G \times A) \rightarrow B$
         
             Let $g = \deno{\gtyperelation{v_2}{A}}: \G \rightarrow A$
@@ -2680,7 +2683,7 @@ And $v_1\ssub{x}{v} = v_1\sub{I_{\G}, x\setto{v}}$
         \subsection{Congruences}
         These cases can be proved fairly mechanically by assuming the preconditions, using induction to prove that the matching pairs of subexpressions have equal denotations, then constructing the denotations of the expressions using the equal denotations which gives trivially equal denotations.
         
-        \case{Lambda}
+        \case{Fn}
             By inversion, we have $\berelation{\gax}{v_1}{v_2}{B}$
             By induction, we therefore have $\deno{\typerelation{\gax}{v_1}{B}} = \deno{\typerelation{\gax}{v_2}{B}}$
         
@@ -2773,7 +2776,7 @@ And $v_1\ssub{x}{v} = v_1\sub{I_{\G}, x\setto{v}}$
         
         Then let
         \begin{align*}
-            f &{}=\deno{\gtyperelation{v_1}{A}} = \deno{\gtyperelation{v_2}{B}}\\
+            f &{}=\deno{\gtyperelation{v_1}{A}} = \deno{\gtyperelation{v_2}{A}}\\
             g &{}=\deno{A \subtype B}
         \end{align*}
         

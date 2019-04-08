@@ -6,7 +6,7 @@
 \abstract
 
 This (online only) document contains full proofs and derivations of all of the theorems for the soundness of PEC semantics. It is not intended to have the same polish as the dissertation.
-
+\todo{Index $\Mul$}
 \tableofcontents
 
 \chapter{Language Definition}
@@ -31,7 +31,7 @@ This (online only) document contains full proofs and derivations of all of the t
 
 \section{Type System}
 \subsection{Ground Effects}
-The effects should form a monotonous, pre-ordered monoid $(E, \dot, \1, \subeffect)$ with ground elements $e$.
+The effects should form a monotonous, partially-ordered monoid $(E, \dot, \1, \subeffect)$ with ground elements $e$.
 
 \subsection{Effect Po-Monoid Under an Effect Environment}
 
@@ -57,7 +57,7 @@ Otherwise, $\dotp$ is symbolic in nature.
     \e_1 \subeffectp \e_2 \Leftrightarrow \forall \si\downarrow. \e_1\sub{\si\downarrow} \subeffect \e_2\sub{\si\downarrow}
 \end{equation}
 
-Where $\si\downarrow$ denotes any ground-substitution of $\P$. That is any substitution of all effect-variables in $\P$ to ground effects. Where it is obvious from the context, I shall use $\subeffect$ instead of $\subeffectp$.
+Where $\si\downarrow$ denotes any ground-substitution of $\P$. That is any substitution of all effect variables in $\P$ to ground effects. Where it is obvious from the context, I shall use $\subeffect$ instead of $\subeffectp$.
 
 
 \subsection{Types}
@@ -68,7 +68,7 @@ Where $\si\downarrow$ denotes any ground-substitution of $\P$. That is any subst
   
 \subsection{Type and Effect Environments}
 A type environment is a snoc-list of term-variable, type pairs, $G \gens \nil \mid \gax$ .
-An effect environment is a snoc-list of effect-variables.
+An effect environment is a snoc-list of effect variables.
 
 $\P\gens\nil\mid\P, \a$
 \paragraph{Domain Function on Type Environments}
@@ -82,8 +82,8 @@ Informally, $\a \in \P$ if $\a$ appears in the list represented by $\P$.
 
 \paragraph{$\ok{}$ Predicate On Effect Environments}
 \begin{itemize}
-    \item $\ntreerulez{Atom}{\ok{\nil}}$
-    \item $\condtreeruleI{A}{\ok{\P}}{\ok{\P, \a}}{ \a\notin \P}$
+    \item $\ntreerulez{Nil}{\ok{\nil}}$
+    \item $\condtreeruleI{Extend}{\ok{\P}}{\ok{\P, \a}}{ \a\notin \P}$
 \end{itemize}
 
 \paragraph{Wellformedness of effects}
@@ -93,7 +93,7 @@ We define a relation $\wellformed{\P}{\e}$.
     \item $\ntreeruleI{Ground}{\ok{\P}}{\wellformed{\P}{e}}$
     \item $\ntreeruleI{Var}{\ok{\P,\a}}{\wellformed{\P,\a}{\a}}$
     \item $\condtreeruleI{Weaken}{\wellformed{\P}{\a}}{\wellformed{\P,\b}{\a}}{\a\neq\b, b\notin\P}$
-    \item $\ntreeruleII{Monoid Op}{\wellformed{\P}{\e_1}}{\wellformed{\P}{\e_2}}{\wellformed{\P}{\e_1\dot\e_2}}$
+    \item $\ntreeruleII{Compose}{\wellformed{\P}{\e_1}}{\wellformed{\P}{\e_2}}{\wellformed{\P}{\e_1\dot\e_2}}$
 \end{itemize}
 
 \paragraph{Wellformedness of Types}
@@ -101,9 +101,9 @@ We define a relation $\wellformed{\P}{A}$ on types.
 
 \begin{itemize}
     \item $\ntreerulez{Ground}{\wellformed{\P}{\g}}$
-    \item $\ntreeruleII{Lambda}{\wellformed{\P}{A}}{\wellformed{\P}{B}}{\wellformed{\P}{\ab}}$
-    \item $\ntreeruleII{Computation}{\wellformed{\P}{A}}{\wellformed{\P}{\e}}{\wellformed{\P}{\mea}}$
-    \item $\ntreeruleI{For-All}{\wellformed{\P,\a}{A}}{\wellformed{\P}{\all{\a}{A}}}$
+    \item $\ntreeruleII{Fn}{\wellformed{\P}{A}}{\wellformed{\P}{B}}{\wellformed{\P}{\ab}}$
+    \item $\ntreeruleII{Effect}{\wellformed{\P}{A}}{\wellformed{\P}{\e}}{\wellformed{\P}{\mea}}$
+    \item $\ntreeruleI{Quantification}{\wellformed{\P,\a}{A}}{\wellformed{\P}{\all{\a}{A}}}$
 \end{itemize}
 
 \paragraph{Ok Predicate on Type Environments}
@@ -111,24 +111,24 @@ We now define a predicate on type environments and effect environments: $\oke{\P
 
 \begin{itemize}
     \item $\ntreerulez{Nil}{\oke{\P}{\nil}}$
-    \item $\ntreeruleIII{Var}{\oke{\P}{\G}}{ x\notin\dom{\G}}{ \wellformed{\P}{A}}{\oke{\P}{\gax}}$
+    \item $\ntreeruleIII{Extend}{\oke{\P}{\G}}{ x\notin\dom{\G}}{ \wellformed{\P}{A}}{\oke{\P}{\gax}}$
 \end{itemize}
 
 
 
 \subsection{Subtyping}
-    There exists a subtyping pre-order relation $\subtype_{\ground}$ over ground types that is:
+    There exists a subtyping partial-order relation $\subtype_{\ground}$ over ground types that is:
     \begin{itemize}
         \item $\ntreerulez{Reflexive}{A \subtype_{\ground} A}$
         \item $\ntreeruleII{Transitive}{A \subtype_{\ground} B }{ B \subtype_{\ground} C}{A \subtype_{\ground} C}$
     \end{itemize}
 
-    We extend this relation with the function and effect-lambda subtyping rules to yield the full subtyping relation under an effect environment, $\P$, $\subtypep$
+    We extend this relation with the (Fn) and (Quantification) subtyping rules to yield the full subtyping relation under an effect environment, $\P$, $\subtypep$
 
     \begin{itemize}
-        \item $\ntreeruleI{ground}{A \subtype_{\ground} B}{A \subtypep B}$
+        \item $\ntreeruleI{Ground}{A \subtype_{\ground} B}{A \subtypep B}$
         \item $\ntreeruleII{Fn}{A \subtypep A' }{ B' \subtypep B }{\fntype{A'}{B'} \subtypep \ab}$
-        \item $\ntreeruleII{All}{A\subtypep A'}{a\notin\P}{\all{\a}{A}\subtypep\all{a}{A'}}$
+        \item $\ntreeruleII{Quantification}{A\subtypep A'}{a\notin\P}{\all{\a}{A}\subtypep\all{a}{A'}}$
         \item $\ntreeruleII{Effect}{A\subtypep B}{ \e_1\subeffectp\e_2}{\M{\e_1}{A}\subtypep\M{\e_2}{B}}$
     \end{itemize}
 
@@ -522,7 +522,7 @@ Here are some simple corollaries of the adjunction between $\pstar$ and $\allI$.
             \end{align*}
 
         \subsubsection{On Terms}
-            Define the action of effect-substitution on terms:
+            Define the action of effect-environment substitution on terms:
 
             \begin{align*}
                 x\ssi & = x \\
@@ -658,7 +658,7 @@ Since the fibre category $\C(I)$ is S-Closed, it has objects for all ground type
 \end{itemize}
 
 \section{Effect Substitution}
-For each effect-substitution wellformedness-relation, define a denotation morphism, $\deno{\typerelation{\P'}{\si}{\P}}: \cii$
+For each effect-environment substitution wellformedness-relation, define a denotation morphism, $\deno{\typerelation{\P'}{\si}{\P}}: \cii$
 
 \begin{itemize}
     \item $\deno{\typerelation{\P'}{\nil}{\nil}} = \term{I}: \C(I', \1)$
@@ -711,7 +711,7 @@ For each ground constant, $\const{A}$, there exists $c: \1 \rightarrow A_I$ in $
         
     \item $\ntreeruleI{Var}{\wellformedok{\P}{\G}}{\deno{\etyperelation{\P}{\gax}{x}{A}} = \pp: \G \times A \rightarrow A}$
     \item $\ntreeruleI{Weaken}{f = \deno{\gpetyperelation{x}{A}}: \G \rightarrow A}{\deno{\etyperelation{\P}{\gby}{x}{A}} = f \after \p: \G \times B \rightarrow A}$
-    \item $\ntreeruleI{Lambda}{f = \deno{\etyperelation{\P}{\gax}{v}{B}} : \G \times A \rightarrow B}{\deno{\etyperelation{\P}{\G}{\lam{x}{A}{v}}{\ab}} = \cur{f} : \G \rightarrow (B)^A}$
+    \item $\ntreeruleI{Fn}{f = \deno{\etyperelation{\P}{\gax}{v}{B}} : \G \times A \rightarrow B}{\deno{\etyperelation{\P}{\G}{\lam{x}{A}{v}}{\ab}} = \cur{f} : \G \rightarrow (B)^A}$
     
     \item $\ntreeruleII{Subtype}{f = \deno{\etyperelation{\P}{\G}{v}{A}} : \G \rightarrow A}{ g = \deno{A \subtypep B}}{\deno{\etyperelation{\P}{\G}{v}{B}} = g \after f : \G \rightarrow B}$
   
@@ -760,10 +760,10 @@ In this section, we state and prove a theorem that the action of a simultaneous 
     \begin{proof}
         \case{Ground}
         $\si(e) = e$, so $\wellformed{\P'}{\si(\e)}$ holds.
-        \case{Multiply}
+        \case{Compose}
         \bi, $\wellformed{\P}{\e_1}$ and $\wellformed{\P}{\e_2}$ so $\wellformed{\P'}{\si(\e_1)}$ and $\wellformed{\P'}{\si(\e_2)}$ by induction and hence $\wellformed{\P'}{\si(\e_1\dot\e_2)}$
         \case{Var}
-        \bi, $\P=\P'',\a$ and $\ok{\P'',\a}$. Hence byu case splitting on $\i$, we see that $\si=\si', \a\setto\e$.
+        \bi, $\P=\P'',\a$ and $\ok{\P'',\a}$. Hence by case splitting on $\i$, we see that $\si=\si', \a\setto\e$.
         
         So by inversion, $\wellformed{\si}{\e}$ so $\wellformed{\P'}{\si(\a)=\e}$
         \case{Weaken}
@@ -825,7 +825,7 @@ In this section, we state and prove a theorem that the action of a simultaneous 
             & = \deno{\typerelation{\P'}{\si'(\a)}{\type}}\\
         \end{align*}
         
-        \case{Multiply}
+        \case{Compose}
         \begin{align*}
             \deno{\typerelation{\P}{\e_1\dot\e_2}{\type}} \after\si &=
             \Mul(\deno{\typerelation{\P}{\e_1}{\effect}}, \deno{\typerelation{\P}{\e_2}{\effect}})\after \si \\
@@ -852,7 +852,7 @@ In this section, we state and prove a theorem that the action of a simultaneous 
         
         Hence $\wellformed{\P'}{\g\ssi}$.
         
-        \case {Lambda}
+        \case {Fn}
         
         By inversion,  $\wellformed{\P}{A}$ and $\wellformed{\P}{B}$.
         
@@ -868,13 +868,13 @@ In this section, we state and prove a theorem that the action of a simultaneous 
         
         
         
-        \case{Computation}
+        \case{Effect}
         
         \bi, $\wellformed{\P}{\e}$ and $\wellformed{\P}{A}$ so by induction and substitution of effect preserving effect-wellformedness, 
         
         $\wellformed{\P'}{\si(\e)}$ and $\wellformed{\P'}{A\ssi}$ so $\wellformed{\P}{\M{\si(\e)}{A\ssi}}$ so $\wellformed{\P'}{(\mea)\ssi}$
         
-        \case{For All}
+        \case{Quantification}
         \bi, $\wellformed{\P,\a}{A}$. So by picking $\a\notin\P\wedge\a\notin\P'$ using $\a$-equivalence, we have $\typerelation{(\P',\a)}{(\si\a\setto\a)}{(\P,\a)}$.
         
         So by induction $\wellformed{(\P, \a)}{A\sub{\si,\a\setto\a}}$
@@ -902,7 +902,7 @@ In this section, we state and prove a theorem that the action of a simultaneous 
             & = \deno{\typerelation{\P'}{\g\ssi}{\type}}
         \end{align*}
         
-        \case{Monad}
+        \case{Effect}
         \begin{align*}
             \si\star\deno{\typerelation{\P}{\mea}{\type}} & =  \si\star(\T{\deno{\typerelation{\P}{\e}{\effect}}}{\deno{\typerelation{\P}{A}{\type}}})\\
             &= \T{\si\star(\deno{\typerelation{\P}{\e}{\effect}})}{\si\star(\deno{\typerelation{\P}{A}{\type}})}\\
@@ -918,7 +918,7 @@ In this section, we state and prove a theorem that the action of a simultaneous 
                 & = \deno{\typerelation{\P'}{(\all{\a}{A})\ssi}{\type}}\\
             \end{align*}
         
-        \case{Function}
+        \case{Fn}
         \begin{align*}
             \si\star\deno{\typerelation{\P}{\ab}{\type}} &= \si\star(\deno{\typerelation{\P}{B}{\type}}^{\deno{\typerelation{\P}{A}{\type}}})\\
             &=\si\star(\deno{\typerelation{\P}{B}{\type}})^{\si\star(\deno{\typerelation{\P}{A}{\type}})}\\
@@ -952,7 +952,7 @@ In this section, we state and prove a theorem that the action of a simultaneous 
         
         So $(\ab)\ssi\subtypepp (\fntype{A'}{B'})\ssi$
         
-        \case{Computation}
+        \case{Effect}
         
         \bi, $A\subtypep B$, $\e_1\subeffectp\e_2$.
         
@@ -964,6 +964,8 @@ In this section, we state and prove a theorem that the action of a simultaneous 
         
         So $(\M{\e_1}{A})\ssi \subtypepp(\M{\e_2}{B})\ssi$
         
+
+        \todo{Quantified Case}
         $$\square$$
     \end{proof}
     
@@ -985,7 +987,7 @@ In this section, we state and prove a theorem that the action of a simultaneous 
         
         Since $\si\star$ is s-closed.
         
-        \case{Monad}
+        \case{Effect}
         \begin{align*}
             \si\star\deno{\M{\e_1}{A} \subtypep \M{\e_2}{B}} & = \si\star(\deno{\e_1\subeffectp\e_2})\after\si\star(\T{\e_1}(\deno{A\subtypep B})) \\ 
              &= \deno{\si(\e_1)\subeffectpp\si(\e_2)} \after \T{\si(\e_1)}{\deno{A\ssi\subtypepp B\ssi}}\qt{By S-Closure}\\
@@ -993,7 +995,7 @@ In this section, we state and prove a theorem that the action of a simultaneous 
              &= \deno{(\M{\e_1}{A})\ssi\subtypepp\M{\e_2}{B}\ssi}\\
         \end{align*}
         
-        \case{For All}
+        \case{Quantification}
             \begin{align*}
                 \si\star\deno{\all{\a}{A}\subtypep\all{\a}{B}} &= \si\star(\allI(\deno{A\subtypepa B})) \\
                 &=\allII((\si\times\Id{U})\star(\deno{A\subtypepa B}))\\
@@ -1028,7 +1030,7 @@ In this section, we state and prove a theorem that the action of a simultaneous 
         \case{Nil}
         $\ok{\P}\implies\ok{\P'}$ so $\wellformedok{\P'}{\nil}$
         and $\nil\ssi = \nil$
-        \case{Var}
+        \case{Extend}
         \bi, $\wellformedok{\P}{\G}$ and $\wellformed{\P}{A}$.
         
         By induction and substitution preserving wellformedness of types, $\wellformedok{\P'}{\G'\ssi}$ and $\wellformed{\P'}{A\ssi}$.
@@ -1058,7 +1060,7 @@ In this section, we state and prove a theorem that the action of a simultaneous 
             &= \deno{\wellformedok{\P'}{\nil\ssi}}\\
         \end{align*}
         
-        \case{Var}
+        \case{Extend}
         \begin{align*}
            \si\star\deno{\wellformedok{\P}{\gax}} &= \si\star(\deno{\wellformedok{\P}{\G}} \times \deno{\typerelation{\P}{A}{\type}}) \\
            & = (\si\star\deno{\wellformedok{\P}{\G}} \times \si\star\deno{\typerelation{\P}{A}{\type}})\\
@@ -1072,7 +1074,7 @@ In this section, we state and prove a theorem that the action of a simultaneous 
 
 
 \section{Terms}
-\begin{theorem}[Effect-Substitution Preserves the Typing Relation]
+\begin{theorem}[Effect-Environment Substitution Preserves the Typing Relation]
     If $\typerelation{\P'}{\si}{\P}$ and $\gpetyperelation{v}{A}$, then $\etyperelation{\P'}{\G\ssi}{v\ssi}{A\ssi}$ 
 \end{theorem}
 
@@ -1109,14 +1111,14 @@ In this section, we state and prove a theorem that the action of a simultaneous 
     \case{Weaken}
     By inversion,  $\G = \G', y:B$, $\wellformed{\P}{B}$, and $\etyperelation{\P}{\G'}{x}{A}$. $x \neq y$
     
-    By induction and the theorem that effect-substitution preserves type wellformedness, we have: $\etyperelation{\P'}{\G'\ssi}{x}{A\ssi}$ and $\wellformed{\P'}{B\ssi}$
+    By induction and the theorem that effect-environment substitution preserves type wellformedness, we have: $\etyperelation{\P'}{\G'\ssi}{x}{A\ssi}$ and $\wellformed{\P'}{B\ssi}$
     
     So $\etyperelation{\P'}{\G\ssi}{x\ssi}{A\ssi}$
     
     Since $x\ssi = x$, $\G\ssi = (\G'\ssi, y:B\ssi)$
     
     
-    \case{Lambda}
+    \case{Fn}
     By inversion,  $\etyperelation{\P}{\gax}{v}{B}$.
     
     So, by induction $\etyperelation{\P'}{(\gax)\ssi}{v\ssi}{B\ssi}$.
@@ -1143,7 +1145,7 @@ In this section, we state and prove a theorem that the action of a simultaneous 
     
     \bi, $\gpetyperelation{v}{A}$ and $\wellformed{\P}{A\subtype B}$
     
-    So by induction and effect-substitution preserving subtyping, $\etyperelation{\P'}{\G\ssi}{v\ssi}{A\ssi}$ and $\wellformed{\P'}{A\ssi\subtype B\ssi}$
+    So by induction and effect-environment substitution preserving subtyping, $\etyperelation{\P'}{\G\ssi}{v\ssi}{A\ssi}$ and $\wellformed{\P'}{A\ssi\subtype B\ssi}$
     
     So $\etyperelation{\P'}{\G\ssi}{v\ssi}{B\ssi}$
     \case{Return}
@@ -1192,7 +1194,7 @@ In this section, we state and prove a theorem that the action of a simultaneous 
     \case{Effect-Spec}
     \bi, $\gpetyperelation{v}{\all{\a}{A}}$, $\wellformed{\P}{\e}$.
     
-    So by induction and effect-substitution preserving wellformedness of effects: $\etyperelation{\P'}{\G\ssi}{v\ssi}{(\all{\a}{A})\ssi}$ and $\wellformed{\P'}{\si(\e)}$
+    So by induction and effect-environment substitution preserving wellformedness of effects: $\etyperelation{\P'}{\G\ssi}{v\ssi}{(\all{\a}{A})\ssi}$ and $\wellformed{\P'}{\si(\e)}$
     
     So $\etyperelation{\P'}{\G\ssi}{\eapp{(v\ssi)}{(\si(\e))}}{A\ssi\ssub{\a}{\si(\e)}}$.
     
@@ -1283,7 +1285,7 @@ Then \begin{eqnarray}
         & = D'
     \end{align*}
     
-    \case{Lambda}
+    \case{Fn}
     Let \begin{equation}
         \D_1 = \deno{\etyperelation{\P}{\gax}{v}{B}}
     \end{equation}
@@ -1302,7 +1304,7 @@ Then \begin{eqnarray}
         & = \D'
     \end{align*}
     
-    \case{Application}
+    \case{Apply}
     Let \begin{align*}
         \D_1 &= \deno{\gpetyperelation{v_1}{\ab}}\\
         \D_2 &= \deno{\gpetyperelation{v_2}{A}}
@@ -1481,12 +1483,12 @@ In this section, we state and prove a theorem that the action of a simultaneous 
         \begin{proof}
             
             By induction over the wellformedness of effects
-            \paragraph{Case Ground}
+            \case{Ground}
             \bi, $\ok{\P}\wedge\e\in E$.
             Hence by the ok-property, $\ok{\P'}$
             So $\wellformed{\P'}{\e}$
         
-            \paragraph{Case Var}
+            \case{Var}
         
             $\P = \P'', \a$
         
@@ -1507,7 +1509,7 @@ In this section, we state and prove a theorem that the action of a simultaneous 
                 \ntreeruleI{Weaken}{\wellformed{\P'''}{\a}}{\wellformed{\P'}{\a}}
             \end{equation}
         
-            \paragraph{Case Weaken}
+            \case{Weaken}
         
             \bi, $\P = \P'', \b$.
         
@@ -1522,7 +1524,7 @@ In this section, we state and prove a theorem that the action of a simultaneous 
             \end{equation}
         
         
-            \paragraph{Case Monoid}
+            \case{Effect}
         
             \bi, $\wellformed{\P}{\e_1}$ and $\wellformed{\P}{\e_2}$. So by induction,
             $\wellformed{\P'}{\e_1}$ and $\wellformed{\P'}{\e_2}$, and so:
@@ -1609,7 +1611,7 @@ In this section, we state and prove a theorem that the action of a simultaneous 
             & = \deno{\typerelation{\P'}{\a}{\effect}}\\
         \end{align*}
         
-        \case{Multiply}
+        \case{Compose}
         \begin{align*}
             \deno{\typerelation{\P}{\e_1\dot\e_2}{\type}} \after\w &=
             \Mul(\deno{\typerelation{\P}{\e_1}{\effect}}, \deno{\typerelation{\P}{\e_2}{\effect}})\after \w \\
@@ -1632,13 +1634,13 @@ In this section, we state and prove a theorem that the action of a simultaneous 
     \begin{proof}
             \case{Ground}
             \bi, $\ok{\P}$, hence by property 1 of weakening, $\ok{\P'}$. Hence $\wellformed{\P'}{\g}$.
-            \case{Function}
+            \case{Fn}
             \bi, $\wellformed{\P}{A}$, $\wellformed{\P}{B}$.
             So by induction $\wellformed{\P'}{A}$, $\wellformed{\P'}{B}$, hence,
         
             $$\wellformed{\P'}{\ab}$$
         
-            \case{Computation}
+            \case{Effect}
         
             By inversion,  $\wellformed{\P}{A}$, and $\wellformed{\P}{\e}$.
         
@@ -1648,7 +1650,7 @@ In this section, we state and prove a theorem that the action of a simultaneous 
         
             So $$\wellformed{\P'}{\mea}$$
         
-            \case{For All}
+            \case{Quantification}
             \bi, $\wellformed{\P,\a}{A}$
             Picking $\a\notin\P'$ using $\a$-conversion.
         
@@ -1678,7 +1680,7 @@ In this section, we state and prove a theorem that the action of a simultaneous 
                 & = \deno{\typerelation{\P'}{\g}{\type}}
             \end{align*}
             
-            \case{Monad}
+            \case{Effect}
             \begin{align*}
                 \w\star\deno{\typerelation{\P}{\mea}{\type}}\after\w & =  \w\star(\T{\deno{\typerelation{\P}{\e}{\effect}}}{\deno{\typerelation{\P}{A}{\type}}})\\
                 &= \T{\w\star(\deno{\typerelation{\P}{\e}{\effect}})}{\w\star(\deno{\typerelation{\P}{A}{\type}})}\\
@@ -1695,7 +1697,7 @@ In this section, we state and prove a theorem that the action of a simultaneous 
     \end{proof}
         
 \end{framed}
-    \case{Function}
+    \case{Fn}
     \begin{align*}
         \w\star\deno{\typerelation{\P}{\ab}{\type}} &= \w\star(\deno{\typerelation{\P}{B}{\type}}^{\deno{\typerelation{\P}{A}{\type}}})\\
         &=\w\star(\deno{\typerelation{\P}{B}{\type}})^{\w\star(\deno{\typerelation{\P}{A}{\type}})}\\
@@ -1709,19 +1711,22 @@ In this section, we state and prove a theorem that the action of a simultaneous 
     If $\wrelw{\P'}{\P}$ and $A\subtypep B$ then $A\subtypepp B$.
 \end{theorem}
 
-\begin{proof}
-    \case{Ground}
-        By inversion, $A\subtypeg B$, so $A\subtypepp B$
 
-    \case{Fn}
-        By inversion, $A'\subtypep A$ and $B\subtypep B'$, so by induction $A'\subtypepp A$ and $B\subtypepp B'$, so $\fntype{A}{B}\subtypepp \fntype{A'}{B'}$.
-
-    \case{Quantification}
-        By inversion, $A\subtypepa A'$. So since $\wrel{\w\x}{\P',\a}{\P,\a}$, by induction, $A\subtypeppa A'$, so $\all{\a}{A}\subtypepp \all{\a}{A'}$.   
-
-    \case{Effect}
-        By inversion, $A \subtype A'$ and $e\subeffectp e'$. By induction $A\subtypepp A'$ and by the weakening-subeffecting theorem, $e\subeffectpp e'$, so $\mea\subtypepp \M{\e'}{A'}$
-\end{proof}
+\begin{framed}
+    \begin{proof}
+        \case{Ground}
+            By inversion, $A\subtypeg B$, so $A\subtypepp B$
+    
+        \case{Fn}
+            By inversion, $A'\subtypep A$ and $B\subtypep B'$, so by induction $A'\subtypepp A$ and $B\subtypepp B'$, so $\fntype{A}{B}\subtypepp \fntype{A'}{B'}$.
+    
+        \case{Quantification}
+            By inversion, $A\subtypepa A'$. So since $\wrel{\w\x}{\P',\a}{\P,\a}$, by induction, $A\subtypeppa A'$, so $\all{\a}{A}\subtypepp \all{\a}{A'}$.   
+    
+        \case{Effect}
+            By inversion, $A \subtype A'$ and $e\subeffectp e'$. By induction $A\subtypepp A'$ and by the weakening-subeffecting theorem, $e\subeffectpp e'$, so $\mea\subtypepp \M{\e'}{A'}$
+    \end{proof}
+\end{framed}
 
 \begin{theorem}[Effect-Environment Weakening and Subtype Denotations]
     If $\w = \deno{\wrelw{\P'}{\P}}$ then $\deno{A\subtypepp B} = \w\star\deno{A\subtypep B}: \C(I')(A, B)$.
@@ -1741,7 +1746,7 @@ In this section, we state and prove a theorem that the action of a simultaneous 
         
         Since $\w\star$ is s-closed.
         
-        \case{Monad}
+        \case{Effect}
         \begin{align*}
             \w\star\deno{\M{\e_1}{A} \subtypep \M{\e_2}{B}} & = \w\star(\deno{\e_1\subeffectp\e_2})\after\w\star(\T{\e_1}(\deno{A\subtypep B})) \\ 
              &= \deno{\e_1\subeffectpp\e_2} \after \T{\e_1}{\deno{A\subtypepp B}}\qt{By S-Closure}\\
@@ -1749,7 +1754,7 @@ In this section, we state and prove a theorem that the action of a simultaneous 
              &= \deno{(\M{\e_1}{A})\subtypepp\M{\e_2}{B}}\\
         \end{align*}
         
-        \case{For All}
+        \case{Quantification}
         Note $\deno{\wrel{\w\x}{\P',\a}{\P,\a}} = (\w\times\Id{U})$
             \begin{align*}
                 \w\star\deno{\all{\a}{A}\subtypep\all{\a}{B}} &= \w\star(\allI(\deno{A\subtypepa B})) \\
@@ -1780,7 +1785,7 @@ If $\wrel{\w}{\P'}{\P}$ and $\wellformedok{\P}{\G}$  then $\wellformedok{\P'}{\G
      \begin{proof}
             \case{Nil}
             By inversion,  $\ok{\P}$ so $\wellformedok{\P}{\nil}$
-            \case{Var}
+            \case{Extend}
         
             By inversion,  $\wellformedok{\P}{\G}$, $x\in\dom{\G}$, $\wellformed{\P}{A}$
         
@@ -1807,7 +1812,7 @@ If $\wrel{\w}{\P'}{\P}$ and $\wellformedok{\P}{\G}$  then $\wellformedok{\P'}{\G
             &= \deno{\wellformedok{\P'}{\nil}}\\
         \end{align*}
         
-        \case{Var}
+        \case{Extend}
         \begin{align*}
            \w\star\deno{\wellformedok{\P}{\gax}} &= \w\star(\deno{\wellformedok{\P}{\G}} \times \deno{\typerelation{\P}{A}{\type}}) \\
            & = (\w\star\deno{\wellformedok{\P}{\G}} \times \w\star\deno{\typerelation{\P}{A}{\type}})\\
@@ -1838,7 +1843,7 @@ If $\wrel{\w}{\P'}{\P}$ and $\wellformedok{\P}{\G}$  then $\wellformedok{\P'}{\G
             \case{Variables}
             If $\wellformedok{\P}{\G}$ then $\wellformedok{\P'}{\G}$ so:
             So, $\etyperelation{\P'}{G}{x}{A}$, if $\etyperelation{\P}{G}{x}{A}$
-            \case{Lambda}
+            \case{Fn}
             \bi, $\etyperelation{\P}{\gax}{v}{B}$, so by induction $\etyperelation{\P'}{\gax}{v}{B}$.
         
             So,
@@ -2010,7 +2015,7 @@ If $\wrel{\w}{\P'}{\P}$ and $\wellformedok{\P}{\G}$  then $\wellformedok{\P'}{\G
             & = D'
         \end{align*}
         
-        \case{Lambda}
+        \case{Fn}
         Let \begin{equation}
             \D_1 = \deno{\etyperelation{\P}{\gax}{v}{B}}
         \end{equation}
@@ -2029,7 +2034,7 @@ If $\wrel{\w}{\P'}{\P}$ and $\wellformedok{\P}{\G}$  then $\wellformedok{\P'}{\G
             & = \D'
         \end{align*}
         
-        \case{Application}
+        \case{Apply}
         Let \begin{align*}
             \D_1 &= \deno{\gpetyperelation{v_1}{\ab}}\\
             \D_2 &= \deno{\gpetyperelation{v_2}{A}}
@@ -2218,7 +2223,7 @@ If $\wrel{\w}{\P'}{\P}$ and $\wellformedok{\P}{\G}$  then $\wellformedok{\P'}{\G
         \case{Nil}
         Then $\si = \term{\G'_{I}}$, so $\w\star(\si) = \term{\G'_{I'}} = \deno{\etyperelation{\P'}{\G'}{\si}{\G}}$
         
-        \case{Var}
+        \case{Extend}
         Then $\si = (\si',x\setto v)$
         
         \begin{align*}
@@ -2388,7 +2393,7 @@ If $\wrel{\w}{\P'}{\P}$ and $\wellformedok{\P}{\G}$  then $\wellformedok{\P'}{\G
         \end{align*}
         
         
-        \case{Lambda}
+        \case{Fn}
         
         By inversion, we have $\D_1$ such that
         \begin{equation}
@@ -2663,13 +2668,13 @@ If $\wrel{\w}{\P'}{\P}$ and $\wellformedok{\P}{\G}$  then $\wellformedok{\P'}{\G
         
             \case{Var and Weaken}
                 We case split on the weakening $\w$.
-                \subparagraph{If $\w = \i$}
+                \subcase{$\w = \i$}
                 Then $\G' = \G$, and so $\etyperelation{\P}{\G'}{x}{A}$ holds and the derivation $\D'$ is the same as $\D$
         
                 \begin{equation}
                     \D' = \D = \D\after\idg = \D\after\deno{\ewrel{\P}{\i}{\G}{\G}} 
                 \end{equation}
-                \subparagraph{If $\w = \w'\pi$}
+                \subcase{$\w = \w'\pi$}
                 Then  $\G' = (\G'',x': A')$ and $\ewrel{\P}{\w'}{\G''}{\G}$. So by induction, there is a tree, $\D_1$ deriving $\etyperelation{\P}{\G''}{x}{A}$,  such that 
                 \begin{equation}
                     \D_1 = \D\after\deno{\ewrel{\P}{\w'}{\G''}{\G}} \qt{By Induction}
@@ -2687,7 +2692,7 @@ If $\wrel{\w}{\P'}{\P}$ and $\wellformedok{\P}{\G}$  then $\wellformedok{\P'}{\G
                     & = \D\after\deno{\ewrel{\P}{\w'\p}{\G'}{\G}}\qt{By denotation of weakening}
                 \end{align*}
         
-                \subparagraph{If $\w = \w'\x$} 
+                \subcase{$\w = \w'\x$} 
                 Then 
                 \begin{align*}
                     \G' & = \G''', x': B\\
@@ -2695,7 +2700,7 @@ If $\wrel{\w}{\P'}{\P}$ and $\wellformedok{\P}{\G}$  then $\wellformedok{\P'}{\G
                     B & \subtypep A
                 \end{align*}
         
-                \subparagraph{If $x = x'$}
+                \subcase{$x = x'$}
         
                 Then $A = A'$.
         
@@ -2703,7 +2708,7 @@ If $\wrel{\w}{\P'}{\P}$ and $\wellformedok{\P}{\G}$  then $\wellformedok{\P'}{\G
         
                 \begin{equation}
                     \ntreeruleII{Subtype}{
-                        \ntreeruleI{var}{\oke{\P}{\G}}{\etyperelation{\P}{\G''', x: B}{x}{B}}
+                        \ntreeruleI{Var}{\oke{\P}{\G}}{\etyperelation{\P}{\G''', x: B}{x}{B}}
                         }{
                         B \subtypep A
                     }{
@@ -2719,7 +2724,7 @@ If $\wrel{\w}{\P'}{\P}$ and $\wellformedok{\P}{\G}$  then $\wellformedok{\P'}{\G
                      & = \D\after\deno{\ewrel{\P}{\w}{\G'}{\G}}\qt{By Definition}
                 \end{align*}
         
-                \subparagraph{Case $x \neq x'$}
+                \subcase{$x \neq x'$}
                 Then 
                 \begin{equation}
                     \D = \ntreeruleI{Weaken}{\treeruleI{\D_1}{\etyperelation{\P}{\G''}{x}{A}}}{\gpetyperelation{x}{A}}
@@ -2778,7 +2783,7 @@ If $\wrel{\w}{\P'}{\P}$ and $\wellformedok{\P}{\G}$  then $\wellformedok{\P'}{\G
             \end{align*}
         
         
-            \case{Lambda}
+            \case{Fn}
             By inversion, we have a derivation $\D_1$ giving
         
             \begin{equation}
@@ -3114,13 +3119,13 @@ If $\wrel{\w}{\P'}{\P}$ and $\wellformedok{\P}{\G}$  then $\wellformedok{\P'}{\G
             
             If $A = B$, then the subtype relation is the identity subtype ($A \subtypep A$).
             
-            \case{Lambda}
+            \case{Fn}
             The reduced derivation of $\gpetyperelation{\lam{x}{A}{v}}{\fntype{A'}{B'}}$ is:
             
             
             $$
             \ntreeruleII{Subtype}
-            {\ntreeruleI{Lambda}{\treeruleI{\D}{\etyperelation{\P}{\gax}{v}{B}}}
+            {\ntreeruleI{Fn}{\treeruleI{\D}{\etyperelation{\P}{\gax}{v}{B}}}
             {
                 \gpetyperelation{\lam{x}{A}{B}}{\ab}}
                 }{
@@ -3390,7 +3395,7 @@ If $\wrel{\w}{\P'}{\P}$ and $\wellformedok{\P}{\G}$  then $\wellformedok{\P'}{\G
         
                     So the denotations of the un-reduced and reduced derivations are equal.
         
-                    \case{Lambda}
+                    \case{Fn}
                     \subparagraph{$\reduce$ definition}
                         To find:
                     
@@ -3949,22 +3954,22 @@ Reduction-based rules
         $}\]
     
         \[\scalebox{0.8}{$
-            \ntreeruleII{Effect-beta}{\wellformed{\P}{\e}}{\etyperelation{\P, \a}{\G}{v}{A}}{\gpeberelation{\eapp{(\elam{\a}{v}}{\e})}{v\ssub{\a}{\e}}{A\ssub{\a}{\e}}}
+            \ntreeruleII{Effect-Beta}{\wellformed{\P}{\e}}{\etyperelation{\P, \a}{\G}{v}{A}}{\gpeberelation{\eapp{(\elam{\a}{v}}{\e})}{v\ssub{\a}{\e}}{A\ssub{\a}{\e}}}
             \quad 
-            \\ntreeruleI{Effect-eta}{\etyperelation{\P}{\G}{v}{\all{\a}{A}}}{\gpeberelation{\elam{\a}{(\eapp{v}{\a})}}{v}{\all{\a}{A}}}
+            \\ntreeruleI{Effect-Eta}{\etyperelation{\P}{\G}{v}{\all{\a}{A}}}{\gpeberelation{\elam{\a}{(\eapp{v}{\a})}}{v}{\all{\a}{A}}}
         $}\]
     \end{framed}
 
 Congruence rules
    \begin{framed}
         \[\scalebox{0.8}{$
-            \ntreeruleI{Effect-Abs}{\eberelation{\P, \a}{\G}{v_1}{v_2}{A}}{\gpeberelation{\elam{\a}{v_1}}{\elam{\a}{v_2}}{\all{\a}{A}}}
+            \ntreeruleI{Effect-Spec}{\eberelation{\P, \a}{\G}{v_1}{v_2}{A}}{\gpeberelation{\elam{\a}{v_1}}{\elam{\a}{v_2}}{\all{\a}{A}}}
             \quad
-            \ntreeruleII{Effect-Apply}{\gpeberelation{v_1}{v_2}{\all{\a}{A}}}{\wellformed{\P}{\e}}{\gpeberelation{\eapp{v_1}{\e}}{\eapp{v_2}{\e}}{A\ssub{\a}{\e}}}
+            \ntreeruleII{Effect-Gen}{\gpeberelation{v_1}{v_2}{\all{\a}{A}}}{\wellformed{\P}{\e}}{\gpeberelation{\eapp{v_1}{\e}}{\eapp{v_2}{\e}}{A\ssub{\a}{\e}}}
         $}\]
     
         \[\scalebox{0.8}{$
-            \ntreeruleI{Lambda}{\eberelation{\P}{\gax}{v_1}{v_2}{B}}{\gpeberelation{\lam{x}{A}{v_1}}{\lam{x}{A}{v_2}}{\ab}}
+            \ntreeruleI{Fn}{\eberelation{\P}{\gax}{v_1}{v_2}{B}}{\gpeberelation{\lam{x}{A}{v_1}}{\lam{x}{A}{v_2}}{\ab}}
             \quad
             \ntreeruleI{Return}{\gpeberelation{v_1}{v_2}{A}}{\gpeberelation{\return{v_1}}{\return{v_2}}{\moa}}
         $}\]
@@ -4020,7 +4025,7 @@ We extend the relation to an equivalence relation as so:
         \subsection{Reduction Conversions}
         These cases are typically proved using the properties of a cartesian closed category with a strong graded monad.
         
-        \case{Lambda}
+        \case{Lambda-Beta}
             Let $f = \deno{\etyperelation{\P}{\gax}{v_1}{B}}: (\G \times A) \rightarrow B$
         
             Let $g = \deno{\gpetyperelation{v_2}{A}}: \G \rightarrow A$
@@ -4221,7 +4226,7 @@ We extend the relation to an equivalence relation as so:
         
         %%%%%% END CASE ASSOCIATIVE %%%%%%%
         
-        \case{Eta}
+        \case{Lambda-Eta}
         Let 
         \begin{equation}
             f = \deno{\gpetyperelation{v}{\ab}} : \G \rightarrow (B)^{A}
@@ -4421,7 +4426,7 @@ We extend the relation to an equivalence relation as so:
         \subsection{Congruences}
         These cases can be proved fairly mechanically by assuming the preconditions, using induction to prove that the matching pairs of Subexpressions have equal denotations, then constructing the denotations of the expressions using the equal denotations which gives trivially equal denotations.
         
-        \case{Lambda}
+        \case{Fn}
             By inversion, we have $\eberelation{\P}{\gax}{v_1}{v_2}{B}$
             By induction, we therefore have $\deno{\etyperelation{\P}{\gax}{v_1}{B}} = \deno{\etyperelation{\P}{\gax}{v_2}{B}}$
         
