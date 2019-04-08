@@ -3,6 +3,14 @@
 
 \begin{document}
 
+\todo{Boxify Theorems + proofs}
+\todo{Theorem-ify properties}
+\todo{Be careful on language used}
+\todo{referencing}
+\todo{Fix Cases}
+\todo{Well Formed-ness, etc}
+\todo{Well formedness of subtyping + weakening}
+
 \abstract
 This document contains a terse explanation of the semantics of the Effect Calculus in an S-Category.
 
@@ -82,11 +90,18 @@ An environment, $G \gens \nil \mid \gax$
 \end{itemize}
 
 \subsection{Ok Lemma}
-If $\gtyperelation{v}{A}$ then $\ok{\G}$.
-\proof
-If $\ok{\gax}$ then by inversion $\ok{\G}$
-Only the type rule \texttt{Weaken} adds terms to the environment from its preconditions to its post-condition and it does so in an $\ok{}$ preserving way. Any type derivation tree has at least one leaf. All leaves are axioms which require $\ok{\G}$. And all non-axiom derivations preserve the $\ok{}$ property.
 
+\begin{theorem}[Ok Lemma]
+    If $\gtyperelation{v}{A}$ then $\ok{\G}$.
+\end{theorem}
+
+
+\begin{framed}
+    \begin{proof}
+        If $\ok{\gax}$ then by inversion $\ok{\G}$
+        Only the type rule \texttt{Weaken} adds terms to the environment from its preconditions to its post-condition and it does so in an $\ok{}$ preserving way. Any type derivation tree has at least one leaf. All leaves are axioms which require $\ok{\G}$. And all non-axiom derivations preserve the $\ok{}$ property.
+    \end{proof}
+\end{framed}
 
 \chapter{Category Requirements}
 $\C$ should be an S-Category instantiated with the relevant Subtyping and subeffecting morphisms and natural transformations.
@@ -858,394 +873,426 @@ The denotation of a weakening relation is defined as follows:
 \end{itemize}
 
 \section{Weakening Theorems}
-\subsection{Domain Lemma}
-If $\wrel{\w}{\G'}{\G}$, then $\dom{\G}\subseteq \dom{\G'}$.
 
-\proof
-\subparagraph{Case Id}
-Then $\G' = \G$ and so $\dom{\G'} = \dom{\G}$.
-\subparagraph{Case Project}
-By inversion and induction, $\dom{\G}\subseteq\dom{\G'}\subseteq\dom{\G'\cup\left\{x\right\}}$
-\subparagraph{Case Extend}
-By inversion and induction, $\dom{\G}\subseteq\dom{\G'}$ so 
-$$\dom{\gax} = \dom{\G}\cup\left\{x\right\} \subseteq\dom{\G'}\cup\left\{x\right\} = \dom{\G',x:A}$$
-\subsection{Theorem 1}
-If $\wrel{\w}{\G'}{\G}$ and $\ok{\G}$ then $\ok{\G'}$
-\proof
-\subparagraph{Case Id}
-$$\ntreeruleI{Id}{\ok{\G}}{\wrel{\i}{\G}{\G}}$$
-
-By inversion, $\ok{\G}$.
-
-\subparagraph{Case Project}
-$$\ntreeruleII{Project}{\wrel{\w}{\G'}{\G}}{ x \notin \dom{\G'}}{\wrel{\w \pi}{\G, x: A}{\G}}$$
-
-By inversion, $\wrel{\w}{\G'}{\G}$ and $x\notin \dom{\G'}$.
-
-Hence by induction $\ok{\G'}$, $\ok{\G}$. Since $x\notin\dom{\G'}$, we have $\ok{\G', x:A}$.
-
-\subparagraph{Case Extend}
-$\ntreeruleIII{Extend}{\wrel{\w}{\G'}{\G}}{ x \notin \dom{\G'}}{ A \subtype B}{\wrel{w \x}{\G', x: A}{\G, x: B}}$, 
-
-By inversion, we have 
-
-$\wrel{\w}{\G'}{\G}$, $x\notin\dom{\G'}$.
-
-Hence we have $\ok{\G}$, $\ok{\G'}$, and by the domain Lemma, $\dom{\G}\subseteq\dom{\G'}$, hence $x\notin\dom{\G}$. Hence, we have $\ok{\gax}$ and $\ok{\G',x:A}$
+\begin{lemma}[Domain Lemma]
+    If $\wrel{\w}{\G'}{\G}$, then $\dom{\G}\subseteq \dom{\G'}$.
+\end{lemma}
 
 
-\subsection{Theorem 2}
-If $\gtyperelation{v}{A}$ and $\wrel{\w}{\G'}{\G}$ then there is a derivation of $\typerelation{\G'}{v}{A}$
 
-\proof
-Proved in parallel with theorem 3 below
-\subsection{Theorem 3}
+\begin{framed}
+    \begin{proof}
+        \subparagraph{Case Id}
+        Then $\G' = \G$ and so $\dom{\G'} = \dom{\G}$.
+        \subparagraph{Case Project}
+        By inversion and induction, $\dom{\G}\subseteq\dom{\G'}\subseteq\dom{\G'\cup\left\{x\right\}}$
+        \subparagraph{Case Extend}
+        By inversion and induction, $\dom{\G}\subseteq\dom{\G'}$ so 
+        $$\dom{\gax} = \dom{\G}\cup\left\{x\right\} \subseteq\dom{\G'}\cup\left\{x\right\} = \dom{\G',x:A}$$
+    \end{proof}
+\end{framed}
 
-If $\wrel{\w}{\G'}{\G}$ and $\D = \deno{\gtyperelation{v}{A}}$ and $\D' = \deno{\typerelation{\G'}{v}{A}}$, derived using Theorem 2, then 
 
-$$
-    \D \after \deno{\w} = \D' : \G' \rightarrow A
-$$
-\proof Below
+\begin{theorem}[Ok Preservation]\label{WeakeningPropertyOne}
+    If $\wrel{\w}{\G'}{\G}$ and $\ok{\G}$ then $\ok{\G'}$  
+\end{theorem}
 
-\section{Proof of Theorems 2 and 3}
-We induct over the structure of typing derivations of $\gtyperelation{v}{A}$, assuming $\wrel{\w}{\G'}{\G}$ holds. In each case, we construct the new derivation $\D'$ from the derivation $\D$ giving $\gtyperelation{v}{A}$ and show that $\D\after\deno{\wrel{\w}{\G'}{\G}} = \D'$
 
-\subsection{Variable Terms}
-\case{Var and Weaken}
-    We case split on the weakening $\w$.
-    \subparagraph{If $\w = \i$}
-    Then $\G' = \G$, and so $\typerelation{\G'}{x}{A}$ holds and the derivation $\D'$ is the same as $\D$
 
-    \begin{equation}
-        \D' = \D = \D\after\idg = \D\after\deno{\wrel{\i}{\G}{\G}} 
-    \end{equation}
-    \subparagraph{If $\w = \w'\pi$}
-    Then  $\G' = (\G'',x': A')$ and $\wrel{\w'}{\G''}{\G}$. So by induction, there is a tree, $\D_1$ deriving $\typerelation{\G''}{x}{A}$,  such that 
-    \begin{equation}
-        \D_1 = \D\after\deno{\wrel{\w'}{\G''}{\G}} \qt{By Induction}
-    \end{equation}
+\begin{framed}
+    \begin{proof}
+        
+        \subparagraph{Case Id}
+        $$\ntreeruleI{Id}{\ok{\G}}{\wrel{\i}{\G}{\G}}$$
+        
+        By inversion, $\ok{\G}$.
+        
+        \subparagraph{Case Project}
+        $$\ntreeruleII{Project}{\wrel{\w}{\G'}{\G}}{ x \notin \dom{\G'}}{\wrel{\w \pi}{\G, x: A}{\G}}$$
+        
+        By inversion, $\wrel{\w}{\G'}{\G}$ and $x\notin \dom{\G'}$.
+        
+        Hence by induction $\ok{\G'}$, $\ok{\G}$. Since $x\notin\dom{\G'}$, we have $\ok{\G', x:A}$.
+        
+        \subparagraph{Case Extend}
+        $\ntreeruleIII{Extend}{\wrel{\w}{\G'}{\G}}{ x \notin \dom{\G'}}{ A \subtype B}{\wrel{w \x}{\G', x: A}{\G, x: B}}$, 
+        
+        By inversion, we have 
+        
+        $\wrel{\w}{\G'}{\G}$, $x\notin\dom{\G'}$.
+        
+        Hence we have $\ok{\G}$, $\ok{\G'}$, and by the domain Lemma, $\dom{\G}\subseteq\dom{\G'}$, hence $x\notin\dom{\G}$. Hence, we have $\ok{\gax}$ and $\ok{\G',x:A}$
+        
+        
+    \end{proof}
+\end{framed}
+
+
+
+\begin{theorem}[Weakening Preserves Type Relation]
+    \label{WeakeningTyping}
+    If $\gtyperelation{v}{A}$ and $\wrel{\w}{\G'}{\G}$ then there is a derivation of $\typerelation{\G'}{v}{A}$
+\end{theorem}
+
+\begin{proof}
+    Proved in parallel with theorem \ref{WeakeningDenotation} below
+\end{proof}
+
+
+
+\begin{theorem}[Weakening and Denotations]\label{WeakeningDenotations}
+    If $\wrel{\w}{\G'}{\G}$ and $\D = \deno{\gtyperelation{v}{A}}$ and $\D' = \deno{\typerelation{\G'}{v}{A}}$, derived using theorem \ref{WeakeningTyping}, then 
     
-    , and hence by the weaken rule, we have 
-    \begin{equation}
-        \ntreeruleI{Weaken}{\typerelation{\G''}{x}{A}}{\typerelation{\G'', x':A' }{x}{A}}
-    \end{equation}
+    $$
+        \D \after \deno{\w} = \D' : \G' \rightarrow A
+    $$
+\end{theorem}
 
-    This preserves denotations:
-    \begin{align*}
-        \D' & = \D_1\after\p\qt{By Definition} \\
-        & = \D\after\deno{\wrel{\w'}{\G''}{\G}}\after\p\qt{By induction}\\
-        & = \D\after\deno{\wrel{\w'\p}{\G'}{\G}}\qt{By denotation of weakening}
-    \end{align*}
-
-    \subparagraph{If $\w = \w'\x$} 
-    Then 
-    \begin{align*}
-        \G' & = \G''', x': B\\
-        \G &= \G'', x': A'\\
-        B & \subtype A
-    \end{align*}
-
-    \subparagraph{If $x = x'$}
-
-    Then $A = A'$.
-
-    Then we derive the new derivation, $\D'$ as so:
-
-    \begin{equation}
-        \ntreeruleII{Subtype}{
-            \ntreeruleI{var}{}{\typerelation{\G''', x: B}{x}{B}}
-            }{
-            B \subtype A
-        }{
-            \typerelation{\G'}{x}{A}
-        }
-    \end{equation}
-
-    This preserves denotations:
-
-    \begin{align*}
-        \D' & = \deno{B\subtype A}\after\pp\qt{By Definition} \\
-         & = \pp\after (\deno{\wrel{\w'}{\G'''}{\G''}}\times \deno{B\subtype A}) \qt{By the properties of binary products}\\
-         & = \D\after\deno{\wrel{\w}{\G'}{\G}}\qt{By Definition}
-    \end{align*}
-
-    \subparagraph{Case $x \neq x'$}
-    Then 
-    \begin{equation}
-        \D = \ntreeruleI{Weaken}{\treeruleI{\D_1}{\typerelation{\G''}{x}{A}}}{\gtyperelation{x}{A}}
-    \end{equation}
-
-    By induction with $\wrel{\w}{\G'''}{\G''}$,
-     we have a derivation $\D_1$ of $\typerelation{\G'''}{x}{A}$
-
-    We have the weakened derivation:
-
-    \begin{equation}
-        \D' = \ntreeruleI{Weaken}{\treeruleI{\D_1'}{\typerelation{\G'''}{x}{A}}}{\typerelation{\G'}{x}{A}}
-    \end{equation}
-
-    This preserves denotations:
-
-    By induction, we have
-    \begin{equation}
-        \D_1' = \D_1 \after \deno{\wrel{\w}{\G'''}{\G''}}
-    \end{equation}
-    So we have:
-    \begin{align*}
-        \D' &= \D_1' \after \p\qt{By denotation definition}\\
-        & = \D_1\after\deno{\wrel{\w'}{\G'''}{\G''}}\qt{By induction}\after\p \\
-        & = \D_1\after\p\after(\deno{\wrel{\w'}{\G'''}{\G''}}\times\deno{A' \subtype B})\qt{By product properties}\\
-        & = \D\after\deno{\wrel{\w}{\G'}{\G}}\qt{By definition}
-    \end{align*}
-
-\subsection{Value Terms}
-From this point onwards, since we no-longer case split over the weakening relations, we write the denotation $\deno{\wrel{\w}{\G'}{\G'}}$, simply as $\w$.
-
-
-\case{Constant}
-The constant typing rules, $\u$, $\t$, $\f$, $\const{A}$, all proceed by the same logic. Hence I shall only prove the theorems for the case $\const{A}$.
-
-\begin{equation}
-    \truleconst
-\end{equation}
-
-By inversion, we have $\ok{\G}$, so we have $\ok{\G'}$.
-
-Hence
-
-\begin{equation}
-    \ntreeruleI{Const}{\ok{\G'}}{\typerelation{\G'}{\const{A}}{A}}
-\end{equation}
-Holds.
-
-This preserves denotations:
-
-
-\begin{align*}
-    \D' & = \deno{\const{A}} \after \term{\G'}\qt{By definition}\\
-    & = \deno{\const{A}} \after \term{\G}\after \w \qt{By the terminal property}\\
-    & = \D\qt{By Definition}\\
-\end{align*}
-
-
-\case{Lambda}
-By inversion, we have a derivation $\D_1$ giving
-
-\begin{equation}
-    \D = \ntreeruleI{Fn}{
-        \treeruleI{\D_1}{\typerelation{\gax}{v}{B}}
-    }{\gtyperelation{\lam{x}{A}{v}}{\ab}}
-\end{equation}
-
-Since $\wrel{\w}{\G'}{\G}$, we have:
-
-\begin{equation}
-    \wrel{\w\x}{(\G,x:  A)}{(\gax)}
-\end{equation}
-
-Hence, by induction, using $\wrel{\w\x}{(\G,x:  A)}{(\gax)}$, we derive $\D_1'$:
-
-\begin{equation}
-    \D' = \ntreeruleI{Fn}{
-        \treeruleI{\D_1'}{\typerelation{\G',x: A}{v}{B}}
-    }{\typerelation{\G',x: A}{\lam{x}{A}{v}}{\ab}}
-\end{equation}
-
-This preserves denotations:
-
-
-\begin{align*}
-\D' & = \cur{\D_1'} \qt{By Definition}\\
-& = \cur{\D_1\after(\w\times \idg)}\qt{By the denotation of $\w\x$} \\
-&= \cur{\D_1}\after\w\qt{By the exponential property}\\
-&= \D\after \w \qt{By Definition}
-\end{align*}
-
-
-\case{Subtyping}
-
-\begin{equation}
-    \ntreeruleII{Subtype}{\gtyperelation{v}{A}}{ A\subtype B}{\gtyperelation{v}{B}}
-\end{equation}
-
-by inversion, we have a derivation $\D_1$
-\begin{equation}
-    \treeruleI{\D_1}{\gtyperelation{v}{A}}
-\end{equation}
-
-So by induction, we have a derivation $\D_1'$ such that:
-\begin{equation}
-    \ntreeruleII{Subtype}{\treeruleI{\D_1'}{\typerelation{\G'}{v}{a}}}{ A \subtype B}{\typerelation{\G'}{v}{B}}
-\end{equation}
-
-This preserves denotations:
-
-\begin{align*}
-    \D' & = \deno{A\subtype B}\after \D_1' \qt{By Definition} \\
-    & = \deno{A\subtype B}\after \D_1\after\w \qt{By induction}\\
-    & = \D\after\w \qt{By Definition}\\
-\end{align*}
-
-\subsection{Computation Terms}
-\case{Return}
-We have the sub-derivation $\D_1$ such that
-\begin{equation}
-    \D = \ntreeruleI{Return}{\treeruleI{\D_1}{\gtyperelation{v}{A}}}{\gtyperelation{\return{v}}{\moa}}
-\end{equation}
-
-Hence, by induction, with $\wrel{\w}{\G'}{\G}$, we find the derivation $\D_1'$ such that:
-\begin{equation}
-    \D' = \ntreeruleI{Return}{\treeruleI{\D_1'}{\typerelation{\G'}{v}{A}}}{\typerelation{\G'}{\return{v}}{\moa}}
-\end{equation}
-
-This preserves denotations:
-
-\begin{align*}
-    \D' & = \point{A}\after\D_1' \qt{By definition}\\
-        & = \point{A}\after\D_1\after\w\qt{By induction of $\D_1, \D_1'$}\\
-        & = \D\after\w\qt{By Definition}
-\end{align*}
-
-\case{Apply}
-    By inversion, we have derivations $\D_1$, $\D_2$ such that
-
-    \begin{equation}
-        \D = 
-        \ntreeruleII{Apply}{
-            \treeruleI{\D_1}{\gtyperelation{v_1}{\ab}}
-            }{
-            \treeruleI{\D_2}{\gtyperelation{v_2}{A}}
-        } {
-            \gtyperelation{\apply{v_1}{v_2}}{B}
-        }
-    \end{equation}
-
-    By induction, this gives us the respective derivations: $\D_1',\D_2'$ such that
-
+\begin{framed}
     
-    \begin{equation}
-        \D' = 
-        \ntreeruleII{Apply}{
-            \treeruleI{\D_1'}{\typerelation{\G'}{v_1}{\ab}}
+    \begin{proof}
+        
+        We induct over the structure of typing derivations of $\gtyperelation{v}{A}$, assuming $\wrel{\w}{\G'}{\G}$ holds. In each case, we construct the new derivation $\D'$ from the derivation $\D$ giving $\gtyperelation{v}{A}$ and show that $\D\after\deno{\wrel{\w}{\G'}{\G}} = \D'$
+        
+        \subsection{Variable Terms}
+        \case{Var and Weaken}
+            We case split on the weakening $\w$.
+            \subparagraph{If $\w = \i$}
+            Then $\G' = \G$, and so $\typerelation{\G'}{x}{A}$ holds and the derivation $\D'$ is the same as $\D$
+        
+            \begin{equation}
+                \D' = \D = \D\after\idg = \D\after\deno{\wrel{\i}{\G}{\G}} 
+            \end{equation}
+            \subparagraph{If $\w = \w'\pi$}
+            Then  $\G' = (\G'',x': A')$ and $\wrel{\w'}{\G''}{\G}$. So by induction, there is a tree, $\D_1$ deriving $\typerelation{\G''}{x}{A}$,  such that 
+            \begin{equation}
+                \D_1 = \D\after\deno{\wrel{\w'}{\G''}{\G}} \qt{By Induction}
+            \end{equation}
+            
+            , and hence by the weaken rule, we have 
+            \begin{equation}
+                \ntreeruleI{Weaken}{\typerelation{\G''}{x}{A}}{\typerelation{\G'', x':A' }{x}{A}}
+            \end{equation}
+        
+            This preserves denotations:
+            \begin{align*}
+                \D' & = \D_1\after\p\qt{By Definition} \\
+                & = \D\after\deno{\wrel{\w'}{\G''}{\G}}\after\p\qt{By induction}\\
+                & = \D\after\deno{\wrel{\w'\p}{\G'}{\G}}\qt{By denotation of weakening}
+            \end{align*}
+        
+            \subparagraph{If $\w = \w'\x$} 
+            Then 
+            \begin{align*}
+                \G' & = \G''', x': B\\
+                \G &= \G'', x': A'\\
+                B & \subtype A
+            \end{align*}
+        
+            \subparagraph{If $x = x'$}
+        
+            Then $A = A'$.
+        
+            Then we derive the new derivation, $\D'$ as so:
+        
+            \begin{equation}
+                \ntreeruleII{Subtype}{
+                    \ntreeruleI{var}{}{\typerelation{\G''', x: B}{x}{B}}
+                    }{
+                    B \subtype A
+                }{
+                    \typerelation{\G'}{x}{A}
+                }
+            \end{equation}
+        
+            This preserves denotations:
+        
+            \begin{align*}
+                \D' & = \deno{B\subtype A}\after\pp\qt{By Definition} \\
+                 & = \pp\after (\deno{\wrel{\w'}{\G'''}{\G''}}\times \deno{B\subtype A}) \qt{By the properties of binary products}\\
+                 & = \D\after\deno{\wrel{\w}{\G'}{\G}}\qt{By Definition}
+            \end{align*}
+        
+            \subparagraph{Case $x \neq x'$}
+            Then 
+            \begin{equation}
+                \D = \ntreeruleI{Weaken}{\treeruleI{\D_1}{\typerelation{\G''}{x}{A}}}{\gtyperelation{x}{A}}
+            \end{equation}
+        
+            By induction with $\wrel{\w}{\G'''}{\G''}$,
+             we have a derivation $\D_1$ of $\typerelation{\G'''}{x}{A}$
+        
+            We have the weakened derivation:
+        
+            \begin{equation}
+                \D' = \ntreeruleI{Weaken}{\treeruleI{\D_1'}{\typerelation{\G'''}{x}{A}}}{\typerelation{\G'}{x}{A}}
+            \end{equation}
+        
+            This preserves denotations:
+        
+            By induction, we have
+            \begin{equation}
+                \D_1' = \D_1 \after \deno{\wrel{\w}{\G'''}{\G''}}
+            \end{equation}
+            So we have:
+            \begin{align*}
+                \D' &= \D_1' \after \p\qt{By denotation definition}\\
+                & = \D_1\after\deno{\wrel{\w'}{\G'''}{\G''}}\qt{By induction}\after\p \\
+                & = \D_1\after\p\after(\deno{\wrel{\w'}{\G'''}{\G''}}\times\deno{A' \subtype B})\qt{By product properties}\\
+                & = \D\after\deno{\wrel{\w}{\G'}{\G}}\qt{By definition}
+            \end{align*}
+        
+        \subsection{Value Terms}
+        From this point onwards, since we no-longer case split over the weakening relations, we write the denotation $\deno{\wrel{\w}{\G'}{\G'}}$, simply as $\w$.
+        
+        
+        \case{Constant}
+        The constant typing rules, $\u$, $\t$, $\f$, $\const{A}$, all proceed by the same logic. Hence I shall only prove the theorems for the case $\const{A}$.
+        
+        \begin{equation}
+            \truleconst
+        \end{equation}
+        
+        By inversion, we have $\ok{\G}$, so we have $\ok{\G'}$.
+        
+        Hence
+        
+        \begin{equation}
+            \ntreeruleI{Const}{\ok{\G'}}{\typerelation{\G'}{\const{A}}{A}}
+        \end{equation}
+        Holds.
+        
+        This preserves denotations:
+        
+        
+        \begin{align*}
+            \D' & = \deno{\const{A}} \after \term{\G'}\qt{By definition}\\
+            & = \deno{\const{A}} \after \term{\G}\after \w \qt{By the terminal property}\\
+            & = \D\qt{By Definition}\\
+        \end{align*}
+        
+        
+        \case{Lambda}
+        By inversion, we have a derivation $\D_1$ giving
+        
+        \begin{equation}
+            \D = \ntreeruleI{Fn}{
+                \treeruleI{\D_1}{\typerelation{\gax}{v}{B}}
+            }{\gtyperelation{\lam{x}{A}{v}}{\ab}}
+        \end{equation}
+        
+        Since $\wrel{\w}{\G'}{\G}$, we have:
+        
+        \begin{equation}
+            \wrel{\w\x}{(\G,x:  A)}{(\gax)}
+        \end{equation}
+        
+        Hence, by induction, using $\wrel{\w\x}{(\G,x:  A)}{(\gax)}$, we derive $\D_1'$:
+        
+        \begin{equation}
+            \D' = \ntreeruleI{Fn}{
+                \treeruleI{\D_1'}{\typerelation{\G',x: A}{v}{B}}
+            }{\typerelation{\G',x: A}{\lam{x}{A}{v}}{\ab}}
+        \end{equation}
+        
+        This preserves denotations:
+        
+        
+        \begin{align*}
+        \D' & = \cur{\D_1'} \qt{By Definition}\\
+        & = \cur{\D_1\after(\w\times \idg)}\qt{By the denotation of $\w\x$} \\
+        &= \cur{\D_1}\after\w\qt{By the exponential property}\\
+        &= \D\after \w \qt{By Definition}
+        \end{align*}
+        
+        
+        \case{Subtyping}
+        
+        \begin{equation}
+            \ntreeruleII{Subtype}{\gtyperelation{v}{A}}{ A\subtype B}{\gtyperelation{v}{B}}
+        \end{equation}
+        
+        by inversion, we have a derivation $\D_1$
+        \begin{equation}
+            \treeruleI{\D_1}{\gtyperelation{v}{A}}
+        \end{equation}
+        
+        So by induction, we have a derivation $\D_1'$ such that:
+        \begin{equation}
+            \ntreeruleII{Subtype}{\treeruleI{\D_1'}{\typerelation{\G'}{v}{a}}}{ A \subtype B}{\typerelation{\G'}{v}{B}}
+        \end{equation}
+        
+        This preserves denotations:
+        
+        \begin{align*}
+            \D' & = \deno{A\subtype B}\after \D_1' \qt{By Definition} \\
+            & = \deno{A\subtype B}\after \D_1\after\w \qt{By induction}\\
+            & = \D\after\w \qt{By Definition}\\
+        \end{align*}
+        
+        \subsection{Computation Terms}
+        \case{Return}
+        We have the sub-derivation $\D_1$ such that
+        \begin{equation}
+            \D = \ntreeruleI{Return}{\treeruleI{\D_1}{\gtyperelation{v}{A}}}{\gtyperelation{\return{v}}{\moa}}
+        \end{equation}
+        
+        Hence, by induction, with $\wrel{\w}{\G'}{\G}$, we find the derivation $\D_1'$ such that:
+        \begin{equation}
+            \D' = \ntreeruleI{Return}{\treeruleI{\D_1'}{\typerelation{\G'}{v}{A}}}{\typerelation{\G'}{\return{v}}{\moa}}
+        \end{equation}
+        
+        This preserves denotations:
+        
+        \begin{align*}
+            \D' & = \point{A}\after\D_1' \qt{By definition}\\
+                & = \point{A}\after\D_1\after\w\qt{By induction of $\D_1, \D_1'$}\\
+                & = \D\after\w\qt{By Definition}
+        \end{align*}
+        
+        \case{Apply}
+            By inversion, we have derivations $\D_1$, $\D_2$ such that
+        
+            \begin{equation}
+                \D = 
+                \ntreeruleII{Apply}{
+                    \treeruleI{\D_1}{\gtyperelation{v_1}{\ab}}
+                    }{
+                    \treeruleI{\D_2}{\gtyperelation{v_2}{A}}
+                } {
+                    \gtyperelation{\apply{v_1}{v_2}}{B}
+                }
+            \end{equation}
+        
+            By induction, this gives us the respective derivations: $\D_1',\D_2'$ such that
+        
+            
+            \begin{equation}
+                \D' = 
+                \ntreeruleII{Apply}{
+                    \treeruleI{\D_1'}{\typerelation{\G'}{v_1}{\ab}}
+                    }{
+                    \treeruleI{\D_2'}{\typerelation{\G'}{v_2}{A}}
+                } {
+                    \typerelation{\G'}{\apply{v_1}{v_2}}{B}
+                }
+            \end{equation}
+        
+            This preserves denotations:
+        
+            \begin{align*}
+                \D' &= \app\after\pr{\D_1'}{\D_2'} \qt{By Definition}\\
+                &= \app\after\pr{\D_1\after\w}{\D_2\after\w} \qt{By induction on $\D_1, \D_2$}\\
+                &= \app\after\pr{\D_1}{\D_2}\after\w\\
+                &= \D\after\w\qt{By Definition}
+            \end{align*}
+        \case{If}
+        By inversion, we have the sub-derivations $\D_1,\D_2,\D_3$, such that:
+        
+        
+        \begin{equation}
+            \D = \ntreeruleIII{If}{
+                \treeruleI{\D_1}{\typerelation{\G}{v}{\B}}
+                }{
+                \treeruleI{\D_2}{\typerelation{\G}{v_1}{ A}}
+                }{
+                \treeruleI{\D_3}{\typerelation{\G}{v_2}{ A}}
             }{
-            \treeruleI{\D_2'}{\typerelation{\G'}{v_2}{A}}
-        } {
-            \typerelation{\G'}{\apply{v_1}{v_2}}{B}
-        }
-    \end{equation}
+                \typerelation{\G}{\pifthenelse{A}{v}{v_1}{v_2}}{ A}
+            }
+        \end{equation}
+        
+        By induction, this gives us the sub-derivations $\D_1', \D_2', \D_3'$ such that
+        
+        \begin{equation}
+            \D' = \ntreeruleIII{If}{
+                \treeruleI{\D_1'}{\typerelation{\G'}{v}{\B}}
+                }{
+                \treeruleI{\D_2'}{\typerelation{\G'}{v_1}{ A}}
+                }{
+                \treeruleI{\D_3'}{\typerelation{\G'}{v_2}{ A}}
+            }{
+                \typerelation{\G'}{\pifthenelse{A}{v}{v_1}{v_2}}{ A}
+            }
+        \end{equation}
+        
+        And 
+        \begin{align*}
+            \D_1' & =\D_1 \after \w\\
+            \D_3' & =\D_2 \after \w\\
+            \D_3' & =\D_3 \after \w 
+        \end{align*}
+        
+        
+        This preserves denotations.
+        Since $\w: \G' \rightarrow \G$, \\
+        Let $(A)^{\w}: A^{\G}\rightarrow A^{\G'}$ be as defined in ExSh 3 (\footnote{https://www.cl.cam.ac.uk/teaching/1819/L108/exercises/L108-exercise-sheet-3.pdf})
+        That is:
+        
+        \begin{align*}
+            (A)^{\w} & = \cur{\app\after(\Id{A}\times w)}
+        \end{align*}.
+        And hence, we have:
+        
+        \begin{align*}
+            \cur{f\after(\Id{}\times \w)} & = (A)^{\w} \after\cur{f}
+        \end{align*}
+        
+        \scalebox{0.8}{\parbox{1.2\linewidth}{%
+        \begin{align*}
+            \D' & =\app\after((\fld{\cur{\D_2'\after\pp}}{\cur{\D_3'\after\pp}}\after\D_1')\times \Id{\G'})\after\diag{\G'}\qt{By Definition}\\
+            & =\app\after((\fld{\cur{\D_2\after\w\after\pp}}{\cur{\D_3\after\w\after\pp}}\after\D_1')\times \Id{\G'})\after\diag{\G'}\qt{By Induction}\\
+            & = \app\after((\fld{\cur{\D_2\after\pp\after(\Id{\1}\times \w)}}{\cur{\D_3\after\pp\after(\Id{\1}\times \w)}}\after\D_1\after\w)\times \Id{\G'})\after\diag{\G'}\qt{By product property}\\
+            & = \app\after((\fld{(A)^{\w}\after\cur{\D_2\after\pp}}{(A)^{\w}\after\cur{\D_3\after\pp}}\after\D_1\after\w)\times \Id{\G'})\after\diag{\G'}\qt{By $(A)^{\w}$ property}\\
+            & = \app\after(((A)^{\w}\after\fld{\cur{\D_2\after\pp}}{\cur{\D_3\after\pp}}\after\D_1\after\w)\times \Id{\G'})\after\diag{\G'}\qt{Factor out transformation}\\
+            & = \app\after((A)^{\w}\times\Id{\G'})\after((\fld{\cur{\D_2\after\pp}}{\cur{\D_3\after\pp}}\after\D_1)\times \Id{\G'})\after(\w \times \Id{\G'})\after\diag{\G'}\qt{Factor out Identity pairs}\\
+            & = \app\after(\Id{(A)}\times\w)\after((\fld{\cur{\D_2\after\pp}}{\cur{\D_3\after\pp}}\after\D_1) \times \Id{\G'})\after(\w \times \Id{\G'})\after\diag{\G'}\qt{By defintion of $\app, (A)^{\w}$}\\
+            & = \app\after((\fld{\cur{\D_2\after\pp}}{\cur{\D_3\after\pp}}\after\D_1)\times \idg)\after(\w \times \w)\after\diag{\G'}\qt{Push through pairs}\\
+            & = \app\after((\fld{\cur{\D_2\after\pp}}{\cur{\D_3\after\pp}}\after\D_1)\times \idg)\after\diag{\G}\after\w\qt{By Definition of the diagonal morphism.}\\
+            & = \D\after\w
+        \end{align*}
+        }}
+        
+        
+        \case{Bind}
+        By inversion, we have derivations $\D_1, \D_2$ such that:
+        
+        
+        \begin{equation}
+            \D = \ntreeruleII{Bind}{
+                \treeruleI{\D_1}{\typerelation{\G}{v_1}{\M{\E_1}{A}}}
+                }{
+                \treeruleI{\D_2}{\typerelation{\G,x: A}{v_2}{\M{\e_2}{B}}}
+            }{
+                \typerelation{\G}{\doin{x}{v_1}{v_2}}{\M{\e_1\dot\e_2}{B}}
+            }
+        \end{equation}
+        
+        If $\wrel{\w}{\G'}{\G}$ then $\wrel{\w\x}{\G',x:A}{\gax}$, so by induction, we can derive $\D_1'$, $\D_2'$ such that:
+        
+        \begin{equation}
+            \D' = \ntreeruleII{Bind}{
+                \treeruleI{\D_1'}{\typerelation{\G'}{v_1}{\M{\E_1}{A}}}
+                }{
+                \treeruleI{\D_2'}{\typerelation{\G',x: A}{v_2}{\M{\e_2}{B}}}
+            }{
+                \typerelation{\G'}{\doin{x}{v_1}{v_2}}{\M{\e_1\dot\e_2}{B}}
+            }
+        \end{equation}
+        
+        This preserves denotations:
+        
+        \begin{align*}
+            \D' & = \bind{\e_1}{\e_2}{B}\after\T{\e_1}{\D_2'}\after\tstrength{\e_1}{\G'}{A}\after\pr{\Id{G'}}{\D_1'}\qt{By definition}\\
+            & = \bind{\e_1}{\e_2}{B}\after\T{\e_1}{(\D_2\after(\w\times\Id{A}))}\after\tstrength{\e_1}{\G'}{A}\after\pr{\Id{G'}}{\D_1\after\w}\qt{By induction on $\D_1', \D_2'$}\\
+            & = \bind{\e_1}{\e_2}{B}\after\T{\e_1}{\D_2}\after\tstrength{\e_1}{\G}{A}\after\pr{\w}{\D_1\after\w}\qt{By tensor strength}\\
+            & = \bind{\e_1}{\e_2}{B}\after\T{\e_1}{\D_2}\after\tstrength{\e_1}{\G}{A}\after\pr{\idg}{\D_1}\after\w\qt{By product property}\\
+            & = \D \qt{By definition}
+        \end{align*}
+        
+    \end{proof}
+\end{framed}
 
-    This preserves denotations:
-
-    \begin{align*}
-        \D' &= \app\after\pr{\D_1'}{\D_2'} \qt{By Definition}\\
-        &= \app\after\pr{\D_1\after\w}{\D_2\after\w} \qt{By induction on $\D_1, \D_2$}\\
-        &= \app\after\pr{\D_1}{\D_2}\after\w\\
-        &= \D\after\w\qt{By Definition}
-    \end{align*}
-\case{If}
-By inversion, we have the sub-derivations $\D_1,\D_2,\D_3$, such that:
-
-
-\begin{equation}
-    \D = \ntreeruleIII{If}{
-        \treeruleI{\D_1}{\typerelation{\G}{v}{\B}}
-        }{
-        \treeruleI{\D_2}{\typerelation{\G}{v_1}{ A}}
-        }{
-        \treeruleI{\D_3}{\typerelation{\G}{v_2}{ A}}
-    }{
-        \typerelation{\G}{\pifthenelse{A}{v}{v_1}{v_2}}{ A}
-    }
-\end{equation}
-
-By induction, this gives us the sub-derivations $\D_1', \D_2', \D_3'$ such that
-
-\begin{equation}
-    \D' = \ntreeruleIII{If}{
-        \treeruleI{\D_1'}{\typerelation{\G'}{v}{\B}}
-        }{
-        \treeruleI{\D_2'}{\typerelation{\G'}{v_1}{ A}}
-        }{
-        \treeruleI{\D_3'}{\typerelation{\G'}{v_2}{ A}}
-    }{
-        \typerelation{\G'}{\pifthenelse{A}{v}{v_1}{v_2}}{ A}
-    }
-\end{equation}
-
-And 
-\begin{align*}
-    \D_1' & =\D_1 \after \w\\
-    \D_3' & =\D_2 \after \w\\
-    \D_3' & =\D_3 \after \w 
-\end{align*}
-
-
-This preserves denotations.
-Since $\w: \G' \rightarrow \G$, \\
-Let $(A)^{\w}: A^{\G}\rightarrow A^{\G'}$ be as defined in ExSh 3 (\footnote{https://www.cl.cam.ac.uk/teaching/1819/L108/exercises/L108-exercise-sheet-3.pdf})
-That is:
-
-\begin{align*}
-    (A)^{\w} & = \cur{\app\after(\Id{A}\times w)}
-\end{align*}.
-And hence, we have:
-
-\begin{align*}
-    \cur{f\after(\Id{}\times \w)} & = (A)^{\w} \after\cur{f}
-\end{align*}
-
-\scalebox{0.8}{\parbox{1.2\linewidth}{%
-\begin{align*}
-    \D' & =\app\after((\fld{\cur{\D_2'\after\pp}}{\cur{\D_3'\after\pp}}\after\D_1')\times \Id{\G'})\after\diag{\G'}\qt{By Definition}\\
-    & =\app\after((\fld{\cur{\D_2\after\w\after\pp}}{\cur{\D_3\after\w\after\pp}}\after\D_1')\times \Id{\G'})\after\diag{\G'}\qt{By Induction}\\
-    & = \app\after((\fld{\cur{\D_2\after\pp\after(\Id{\1}\times \w)}}{\cur{\D_3\after\pp\after(\Id{\1}\times \w)}}\after\D_1\after\w)\times \Id{\G'})\after\diag{\G'}\qt{By product property}\\
-    & = \app\after((\fld{(A)^{\w}\after\cur{\D_2\after\pp}}{(A)^{\w}\after\cur{\D_3\after\pp}}\after\D_1\after\w)\times \Id{\G'})\after\diag{\G'}\qt{By $(A)^{\w}$ property}\\
-    & = \app\after(((A)^{\w}\after\fld{\cur{\D_2\after\pp}}{\cur{\D_3\after\pp}}\after\D_1\after\w)\times \Id{\G'})\after\diag{\G'}\qt{Factor out transformation}\\
-    & = \app\after((A)^{\w}\times\Id{\G'})\after((\fld{\cur{\D_2\after\pp}}{\cur{\D_3\after\pp}}\after\D_1)\times \Id{\G'})\after(\w \times \Id{\G'})\after\diag{\G'}\qt{Factor out Identity pairs}\\
-    & = \app\after(\Id{(A)}\times\w)\after((\fld{\cur{\D_2\after\pp}}{\cur{\D_3\after\pp}}\after\D_1) \times \Id{\G'})\after(\w \times \Id{\G'})\after\diag{\G'}\qt{By defintion of $\app, (A)^{\w}$}\\
-    & = \app\after((\fld{\cur{\D_2\after\pp}}{\cur{\D_3\after\pp}}\after\D_1)\times \idg)\after(\w \times \w)\after\diag{\G'}\qt{Push through pairs}\\
-    & = \app\after((\fld{\cur{\D_2\after\pp}}{\cur{\D_3\after\pp}}\after\D_1)\times \idg)\after\diag{\G}\after\w\qt{By Definition of the diagonal morphism.}\\
-    & = \D\after\w
-\end{align*}
-}}
-
-
-\case{Bind}
-By inversion, we have derivations $\D_1, \D_2$ such that:
-
-
-\begin{equation}
-    \D = \ntreeruleII{Bind}{
-        \treeruleI{\D_1}{\typerelation{\G}{v_1}{\M{\E_1}{A}}}
-        }{
-        \treeruleI{\D_2}{\typerelation{\G,x: A}{v_2}{\M{\e_2}{B}}}
-    }{
-        \typerelation{\G}{\doin{x}{v_1}{v_2}}{\M{\e_1\dot\e_2}{B}}
-    }
-\end{equation}
-
-If $\wrel{\w}{\G'}{\G}$ then $\wrel{\w\x}{\G',x:A}{\gax}$, so by induction, we can derive $\D_1'$, $\D_2'$ such that:
-
-\begin{equation}
-    \D' = \ntreeruleII{Bind}{
-        \treeruleI{\D_1'}{\typerelation{\G'}{v_1}{\M{\E_1}{A}}}
-        }{
-        \treeruleI{\D_2'}{\typerelation{\G',x: A}{v_2}{\M{\e_2}{B}}}
-    }{
-        \typerelation{\G'}{\doin{x}{v_1}{v_2}}{\M{\e_1\dot\e_2}{B}}
-    }
-\end{equation}
-
-This preserves denotations:
-
-\begin{align*}
-    \D' & = \bind{\e_1}{\e_2}{B}\after\T{\e_1}{\D_2'}\after\tstrength{\e_1}{\G'}{A}\after\pr{\Id{G'}}{\D_1'}\qt{By definition}\\
-    & = \bind{\e_1}{\e_2}{B}\after\T{\e_1}{(\D_2\after(\w\times\Id{A}))}\after\tstrength{\e_1}{\G'}{A}\after\pr{\Id{G'}}{\D_1\after\w}\qt{By induction on $\D_1', \D_2'$}\\
-    & = \bind{\e_1}{\e_2}{B}\after\T{\e_1}{\D_2}\after\tstrength{\e_1}{\G}{A}\after\pr{\w}{\D_1\after\w}\qt{By tensor strength}\\
-    & = \bind{\e_1}{\e_2}{B}\after\T{\e_1}{\D_2}\after\tstrength{\e_1}{\G}{A}\after\pr{\idg}{\D_1}\after\w\qt{By product property}\\
-    & = \D \qt{By definition}
-\end{align*}
 
 \chapter{Substitution}
 \section{Introduce Substitutions}
@@ -1303,246 +1350,283 @@ Define the relation $$\typerelation{\G'}{\si}{\G}$$ by:
     }$
 \end{itemize}
 \subsection{Simple Properties Of Substitution}
-If $\typerelation{\G'}{\si}{\G}$ then:
-    \paragraph{Property 1: $\ok{\G}$ and $\ok{\G'}$}
-     Since $\ok{\G'}$ holds by the Nil-axiom. $\ok{\G}$ holds by induction on the well-formed-ness relation.
-    \paragraph{Property 2: $\wrel{\w}{\G''}{\G'}$ implies $\typerelation{\G''}{\si}{\G}$}. 
-    By induction over well-formed-ness relation. For each $x\setto v$ in $\si$, $\typerelation{\G''}{v}{A}$ holds if $\typerelation{\G'}{v}{A}$ holds.
-    \paragraph{Property 3: $x \notin (\dom{\G} \cup \dom{\G''})$ implies $\typerelation{(\G', x: A)}{(\si, x \setto x)}{(\gax)}$} 
-    Since $\wrel{\i\pi}{\G',x: A}{\G'}$, so by (Property 2) \todo{Better referencing here}, 
-    $$\typerelation{\G', x: A}{\si}{\G}$$
+
+\begin{property}[Ok Relation]\label{SubPropOne}
+    If $\typerelation{\G'}{\si}{\G}$ then  $\ok{\G}$ and $\ok{\G'}$. Since $\ok{\G'}$ holds by the Nil-axiom. $\ok{\G}$ holds by induction on the well-formed-ness relation.
+\end{property}
+
+\begin{property}[Weakening]\label{SubPropTwo}
+    If $\typerelation{\G'}{\si}{\G}$ then $\wrel{\w}{\G''}{\G'}$ implies $\typerelation{\G''}{\si}{\G}$.
+    This holds by induction over well-formed-ness relation. For each $x\setto v$ in $\si$, $\typerelation{\G''}{v}{A}$ holds if $\typerelation{\G'}{v}{A}$ holds.
+\end{property}
+
+\begin{property}[Extension]\label{SubPropThree}
+    If $\typerelation{\G'}{\si}{\G}$ then $x \notin (\dom{\G} \cup \dom{\G''})$ implies $\typerelation{(\G', x: A)}{(\si, x \setto x)}{(\gax)}$.
+    This occurs since $\wrel{\i\pi}{\G',x: A}{\G'}$, so by property \ref{SubPropTwo}, 
+    $\typerelation{\G', x: A}{\si}{\G}$.
     In addition, $\typerelation{\G', x: A}{x}{A}$ trivially, so by the rule \textbf{Extend}, well-formed-ness holds for
     \begin{equation}
-        \typerelation{(\G', x:A)}{(\si, x\setto v)}{(\gax)}
+        \typerelation{(\G', x:A)}{(\si, x\setto x)}{(\gax)}
     \end{equation}
+\end{property}
 
+     
+    
+   
+    
 
 \section{Substitution Preserves Typing}
 We have the following non-trivial property of substitution:
 
-\begin{equation}
-    \typerelation{\G}{g}{A}\wedge\typerelation{\G'}{\si}{\G}\Rightarrow\typerelation{\G'}{v\ssi}{A}
-\end{equation}
 
-Assuming $\typerelation{\G'}{\si}{\G}$, we induct over the typing relation, proving $\gtyperelation{v}{A}\rightarrow\typerelation{\G'}{v}{A}$
+\begin{theorem}[Substitution Preserves Typing Relation]
 
-    \case{Var}
-        By inversion $\G = (\G'', x:A)$
-        So \begin{equation}
-            \typerelation{\G'',x:A}{x}{A}
-        \end{equation}
+    If $\typerelation{\G}{g}{A}$ and $\typerelation{\G'}{\si}{\G}$ then $\typerelation{\G'}{v\ssi}{A}$.
+\end{theorem}
 
-        So by inversion, since $\typerelation{\G'}{\si}{\G'', x:A}$, 
 
-        \begin{equation}
-            \si = \si', x\setto v \wedge \typerelation{\G'}{v}{A}
-        \end{equation}
 
-        By the definition of the effect of substitutions, $x\ssi = v$, So
-        \begin{equation}
-            \typerelation{\G'}{x\ssi}{A}
-        \end{equation}
-
-        holds.
+\begin{framed}
+    \begin{proof}
         
-    \case{Weaken}
-        By inversion, $\G = \G'', y: B, x \neq y$, and there exists $\D$ such that
-
-        \begin{equation}
-            \ntreeruleI{Weaken}{\treeruleI{\D}{\typerelation{\G''}{x}{A}}}{\typerelation{\G'', y: B}{x}{A}}
-        \end{equation}
-
-        By inversion, $\si = \si', y\setto v$
-        and:
-
-        \begin{equation}
-            \typerelation{\G'}{\si'}{\G''}
-        \end{equation}
-
-        So by induction,
-
-        \begin{equation}
-            \typerelation{\G'}{x\sub{\si'}}{A}
-        \end{equation}
-
-        And so by definition of the effect of $\si$, $x\ssi = x\sub{\si'}$
-
-        \begin{equation}
-            \typerelation{\G'}{x\sub{\si}}{A}
-        \end{equation}
-\case{Lambda}
-    By inversion, there exists $\D$ such that:
-
-    \begin{equation}
-        \ntreeruleI{Fn}{
-            \treeruleI{\D}{\typerelation{\G, x:A }{v}{B}}
-        }{\typerelation{\G}{\lam{x}{A}{v}}{\ab}}
-    \end{equation}
-    Using alpha equivalence, we pick $x\notin(\dom{\G}\cup\dom{\G'})$
-    Hence, by property 3, we have
-
-    \begin{equation}
-        \typerelation{(\G', x:A )}{(\si, x\setto x)}{\gax}
-    \end{equation}
-
-    So by induction using $\si,x\setto x$, we have $\D'$ such that:
-
-    \begin{equation}
-        \ntreeruleI{Fn}{
-            \treeruleI{\D'}{\typerelation{\G', x:A }{v\sub{\si, x\setto v}}{B}}
-        }{\typerelation{\G}{\lam{x}{A}{v\sub{\si, x\setto{x}}}}{\ab}}
-    \end{equation} 
-    Since $\lam{x}{A}{(v\sub{\si, x\setto{x}})} = {\lam{x}{A}({v\ssi})} = (\lam{x}{A}{v})\ssi$, we have a typing derivation for $\typerelation{\G'}{(\lam{x}{A}{v})\ssi}{\ab}$.
-
-\case{Constants}
-    We use the same logic for all constants, $\u,\t,\f,\const{A}$:
-
-    $\typerelation{\G}{\si}{\G} \Rightarrow \ok{\G'}$ and:
-
-    \begin{equation}
-        \const{A}\ssi =\const{A}
-    \end{equation}
-
-    So \begin{equation}
-        \ntreeruleI{Const}{\ok{\G'}}{\typerelation{\G'}{\const{A}}{A}}
-    \end{equation}
-
-\case{Return}
-    By inversion, we have $\D_1$ such that:
-
-    \begin{equation}
-        \ntreeruleI{Return}{\treeruleI{\D_1}{\typerelation{\G}{v}{A}}}{\typerelation{\G}{\return{v}}{\moa}}
-    \end{equation}
-
-    By induction, we have $\D_1'$ such that
-
-    \begin{equation}
-        \ntreeruleI{Return}{\treeruleI{\D'_1}{\typerelation{\G'}{v\ssi}{A}}}{\typerelation{\G'}{\return{(v\ssi)}}{\moa}}
-    \end{equation}
-
-    Since $(\return{v})\ssi = \return{(v\ssi)}$, the type derivation above holds for $\typerelation{\G'}{(\return{v})\ssi}{\moa}$.
-
-\case{Apply}
-    By inversion, we have $\D_1$, $\D_2$ such that:
-
-    \begin{equation}
-        \ntreeruleII{Apply}{
-            \treeruleI{\D_1}{\typerelation{\G}{v_1}{\ab}}
-            }{
-            \treeruleI{\D_2}{\typerelation{\G}{v_2}{A}}
-        }{\typerelation{\G}{\apply{v_1}{v_2}}{B}}
-    \end{equation}
-
-    By induction on $\D_1, \D_2$, we have $\D_1',\D_2'$ such that
-
-    \begin{equation}
-        \ntreeruleII{Apply}{
-            \treeruleI{\D'_1}{\typerelation{\G'}{v_1\ssi}{\ab}}
-            }{
-            \treeruleI{\D_2'}{\typerelation{\G'}{v_2\ssi}{A}}
-        }{\typerelation{\G'}{\apply{(v_1\ssi)}{(v_2\ssi)}}{B}}
-    \end{equation}
-
-    Since $(\apply{v_1}{v_2})\ssi = \apply{(v_1\ssi)}{(v_2\ssi)}$, we the above derivation holds for $\typerelation{\G'}{(\apply{v_1}{v_2})\ssi}{B}$
-\case{If}
-    By inversion, we have $\D_1,\D_2,\D_3$ such that:
-
-    \begin{equation}
-        \ntreeruleIII{If}{
-            \treeruleI{\D_1}{\typerelation{\G}{v}{\B}}
-            }{
-            \treeruleI{\D_2}{\typerelation{\G}{v_1}{ A}}
-            }{
-            \treeruleI{\D_3}{\typerelation{\G}{v_2}{ A}}
-        }{
-            \typerelation{\G}{\pifthenelse{A}{v}{v_1}{v_2}}{ A}
-        }
-    \end{equation}
-
-    By induction on $\D_1,\D_2, \D_3$, we derive 
-    $\D_1', \D_2',\D_3'$ such that:
+        Assuming $\typerelation{\G'}{\si}{\G}$, we induct over the typing relation, proving $\gtyperelation{v}{A}\rightarrow\typerelation{\G'}{v}{A}$
+        
+            \case{Var}
+                By inversion $\G = (\G'', x:A)$
+                So \begin{equation}
+                    \typerelation{\G'',x:A}{x}{A}
+                \end{equation}
+        
+                So by inversion, since $\typerelation{\G'}{\si}{\G'', x:A}$, 
+        
+                \begin{equation}
+                    \si = \si', x\setto v \wedge \typerelation{\G'}{v}{A}
+                \end{equation}
+        
+                By the definition of the effect of substitutions, $x\ssi = v$, So
+                \begin{equation}
+                    \typerelation{\G'}{x\ssi}{A}
+                \end{equation}
+        
+                holds.
+                
+            \case{Weaken}
+                By inversion, $\G = \G'', y: B, x \neq y$, and there exists $\D$ such that
+        
+                \begin{equation}
+                    \ntreeruleI{Weaken}{\treeruleI{\D}{\typerelation{\G''}{x}{A}}}{\typerelation{\G'', y: B}{x}{A}}
+                \end{equation}
+        
+                By inversion, $\si = \si', y\setto v$
+                and:
+        
+                \begin{equation}
+                    \typerelation{\G'}{\si'}{\G''}
+                \end{equation}
+        
+                So by induction,
+        
+                \begin{equation}
+                    \typerelation{\G'}{x\sub{\si'}}{A}
+                \end{equation}
+        
+                And so by definition of the effect of $\si$, $x\ssi = x\sub{\si'}$
+        
+                \begin{equation}
+                    \typerelation{\G'}{x\sub{\si}}{A}
+                \end{equation}
+        \case{Lambda}
+            By inversion, there exists $\D$ such that:
+        
+            \begin{equation}
+                \ntreeruleI{Fn}{
+                    \treeruleI{\D}{\typerelation{\G, x:A }{v}{B}}
+                }{\typerelation{\G}{\lam{x}{A}{v}}{\ab}}
+            \end{equation}
+            Using alpha equivalence, we pick $x\notin(\dom{\G}\cup\dom{\G'})$
+            Hence, by property 3, we have
+        
+            \begin{equation}
+                \typerelation{(\G', x:A )}{(\si, x\setto x)}{\gax}
+            \end{equation}
+        
+            So by induction using $\si,x\setto x$, we have $\D'$ such that:
+        
+            \begin{equation}
+                \ntreeruleI{Fn}{
+                    \treeruleI{\D'}{\typerelation{\G', x:A }{v\sub{\si, x\setto v}}{B}}
+                }{\typerelation{\G}{\lam{x}{A}{v\sub{\si, x\setto{x}}}}{\ab}}
+            \end{equation} 
+            Since $\lam{x}{A}{(v\sub{\si, x\setto{x}})} = {\lam{x}{A}({v\ssi})} = (\lam{x}{A}{v})\ssi$, we have a typing derivation for $\typerelation{\G'}{(\lam{x}{A}{v})\ssi}{\ab}$.
+        
+        \case{Constants}
+            We use the same logic for all constants, $\u,\t,\f,\const{A}$:
+        
+            $\typerelation{\G}{\si}{\G} \Rightarrow \ok{\G'}$ and:
+        
+            \begin{equation}
+                \const{A}\ssi =\const{A}
+            \end{equation}
+        
+            So \begin{equation}
+                \ntreeruleI{Const}{\ok{\G'}}{\typerelation{\G'}{\const{A}}{A}}
+            \end{equation}
+        
+        \case{Return}
+            By inversion, we have $\D_1$ such that:
+        
+            \begin{equation}
+                \ntreeruleI{Return}{\treeruleI{\D_1}{\typerelation{\G}{v}{A}}}{\typerelation{\G}{\return{v}}{\moa}}
+            \end{equation}
+        
+            By induction, we have $\D_1'$ such that
+        
+            \begin{equation}
+                \ntreeruleI{Return}{\treeruleI{\D'_1}{\typerelation{\G'}{v\ssi}{A}}}{\typerelation{\G'}{\return{(v\ssi)}}{\moa}}
+            \end{equation}
+        
+            Since $(\return{v})\ssi = \return{(v\ssi)}$, the type derivation above holds for $\typerelation{\G'}{(\return{v})\ssi}{\moa}$.
+        
+        \case{Apply}
+            By inversion, we have $\D_1$, $\D_2$ such that:
+        
+            \begin{equation}
+                \ntreeruleII{Apply}{
+                    \treeruleI{\D_1}{\typerelation{\G}{v_1}{\ab}}
+                    }{
+                    \treeruleI{\D_2}{\typerelation{\G}{v_2}{A}}
+                }{\typerelation{\G}{\apply{v_1}{v_2}}{B}}
+            \end{equation}
+        
+            By induction on $\D_1, \D_2$, we have $\D_1',\D_2'$ such that
+        
+            \begin{equation}
+                \ntreeruleII{Apply}{
+                    \treeruleI{\D'_1}{\typerelation{\G'}{v_1\ssi}{\ab}}
+                    }{
+                    \treeruleI{\D_2'}{\typerelation{\G'}{v_2\ssi}{A}}
+                }{\typerelation{\G'}{\apply{(v_1\ssi)}{(v_2\ssi)}}{B}}
+            \end{equation}
+        
+            Since $(\apply{v_1}{v_2})\ssi = \apply{(v_1\ssi)}{(v_2\ssi)}$, we the above derivation holds for $\typerelation{\G'}{(\apply{v_1}{v_2})\ssi}{B}$
+        \case{If}
+            By inversion, we have $\D_1,\D_2,\D_3$ such that:
+        
+            \begin{equation}
+                \ntreeruleIII{If}{
+                    \treeruleI{\D_1}{\typerelation{\G}{v}{\B}}
+                    }{
+                    \treeruleI{\D_2}{\typerelation{\G}{v_1}{ A}}
+                    }{
+                    \treeruleI{\D_3}{\typerelation{\G}{v_2}{ A}}
+                }{
+                    \typerelation{\G}{\pifthenelse{A}{v}{v_1}{v_2}}{ A}
+                }
+            \end{equation}
+        
+            By induction on $\D_1,\D_2, \D_3$, we derive 
+            $\D_1', \D_2',\D_3'$ such that:
+            
+            \begin{equation}
+                \ntreeruleIII{If}{
+                    \treeruleI{\D_1'}{\typerelation{\G'}{v\ssi}{\B}}
+                    }{
+                    \treeruleI{\D_2'}{\typerelation{\G'}{v_1\ssi}{ A}}
+                    }{
+                    \treeruleI{\D_3'}{\typerelation{\G'}{v_2\ssi}{ A}}
+                }{
+                    \typerelation{\G'}{\pifthenelse{A}{(v\ssi)}{(v_1\ssi)}{(v_2\ssi)}}{ A}
+                }
+            \end{equation}
+        
+            Since $(\pifthenelse{A}{v}{v_1}{v_2})\ssi = \pifthenelse{A}{(v\ssi)}{(v_1\ssi)}{(v_2\ssi)}$ The derivation above holds for $\typerelation{\G'}{(\pifthenelse{A}{v}{v_1}{v_2})\ssi}{ A}$
+        
+        \case{Bind}
+            By inversion, there exist $\D_1, \D_2$ such that:
+            \begin{equation}
+                \ntreeruleII{Bind}{
+                    \treeruleI{\D_1}{\typerelation{\G}{v_1}{\M{\e_1}{A}}}
+                    }{
+                    \treeruleI{\D_2}{\typerelation{\G, x:A}{v_2}{\M{\e_2}{B}}}
+                }{\typerelation{\G}{\doin{x}{v_1}{v_2}}{\M{\e_1\dot\e_2}{B}}}
+            \end{equation}
+        
+            Using alpha-equivalence, we pick $x\notin(\dom{\G}\cup\dom{\G'})$. Hence by property 3, $$\typerelation{(\G, x: A)}{(\si, x\setto x)}{(\gax)}$$
+            By induction on $\D_1, \D_2$, we have $\D_1', \D_2'$ such that:
+            \begin{equation}
+                \ntreeruleII{Bind}{
+                    \treeruleI{\D_1'}{\typerelation{\G'}{v_1\ssi}{\M{\e_1}{A}}}
+                    }{
+                    \treeruleI{\D_2}{\typerelation{\G', x:A}{v_2\sub{\si, x\setto x}}{\M{\e_2}{B}}}
+                }{\typerelation{\G'}{\doin{x}{(v_1\ssi)}{(v_2\sub{\si, x\setto x})}}{\M{\e_1\dot\e_2}{B}}}
+            \end{equation}
+        
+            Since $(\doin{x}{v_1}{v_2})\ssi = \doin{x}{(v_1\ssi)}{(v_2\ssi)} = \doin{x}{(v_1\ssi)}{(v_2\sub{\si, x\setto x})}$, the above derivation holds for $\typerelation{\G'}{(\doin{x}{v_1}{v_2})\ssi}{\M{\e_1\dot\e_2}{B}}$
+        \case{Subtype}
+            By inversion, there exists $\D$ such that
+            \begin{equation}
+                \ntreeruleII{subtype}{\treeruleI{\D}{\typerelation{\G}{v}{A}}}{ A\subtype B}{\typerelation{\G}{v}{B}}
+            \end{equation}
+        
+            By induction on $\D$ we derive $\D'$ such that:
+        
+            \begin{equation}
+                \ntreeruleII{subtype}{\treeruleI{\D'}{\typerelation{\G'}{v\ssi}{A}}}{ A\subtype B}{\typerelation{\G}{v\ssi}{B}}
+            \end{equation}
+        
+    \end{proof}
     
-    \begin{equation}
-        \ntreeruleIII{If}{
-            \treeruleI{\D_1'}{\typerelation{\G'}{v\ssi}{\B}}
-            }{
-            \treeruleI{\D_2'}{\typerelation{\G'}{v_1\ssi}{ A}}
-            }{
-            \treeruleI{\D_3'}{\typerelation{\G'}{v_2\ssi}{ A}}
-        }{
-            \typerelation{\G'}{\pifthenelse{A}{(v\ssi)}{(v_1\ssi)}{(v_2\ssi)}}{ A}
-        }
-    \end{equation}
+\end{framed}
 
-    Since $(\pifthenelse{A}{v}{v_1}{v_2})\ssi = \pifthenelse{A}{(v\ssi)}{(v_1\ssi)}{(v_2\ssi)}$ The derivation above holds for $\typerelation{\G'}{(\pifthenelse{A}{v}{v_1}{v_2})\ssi}{ A}$
-
-\case{Bind}
-    By inversion, there exist $\D_1, \D_2$ such that:
-    \begin{equation}
-        \ntreeruleII{Bind}{
-            \treeruleI{\D_1}{\typerelation{\G}{v_1}{\M{\e_1}{A}}}
-            }{
-            \treeruleI{\D_2}{\typerelation{\G, x:A}{v_2}{\M{\e_2}{B}}}
-        }{\typerelation{\G}{\doin{x}{v_1}{v_2}}{\M{\e_1\dot\e_2}{B}}}
-    \end{equation}
-
-    Using alpha-equivalence, we pick $x\notin(\dom{\G}\cup\dom{\G'})$. Hence by property 3, $$\typerelation{(\G, x: A)}{(\si, x\setto x)}{(\gax)}$$
-    By induction on $\D_1, \D_2$, we have $\D_1', \D_2'$ such that:
-    \begin{equation}
-        \ntreeruleII{Bind}{
-            \treeruleI{\D_1'}{\typerelation{\G'}{v_1\ssi}{\M{\e_1}{A}}}
-            }{
-            \treeruleI{\D_2}{\typerelation{\G', x:A}{v_2\sub{\si, x\setto x}}{\M{\e_2}{B}}}
-        }{\typerelation{\G'}{\doin{x}{(v_1\ssi)}{(v_2\sub{\si, x\setto x})}}{\M{\e_1\dot\e_2}{B}}}
-    \end{equation}
-
-    Since $(\doin{x}{v_1}{v_2})\ssi = \doin{x}{(v_1\ssi)}{(v_2\ssi)} = \doin{x}{(v_1\ssi)}{(v_2\sub{\si, x\setto x})}$, the above derivation holds for $\typerelation{\G'}{(\doin{x}{v_1}{v_2})\ssi}{\M{\e_1\dot\e_2}{B}}$
-\case{Subtype}
-    By inversion, there exists $\D$ such that
-    \begin{equation}
-        \ntreeruleII{subtype}{\treeruleI{\D}{\typerelation{\G}{v}{A}}}{ A\subtype B}{\typerelation{\G}{v}{B}}
-    \end{equation}
-
-    By induction on $\D$ we derive $\D'$ such that:
-
-    \begin{equation}
-        \ntreeruleII{subtype}{\treeruleI{\D'}{\typerelation{\G'}{v\ssi}{A}}}{ A\subtype B}{\typerelation{\G}{v\ssi}{B}}
-    \end{equation}
 \subsection{Extension Lemma}
-If $\typerelation{\G'}{\si}{\G}$ and $x\notin(\dom{\G'}\cup\dom{\G})$ then the substitution in property 3 has denotation:
 
-\begin{equation}
-    \deno{\typerelation{(\G', x:A)}{(\si, x\setto x)}{(\gax})} = (\deno{\typerelation{\G'}{\si}{\G}}\times \Id{A})
-\end{equation}
+\begin{lemma}[Extension Denotation]
+    If $\typerelation{\G'}{\si}{\G}$ and $x\notin(\dom{\G'}\cup\dom{\G})$ then the substitution in property \ref{SubPropThree} has denotation:
+    \begin{equation}
+        \deno{\typerelation{(\G', x:A)}{(\si, x\setto x)}{(\gax})} = (\deno{\typerelation{\G'}{\si}{\G}}\times \Id{A})
+    \end{equation}
+\end{lemma}
 
-This holds since 
-\begin{equation}
-    \deno{\typerelation{\G', x:A}{x}{A}} = \pp
-\end{equation}
 
-And $\wrel{\i\pi}{(\G',x:A)}{\G'}$
-\begin{equation}
-    \deno{\wrel{\i\pi}{(\G',x:A)}{\G'}} = \p
-\end{equation}
 
-So for each denotation $\deno{\typerelation{\G'}{v}{B}}$ of each $y\setto v$ in $\si$, we can pre-pend the denotation with the weakening denotation to yield: 
-\begin{equation}
-    \deno{\typerelation{\G',x:A}{v}{B}} = \deno{\typerelation{\G'}{v}{B}}\after\p
-\end{equation}
-Since $\p$ appears in every branch of $\deno{\typerelation{\G', x:A}{\si}{\G}}$, it can be factored out to yield:
 
-\begin{equation}
-    \deno{\typerelation{\G', x:A}{\si}{\G}} = \deno{\typerelation{\G'}{\si}{\G}}\after\p
-\end{equation}
 
-Hence,
 
-\begin{equation}
-    \deno{\typerelation{(\G', x:A)}{(\si, x\setto x)}{\gax}} = \pr{\deno{\typerelation{\G'}{\si}{\G}}\after\p}{\pp} = (\deno{\typerelation{\G'}{\si}{\G}}\times \Id{A})
-\end{equation}
+\begin{framed}
+    \begin{proof}
+        This holds since 
+        \begin{equation}
+            \deno{\typerelation{\G', x:A}{x}{A}} = \pp
+        \end{equation}
+        
+        And $\wrel{\i\pi}{(\G',x:A)}{\G'}$
+        \begin{equation}
+            \deno{\wrel{\i\pi}{(\G',x:A)}{\G'}} = \p
+        \end{equation}
+        
+        So for each denotation $\deno{\typerelation{\G'}{v}{B}}$ of each $y\setto v$ in $\si$, we can pre-pend the denotation with the weakening denotation to yield: 
+        \begin{equation}
+            \deno{\typerelation{\G',x:A}{v}{B}} = \deno{\typerelation{\G'}{v}{B}}\after\p
+        \end{equation}
+        Since $\p$ appears in every branch of $\deno{\typerelation{\G', x:A}{\si}{\G}}$, it can be factored out to yield:
+        
+        \begin{equation}
+            \deno{\typerelation{\G', x:A}{\si}{\G}} = \deno{\typerelation{\G'}{\si}{\G}}\after\p
+        \end{equation}
+        
+        Hence,
+        
+        \begin{equation}
+            \deno{\typerelation{(\G', x:A)}{(\si, x\setto x)}{\gax}} = \pr{\deno{\typerelation{\G'}{\si}{\G}}\after\p}{\pp} = (\deno{\typerelation{\G'}{\si}{\G}}\times \Id{A})
+        \end{equation}
+    \end{proof}
+\end{framed}
+
+
 \subsection{Substitution Theorem}
 
-If $\D$ derives $\gtyperelation{v}{A}$ and $\typerelation{\G'}{\si}{\G}$ then the derivation $\D'$ deriving $\typerelation{\G'}{v\ssi}{A}$ satisfies:
+\begin{theorem}[Substitutions and Denotations]\label{SubsDenotations}
+    If $\D$ derives $\gtyperelation{v}{A}$ and $\typerelation{\G'}{\si}{\G}$ then the derivation $\D'$ deriving $\typerelation{\G'}{v\ssi}{A}$ satisfies:
 
 
 \begin{framed}
@@ -1560,269 +1644,280 @@ If $\D$ derives $\gtyperelation{v}{A}$ and $\typerelation{\G'}{\si}{\G}$ then th
         & &\deno{T}
     \end{tikzcd}
 \end{framed}
-
-This is proved by induction over the derivation of $\typerelation{\G}{v}{A}$.
-We shall use $\si$ to denote $\deno{\typerelation{\G'}{\si}{\G}}$ where it is clear from the context.
-\subsection{Proof For Value Terms}
-\case{Var}
-By inversion $\G = \G'', x:A$
-\begin{equation}
-    \ntreeruleI{Var}{\ok{\G}}{\typerelation{\G'', x:A}{x}{A}}
-\end{equation}
-By inversion, $\si = \si', x\setto v$ and $\typerelation{\G'}{v}{A}$.
-
-Let 
-\begin{align*}
-    \si &=\deno{\typerelation{\G'}{\si}{\G}} = \pr{\si'}{\D'}\\
-    \D &=\deno{\typerelation{\G'', x:A}{x}{A}} = \pp\\
-\end{align*}
-
-\begin{align*}
-    \D\after\si &= \pp\after\pr{\si'}{\D'}\qt{By definition}\\
-    &= \D'\qt{By product property}
-\end{align*}
-\case{Weaken}
-By inversion, $\G = \G', y:B$ and $\si = \si', y\setto v$
-and we have $\D_1$ deriving:
-
-\begin{equation}
-    \ntreeruleI{Weaken}{\treeruleI{\D_1}{\typerelation{\G''}{x}{A}}}{\typerelation{\G'',y: B}{x}{A}}
-\end{equation}
-
-Also by inversion of the well-formed-ness of $\typerelation{\G'}{\si}{\G}$, we have $\typerelation{\G'}{\si'}{\G''}$ and 
-
-\begin{equation}
-    \deno{\typerelation{\G'}{\si}{\G}} = \pr{\deno{\typerelation{\G'}{\si}{\G''}}}{\deno{\typerelation{\G'}{v}{B}}}
-\end{equation}
-
-Hence by induction on $\D_1$ we have $\D_1'$ such that
-
-\begin{equation}
-    \treeruleI{\D_1'}{\typerelation{\G'}{x\ssi}{A}}
-\end{equation}
+\end{theorem}
 
 
 
-Hence
-\begin{align*}
-    \D' & = \D_1' \qt{By definition}\\
-        & = \D_1\after\si'\qt{By induction}\\
-        & = \D_1\after\p\after\pr{\si'}{\deno{\typerelation{\G'}{v}{B}}}\qt{By product property}\\
-        & = \D_1\after\p\after\si\qt{By defintion of the denotation of $\si$}
-        & = \D\after\si\qt{By defintion.}
-\end{align*}
 
-\case{Constants}
-The logic for all constant terms ($\t,\f,\u\const{A}$) is the same.
-Let
-\begin{equation}
-    c = \deno{\const{A}}
-\end{equation}
-\begin{align*}
-    \D' & = c\after\term{\G'}\qt{By Definition}\\
-        & = c\after\term{G}\after\si\qt{Terminal property}\\
-        & = \D\after\si\qt{By definition}
-\end{align*}
-\case{Lambda}
+\begin{framed}
+    \begin{proof}
+        This is proved by induction over the derivation of $\typerelation{\G}{v}{A}$.
+        We shall use $\si$ to denote $\deno{\typerelation{\G'}{\si}{\G}}$ where it is clear from the context.
+        \subsection{Proof For Value Terms}
+        \case{Var}
+        By inversion $\G = \G'', x:A$
+        \begin{equation}
+            \ntreeruleI{Var}{\ok{\G}}{\typerelation{\G'', x:A}{x}{A}}
+        \end{equation}
+        By inversion, $\si = \si', x\setto v$ and $\typerelation{\G'}{v}{A}$.
+        
+        Let 
+        \begin{align*}
+            \si &=\deno{\typerelation{\G'}{\si}{\G}} = \pr{\si'}{\D'}\\
+            \D &=\deno{\typerelation{\G'', x:A}{x}{A}} = \pp\\
+        \end{align*}
+        
+        \begin{align*}
+            \D\after\si &= \pp\after\pr{\si'}{\D'}\qt{By definition}\\
+            &= \D'\qt{By product property}
+        \end{align*}
+        \case{Weaken}
+        By inversion, $\G = \G', y:B$ and $\si = \si', y\setto v$
+        and we have $\D_1$ deriving:
+        
+        \begin{equation}
+            \ntreeruleI{Weaken}{\treeruleI{\D_1}{\typerelation{\G''}{x}{A}}}{\typerelation{\G'',y: B}{x}{A}}
+        \end{equation}
+        
+        Also by inversion of the well-formed-ness of $\typerelation{\G'}{\si}{\G}$, we have $\typerelation{\G'}{\si'}{\G''}$ and 
+        
+        \begin{equation}
+            \deno{\typerelation{\G'}{\si}{\G}} = \pr{\deno{\typerelation{\G'}{\si}{\G''}}}{\deno{\typerelation{\G'}{v}{B}}}
+        \end{equation}
+        
+        Hence by induction on $\D_1$ we have $\D_1'$ such that
+        
+        \begin{equation}
+            \treeruleI{\D_1'}{\typerelation{\G'}{x\ssi}{A}}
+        \end{equation}
+        
+        
+        
+        Hence
+        \begin{align*}
+            \D' & = \D_1' \qt{By definition}\\
+                & = \D_1\after\si'\qt{By induction}\\
+                & = \D_1\after\p\after\pr{\si'}{\deno{\typerelation{\G'}{v}{B}}}\qt{By product property}\\
+                & = \D_1\after\p\after\si\qt{By defintion of the denotation of $\si$}
+                & = \D\after\si\qt{By defintion.}
+        \end{align*}
+        
+        \case{Constants}
+        The logic for all constant terms ($\t,\f,\u\const{A}$) is the same.
+        Let
+        \begin{equation}
+            c = \deno{\const{A}}
+        \end{equation}
+        \begin{align*}
+            \D' & = c\after\term{\G'}\qt{By Definition}\\
+                & = c\after\term{G}\after\si\qt{Terminal property}\\
+                & = \D\after\si\qt{By definition}
+        \end{align*}
+        \case{Lambda}
+        
+        By inversion, we have $\D_1$ such that
+        \begin{equation}
+            \D = \ntreeruleI{Fn}{
+                \treeruleI{\D_1}{\typerelation{\G, x:A}{v}{B}}
+            }{\typerelation{\G}{\lam{x}{A}{v}}{\ab}}
+        \end{equation}
+        
+        By induction of $\D_1$ we have $\D_1'$ such that
+        \begin{equation}
+            \D' = \ntreeruleI{Fn}{
+                \treeruleI{\D_1'}{\typerelation{\G', x:A}{(v\ssi)}{B}}
+            }{\typerelation{\G}{(\lam{x}{A}{v})\ssi}{\ab}}
+        \end{equation}
+        By induction and the extension lemma, we have:
+        \begin{equation}
+            \D_1' = \D_1\after(\si\times\Id{A})
+        \end{equation}
+        
+        Hence:
+        
+        \begin{align*}
+            \D' &= \cur{\D_1'}\qt{By definition}\\
+                &= \cur{\D_1\after(\si\times\Id{A})}\qt{By induction and extension lemma.}\\
+                & = \cur{\D_1}\after\si\qt{By the exponential property (Uniqueness)}\\
+                &= \D\after\si\qt{By Definition}\\
+        \end{align*}
+        \case{Subtype}
+        By inversion, there exists derivation $\D_1$ such that:
+        
+        \begin{equation}
+            \D = \ntreeruleII{Subtype}{\treeruleI{\D_1}{\typerelation{\G}{v}{A}}}{ A\subtype B}{\typerelation{\G}{v}{B}}
+        \end{equation}
+        
+        By induction on $\D_1$, we find $\D_1'$ such that $\D_1' = \D_1\after\si$ and:
+        
+        \begin{equation}
+            \D' = \ntreeruleII{Subtype}{\treeruleI{\D_1'}{\typerelation{\G'}{v\ssi}{A}}}{ A\subtype B}{\typerelation{\G'}{v\ssi}{B}}
+        \end{equation}
+        
+        Hence,
+        
+        \begin{align*}
+            \D' &= \deno{A\subtype B}\after\D_1'\qt{By definition}\\
+                &= \deno{A\subtype B}\after\D_1\after\si\qt{By induction}\\
+                &= \D\after\si\qt{By definition}\\
+        \end{align*}
+        \subsection{Proof For Computation Terms}
+        \case{Return}
+        
+        By inversion, we have $\D_1$ such that:
+        \begin{equation}
+            \D = \ntreeruleI{Return}{\treeruleI{\D_1}{\typerelation{\G}{v}{A}}}{\typerelation{\G}{\return{v}}{\moa}}
+        \end{equation}
+        
+        By induction on $\D_1$, we find $\D_1'$ such that $\D_1' = \D_1\after\si$ and:
+        
+        \begin{equation}
+            \D' = \ntreeruleI{Return}{\treeruleI{\D_1'}{\typerelation{\G'}{v\ssi}{A}}}{\typerelation{\G'}{(\return{v})\ssi}{\moa}}
+        \end{equation}
+        
+        Hence,
+        
+        \begin{align*}
+            \D' & = \point{A}\after\D_1'\qt{By Definition}\\
+            & = \point{A}\after\D_1\after\si\qt{By induction}\\
+            & = \D\after\si\qt{By Definition}\\
+        \end{align*}
+        \case{Apply}
+        By inversion, we find $\D_1, \D_2$ such that
+        \begin{equation}
+            \D = \ntreeruleII{Apply}{\treeruleI{\D_1}{\typerelation{\G}{v_1}{\ab}}}{\treeruleI{\D_2}{\typerelation{\G}{v_2}{A}}}{\typerelation{\G}{\apply{v_1}{v_2}}{B}}
+        \end{equation}
+        
+        By induction we find $\D_1', \D_2'$ such that 
+        \begin{align*}
+            \D_1' &= \D_1\after\si\\
+            \D_2' &= \D_2\after\si\\
+        \end{align*}
+        
+        And
+        \begin{equation}
+            \D' = \ntreeruleII{Apply}{\treeruleI{\D_1'}{\typerelation{\G'}{v_1\ssi}{\ab}}}{\treeruleI{\D_2'}{\typerelation{\G'}{v_2\ssi}{A}}}{\typerelation{\G'}{(\apply{v_1}{v_2})\ssi}{B}}
+        \end{equation}
+        
+        Hence
+        \begin{align*}
+            \D' &= \app\after\pr{\D_1'}{\D_2'}\qt{By Definition}\\
+                &= \app\after\pr{\D_1\after\si}{\D_2\after\si}\qt{By induction}\\
+                &= \app\after\pr{\D_1}{\D_2}\after\si\qt{By Product Property}\\
+                & = \D\after\si\qt{By Definition}\\
+        \end{align*}
+        
+        \case{If}
+        
+        
+        By inversion, we find $\D_1, \D_2, \D_3$ such that
+        \begin{equation}
+            \D = \ntreeruleIII{If}{\treeruleI{\D_1}{\typerelation{\G}{v}{\B}}}{\treeruleI{\D_2}{\typerelation{\G}{v_1}{ A}}}{\treeruleI{\D_3}{\typerelation{\G}{v_2}{ A}}}{\typerelation{\G}{\pifthenelse{A}{v}{v_1}{v_2}}{ A}}
+        \end{equation}
+        
+        By induction we find $\D_1', \D_2', \D_3'$ such that 
+        \begin{align*}
+            \D_1' &= \D_1\after\si\\
+            \D_2' &= \D_2\after\si\\
+            \D_3' &= \D_3\after\si\\
+        \end{align*}
+        
+        And
+        \begin{equation}
+            \D' = \ntreeruleIII{If}{\treeruleI{\D_1'}{\typerelation{\G'}{v\ssi}{\B}}}{\treeruleI{\D_2'}{\typerelation{\G'}{v_1\ssi}{ A}}}{\treeruleI{\D_3'}{\typerelation{\G'}{v_2\ssi}{ A}}}{\typerelation{\G'}{(\pifthenelse{A}{v}{v_1}{v_2})\ssi}{ A}}
+        \end{equation}
+        
+        Since $\si: \G' \rightarrow \G$, \\
+        Let $(A)^{\si}: A^{\G}\rightarrow A^{\G'}$ be as defined in ExSh 3 (\footnote{https://www.cl.cam.ac.uk/teaching/1819/L108/exercises/L108-exercise-sheet-3.pdf})
+        That is:
+        
+        \begin{align*}
+            ( A)^{\si} & = \cur{\app\after(\Id{ A}\times w)}
+        \end{align*}.
+        And hence, we have:
+        
+        \begin{align*}
+            \cur{f\after(\Id{}\times \si)} & = ( A)^{\si} \after\cur{f}
+        \end{align*}
+        
+        And so:
+        
+        \scalebox{0.8}{\parbox{1.2\linewidth}{%
+        \begin{align*}
+            \D' & =\app\after((\fld{\cur{\D_2'\after\pp}}{\cur{\D_3'\after\pp}}\after\D_1')\times \Id{\G'})\after\diag{\G'}\qt{By Definition}\\
+            & =\app\after((\fld{\cur{\D_2\after\si\after\pp}}{\cur{\D_3\after\si\after\pp}}\after\D_1')\times \Id{\G'})\after\diag{\G'}\qt{By Induction}\\
+            & = \app\after((\fld{\cur{\D_2\after\pp\after(\Id{\1}\times \si)}}{\cur{\D_3\after\pp\after(\Id{\1}\times \si)}}\after\D_1\after\si)\times \Id{\G'})\after\diag{\G'}\qt{By product property}\\
+            & = \app\after((\fld{( A)^{\si}\after\cur{\D_2\after\pp}}{( A)^{\si}\after\cur{\D_3\after\pp}}\after\D_1\after\si)\times \Id{\G'})\after\diag{\G'}\qt{By $( A)^{\si}$ property}\\
+            & = \app\after((( A)^{\si}\after\fld{\cur{\D_2\after\pp}}{\cur{\D_3\after\pp}}\after\D_1\after\si)\times \Id{\G'})\after\diag{\G'}\qt{Factor out transformation}\\
+            & = \app\after(( A)^{\si}\times\Id{\G'})\after((\fld{\cur{\D_2\after\pp}}{\cur{\D_3\after\pp}}\after\D_1)\times \Id{\G'})\after(\si \times \Id{\G'})\after\diag{\G'}\qt{Factor out Identity pairs}\\
+            & = \app\after(\Id{( A)}\times\si)\after((\fld{\cur{\D_2\after\pp}}{\cur{\D_3\after\pp}}\after\D_1) \times \Id{\G'})\after(\si \times \Id{\G'})\after\diag{\G'}\qt{By defintion of $\app, ( A)^{\si}$}\\
+            & = \app\after((\fld{\cur{\D_2\after\pp}}{\cur{\D_3\after\pp}}\after\D_1)\times \idg)\after(\si \times \si)\after\diag{\G'}\qt{Push through pairs}\\
+            & = \app\after((\fld{\cur{\D_2\after\pp}}{\cur{\D_3\after\pp}}\after\D_1)\times \idg)\after\diag{\G}\after\si\qt{By Definition of the diagonal morphism.}\\
+            & = \D\after\si
+        \end{align*}
+        }}
+        
+        
+        \case{Bind}
+        
+        By inversion, we have $\D_1, \D_2$ such that:
+        
+        \begin{equation}
+            \D = \ntreeruleII{Bind}{
+                \treeruleI{\D_1}{\typerelation{\G}{v_1}{\M{\e_1}{A}}}
+                }{
+                \treeruleI{\D_2}{\typerelation{\G, x:A }{v_2}{\M{\e_2}{B}}}
+            }{
+                \typerelation{\G}{\doin{x}{v_1}{v_2}}{\M{\e_1\dot\e_2}{B}}
+            }
+        \end{equation}
+        
+        By property 3,
+        
+        \begin{equation}
+            \typerelation{(\G', x:A)}{(\si, x\setto x}{(\gax)}
+        \end{equation}
+        
+        With denotation (extension lemma)
+        
+        \begin{equation}
+            \deno{\typerelation{(\G', x:A)}{(\si, x\setto x}{(\gax)}} = \si\times\Id{A}
+        \end{equation}
+        
+        By induction, we derive $\D_1', \D_2'$ such that:
+        
+        \begin{align*}
+            \D_1' & = \D_1\after \si\\
+            \D_2' & = \D_2\after (\si\times\Id{A})\qt{By Extension Lemma}
+        \end{align*}
+        
+        And:
+        
+        \begin{equation}
+            \D' = \ntreeruleII{Bind}{
+                \treeruleI{\D_1'}{\typerelation{\G'}{v_1\ssi}{\M{\e_1}{A}}}
+                }{
+                \treeruleI{\D_2'}{\typerelation{\G', x:A }{v_1\ssi}{\M{\e_2}{B}}}
+            }{
+                \typerelation{\G'}{(\doin{x}{v_1}{v_2})\ssi}{\M{\e_1\dot\e_2}{B}}
+            }
+        \end{equation}
+        
+        Hence:
+        
+        \begin{align*}
+            \D' & = \bind{\e_1}{\e_2}{B}\after\T{\e_1}{\D_2'}\after\tstrength{\e_1}{\G'}{A}\after\pr{\Id{\G'}}{\D_1'}\qt{By Definition}\\
+            & = \bind{\e_1}{\e_2}{B}\after\T{\e_1}{(\D_2\after(\si\times\Id{A}))}\after\tstrength{\e_1}{\G'}{A}\after\pr{\Id{\G'}}{\D_1\after\si}\qt{By Induction using the extension lemma}\\
+            & = \bind{\e_1}{\e_2}{B}\after\T{\e_1}{(\D_2)}\after\tstrength{\e_1}{\G}{A}\after(\si\times\Id{\T{\e_1}{A}})\after\pr{\Id{\G'}}{\D_1\after\si}\qt{By Tensor Strength}\\
+            & = \bind{\e_1}{\e_2}{B}\after\T{\e_1}{(\D_2)}\after\tstrength{\e_1}{\G}{A}\after\pr{\si}{\D_1\after\si}\qt{By Product rule}\\
+            & = \bind{\e_1}{\e_2}{B}\after\T{\e_1}{(\D_2)}\after\tstrength{\e_1}{\G}{A}\after\pr{\idg}{\D_1}\after\si\qt{By Product rule}\\
+            &= \D\after\si\qt{By Defintion}\\
+        \end{align*}
+        
+        
+    \end{proof}
+\end{framed}
 
-By inversion, we have $\D_1$ such that
-\begin{equation}
-    \D = \ntreeruleI{Fn}{
-        \treeruleI{\D_1}{\typerelation{\G, x:A}{v}{B}}
-    }{\typerelation{\G}{\lam{x}{A}{v}}{\ab}}
-\end{equation}
-
-By induction of $\D_1$ we have $\D_1'$ such that
-\begin{equation}
-    \D' = \ntreeruleI{Fn}{
-        \treeruleI{\D_1'}{\typerelation{\G', x:A}{(v\ssi)}{B}}
-    }{\typerelation{\G}{(\lam{x}{A}{v})\ssi}{\ab}}
-\end{equation}
-By induction and the extension lemma, we have:
-\begin{equation}
-    \D_1' = \D_1\after(\si\times\Id{A})
-\end{equation}
-
-Hence:
-
-\begin{align*}
-    \D' &= \cur{\D_1'}\qt{By definition}\\
-        &= \cur{\D_1\after(\si\times\Id{A})}\qt{By induction and extension lemma.}\\
-        & = \cur{\D_1}\after\si\qt{By the exponential property (Uniqueness)}\\
-        &= \D\after\si\qt{By Definition}\\
-\end{align*}
-\case{Subtype}
-By inversion, there exists derivation $\D_1$ such that:
-
-\begin{equation}
-    \D = \ntreeruleII{Subtype}{\treeruleI{\D_1}{\typerelation{\G}{v}{A}}}{ A\subtype B}{\typerelation{\G}{v}{B}}
-\end{equation}
-
-By induction on $\D_1$, we find $\D_1'$ such that $\D_1' = \D_1\after\si$ and:
-
-\begin{equation}
-    \D' = \ntreeruleII{Subtype}{\treeruleI{\D_1'}{\typerelation{\G'}{v\ssi}{A}}}{ A\subtype B}{\typerelation{\G'}{v\ssi}{B}}
-\end{equation}
-
-Hence,
-
-\begin{align*}
-    \D' &= \deno{A\subtype B}\after\D_1'\qt{By definition}\\
-        &= \deno{A\subtype B}\after\D_1\after\si\qt{By induction}\\
-        &= \D\after\si\qt{By definition}\\
-\end{align*}
-\subsection{Proof For Computation Terms}
-\case{Return}
-
-By inversion, we have $\D_1$ such that:
-\begin{equation}
-    \D = \ntreeruleI{Return}{\treeruleI{\D_1}{\typerelation{\G}{v}{A}}}{\typerelation{\G}{\return{v}}{\moa}}
-\end{equation}
-
-By induction on $\D_1$, we find $\D_1'$ such that $\D_1' = \D_1\after\si$ and:
-
-\begin{equation}
-    \D' = \ntreeruleI{Return}{\treeruleI{\D_1'}{\typerelation{\G'}{v\ssi}{A}}}{\typerelation{\G'}{(\return{v})\ssi}{\moa}}
-\end{equation}
-
-Hence,
-
-\begin{align*}
-    \D' & = \point{A}\after\D_1'\qt{By Definition}\\
-    & = \point{A}\after\D_1\after\si\qt{By induction}\\
-    & = \D\after\si\qt{By Definition}\\
-\end{align*}
-\case{Apply}
-By inversion, we find $\D_1, \D_2$ such that
-\begin{equation}
-    \D = \ntreeruleII{Apply}{\treeruleI{\D_1}{\typerelation{\G}{v_1}{\ab}}}{\treeruleI{\D_2}{\typerelation{\G}{v_2}{A}}}{\typerelation{\G}{\apply{v_1}{v_2}}{B}}
-\end{equation}
-
-By induction we find $\D_1', \D_2'$ such that 
-\begin{align*}
-    \D_1' &= \D_1\after\si\\
-    \D_2' &= \D_2\after\si\\
-\end{align*}
-
-And
-\begin{equation}
-    \D' = \ntreeruleII{Apply}{\treeruleI{\D_1'}{\typerelation{\G'}{v_1\ssi}{\ab}}}{\treeruleI{\D_2'}{\typerelation{\G'}{v_2\ssi}{A}}}{\typerelation{\G'}{(\apply{v_1}{v_2})\ssi}{B}}
-\end{equation}
-
-Hence
-\begin{align*}
-    \D' &= \app\after\pr{\D_1'}{\D_2'}\qt{By Definition}\\
-        &= \app\after\pr{\D_1\after\si}{\D_2\after\si}\qt{By induction}\\
-        &= \app\after\pr{\D_1}{\D_2}\after\si\qt{By Product Property}\\
-        & = \D\after\si\qt{By Definition}\\
-\end{align*}
-
-\case{If}
-
-
-By inversion, we find $\D_1, \D_2, \D_3$ such that
-\begin{equation}
-    \D = \ntreeruleIII{If}{\treeruleI{\D_1}{\typerelation{\G}{v}{\B}}}{\treeruleI{\D_2}{\typerelation{\G}{v_1}{ A}}}{\treeruleI{\D_3}{\typerelation{\G}{v_2}{ A}}}{\typerelation{\G}{\pifthenelse{A}{v}{v_1}{v_2}}{ A}}
-\end{equation}
-
-By induction we find $\D_1', \D_2', \D_3'$ such that 
-\begin{align*}
-    \D_1' &= \D_1\after\si\\
-    \D_2' &= \D_2\after\si\\
-    \D_3' &= \D_3\after\si\\
-\end{align*}
-
-And
-\begin{equation}
-    \D' = \ntreeruleIII{If}{\treeruleI{\D_1'}{\typerelation{\G'}{v\ssi}{\B}}}{\treeruleI{\D_2'}{\typerelation{\G'}{v_1\ssi}{ A}}}{\treeruleI{\D_3'}{\typerelation{\G'}{v_2\ssi}{ A}}}{\typerelation{\G'}{(\pifthenelse{A}{v}{v_1}{v_2})\ssi}{ A}}
-\end{equation}
-
-Since $\si: \G' \rightarrow \G$, \\
-Let $(A)^{\si}: A^{\G}\rightarrow A^{\G'}$ be as defined in ExSh 3 (\footnote{https://www.cl.cam.ac.uk/teaching/1819/L108/exercises/L108-exercise-sheet-3.pdf})
-That is:
-
-\begin{align*}
-    ( A)^{\si} & = \cur{\app\after(\Id{ A}\times w)}
-\end{align*}.
-And hence, we have:
-
-\begin{align*}
-    \cur{f\after(\Id{}\times \si)} & = ( A)^{\si} \after\cur{f}
-\end{align*}
-
-And so:
-
-\scalebox{0.8}{\parbox{1.2\linewidth}{%
-\begin{align*}
-    \D' & =\app\after((\fld{\cur{\D_2'\after\pp}}{\cur{\D_3'\after\pp}}\after\D_1')\times \Id{\G'})\after\diag{\G'}\qt{By Definition}\\
-    & =\app\after((\fld{\cur{\D_2\after\si\after\pp}}{\cur{\D_3\after\si\after\pp}}\after\D_1')\times \Id{\G'})\after\diag{\G'}\qt{By Induction}\\
-    & = \app\after((\fld{\cur{\D_2\after\pp\after(\Id{\1}\times \si)}}{\cur{\D_3\after\pp\after(\Id{\1}\times \si)}}\after\D_1\after\si)\times \Id{\G'})\after\diag{\G'}\qt{By product property}\\
-    & = \app\after((\fld{( A)^{\si}\after\cur{\D_2\after\pp}}{( A)^{\si}\after\cur{\D_3\after\pp}}\after\D_1\after\si)\times \Id{\G'})\after\diag{\G'}\qt{By $( A)^{\si}$ property}\\
-    & = \app\after((( A)^{\si}\after\fld{\cur{\D_2\after\pp}}{\cur{\D_3\after\pp}}\after\D_1\after\si)\times \Id{\G'})\after\diag{\G'}\qt{Factor out transformation}\\
-    & = \app\after(( A)^{\si}\times\Id{\G'})\after((\fld{\cur{\D_2\after\pp}}{\cur{\D_3\after\pp}}\after\D_1)\times \Id{\G'})\after(\si \times \Id{\G'})\after\diag{\G'}\qt{Factor out Identity pairs}\\
-    & = \app\after(\Id{( A)}\times\si)\after((\fld{\cur{\D_2\after\pp}}{\cur{\D_3\after\pp}}\after\D_1) \times \Id{\G'})\after(\si \times \Id{\G'})\after\diag{\G'}\qt{By defintion of $\app, ( A)^{\si}$}\\
-    & = \app\after((\fld{\cur{\D_2\after\pp}}{\cur{\D_3\after\pp}}\after\D_1)\times \idg)\after(\si \times \si)\after\diag{\G'}\qt{Push through pairs}\\
-    & = \app\after((\fld{\cur{\D_2\after\pp}}{\cur{\D_3\after\pp}}\after\D_1)\times \idg)\after\diag{\G}\after\si\qt{By Definition of the diagonal morphism.}\\
-    & = \D\after\si
-\end{align*}
-}}
-
-
-\case{Bind}
-
-By inversion, we have $\D_1, \D_2$ such that:
-
-\begin{equation}
-    \D = \ntreeruleII{Bind}{
-        \treeruleI{\D_1}{\typerelation{\G}{v_1}{\M{\e_1}{A}}}
-        }{
-        \treeruleI{\D_2}{\typerelation{\G, x:A }{v_2}{\M{\e_2}{B}}}
-    }{
-        \typerelation{\G}{\doin{x}{v_1}{v_2}}{\M{\e_1\dot\e_2}{B}}
-    }
-\end{equation}
-
-By property 3,
-
-\begin{equation}
-    \typerelation{(\G', x:A)}{(\si, x\setto x}{(\gax)}
-\end{equation}
-
-With denotation (extension lemma)
-
-\begin{equation}
-    \deno{\typerelation{(\G', x:A)}{(\si, x\setto x}{(\gax)}} = \si\times\Id{A}
-\end{equation}
-
-By induction, we derive $\D_1', \D_2'$ such that:
-
-\begin{align*}
-    \D_1' & = \D_1\after \si\\
-    \D_2' & = \D_2\after (\si\times\Id{A})\qt{By Extension Lemma}
-\end{align*}
-
-And:
-
-\begin{equation}
-    \D' = \ntreeruleII{Bind}{
-        \treeruleI{\D_1'}{\typerelation{\G'}{v_1\ssi}{\M{\e_1}{A}}}
-        }{
-        \treeruleI{\D_2'}{\typerelation{\G', x:A }{v_1\ssi}{\M{\e_2}{B}}}
-    }{
-        \typerelation{\G'}{(\doin{x}{v_1}{v_2})\ssi}{\M{\e_1\dot\e_2}{B}}
-    }
-\end{equation}
-
-Hence:
-
-\begin{align*}
-    \D' & = \bind{\e_1}{\e_2}{B}\after\T{\e_1}{\D_2'}\after\tstrength{\e_1}{\G'}{A}\after\pr{\Id{\G'}}{\D_1'}\qt{By Definition}\\
-    & = \bind{\e_1}{\e_2}{B}\after\T{\e_1}{(\D_2\after(\si\times\Id{A}))}\after\tstrength{\e_1}{\G'}{A}\after\pr{\Id{\G'}}{\D_1\after\si}\qt{By Induction using the extension lemma}\\
-    & = \bind{\e_1}{\e_2}{B}\after\T{\e_1}{(\D_2)}\after\tstrength{\e_1}{\G}{A}\after(\si\times\Id{\T{\e_1}{A}})\after\pr{\Id{\G'}}{\D_1\after\si}\qt{By Tensor Strength}\\
-    & = \bind{\e_1}{\e_2}{B}\after\T{\e_1}{(\D_2)}\after\tstrength{\e_1}{\G}{A}\after\pr{\si}{\D_1\after\si}\qt{By Product rule}\\
-    & = \bind{\e_1}{\e_2}{B}\after\T{\e_1}{(\D_2)}\after\tstrength{\e_1}{\G}{A}\after\pr{\idg}{\D_1}\after\si\qt{By Product rule}\\
-    &= \D\after\si\qt{By Defintion}\\
-\end{align*}
 
 \section{The Identity Substitution}
 For each type environment $\G$, define the identity substitution $I_{\G}$ as so:
@@ -1833,11 +1928,18 @@ For each type environment $\G$, define the identity substitution $I_{\G}$ as so:
 \end{itemize}
 
 \subsection{Properties of the Identity Substitution}
-\paragraph{Property 1}
-If $\ok{\G}$ then $\typerelation{\G}{I_{\G}}{\G}$, proved trivially by induction over the well formed-ness relation.
 
-\paragraph{Property 2}
-$\deno{\typerelation{\G}{I_{\G}}{\G}} = \idg$, proved trivially by induction over the definition of $I_{\G}$
+
+\begin{property}[Wellformedness]\label{IdPropOne}
+    If $\ok{\G}$ then $\typerelation{\G}{I_{\G}}{\G}$, proved trivially by induction over the well formed-ness relation.
+\end{property}
+
+
+
+\begin{property}[Denotation]\label{IdPropTwo}
+    $\deno{\typerelation{\G}{I_{\G}}{\G}} = \idg$, proved trivially by induction over the definition of $I_{\G}$
+\end{property}
+
 \section{Single Substitution}
 
 If $\typerelation{\G}{v}{A}$, let the single substitution $\typerelation{\G}{\ssub{x}{v}}{\gax}$, be defined as:
@@ -1845,11 +1947,12 @@ If $\typerelation{\G}{v}{A}$, let the single substitution $\typerelation{\G}{\ss
     \ssub{x}{v} = (I_{\G}, x\setto v)
 \end{equation}
 
-Then by properties 1, 2 of the identity substitution, we have:
+Then by properties \ref{IdPropOne}, \ref{IdPropTwo} of the identity substitution, we have:
 
 \begin{equation}
     \deno{\gtyperelation{\ssub{x}{v}}{\gax}} = \pr{\idg}{\deno{\gtyperelation{v}{A}}}: \G\rightarrow(\G\times A)
 \end{equation}
+
 \subsection{The Semantics of Single Substitution}
 
 The following diagram commutes:
@@ -1934,750 +2037,771 @@ And $v_1\ssub{x}{v} = v_1\sub{I_{\G}, x\setto{v}}$
     \item $\ntreeruleII{Subtype}{\gberelation{v}{v'}{\M{\e_1}{A}}}{\subeffecttree{\e_1}{A}{\e_2}{B}}{\gberelation{v}{v'}{\M{\e_2}{B}}}$
 \end{itemize}
 \section{Beta-Eta Equivalence Implies Both Sides Have the Same Type}
-Each derivation of $\gberelation{v}{v'}{A}$ can be converted to a derivation of $\gtyperelation{v}{A}$ and $\gtyperelation{v'}{A}$ by induction over the beta-eta equivalence relation derivation.
 
-\subsection{Equivalence Relations}
-\case{Reflexive}
-By inversion we have a derivation of $\gtyperelation{v}{A}$.
-
-\case{Symmetric}
-By inversion $\gberelation{v'}{v}{A}$. Hence by induction, derivations of $\gtyperelation{v'}{A}$ and $\gtyperelation{v}{A}$ are given.
-
-\case{Transitive}
-By inversion, there exists $v_2$ such that $\gberelation{v_1}{v_2}{A}$ and $\gberelation{v_2}{v_3}{A}$.
-Hence by induction, we have derivations of $\gtyperelation{v_1}{A}$ and $\gtyperelation{v_3}{A}$
-
-\subsection{Beta-Eta Conversions}
-
-\case{Lambda}
-    By inversion, we have $\typerelation{\gax}{v}{B}$ and $\gtyperelation{v}{A}$. Hence by the typing rules, we have:
-    $$\ntreeruleII{Apply}{
-        \ntreeruleI{Lambda}{\typerelation{\gax }{v_1}{B}}{\gtyperelation{\lam{x}{A}{v_1}}{\ab}}
-    }{
-        \gtyperelation{v_2}{A}
-    }{\gtyperelation{\apply{(\lam{x}{A}{v_1})}{v_2}}{B}}$$
-
-    By the substitution rule \todo{which?}, we have 
-    $$\ntreeruleII{Substitution}{\typerelation{\gax}{v_1}{B}}{\gtyperelation{v_2}{A}}{\gtyperelation{v_1\ssub{x}{v_2}}{B}}$$
+\begin{theorem}[Beta-Eta Equivalence Implies Both Sides Have the Same Type]
+    Each derivation of $\gberelation{v}{v'}{A}$ can be converted to a derivation of $\gtyperelation{v}{A}$ and $\gtyperelation{v'}{A}$ by induction over the beta-eta equivalence relation derivation.    
+\end{theorem}
 
 
 
-    \case{Left Unit}
-    By inversion, we have $\gtyperelation{v_1}{A}$ and $\typerelation{\gax }{v_2}{B}$
-
-    Hence we have:
-
-
-    \begin{equation}
-        \ntreeruleII{Bind}{\ntreeruleI{Return}{\gtyperelation{v_1}{A}}{\gtyperelation{\return{v_1}}{\moa}}}{\typerelation{\gax}{v_2}{\meb}}{\gtyperelation{\doin{x}{\return{v_1}}{v_2}}{\M{\1\dot\e}{B} = \meb}}
-    \end{equation}
-
-    And by the substitution typing rule we have: \todo{Which Rule?}
-
-    \begin{equation}
-        \gtyperelation{v_2\ssub{x}{v_1}}{\meb}
-    \end{equation}
-    \case{Right Unit}
-    By inversion, we have $\gtyperelation{v}{\mea}$.
-
-    Hence we have:
-
-    \begin{equation}
-        \ntreeruleII{Bind}{
-            \gtyperelation{v}{\mea}
-        }{
-            \ntreeruleI{Return}{\ntreeruleI{var}{\ok{\G}}{\typerelation{\gax}{x}{A}}}{\typerelation{\gax}{\return{v}}{\moa}}
-        }{\gtyperelation{\doin{x}{v}{\return{x}}}{\M{\e\dot\1}{A} = \mea}}
-    \end{equation}
-    \case{Associativity}
-    By inversion, we have $\gtyperelation{v_1}{\M{\e_1}{A}}$, $\typerelation{\gax}{v_2}{\M{\e_2}{B}}$, and $\typerelation{\gby}{v_3}{\M{\e_3}{C}}$.
-
-   
-    
-    $$\wrel{(\i\pi\times)}{(\gax, y: B)}{(\gby)}$$
-
-    So by the weakening property \todo{which?}, $\typerelation{\gax, y: B}{v_3}{\M{\e_3}{C}}$
-
-    Hence we can construct the type derivations:
-    \begin{equation} 
-        \ntreeruleII{Bind}{
-            \gtyperelation{v_1}{\M{\e_1}{A}}
-        }{
-            \ntreeruleII{Bind}{
-                \typerelation{\gax}{v_2}{\M{\e_2}{B}}
+\begin{framed}
+    \begin{proof}
+        
+        \subsection{Equivalence Relations}
+        \case{Reflexive}
+        By inversion we have a derivation of $\gtyperelation{v}{A}$.
+        
+        \case{Symmetric}
+        By inversion $\gberelation{v'}{v}{A}$. Hence by induction, derivations of $\gtyperelation{v'}{A}$ and $\gtyperelation{v}{A}$ are given.
+        
+        \case{Transitive}
+        By inversion, there exists $v_2$ such that $\gberelation{v_1}{v_2}{A}$ and $\gberelation{v_2}{v_3}{A}$.
+        Hence by induction, we have derivations of $\gtyperelation{v_1}{A}$ and $\gtyperelation{v_3}{A}$
+        
+        \subsection{Beta-Eta Conversions}
+        
+        \case{Lambda}
+            By inversion, we have $\typerelation{\gax}{v}{B}$ and $\gtyperelation{v}{A}$. Hence by the typing rules, we have:
+            $$\ntreeruleII{Apply}{
+                \ntreeruleI{Lambda}{\typerelation{\gax }{v_1}{B}}{\gtyperelation{\lam{x}{A}{v_1}}{\ab}}
             }{
-                \typerelation{\gax, y: B}{v_3}{\M{\e_3}{C}}
-            }{
-                \typerelation{\gax}{\do{x}{v_2}{v_3}}{\M{\e_2 \dot \e_3}{C}}
-            }
-        }{
-            \gtyperelation{
-                \doin{x}{v_1}{
-                    (\doin{y}{v_2}{v_3})
-                }
-            }{
-                \M{\e_1\dot\e_2\dot\e_3}{C}
-            }
-        }
-    \end{equation}
-
-    and 
-
-    \begin{equation}
-        \ntreeruleII{Bind}{
-            \ntreeruleII{Bind}{
-                \gtyperelation{v_1}{\M{\e_1}{A}}
-            }{
-                \typerelation{\gax}{v_2}{\M{\e_2}{B}}
-            } {
-                \gtyperelation{\doin{x}{v_1}{v_2}}{\M{\e_1\dot\e_2}{B}}
-            }
-        }{
-            \typerelation{\gby}{v_3}{\M{\e_3}{C}}
-        }{
-            \gtyperelation{\doin{y}{(\doin{x}{v_1}{v_2})}{v_3}}{\M{\e_1\dot\e_2\dot\e_3}{C}}
-        }
-    \end{equation}
-
-    \case{Eta}
-    By inversion, we have $\gtyperelation{v}{\ab}$
-
-    By weakening, we have $\wrel{\i\pi}{(\gax)}{\G}$
-    Hence, we have
-
-    \begin{equation}
-        \ntreeruleI{Fn}{
-            \ntreeruleII{App}{
-                \typerelation{(\gax)}{x}{A}
-            }{
-                \ntreeruleII{weakening}{
-                    \gtyperelation{v}{\ab}
+                \gtyperelation{v_2}{A}
+            }{\gtyperelation{\apply{(\lam{x}{A}{v_1})}{v_2}}{B}}$$
+        
+            By the substitution rule \todo{which?}, we have 
+            $$\ntreeruleII{Substitution}{\typerelation{\gax}{v_1}{B}}{\gtyperelation{v_2}{A}}{\gtyperelation{v_1\ssub{x}{v_2}}{B}}$$
+        
+        
+        
+            \case{Left Unit}
+            By inversion, we have $\gtyperelation{v_1}{A}$ and $\typerelation{\gax }{v_2}{B}$
+        
+            Hence we have:
+        
+        
+            \begin{equation}
+                \ntreeruleII{Bind}{\ntreeruleI{Return}{\gtyperelation{v_1}{A}}{\gtyperelation{\return{v_1}}{\moa}}}{\typerelation{\gax}{v_2}{\meb}}{\gtyperelation{\doin{x}{\return{v_1}}{v_2}}{\M{\1\dot\e}{B} = \meb}}
+            \end{equation}
+        
+            And by the substitution typing rule we have: \todo{Which Rule?}
+        
+            \begin{equation}
+                \gtyperelation{v_2\ssub{x}{v_1}}{\meb}
+            \end{equation}
+            \case{Right Unit}
+            By inversion, we have $\gtyperelation{v}{\mea}$.
+        
+            Hence we have:
+        
+            \begin{equation}
+                \ntreeruleII{Bind}{
+                    \gtyperelation{v}{\mea}
                 }{
-                    \wrel{\i\pi}{\gax}{\G}
+                    \ntreeruleI{Return}{\ntreeruleI{var}{\ok{\G}}{\typerelation{\gax}{x}{A}}}{\typerelation{\gax}{\return{v}}{\moa}}
+                }{\gtyperelation{\doin{x}{v}{\return{x}}}{\M{\e\dot\1}{A} = \mea}}
+            \end{equation}
+            \case{Associativity}
+            By inversion, we have $\gtyperelation{v_1}{\M{\e_1}{A}}$, $\typerelation{\gax}{v_2}{\M{\e_2}{B}}$, and $\typerelation{\gby}{v_3}{\M{\e_3}{C}}$.
+        
+           
+            
+            $$\wrel{(\i\pi\times)}{(\gax, y: B)}{(\gby)}$$
+        
+            So by the weakening property \todo{which?}, $\typerelation{\gax, y: B}{v_3}{\M{\e_3}{C}}$
+        
+            Hence we can construct the type derivations:
+            \begin{equation} 
+                \ntreeruleII{Bind}{
+                    \gtyperelation{v_1}{\M{\e_1}{A}}
                 }{
-                    \typerelation{\gax}{v}{\ab}
+                    \ntreeruleII{Bind}{
+                        \typerelation{\gax}{v_2}{\M{\e_2}{B}}
+                    }{
+                        \typerelation{\gax, y: B}{v_3}{\M{\e_3}{C}}
+                    }{
+                        \typerelation{\gax}{\do{x}{v_2}{v_3}}{\M{\e_2 \dot \e_3}{C}}
+                    }
+                }{
+                    \gtyperelation{
+                        \doin{x}{v_1}{
+                            (\doin{y}{v_2}{v_3})
+                        }
+                    }{
+                        \M{\e_1\dot\e_2\dot\e_3}{C}
+                    }
                 }
-            } {
-                \typerelation{\gax}{\apply{v}{x}}{B}
-            }
-        }{\gtyperelation{\lam{x}{A}{(\apply{v}{x})}}{\ab}}
-    \end{equation}
-
-    \case{If-True}
-        By inversion, we have $\gtyperelation{v_1}{ A}$, $\gtyperelation{v_2}{ A}$. Hence by the typing lemma \todo{Which?}, we have $\ok{\G}$ so $\gtyperelation{\t}{\B}$ by the axiom typing rule.
-
-        Hence 
-        \begin{equation}
+            \end{equation}
+        
+            and 
+        
+            \begin{equation}
+                \ntreeruleII{Bind}{
+                    \ntreeruleII{Bind}{
+                        \gtyperelation{v_1}{\M{\e_1}{A}}
+                    }{
+                        \typerelation{\gax}{v_2}{\M{\e_2}{B}}
+                    } {
+                        \gtyperelation{\doin{x}{v_1}{v_2}}{\M{\e_1\dot\e_2}{B}}
+                    }
+                }{
+                    \typerelation{\gby}{v_3}{\M{\e_3}{C}}
+                }{
+                    \gtyperelation{\doin{y}{(\doin{x}{v_1}{v_2})}{v_3}}{\M{\e_1\dot\e_2\dot\e_3}{C}}
+                }
+            \end{equation}
+        
+            \case{Eta}
+            By inversion, we have $\gtyperelation{v}{\ab}$
+        
+            By weakening, we have $\wrel{\i\pi}{(\gax)}{\G}$
+            Hence, we have
+        
+            \begin{equation}
+                \ntreeruleI{Fn}{
+                    \ntreeruleII{App}{
+                        \typerelation{(\gax)}{x}{A}
+                    }{
+                        \ntreeruleII{weakening}{
+                            \gtyperelation{v}{\ab}
+                        }{
+                            \wrel{\i\pi}{\gax}{\G}
+                        }{
+                            \typerelation{\gax}{v}{\ab}
+                        }
+                    } {
+                        \typerelation{\gax}{\apply{v}{x}}{B}
+                    }
+                }{\gtyperelation{\lam{x}{A}{(\apply{v}{x})}}{\ab}}
+            \end{equation}
+        
+            \case{If-True}
+                By inversion, we have $\gtyperelation{v_1}{ A}$, $\gtyperelation{v_2}{ A}$. Hence by the typing lemma \todo{Which?}, we have $\ok{\G}$ so $\gtyperelation{\t}{\B}$ by the axiom typing rule.
+        
+                Hence 
+                \begin{equation}
+                        \ntreeruleIII{If}{
+                            \gtyperelation{\t}{\B}
+                        }{
+                            \gtyperelation{v_1}{ A}
+                        }{
+                            \gtyperelation{v_2}{ A}
+                        }{
+                            \gtyperelation{\pifthenelse{A}{\t}{v_1}{v_2}}{ A}
+                        }
+                \end{equation}
+            \case{If-False}
+            As above,
+        
+            Hence 
+            \begin{equation}
                 \ntreeruleIII{If}{
-                    \gtyperelation{\t}{\B}
+                    \gtyperelation{\f}{\B}
                 }{
                     \gtyperelation{v_1}{ A}
                 }{
                     \gtyperelation{v_2}{ A}
                 }{
-                    \gtyperelation{\pifthenelse{A}{\t}{v_1}{v_2}}{ A}
+                    \gtyperelation{\pifthenelse{A}{\f}{v_1}{v_2}}{ A}
                 }
         \end{equation}
-    \case{If-False}
-    As above,
+        
+        \case{If-Eta}
+            By inversion, we have:
+            \begin{equation}
+                \gtyperelation{v_2}{\B}
+            \end{equation}
+            and
+            \begin{equation}
+                \typerelation{\G, x:\B}{v_1}{ A}
+            \end{equation}
+            
+            Hence we also have $\ok{\G}$. Hence, the following also hold:
+        
+            $\gtyperelation{\t}{\B}$, and $\gtyperelation{\f}{\B}$.
+        
+            Hence by the substitution theorem, we have:
+        
+            \begin{equation}
+                \ntreeruleIII{If}{
+                    \gtyperelation{v_2}{\B}
+                }{
+                    \gtyperelation{v_1\ssub{x}{\t}}{ A}
+                }{
+                    \gtyperelation{v_1\ssub{x}{\f}}{ A}
+                }{\gtyperelation{\pifthenelse{A}{v_2}{v_1\ssub{x}{\t}}{v_1\ssub{x}{\f}}}{ A}
+                }
+            \end{equation}
+        
+            and 
+            \begin{equation}
+                \gtyperelation{v_1\ssub{x}{v_2}}{ A}
+            \end{equation}
+        
+            
+        
+            \subsection{Congruences}
+        Each congruence rule corresponds exactly to a type derivation rule. To convert to a type derivation, convert all preconditions, then use the equivalent type derivation rule.
+        
+        \case{Lambda}
+            By inversion, $\berelation{\gax}{v_1}{v_2}{B}$. Hence by induction $\typerelation{\gax}{v_1}{B}$, and $\typerelation{\gax}{v_2}{B}$.
+        
+            So 
+            \begin{equation}
+                \gtyperelation{\lam{x}{A}{v_1}}{\ab}
+            \end{equation}
+        
+            and
+            \begin{equation}
+                \gtyperelation{\lam{x}{A}{v_2}}{\ab}
+            \end{equation}
+        
+            Hold.
+        \case{Return}
+            By inversion, $\gberelation{v_1}{v_2}{A}$, so by induction $$\gtyperelation{v_1}{A}$$ and $$\gtyperelation{v_2}{A}$$
+        
+            Hence we have $$\gtyperelation{\return{v_1}}{\moa}$$
+            and
+            $$\gtyperelation{\return{v_2}}{\moa}$$
+        \case{Apply}
+        
+            By inversion, we have $\gberelation{v_1}{v_1'}{\ab}$ and $\gberelation{v_2}{v_2'}{A}$. Hence we have by induction $\gtyperelation{v_1}{\ab}$, $\gtyperelation{v_2}{A}$, $\gtyperelation{v_1'}{\ab}$, and $\gtyperelation{v_2'}{A}$.
+        
+            So we have:
+        
+            \begin{equation}
+                \gtyperelation{\apply{v_1}{v_2}}{B}
+            \end{equation}
+        
+            and
+        
+            
+            \begin{equation}
+                \gtyperelation{\apply{v_1'}{v_2'}}{B}
+            \end{equation}
+        
+        \case{Bind}
+            By inversion, we have:
+            $\gberelation{v_1}{v_1'}{\M{\e_1}{A}}$ and
+            $\berelation{\gax}{v_2}{v_2'}{\M{\e_2}{B}}$.
+            Hence by induction, we have 
+            $\gtyperelation{v_1}{\M{\e_1}{A}}$,
+            $\gtyperelation{v_1'}{\M{\e_1}{A}}$,
+            $\typerelation{\gax}{v_2}{\M{\e_2}{B}}$, and 
+            $\typerelation{\gax}{v_2'}{\M{\e_2}{B}}$
+        
+            Hence we have 
+            \begin{equation}
+                \gtyperelation{\doin{x}{v_1}{v_2}}{\M{\e_1\dot\e_2}{A}}
+            \end{equation}
+        
+            
+            \begin{equation}
+                \gtyperelation{\doin{x}{v_1'}{v_2'}}{\M{\e_1\dot\e_2}{A}}
+            \end{equation}
+        \case{If}
+        By inversion, we have:
+        $\gberelation{v}{v'}{\B}$,
+        $\gberelation{v_1}{v_1'}{ A}$, and
+        $\gberelation{v_2}{v_2'}{ A}$.
+        
+        Hence by induction, we have:
+        
+        $\gtyperelation{v}{\B}$,
+        $\gtyperelation{v'}{\B}$,
+        
+        $\gtyperelation{v_1}{ A}$,
+        $\gtyperelation{v_1'}{ A}$,
+        
+        
+        $\gtyperelation{v_2}{ A}$, and
+        $\gtyperelation{v_2'}{ A}$.
+        
+        So 
+        \begin{equation}
+            \gtyperelation{\pifthenelse{A}{v}{v_1}{v_2}}{ A}
+        \end{equation}
+        and
+        \begin{equation}
+            \gtyperelation{\pifthenelse{A}{v}{v_1'}{v_2'}}{ A}
+        \end{equation}
+        Hold.
+        \case{Subtype}
+        
+        By inversion, we have $A \subtype B$ and $\gberelation{v}{v'}{A}$. By induction, we therefore have $\gtyperelation{v}{A}$ and $\gtyperelation{v'}{A}$.
+        
+        Hence we have 
+        \begin{equation}
+            \gtyperelation{v}{B}
+        \end{equation}
+        
+        
+        \begin{equation}
+            \gtyperelation{v'}{B}
+        \end{equation}
+        
+    \end{proof}
+\end{framed}
 
-    Hence 
-    \begin{equation}
-        \ntreeruleIII{If}{
-            \gtyperelation{\f}{\B}
-        }{
-            \gtyperelation{v_1}{ A}
-        }{
-            \gtyperelation{v_2}{ A}
-        }{
-            \gtyperelation{\pifthenelse{A}{\f}{v_1}{v_2}}{ A}
-        }
-\end{equation}
-
-\case{If-Eta}
-    By inversion, we have:
-    \begin{equation}
-        \gtyperelation{v_2}{\B}
-    \end{equation}
-    and
-    \begin{equation}
-        \typerelation{\G, x:\B}{v_1}{ A}
-    \end{equation}
-    
-    Hence we also have $\ok{\G}$. Hence, the following also hold:
-
-    $\gtyperelation{\t}{\B}$, and $\gtyperelation{\f}{\B}$.
-
-    Hence by the substitution theorem, we have:
-
-    \begin{equation}
-        \ntreeruleIII{If}{
-            \gtyperelation{v_2}{\B}
-        }{
-            \gtyperelation{v_1\ssub{x}{\t}}{ A}
-        }{
-            \gtyperelation{v_1\ssub{x}{\f}}{ A}
-        }{\gtyperelation{\pifthenelse{A}{v_2}{v_1\ssub{x}{\t}}{v_1\ssub{x}{\f}}}{ A}
-        }
-    \end{equation}
-
-    and 
-    \begin{equation}
-        \gtyperelation{v_1\ssub{x}{v_2}}{ A}
-    \end{equation}
-
-    
-
-    \subsection{Congruences}
-Each congruence rule corresponds exactly to a type derivation rule. To convert to a type derivation, convert all preconditions, then use the equivalent type derivation rule.
-
-\case{Lambda}
-    By inversion, $\berelation{\gax}{v_1}{v_2}{B}$. Hence by induction $\typerelation{\gax}{v_1}{B}$, and $\typerelation{\gax}{v_2}{B}$.
-
-    So 
-    \begin{equation}
-        \gtyperelation{\lam{x}{A}{v_1}}{\ab}
-    \end{equation}
-
-    and
-    \begin{equation}
-        \gtyperelation{\lam{x}{A}{v_2}}{\ab}
-    \end{equation}
-
-    Hold.
-\case{Return}
-    By inversion, $\gberelation{v_1}{v_2}{A}$, so by induction $$\gtyperelation{v_1}{A}$$ and $$\gtyperelation{v_2}{A}$$
-
-    Hence we have $$\gtyperelation{\return{v_1}}{\moa}$$
-    and
-    $$\gtyperelation{\return{v_2}}{\moa}$$
-\case{Apply}
-
-    By inversion, we have $\gberelation{v_1}{v_1'}{\ab}$ and $\gberelation{v_2}{v_2'}{A}$. Hence we have by induction $\gtyperelation{v_1}{\ab}$, $\gtyperelation{v_2}{A}$, $\gtyperelation{v_1'}{\ab}$, and $\gtyperelation{v_2'}{A}$.
-
-    So we have:
-
-    \begin{equation}
-        \gtyperelation{\apply{v_1}{v_2}}{B}
-    \end{equation}
-
-    and
-
-    
-    \begin{equation}
-        \gtyperelation{\apply{v_1'}{v_2'}}{B}
-    \end{equation}
-
-\case{Bind}
-    By inversion, we have:
-    $\gberelation{v_1}{v_1'}{\M{\e_1}{A}}$ and
-    $\berelation{\gax}{v_2}{v_2'}{\M{\e_2}{B}}$.
-    Hence by induction, we have 
-    $\gtyperelation{v_1}{\M{\e_1}{A}}$,
-    $\gtyperelation{v_1'}{\M{\e_1}{A}}$,
-    $\typerelation{\gax}{v_2}{\M{\e_2}{B}}$, and 
-    $\typerelation{\gax}{v_2'}{\M{\e_2}{B}}$
-
-    Hence we have 
-    \begin{equation}
-        \gtyperelation{\doin{x}{v_1}{v_2}}{\M{\e_1\dot\e_2}{A}}
-    \end{equation}
-
-    
-    \begin{equation}
-        \gtyperelation{\doin{x}{v_1'}{v_2'}}{\M{\e_1\dot\e_2}{A}}
-    \end{equation}
-\case{If}
-By inversion, we have:
-$\gberelation{v}{v'}{\B}$,
-$\gberelation{v_1}{v_1'}{ A}$, and
-$\gberelation{v_2}{v_2'}{ A}$.
-
-Hence by induction, we have:
-
-$\gtyperelation{v}{\B}$,
-$\gtyperelation{v'}{\B}$,
-
-$\gtyperelation{v_1}{ A}$,
-$\gtyperelation{v_1'}{ A}$,
-
-
-$\gtyperelation{v_2}{ A}$, and
-$\gtyperelation{v_2'}{ A}$.
-
-So 
-\begin{equation}
-    \gtyperelation{\pifthenelse{A}{v}{v_1}{v_2}}{ A}
-\end{equation}
-and
-\begin{equation}
-    \gtyperelation{\pifthenelse{A}{v}{v_1'}{v_2'}}{ A}
-\end{equation}
-Hold.
-\case{Subtype}
-
-By inversion, we have $A \subtype B$ and $\gberelation{v}{v'}{A}$. By induction, we therefore have $\gtyperelation{v}{A}$ and $\gtyperelation{v'}{A}$.
-
-Hence we have 
-\begin{equation}
-    \gtyperelation{v}{B}
-\end{equation}
-
-
-\begin{equation}
-    \gtyperelation{v'}{B}
-\end{equation}
 
 \section{Beta-Eta equivalent terms have equal denotations}
-If $\gberelation{v}{v'}{A}$ then $\gdenoequality{v}{v'}{A}$
 
-By induction over Beta-eta equivalence relation.
-\subsection{Equivalence Relation}
-The cases over the equivalence relation laws hold by the uniqueness of denotations and the fact that equality over morphisms is an equivalence relation.
-\case{Reflexive}
-Equality is reflexive, so if $\gtyperelation{v}{A}$ then $\deno{\gtyperelation{v}{A}}$ is equal to itself.
-\case{Symmetric}
-By inversion, if $\gberelation{v}{v'}{A}$ then $\gberelation{v'}{v}{A}$, so by induction $\gdenoequality{v'}{v}{A}$ and hence $\gdenoequality{v}{v'}{A}$
-\case{Transitive}
-There must exist $v_2$ such that $\gberelation{v_1}{v_2}{A}$ and $\gberelation{v_2}{v_3}{A}$, so by induction,
-$\gdenoequality{v_1}{v_2}{A}$ and $\gdenoequality{v_2}{v_3}{A}$. Hence by transitivity of equality, $\gdenoequality{v_1}{v_3}{A}$
-
-\subsection{Beta-Eta Conversions}
-These cases are typically proved using the properties of a cartesian closed category with a strong graded monad.
-
-\case{Lambda}
-    Let $f = \deno{\typerelation{\gax}{v_1}{B}}: (\G \times A) \rightarrow B$
-
-    Let $g = \deno{\gtyperelation{v_2}{A}}: \G \rightarrow A$
-
-    By the substitution denotation, $$\deno{\typerelation{\G}{\ssub{x}{v_2}}{\gax}}: \G \rightarrow (\G \times A) = \pr{\idg}{g}$$
-
-    We have $$\deno{\gtyperelation{v_1\ssub{x}{v_2}}{B}} = f \after \pr{\idg}{g}$$
-
-    and hence
-    \begin{equation}
-        \begin{split}
-            \deno{\gtyperelation{\apply{(\lam{x}{A}{v_1})}{v_2}}{B}} & = \app\after\pr{\cur{f}}{g} \\
-            & = \app\after(\cur{f}\times\Id{A})\after\pr{\idg}{g}\\
-            & = f \after \pr{\idg}{g} \\
-            & = \deno{\gtyperelation{v_1\ssub{x}{v_2}}{B}}  
-        \end{split}
-    \end{equation}
-   
-
-\case{Left Unit}
-Let $f = \deno{\typerelation{\gax}{v_2}{\meb}}$
-
-Let $g = \deno{\gtyperelation{v_1}{A}}: \G \rightarrow A$
-
-By the substitution denotation, $$\deno{\typerelation{\G}{\ssub{x}{v_1}}{\gax}}: \G \rightarrow (\G \times A) = \pr{\idg}{g}$$
-
-We have $$\deno{\gtyperelation{v_2\ssub{x}{v_1}}{\meb}} = f \after \pr{\idg}{g}$$
-
-And hence
-
-\begin{equation}
-    \begin{split}
-        \deno{\gtyperelation{\doin{x}{\return{v_1}}{v_2}}{\meb}} = &  \bind{\1}{\e}{B} \after \T{\1}{f} \after \tstrength{1}{\G}{A} \after \pr{\idg}{\point{A}\after g} \\
-        = & \bind{\1}{\e}{B} \after \T{\1}{f} \after \tstrength{1}{\G}{A} \after (\idg\times \point{A}) \after \pr{\idg}{g} \\
-        = & \bind{\1}{\e}{B} \after \T{\1}{f} \after \point{(\G \times A)} \after \pr{\idg}{g} \qt{By Tensor strength + unit}\\
-        = & \bind{\1}{\e}{B}\after\point{\teb}\after f\after\pr{\idg}{g} \qt{By Naturality of $\point{}$}\\
-        = & f\after\pr{\idg}{g} \qt{By left unit law}\\
-        = & \deno{\gtyperelation{v_2\ssub{x}{v_1}}{\meb}}\\
-    \end{split}
-\end{equation}
-
-
-
-
-\case{Right Unit}
-
-Let $f = \deno{\gtyperelation{v}{\mea}}$ 
-    \begin{equation}
-    \begin{split}
-        \deno{\gtyperelation{\doin{x}{v}{\return{x}}}{\mea}}  & = \bind{\e}{\1}{A} \after \T{\e}{(\point{A} \after \pp)} \after \tstrength{\e}{\G}{A}\after \pr{\idg}{f} \\
-        & = \T{\e}{\pp} \after \tstrength{\e}{\G}{A} \after \pr {\idg}{f} \\
-        & = \pp \after \pr{\idg}{f}\\
-        & = f
-    \end{split}
-\end{equation}
-
-
-
-\case{Associative}
-Let
-\begin{align*}
-    f ={}& \deno{\gtyperelation{v_1}{\M{\e_1}{A}}}\\
-    g ={}& \deno{\typerelation{\gax}{v_2}{\M{\e_2}{B}}}\\
-    h ={}& \deno{\typerelation{\gby}{v_3}{\M{\e_3}{C}}}
-\end{align*}
-
-We also have the weakening:
-\begin{equation}
-    \wrel{\i\pi\times}{\gax, y: B}{\gby}
-\end{equation}
-
-With denotation:
-
-\begin{equation}
-    \deno{\wrel{\i\pi\times}{\gax, y: B}{\gby}} = (\p \times \Id{B})
-\end{equation}
-
-We need to prove that the following are equal
-
-\begin{align*}
-    lhs & =  \deno{\gtyperelation{\doin{x}{v_1}{(\doin{y}{v_2}{v_3})}}{\M{\e_1\dot\e_2\dot\e_3}{C}}} \\
-    & = \bind{\e_1}{\e_2\dot\e_3}{C}\after\T{
-        \e_1}{(\bind{\e_2}{\e_3}{C}\after\T{\e_2}{h\after(\p \times \Id{B})}\after\tstrength{\e_2}{(\G\times A)}{B}\after\pr{\Id{(\G\times A)}}{g}
-        )}\after\tstrength{\e_1}{\G}{A}\after\pr{\idg}{f}\\
-        rhs &  = \deno{\gtyperelation{\doin{y}{(\doin{x}{v_1}{v_2})}{v_3}}{\M{\e_1\dot\e_2\dot\e_2}{C}}}  \\
-    & = \bind{\e_1\dot\e_2}{\e_3}{C}\after\T{\e_1\dot\e_2}{(h)}\after\tstrength{\e_1\dot\e_2}{\G}{B}\after\pr{\idg}{(\bind{\e_1}{\e_2}{B}\after\T{\e_1}{g}\after\tstrength{\e_1}{\G}{A}\after\pr{\idg}{f})} \\
-\end{align*}
-Let's look at fragment $F$ of $rhs$.
-\begin{equation}
-    F = \tstrength{\e_1\dot\e_2}{\G}{B}\after\pr{\idg}{(\bind{\e_1}{\e_2}{B}\after\T{\e_1}{g}\after\tstrength{\e_1}{\G}{A}\after\pr{\idg}{f})}
-\end{equation}
-
-So 
-\begin{equation}
-    rhs = \bind{\e_1\dot\e_2}{\e_3}{C}\after\T{\e_1\dot\e_2}{(h)}\after F
-\end{equation}
-
-\scalebox{0.8}{\parbox{1.2\linewidth}{%
-\begin{align*}
-        F & = \tstrength{\e_1\dot\e_2}{\G}{B}\after(\idg\times\bind{\e_1}{\e_2}{B})\after(\idg\times\T{\e_1}{g})\after\pr{\idg}{\tstrength{\e_1}{\G}{A}\after\pr{\idg}{f}}\\
-        &  = \bind{\e_1}{\e_2}{(\G\times B)} \after \T{\e_1}{\tstrength{\e_2}{\G}{B}} \after\tstrength{\e_1}{\G}{(\T{\e_2}{B})} \after (\idg \after\T{\e_1}{g})\after\pr{\idg}{\tstrength{\e_1}{\G}{A}\after\pr{\idg}{f}}\qt{By \todo{ref: mu+tstrength}}
-        \\ & = \bind{\e_1}{\e_2}{(\G \times B))} \after \T{\e_1}{(\tstrength{\e_2}{\G}{B} \after (\idg \times g))} \after \tstrength{\e_1}{\G}{(\G \times A)} \after \pr{\idg}{\tstrength{\e_1}{\G}{A}\after\pr{\idg}{f}}\qt{By naturality of v-strength}
-\end{align*}
-}}
-
-Since
-$
-    rhs = \bind{\e_1\dot\e_2}{\e_3}{C}\after\T{\e_1\dot\e_2}{(h)}\after F
-$, 
-
-\scalebox{0.8}{\parbox{1.2\linewidth}{%
-    \begin{align*}
-        rhs = &\bind{\e_1\dot\e_2}{\e_3}{C}\after\T{\e_1\dot\e_2}{(h)}\after\bind{\e_1}{\e_2}{(\G \times B))} \after \T{\e_1}{(\tstrength{\e_2}{\G}{B} \after (\idg \times g))} \after \tstrength{\e_1}{\G}{(\G \times A)} \after \pr{\idg}{\tstrength{\e_1}{\G}{A}\after\pr{\idg}{f}}\\
-        = &\bind{\e_1\dot\e_2}{\e_3}{C}\after\bind{\e_1}{\e_2}{(\T{\e_3}{C})}\after\T{\e_1}{(\T{\e_2}{(h)} \after \tstrength{\e_2}{\G}{B} \after (\idg \times g))} \after \tstrength{\e_1}{\G}{(\G \times A)} \after \pr{\idg}{\tstrength{\e_1}{\G}{A}\after\pr{\idg}{f}}\qt{Naturality of $\mu$}\\
-        = & \bind{\e_1}{\e_2\dot\e_3}{C}\after\T{\e_1}{(\bind{\e_2}{\e_3}{C}\after \T{\e_2}{(h)} \after \tstrength{\e_2}{\G}{B} \after (\idg \times g))} \after \tstrength{\e_1}{\G}{(\G \times A)} \after \pr{\idg}{\tstrength{\e_1}{\G}{A}\after\pr{\idg}{f}}
-    \end{align*}    
-}} 
-
-Let's now look at the fragment $G$ of $rhs$
-\begin{equation}
-    G = \T{\e_1}{(\idg\times g)}\after\tstrength{\e_1}{\G}{(\G\times A)}\after\pr{\idg}{\tstrength{\e_1}{\G}{A}\after\pr{\idg}{f}}
-\end{equation}
-
-So
-\begin{equation}
-    rhs = \bind{\e_1}{\e_2\dot\e_3}{C}\after\T{\e_1}{(\bind{\e_2}{\e_3}{C}\after \T{\e_2}{(h)} \after \tstrength{\e_2}{\G}{B})}\after G
-\end{equation}
-
-
-By folding out the $\pr{...}{...}$, we have
-\begin{equation}
-    G = \T{\e_1}{(\idg\times g)}\after\tstrength{\e_1}{\G}{\G \times A}\after(\idg\times\tstrength{\e_1}{\G}{A})\after\pr{\idg}{\pr{\idg}{f}}
-\end{equation}
-
-From the rule \todo{Ref} showing the commutativity of tensor strength with $\alpha$, the following commutes
-
-\begin{tikzcd}
-    \G 
-    \arrow [r, "\pr{\idg}{\pr{\idg}{f}}"]
-    &
-    \G\times(\G \times \T{\e_1}{A}) 
-    \arrow [d, "\idg\times\tstrength{\e_1}{\G}{A}"]
-    &
-    (\G \times \G) \times\T{\e_1}{A} 
-    \arrow [l, "\alpha_{\G, \G, (\T{\e_1}{A})}"]
-    \arrow [d, "\tstrength{\e_1}{(\G \times \G)}{A}"]
-    \\
-    &
-    \G \times \T{\e_1}{(\G \times A)}
-    \arrow [d, "\tstrength{\e_1}{\G}{\G \times A}"]
-    & \T{\e_1}{((\G \times \G)\times A)} 
-    \arrow [ld, "\T{\e_1}{\alpha_{\G, \G, A}}"]
-    \\
-    & \T{\e_1}{(\G \times (\G \times A))}
-\end{tikzcd}
-
-Where $\alpha: ((\_ \times \_) \times \_) \rightarrow (\_ \times (\_ \times \_))$ is a natural isomorphism.
-
-\begin{align*}
-    \alpha & = \pr{\p\after\p}{\pr{\pp\after\p}{\pp}}\\
-    \alpha^{-1} &= \pr{\pr{\p}{\p\after\pp}}{\pp\after\pp}
-\end{align*}
-
-So:
-
-\scalebox{.8}{\parbox{1.2\linewidth}{%
-\begin{align*}
-        G = & \T{\e_1}{((\idg\times g)\after \alpha_{\G, \G, A})} \after \tstrength{\e_1}{(\G\times\G)}{A}\after\alpha^{-1}_{\G, \G, (\T{\e_1}{A})}\after\pr{\idg}{\pr{\idg}{f}} \\
-        = & \T{\e_1}{((\idg\times g)\after \alpha_{\G, \G, A})} \after \tstrength{\e_1}{(\G\times\G)}{A}\after(\pr{\idg}{\idg}\times \Id{\T{\e_1}{A}})\after\pr{\idg}{f}\qt{By definition of $\alpha$ and products}\\
-        = & \T{\e_1}{((\idg\times g)\after \alpha_{\G, \G, A}\after(\pr{\idg}{\idg}\times \Id{A}))}\after\tstrength{\e_1}{\G}{A}\after\pr{\idg}{f}\qt{By tensor strength's left-naturality}\\
-        = & \T{\e_1}{((\p\times\Id{\T{\e_2}{B}})\after\pr{\Id{(\G\times A)}}{g})}\after\tstrength{\e_1}{\G}{A}\after\pr{\idg}{f}
-\end{align*}
-}}
-
-Since 
-\begin{equation}
-rhs = \bind{\e_1}{\e_2\dot\e_3}{C}\after\T{\e_1}{(\bind{\e_2}{\e_3}{C}\after \T{\e_2}{(h)} \after \tstrength{\e_2}{\G}{B})}\after G
-\end{equation}
-
-We have
-
-\scalebox{.8}{\parbox{1.2\linewidth}{%
-\begin{align*}
-    rhs ={} & \bind{\e_1}{\e_2\dot\e_3}{C}\after\T{\e_1}{(\bind{\e_2}{\e_3}{C}\after \T{\e_2}{(h)} \after \tstrength{\e_2}{\G}{B}\after(\p\times\Id{\T{\e_2}{B}})\after\pr{\Id{(\G\times A)}}{g})}\after\tstrength{\e_1}{\G}{A}\after\pr{\idg}{f}\\
-    ={} & \bind{\e_1}{\e_2\dot\e_3}{C}\after\T{\e_1}{(\bind{\e_2}{\e_3}{C}\after \T{\e_2}{(h \after (\p\times\Id{B}))}\after\tstrength{\e_2}{(\G\times A)}{B}\after\pr{\Id{(\G\times A)}}{g})}\after\tstrength{\e_1}{\G}{A}\after\pr{\idg}{f}\qt{By Left-Tensor Strength}\\
-    ={} & lhs \qt{Woohoo!}
-\end{align*}
-}}
-
-%%%%%% END CASE ASSOCIATIVE %%%%%%%
-
-\case{Eta}
-Let 
-\begin{equation}
-    f = \deno{\gtyperelation{v}{\ab}} : \G \rightarrow (B)^{A}
-\end{equation}
-
-By weakening, we have
-
-\begin{align*}
-    \deno{\typerelation{\gax}{v}{\ab}} & = f \after \p : \G \times A \rightarrow (B)^A \\
-    \deno{\typerelation{\gax}{\apply{v}{x}}{B}} & = \app\after\pr{f \after \p}{\pp}
-\end{align*}
-
-Hence, we have 
-\begin{align}
-        \deno{\gtyperelation{\lam{x}{A}{(\apply{v}{x})}}{\ab}} & = \cur{\app\after\pr{f \after \p}{\pp}}\\
-        \app\after(\deno{\gtyperelation{\lam{x}{A}{(\apply{v}{x})}}{\ab}} \times \Id{A}) & = \app \after(\cur{\app\after\pr{f \after \p}{\pp}}\times \Id{A})\\
-        & = \app \after\pr{f\after\p}{\pp}\\
-        & = \app\after(f\times\Id{A})
-\end{align}
-
-Hence, by the fact that $\cur{f}$ is unique in a cartesian closed category, 
-
-\begin{equation}
-    \deno{\gtyperelation{\lam{x}{A}{(\apply{v}{x})}}{\ab}} = f =\deno{\gtyperelation{v}{\ab}}
-\end{equation}
-
-\case{If-True}
-Let
-\begin{align*}
-    f = &\deno{\gtyperelation{v_1}{ A}}\\
-    g = &\deno{\gtyperelation{v_2}{ A}}\\
-\end{align*}
-
-Then
-\begin{equation}
-    \begin{split}
-        \deno{\gtyperelation{\pifthenelse{A}{\t}{v_1}{v_2}}{ A}} & = \ifMorph{\inl\after\term{\G}}{f}{g} \\
-        & = \app\after((\cur{f\after\pp}\after\term{\G})\times\idg)\after\diag{\G}\\
-        & = \app\after(\cur{f\after\pp}\times\idg)\after(\term{\G}\times\idg)\after\diag{\G}\\
-        & = f\after\pp\after\pr{\term{\G}}{\idg}\\
-        & = f \\
-        & = \deno{\gtyperelation{v_1}{ A}}\\
-    \end{split}
-\end{equation}
-
-
-\case{If-False}
-Let
-\begin{align*}
-    f = &\deno{\gtyperelation{v_1}{ A}}\\
-    g = &\deno{\gtyperelation{v_2}{ A}}\\
-\end{align*}
-
-Then
-\begin{equation}
-    \begin{split}
-        \deno{\gtyperelation{\pifthenelse{A}{\f}{v_1}{v_2}}{ A}} & = \ifMorph{\inr\after\term{\G}}{f}{g} \\
-        & = \app\after((\cur{g\after\pp}\after\term{\G})\times\idg)\after\diag{\G}\\
-        & = \app\after(\cur{g\after\pp}\times\idg)\after(\term{\G}\times\idg)\after\diag{\G}\\
-        & = g\after\pp\after\pr{\term{\G}}{\idg}\\
-        & = g \\
-        & = \deno{\gtyperelation{v_2}{ A}}\\
-    \end{split}
-\end{equation}
-
-\subsection{Case If-Eta}
-    Let 
-    \begin{align*}
-        f & = \deno{\typerelation{\G}{v_2}{\B}} \\
-        g & = \deno{\typerelation{\G, x: \B}{v_1}{ A}} \\
-    \end{align*}
-
-
-    Then by the substitution theorem,
-    \begin{align*}
-        \deno{\typerelation{\G}{v_1\ssub{x}{\t}}{ A}} & = g\after\pr{\idg}{\inl_\1\after{\term{\G}}}\\
-        \deno{\typerelation{\G}{v_1\ssub{x}{\f}}{ A}} & = g\after\pr{\idg}{\inr_\1\after{\term{\G}}}\\
-        \deno{\gtyperelation{v_1\ssub{x}{v_2}}{ A}} & = g\after\pr{\idg}{f}
-    \end{align*}
-
-    Hence we have (Using the diagonal and twist morphisms):
- 
-
-\scalebox{.6}{\parbox{1.5\linewidth}{%
-\begin{align*}
-        \deno{\gtyperelation{&\pifthenelse{A}{v}{v_1\ssub{x}{\t}}{v_1\ssub{x}{\f}}}{ A}}  \\ 
-        & = \ifMorph{f}{g\after\pr{\idg}{\inl_\1\after{\term{\G}}}}{g\after\pr{\idg}{\inr_\1\after{\term{\G}}}}\\
-        & = \app\after((\fld{
-            \cur{g\after\pr{\pp}{\inl_1\after\term{\G}\after\pp}}
-        }{
-            \cur{g\after\pr{\pp}{\inr_1\after\term{\G}\after\pp}}
-        }\after f)\times \idg)\after\diag{\G}\qt{Pairing property}\\
-        &= \app\after((\fld{
-            \cur{g\after\pr{\pp}{\inl_1\after\term{\G}\after\p}}
-        }{
-            \cur{g\after\pr{\pp}{\inr_1\after\term{\G}\after\p}}
-        }\after f)\times \idg)\after\diag{\G}\qt{Terminal is unique}\\
-        &= \app\after((\fld{
-            \cur{g\after(\idg\times (\inl_\1\after\term{\1}))\after\twist{\1}{\G}}
-        }{
-            \cur{g\after(\idg\times (\inr_\1\after\term{\1}))\after\twist{\1}{\G}}
-        }\after f)\times \idg)\after\diag{\G}\qt{Definition of the twist morphism}\\
-        & = \app\after((\fld{
-            \cur{g\after(\idg\times \inl_\1)\after\twist{\1}{\G}}
-        }{
-            \cur{g\after(\idg\times \inr_\1)\after\twist{\1}{\G}}
-        }\after f)\times \idg)\after\diag{\G}\qt{Identity = $\Id{\1}$}\\
-        & = \app\after((\fld{
-            \cur{g\after\twist{\1+\1}{\G}\after(\inl_\1\times \idg)}
-        }{
-            \cur{g\after\twist{\1+\1}{\G}\after(\inr_\1\times \idg)}
-        }\after f)\times \idg)\after\diag{\G}\qt{Twist commutivity}\\
-        & = \app\after((\fld{
-            \cur{g\after\twist{\1+\1}{\G}}\after\inl_\1
-        }{
-            \cur{g\after\twist{\1+\1}{\G}}\after\inr_\1
-        }\after f)\times \idg)\after\diag{\G}\qt{Exponential property}\\
-        & = \app\after((\cur{g\after\twist{\1+\1}{\G}}\after\fld{
-            \inl_\1
-        }{
-            \inr_\1
-        }\after f)\times \idg)\after\diag{\G}\qt{Factoring out $\cur{..}$}\\
-        & = \app\after((\cur{g\after\twist{\1+\1}{\G}}\after f)\times \idg)\after\diag{\G}\qt{Since $\fld{\inl}{\inr} is the identity$}\\
-        & = \app\after(\cur{g\after\twist{\1+\1}{\G}}\times \idg)\after (f\times \idg)\after\diag{\G}\qt{Factoring}\\
-       & = g\after\twist{\1+\1}{\G} \after (f\times \idg)\after\diag{\G} \qt{Definition of $\app,\cur{..}$}\\
-       & = g\after(\idg\times f)\after \twist{\G}{\G} \after\diag{\G} \qt{Twist commutivity}\\
-       & = g\after(\idg\times f) \after\pr{\idg}{\idg} \qt{Twist, diagonal defintions} \\
-       & = g\after\pr{\idg}{f} \\
-       & = \deno{\gtyperelation{v_1\ssub{x}{v_2}}{ A}}
-    \end{align*}
-    }}
-
-
-\subsection{Congruences}
-These cases can be proved fairly mechanically by assuming the preconditions, using induction to prove that the matching pairs of subexpressions have equal denotations, then constructing the denotations of the expressions using the equal denotations which gives trivially equal denotations.
-
-\case{Lambda}
-    By inversion, we have $\berelation{\gax}{v_1}{v_2}{B}$
-    By induction, we therefore have $\deno{\typerelation{\gax}{v_1}{B}} = \deno{\typerelation{\gax}{v_2}{B}}$
-
-    Then let
-    \begin{equation}
-        f = \deno{\typerelation{\gax}{v_1}{B}} = \deno{\typerelation{\gax}{v_2}{B}}
-    \end{equation}
-
-    And so
-    \begin{equation}
-        \deno{\gtyperelation{\lam{x}{A}{v_1}}{\ab}} = \cur{f} = \deno{\gtyperelation{\lam{x}{A}{v_2}}{\ab}}
-    \end{equation}
-
-
-\case{Return}
-By inversion, we have $\gberelation{v_1}{v_2}{A}$
-By induction, we therefore have $\deno{\gtyperelation{v_1}{A}} = \deno{\gtyperelation{v_2}{A}}$
-
-Then let
-\begin{equation}
-    f = \deno{\gtyperelation{v_1}{A}} = \deno{\gtyperelation{v_2}{A}}
-\end{equation}
-
-And so
-\begin{equation}
-    \deno{\gtyperelation{\return{v_1}}{\M{\1}{A}}} = \point{A}\after f = \deno{\gtyperelation{\return{v_2}}{\M{\1}{A}}}
-\end{equation}
-
-
-\case{Apply}
-By inversion, we have $\gberelation{v_1}{v_1'}{\ab}$ and $\gberelation{v_2}{v_2'}{A}$
-By induction, we therefore have $\deno{\gtyperelation{v_1}{\ab}}= \deno{\gtyperelation{v_1'}{\ab}}$ and $\deno{\gtyperelation{v_2}{A}} = \deno{\gtyperelation{v_2'}{A}}$
-
-Then let
-\begin{align*}
-    f &{}= \deno{\gtyperelation{v_1}{\ab}} = \deno{\gtyperelation{v_1'}{\ab}}\\
-    g &{}= \deno{\gtyperelation{v_2}{A}} = \deno{\gtyperelation{v_2'}{A}}
-\end{align*}
-
-
-
-And so
-\begin{equation}
-    \deno{\gtyperelation{\apply{v_1}{v_2}}{\M{\e}{A}}} = \app\after\pr{f}{g} = \deno{\gtyperelation{\apply{v_1'}{v_2'}}{\M{\e}{A}}}
-\end{equation}
-
-
-\case{Bind}
-By inversion, we have $\gberelation{v_1}{v_1'}{\M{\e_1}{A}}$ and $\berelation{\gax}{v_2}{v_2'}{\M{\e_2}{B}}$
-By induction, we therefore have $\deno{\gtyperelation{v_1}{\M{\e_1}{A}}}= \deno{\gtyperelation{v_1'}{\M{\e_1}{A}}}$ and $\deno{\typerelation{\gax}{v_2}{\M{\e_1}{A}}} = \deno{\typerelation{\gax}{v_2'}{\M{\e_2}{B}}}$
-
-Then let
-\begin{align*}
-    f &{}=\deno{\gtyperelation{v_1}{\M{\e_1}{A}}}= \deno{\gtyperelation{v_1'}{\M{\e_1}{A}}}\\
-    g &{}=\deno{\typerelation{\gax}{v_2}{\M{\e_2}{B}}} = \deno{\typerelation{\gax}{v_2'}{\M{\e_2}{B}}}
-\end{align*}
-
-
-
-And so
-\begin{equation}
-    \begin{split}
-        \deno{\gtyperelation{\doin{x}{v_1}{v_2}}{\M{\e_1\dot\e_2}{A}}} & = \bind{\e_1}{\e_2}{B} \after \T{\e_1}{g} \after \tstrength{\e_1}{\G}{A} \after \pr{\idg}{f}\\
-         & = \deno{\gtyperelation{\doin{x}{v_1}{v_2}}{\M{\e_1\dot\e_2}{A}}}
-    \end{split}
-\end{equation}
-\case{If}
-By inversion, we have $\gberelation{v}{v'}{\B}$, $\gberelation{v_1}{v_1'}{\M{\e_1}{A}}$ and $\gberelation{v_2}{v_2'}{\M{\e_2}{B}}$
-By induction, we therefore have $\deno{\gtyperelation{v}{\B}} = \deno{\gtyperelation{v'}{B}}$, $\deno{\gtyperelation{v_1}{ A}}= \deno{\gtyperelation{v_1'}{ A}}$ and $\deno{\typerelation{\gax}{v_2}{\M{\e_2}{B}}} = \deno{\typerelation{\gax}{v_2'}{\M{\e_2}{B}}}$
-
-Then let
-\begin{align*}
-    f &{}=\deno{\gtyperelation{v}{\B}} = \deno{\gtyperelation{v'}{B}}\\
-    g &{}=\deno{\gtyperelation{v_1}{\M{\e_1}{A}}}= \deno{\gtyperelation{v_1'}{\M{\e_1}{A}}}\\
-    h &{}=\deno{\typerelation{\gax}{v_2}{\M{\e_2}{B}}} = \deno{\typerelation{\gax}{v_2'}{\M{\e_2}{B}}}
-\end{align*}
-
-
-
-And so
-\begin{equation}
-    \begin{split}
-        \deno{\gtyperelation{\pifthenelse{A}{v}{v_1}{v_2}}} & = \ifMorph{f}{g}{h}\\
-         & = \deno{\gtyperelation{\doin{x}{v_1}{v_2}}{\M{\e_1\dot\e_2}{A}}}
-    \end{split}
-\end{equation}
-\case{Subtype}
-By inversion, we have $\gberelation{v_1}{v_2}{A}$, and $A \subtype B$ 
-By induction, we therefore have $\deno{\gtyperelation{v_1}{A}} = \deno{\gtyperelation{v_2}{A}}$
-
-Then let
-\begin{align*}
-    f &{}=\deno{\gtyperelation{v_1}{A}} = \deno{\gtyperelation{v_2}{B}}\\
-    g &{}=\deno{A \subtype B}
-\end{align*}
-
-
-
-And so
-\begin{equation}
-        \deno{\gtyperelation{v_1}{B}} = g \after f = \deno{\gtyperelation{v_1}{B}}
-\end{equation}
-
-$$\square$$
+\begin{theorem}[Beta-Eta equivalent Terms Have Equal Denotations]
+    If $\gberelation{v}{v'}{A}$ then $\gdenoequality{v}{v'}{A}$
+\end{theorem}
+
+
+\begin{framed}
+    
+    \begin{proof}
+        By induction over Beta-eta equivalence relation.
+        \subsection{Equivalence Relation}
+        The cases over the equivalence relation laws hold by the uniqueness of denotations and the fact that equality over morphisms is an equivalence relation.
+        \case{Reflexive}
+        Equality is reflexive, so if $\gtyperelation{v}{A}$ then $\deno{\gtyperelation{v}{A}}$ is equal to itself.
+        \case{Symmetric}
+        By inversion, if $\gberelation{v}{v'}{A}$ then $\gberelation{v'}{v}{A}$, so by induction $\gdenoequality{v'}{v}{A}$ and hence $\gdenoequality{v}{v'}{A}$
+        \case{Transitive}
+        There must exist $v_2$ such that $\gberelation{v_1}{v_2}{A}$ and $\gberelation{v_2}{v_3}{A}$, so by induction,
+        $\gdenoequality{v_1}{v_2}{A}$ and $\gdenoequality{v_2}{v_3}{A}$. Hence by transitivity of equality, $\gdenoequality{v_1}{v_3}{A}$
+        
+        \subsection{Beta-Eta Conversions}
+        These cases are typically proved using the properties of a cartesian closed category with a strong graded monad.
+        
+        \case{Lambda}
+            Let $f = \deno{\typerelation{\gax}{v_1}{B}}: (\G \times A) \rightarrow B$
+        
+            Let $g = \deno{\gtyperelation{v_2}{A}}: \G \rightarrow A$
+        
+            By the substitution denotation, $$\deno{\typerelation{\G}{\ssub{x}{v_2}}{\gax}}: \G \rightarrow (\G \times A) = \pr{\idg}{g}$$
+        
+            We have $$\deno{\gtyperelation{v_1\ssub{x}{v_2}}{B}} = f \after \pr{\idg}{g}$$
+        
+            and hence
+            \begin{equation}
+                \begin{split}
+                    \deno{\gtyperelation{\apply{(\lam{x}{A}{v_1})}{v_2}}{B}} & = \app\after\pr{\cur{f}}{g} \\
+                    & = \app\after(\cur{f}\times\Id{A})\after\pr{\idg}{g}\\
+                    & = f \after \pr{\idg}{g} \\
+                    & = \deno{\gtyperelation{v_1\ssub{x}{v_2}}{B}}  
+                \end{split}
+            \end{equation}
+           
+        
+        \case{Left Unit}
+        Let $f = \deno{\typerelation{\gax}{v_2}{\meb}}$
+        
+        Let $g = \deno{\gtyperelation{v_1}{A}}: \G \rightarrow A$
+        
+        By the substitution denotation, $$\deno{\typerelation{\G}{\ssub{x}{v_1}}{\gax}}: \G \rightarrow (\G \times A) = \pr{\idg}{g}$$
+        
+        We have $$\deno{\gtyperelation{v_2\ssub{x}{v_1}}{\meb}} = f \after \pr{\idg}{g}$$
+        
+        And hence
+        
+        \begin{equation}
+            \begin{split}
+                \deno{\gtyperelation{\doin{x}{\return{v_1}}{v_2}}{\meb}} = &  \bind{\1}{\e}{B} \after \T{\1}{f} \after \tstrength{1}{\G}{A} \after \pr{\idg}{\point{A}\after g} \\
+                = & \bind{\1}{\e}{B} \after \T{\1}{f} \after \tstrength{1}{\G}{A} \after (\idg\times \point{A}) \after \pr{\idg}{g} \\
+                = & \bind{\1}{\e}{B} \after \T{\1}{f} \after \point{(\G \times A)} \after \pr{\idg}{g} \qt{By Tensor strength + unit}\\
+                = & \bind{\1}{\e}{B}\after\point{\teb}\after f\after\pr{\idg}{g} \qt{By Naturality of $\point{}$}\\
+                = & f\after\pr{\idg}{g} \qt{By left unit law}\\
+                = & \deno{\gtyperelation{v_2\ssub{x}{v_1}}{\meb}}\\
+            \end{split}
+        \end{equation}
+        
+        
+        
+        
+        \case{Right Unit}
+        
+        Let $f = \deno{\gtyperelation{v}{\mea}}$ 
+            \begin{equation}
+            \begin{split}
+                \deno{\gtyperelation{\doin{x}{v}{\return{x}}}{\mea}}  & = \bind{\e}{\1}{A} \after \T{\e}{(\point{A} \after \pp)} \after \tstrength{\e}{\G}{A}\after \pr{\idg}{f} \\
+                & = \T{\e}{\pp} \after \tstrength{\e}{\G}{A} \after \pr {\idg}{f} \\
+                & = \pp \after \pr{\idg}{f}\\
+                & = f
+            \end{split}
+        \end{equation}
+        
+        
+        
+        \case{Associative}
+        Let
+        \begin{align*}
+            f ={}& \deno{\gtyperelation{v_1}{\M{\e_1}{A}}}\\
+            g ={}& \deno{\typerelation{\gax}{v_2}{\M{\e_2}{B}}}\\
+            h ={}& \deno{\typerelation{\gby}{v_3}{\M{\e_3}{C}}}
+        \end{align*}
+        
+        We also have the weakening:
+        \begin{equation}
+            \wrel{\i\pi\times}{\gax, y: B}{\gby}
+        \end{equation}
+        
+        With denotation:
+        
+        \begin{equation}
+            \deno{\wrel{\i\pi\times}{\gax, y: B}{\gby}} = (\p \times \Id{B})
+        \end{equation}
+        
+        We need to prove that the following are equal
+        
+        \begin{align*}
+            lhs & =  \deno{\gtyperelation{\doin{x}{v_1}{(\doin{y}{v_2}{v_3})}}{\M{\e_1\dot\e_2\dot\e_3}{C}}} \\
+            & = \bind{\e_1}{\e_2\dot\e_3}{C}\after\T{
+                \e_1}{(\bind{\e_2}{\e_3}{C}\after\T{\e_2}{h\after(\p \times \Id{B})}\after\tstrength{\e_2}{(\G\times A)}{B}\after\pr{\Id{(\G\times A)}}{g}
+                )}\after\tstrength{\e_1}{\G}{A}\after\pr{\idg}{f}\\
+                rhs &  = \deno{\gtyperelation{\doin{y}{(\doin{x}{v_1}{v_2})}{v_3}}{\M{\e_1\dot\e_2\dot\e_2}{C}}}  \\
+            & = \bind{\e_1\dot\e_2}{\e_3}{C}\after\T{\e_1\dot\e_2}{(h)}\after\tstrength{\e_1\dot\e_2}{\G}{B}\after\pr{\idg}{(\bind{\e_1}{\e_2}{B}\after\T{\e_1}{g}\after\tstrength{\e_1}{\G}{A}\after\pr{\idg}{f})} \\
+        \end{align*}
+        Let's look at fragment $F$ of $rhs$.
+        \begin{equation}
+            F = \tstrength{\e_1\dot\e_2}{\G}{B}\after\pr{\idg}{(\bind{\e_1}{\e_2}{B}\after\T{\e_1}{g}\after\tstrength{\e_1}{\G}{A}\after\pr{\idg}{f})}
+        \end{equation}
+        
+        So 
+        \begin{equation}
+            rhs = \bind{\e_1\dot\e_2}{\e_3}{C}\after\T{\e_1\dot\e_2}{(h)}\after F
+        \end{equation}
+        
+        \scalebox{0.8}{\parbox{1.2\linewidth}{%
+        \begin{align*}
+                F & = \tstrength{\e_1\dot\e_2}{\G}{B}\after(\idg\times\bind{\e_1}{\e_2}{B})\after(\idg\times\T{\e_1}{g})\after\pr{\idg}{\tstrength{\e_1}{\G}{A}\after\pr{\idg}{f}}\\
+                &  = \bind{\e_1}{\e_2}{(\G\times B)} \after \T{\e_1}{\tstrength{\e_2}{\G}{B}} \after\tstrength{\e_1}{\G}{(\T{\e_2}{B})} \after (\idg \after\T{\e_1}{g})\after\pr{\idg}{\tstrength{\e_1}{\G}{A}\after\pr{\idg}{f}}\qt{By \todo{ref: mu+tstrength}}
+                \\ & = \bind{\e_1}{\e_2}{(\G \times B))} \after \T{\e_1}{(\tstrength{\e_2}{\G}{B} \after (\idg \times g))} \after \tstrength{\e_1}{\G}{(\G \times A)} \after \pr{\idg}{\tstrength{\e_1}{\G}{A}\after\pr{\idg}{f}}\qt{By naturality of v-strength}
+        \end{align*}
+        }}
+        
+        Since
+        $
+            rhs = \bind{\e_1\dot\e_2}{\e_3}{C}\after\T{\e_1\dot\e_2}{(h)}\after F
+        $, 
+        
+        \scalebox{0.8}{\parbox{1.2\linewidth}{%
+            \begin{align*}
+                rhs = &\bind{\e_1\dot\e_2}{\e_3}{C}\after\T{\e_1\dot\e_2}{(h)}\after\bind{\e_1}{\e_2}{(\G \times B))} \after \T{\e_1}{(\tstrength{\e_2}{\G}{B} \after (\idg \times g))} \after \tstrength{\e_1}{\G}{(\G \times A)} \after \pr{\idg}{\tstrength{\e_1}{\G}{A}\after\pr{\idg}{f}}\\
+                = &\bind{\e_1\dot\e_2}{\e_3}{C}\after\bind{\e_1}{\e_2}{(\T{\e_3}{C})}\after\T{\e_1}{(\T{\e_2}{(h)} \after \tstrength{\e_2}{\G}{B} \after (\idg \times g))} \after \tstrength{\e_1}{\G}{(\G \times A)} \after \pr{\idg}{\tstrength{\e_1}{\G}{A}\after\pr{\idg}{f}}\qt{Naturality of $\mu$}\\
+                = & \bind{\e_1}{\e_2\dot\e_3}{C}\after\T{\e_1}{(\bind{\e_2}{\e_3}{C}\after \T{\e_2}{(h)} \after \tstrength{\e_2}{\G}{B} \after (\idg \times g))} \after \tstrength{\e_1}{\G}{(\G \times A)} \after \pr{\idg}{\tstrength{\e_1}{\G}{A}\after\pr{\idg}{f}}
+            \end{align*}    
+        }} 
+        
+        Let's now look at the fragment $G$ of $rhs$
+        \begin{equation}
+            G = \T{\e_1}{(\idg\times g)}\after\tstrength{\e_1}{\G}{(\G\times A)}\after\pr{\idg}{\tstrength{\e_1}{\G}{A}\after\pr{\idg}{f}}
+        \end{equation}
+        
+        So
+        \begin{equation}
+            rhs = \bind{\e_1}{\e_2\dot\e_3}{C}\after\T{\e_1}{(\bind{\e_2}{\e_3}{C}\after \T{\e_2}{(h)} \after \tstrength{\e_2}{\G}{B})}\after G
+        \end{equation}
+        
+        
+        By folding out the $\pr{...}{...}$, we have
+        \begin{equation}
+            G = \T{\e_1}{(\idg\times g)}\after\tstrength{\e_1}{\G}{\G \times A}\after(\idg\times\tstrength{\e_1}{\G}{A})\after\pr{\idg}{\pr{\idg}{f}}
+        \end{equation}
+        
+        From the rule \todo{Ref} showing the commutativity of tensor strength with $\alpha$, the following commutes
+        
+        \begin{tikzcd}
+            \G 
+            \arrow [r, "\pr{\idg}{\pr{\idg}{f}}"]
+            &
+            \G\times(\G \times \T{\e_1}{A}) 
+            \arrow [d, "\idg\times\tstrength{\e_1}{\G}{A}"]
+            &
+            (\G \times \G) \times\T{\e_1}{A} 
+            \arrow [l, "\alpha_{\G, \G, (\T{\e_1}{A})}"]
+            \arrow [d, "\tstrength{\e_1}{(\G \times \G)}{A}"]
+            \\
+            &
+            \G \times \T{\e_1}{(\G \times A)}
+            \arrow [d, "\tstrength{\e_1}{\G}{\G \times A}"]
+            & \T{\e_1}{((\G \times \G)\times A)} 
+            \arrow [ld, "\T{\e_1}{\alpha_{\G, \G, A}}"]
+            \\
+            & \T{\e_1}{(\G \times (\G \times A))}
+        \end{tikzcd}
+        
+        Where $\alpha: ((\_ \times \_) \times \_) \rightarrow (\_ \times (\_ \times \_))$ is a natural isomorphism.
+        
+        \begin{align*}
+            \alpha & = \pr{\p\after\p}{\pr{\pp\after\p}{\pp}}\\
+            \alpha^{-1} &= \pr{\pr{\p}{\p\after\pp}}{\pp\after\pp}
+        \end{align*}
+        
+        So:
+        
+        \scalebox{.8}{\parbox{1.2\linewidth}{%
+        \begin{align*}
+                G = & \T{\e_1}{((\idg\times g)\after \alpha_{\G, \G, A})} \after \tstrength{\e_1}{(\G\times\G)}{A}\after\alpha^{-1}_{\G, \G, (\T{\e_1}{A})}\after\pr{\idg}{\pr{\idg}{f}} \\
+                = & \T{\e_1}{((\idg\times g)\after \alpha_{\G, \G, A})} \after \tstrength{\e_1}{(\G\times\G)}{A}\after(\pr{\idg}{\idg}\times \Id{\T{\e_1}{A}})\after\pr{\idg}{f}\qt{By definition of $\alpha$ and products}\\
+                = & \T{\e_1}{((\idg\times g)\after \alpha_{\G, \G, A}\after(\pr{\idg}{\idg}\times \Id{A}))}\after\tstrength{\e_1}{\G}{A}\after\pr{\idg}{f}\qt{By tensor strength's left-naturality}\\
+                = & \T{\e_1}{((\p\times\Id{\T{\e_2}{B}})\after\pr{\Id{(\G\times A)}}{g})}\after\tstrength{\e_1}{\G}{A}\after\pr{\idg}{f}
+        \end{align*}
+        }}
+        
+        Since 
+        \begin{equation}
+        rhs = \bind{\e_1}{\e_2\dot\e_3}{C}\after\T{\e_1}{(\bind{\e_2}{\e_3}{C}\after \T{\e_2}{(h)} \after \tstrength{\e_2}{\G}{B})}\after G
+        \end{equation}
+        
+        We have
+        
+        \scalebox{.8}{\parbox{1.2\linewidth}{%
+        \begin{align*}
+            rhs ={} & \bind{\e_1}{\e_2\dot\e_3}{C}\after\T{\e_1}{(\bind{\e_2}{\e_3}{C}\after \T{\e_2}{(h)} \after \tstrength{\e_2}{\G}{B}\after(\p\times\Id{\T{\e_2}{B}})\after\pr{\Id{(\G\times A)}}{g})}\after\tstrength{\e_1}{\G}{A}\after\pr{\idg}{f}\\
+            ={} & \bind{\e_1}{\e_2\dot\e_3}{C}\after\T{\e_1}{(\bind{\e_2}{\e_3}{C}\after \T{\e_2}{(h \after (\p\times\Id{B}))}\after\tstrength{\e_2}{(\G\times A)}{B}\after\pr{\Id{(\G\times A)}}{g})}\after\tstrength{\e_1}{\G}{A}\after\pr{\idg}{f}\qt{By Left-Tensor Strength}\\
+            ={} & lhs \qt{Woohoo!}
+        \end{align*}
+        }}
+        
+        %%%%%% END CASE ASSOCIATIVE %%%%%%%
+        
+        \case{Eta}
+        Let 
+        \begin{equation}
+            f = \deno{\gtyperelation{v}{\ab}} : \G \rightarrow (B)^{A}
+        \end{equation}
+        
+        By weakening, we have
+        
+        \begin{align*}
+            \deno{\typerelation{\gax}{v}{\ab}} & = f \after \p : \G \times A \rightarrow (B)^A \\
+            \deno{\typerelation{\gax}{\apply{v}{x}}{B}} & = \app\after\pr{f \after \p}{\pp}
+        \end{align*}
+        
+        Hence, we have 
+        \begin{align}
+                \deno{\gtyperelation{\lam{x}{A}{(\apply{v}{x})}}{\ab}} & = \cur{\app\after\pr{f \after \p}{\pp}}\\
+                \app\after(\deno{\gtyperelation{\lam{x}{A}{(\apply{v}{x})}}{\ab}} \times \Id{A}) & = \app \after(\cur{\app\after\pr{f \after \p}{\pp}}\times \Id{A})\\
+                & = \app \after\pr{f\after\p}{\pp}\\
+                & = \app\after(f\times\Id{A})
+        \end{align}
+        
+        Hence, by the fact that $\cur{f}$ is unique in a cartesian closed category, 
+        
+        \begin{equation}
+            \deno{\gtyperelation{\lam{x}{A}{(\apply{v}{x})}}{\ab}} = f =\deno{\gtyperelation{v}{\ab}}
+        \end{equation}
+        
+        \case{If-True}
+        Let
+        \begin{align*}
+            f = &\deno{\gtyperelation{v_1}{ A}}\\
+            g = &\deno{\gtyperelation{v_2}{ A}}\\
+        \end{align*}
+        
+        Then
+        \begin{equation}
+            \begin{split}
+                \deno{\gtyperelation{\pifthenelse{A}{\t}{v_1}{v_2}}{ A}} & = \ifMorph{\inl\after\term{\G}}{f}{g} \\
+                & = \app\after((\cur{f\after\pp}\after\term{\G})\times\idg)\after\diag{\G}\\
+                & = \app\after(\cur{f\after\pp}\times\idg)\after(\term{\G}\times\idg)\after\diag{\G}\\
+                & = f\after\pp\after\pr{\term{\G}}{\idg}\\
+                & = f \\
+                & = \deno{\gtyperelation{v_1}{ A}}\\
+            \end{split}
+        \end{equation}
+        
+        
+        \case{If-False}
+        Let
+        \begin{align*}
+            f = &\deno{\gtyperelation{v_1}{ A}}\\
+            g = &\deno{\gtyperelation{v_2}{ A}}\\
+        \end{align*}
+        
+        Then
+        \begin{equation}
+            \begin{split}
+                \deno{\gtyperelation{\pifthenelse{A}{\f}{v_1}{v_2}}{ A}} & = \ifMorph{\inr\after\term{\G}}{f}{g} \\
+                & = \app\after((\cur{g\after\pp}\after\term{\G})\times\idg)\after\diag{\G}\\
+                & = \app\after(\cur{g\after\pp}\times\idg)\after(\term{\G}\times\idg)\after\diag{\G}\\
+                & = g\after\pp\after\pr{\term{\G}}{\idg}\\
+                & = g \\
+                & = \deno{\gtyperelation{v_2}{ A}}\\
+            \end{split}
+        \end{equation}
+        
+        \subsection{Case If-Eta}
+            Let 
+            \begin{align*}
+                f & = \deno{\typerelation{\G}{v_2}{\B}} \\
+                g & = \deno{\typerelation{\G, x: \B}{v_1}{ A}} \\
+            \end{align*}
+        
+        
+            Then by the substitution theorem,
+            \begin{align*}
+                \deno{\typerelation{\G}{v_1\ssub{x}{\t}}{ A}} & = g\after\pr{\idg}{\inl_\1\after{\term{\G}}}\\
+                \deno{\typerelation{\G}{v_1\ssub{x}{\f}}{ A}} & = g\after\pr{\idg}{\inr_\1\after{\term{\G}}}\\
+                \deno{\gtyperelation{v_1\ssub{x}{v_2}}{ A}} & = g\after\pr{\idg}{f}
+            \end{align*}
+        
+            Hence we have (Using the diagonal and twist morphisms):
+         
+        
+        \scalebox{.6}{\parbox{1.5\linewidth}{%
+        \begin{align*}
+                \deno{\gtyperelation{&\pifthenelse{A}{v}{v_1\ssub{x}{\t}}{v_1\ssub{x}{\f}}}{ A}}  \\ 
+                & = \ifMorph{f}{g\after\pr{\idg}{\inl_\1\after{\term{\G}}}}{g\after\pr{\idg}{\inr_\1\after{\term{\G}}}}\\
+                & = \app\after((\fld{
+                    \cur{g\after\pr{\pp}{\inl_1\after\term{\G}\after\pp}}
+                }{
+                    \cur{g\after\pr{\pp}{\inr_1\after\term{\G}\after\pp}}
+                }\after f)\times \idg)\after\diag{\G}\qt{Pairing property}\\
+                &= \app\after((\fld{
+                    \cur{g\after\pr{\pp}{\inl_1\after\term{\G}\after\p}}
+                }{
+                    \cur{g\after\pr{\pp}{\inr_1\after\term{\G}\after\p}}
+                }\after f)\times \idg)\after\diag{\G}\qt{Terminal is unique}\\
+                &= \app\after((\fld{
+                    \cur{g\after(\idg\times (\inl_\1\after\term{\1}))\after\twist{\1}{\G}}
+                }{
+                    \cur{g\after(\idg\times (\inr_\1\after\term{\1}))\after\twist{\1}{\G}}
+                }\after f)\times \idg)\after\diag{\G}\qt{Definition of the twist morphism}\\
+                & = \app\after((\fld{
+                    \cur{g\after(\idg\times \inl_\1)\after\twist{\1}{\G}}
+                }{
+                    \cur{g\after(\idg\times \inr_\1)\after\twist{\1}{\G}}
+                }\after f)\times \idg)\after\diag{\G}\qt{Identity = $\Id{\1}$}\\
+                & = \app\after((\fld{
+                    \cur{g\after\twist{\1+\1}{\G}\after(\inl_\1\times \idg)}
+                }{
+                    \cur{g\after\twist{\1+\1}{\G}\after(\inr_\1\times \idg)}
+                }\after f)\times \idg)\after\diag{\G}\qt{Twist commutivity}\\
+                & = \app\after((\fld{
+                    \cur{g\after\twist{\1+\1}{\G}}\after\inl_\1
+                }{
+                    \cur{g\after\twist{\1+\1}{\G}}\after\inr_\1
+                }\after f)\times \idg)\after\diag{\G}\qt{Exponential property}\\
+                & = \app\after((\cur{g\after\twist{\1+\1}{\G}}\after\fld{
+                    \inl_\1
+                }{
+                    \inr_\1
+                }\after f)\times \idg)\after\diag{\G}\qt{Factoring out $\cur{..}$}\\
+                & = \app\after((\cur{g\after\twist{\1+\1}{\G}}\after f)\times \idg)\after\diag{\G}\qt{Since $\fld{\inl}{\inr} is the identity$}\\
+                & = \app\after(\cur{g\after\twist{\1+\1}{\G}}\times \idg)\after (f\times \idg)\after\diag{\G}\qt{Factoring}\\
+               & = g\after\twist{\1+\1}{\G} \after (f\times \idg)\after\diag{\G} \qt{Definition of $\app,\cur{..}$}\\
+               & = g\after(\idg\times f)\after \twist{\G}{\G} \after\diag{\G} \qt{Twist commutivity}\\
+               & = g\after(\idg\times f) \after\pr{\idg}{\idg} \qt{Twist, diagonal defintions} \\
+               & = g\after\pr{\idg}{f} \\
+               & = \deno{\gtyperelation{v_1\ssub{x}{v_2}}{ A}}
+            \end{align*}
+            }}
+        
+        
+        \subsection{Congruences}
+        These cases can be proved fairly mechanically by assuming the preconditions, using induction to prove that the matching pairs of subexpressions have equal denotations, then constructing the denotations of the expressions using the equal denotations which gives trivially equal denotations.
+        
+        \case{Lambda}
+            By inversion, we have $\berelation{\gax}{v_1}{v_2}{B}$
+            By induction, we therefore have $\deno{\typerelation{\gax}{v_1}{B}} = \deno{\typerelation{\gax}{v_2}{B}}$
+        
+            Then let
+            \begin{equation}
+                f = \deno{\typerelation{\gax}{v_1}{B}} = \deno{\typerelation{\gax}{v_2}{B}}
+            \end{equation}
+        
+            And so
+            \begin{equation}
+                \deno{\gtyperelation{\lam{x}{A}{v_1}}{\ab}} = \cur{f} = \deno{\gtyperelation{\lam{x}{A}{v_2}}{\ab}}
+            \end{equation}
+        
+        
+        \case{Return}
+        By inversion, we have $\gberelation{v_1}{v_2}{A}$
+        By induction, we therefore have $\deno{\gtyperelation{v_1}{A}} = \deno{\gtyperelation{v_2}{A}}$
+        
+        Then let
+        \begin{equation}
+            f = \deno{\gtyperelation{v_1}{A}} = \deno{\gtyperelation{v_2}{A}}
+        \end{equation}
+        
+        And so
+        \begin{equation}
+            \deno{\gtyperelation{\return{v_1}}{\M{\1}{A}}} = \point{A}\after f = \deno{\gtyperelation{\return{v_2}}{\M{\1}{A}}}
+        \end{equation}
+        
+        
+        \case{Apply}
+        By inversion, we have $\gberelation{v_1}{v_1'}{\ab}$ and $\gberelation{v_2}{v_2'}{A}$
+        By induction, we therefore have $\deno{\gtyperelation{v_1}{\ab}}= \deno{\gtyperelation{v_1'}{\ab}}$ and $\deno{\gtyperelation{v_2}{A}} = \deno{\gtyperelation{v_2'}{A}}$
+        
+        Then let
+        \begin{align*}
+            f &{}= \deno{\gtyperelation{v_1}{\ab}} = \deno{\gtyperelation{v_1'}{\ab}}\\
+            g &{}= \deno{\gtyperelation{v_2}{A}} = \deno{\gtyperelation{v_2'}{A}}
+        \end{align*}
+        
+        
+        
+        And so
+        \begin{equation}
+            \deno{\gtyperelation{\apply{v_1}{v_2}}{\M{\e}{A}}} = \app\after\pr{f}{g} = \deno{\gtyperelation{\apply{v_1'}{v_2'}}{\M{\e}{A}}}
+        \end{equation}
+        
+        
+        \case{Bind}
+        By inversion, we have $\gberelation{v_1}{v_1'}{\M{\e_1}{A}}$ and $\berelation{\gax}{v_2}{v_2'}{\M{\e_2}{B}}$
+        By induction, we therefore have $\deno{\gtyperelation{v_1}{\M{\e_1}{A}}}= \deno{\gtyperelation{v_1'}{\M{\e_1}{A}}}$ and $\deno{\typerelation{\gax}{v_2}{\M{\e_1}{A}}} = \deno{\typerelation{\gax}{v_2'}{\M{\e_2}{B}}}$
+        
+        Then let
+        \begin{align*}
+            f &{}=\deno{\gtyperelation{v_1}{\M{\e_1}{A}}}= \deno{\gtyperelation{v_1'}{\M{\e_1}{A}}}\\
+            g &{}=\deno{\typerelation{\gax}{v_2}{\M{\e_2}{B}}} = \deno{\typerelation{\gax}{v_2'}{\M{\e_2}{B}}}
+        \end{align*}
+        
+        
+        
+        And so
+        \begin{equation}
+            \begin{split}
+                \deno{\gtyperelation{\doin{x}{v_1}{v_2}}{\M{\e_1\dot\e_2}{A}}} & = \bind{\e_1}{\e_2}{B} \after \T{\e_1}{g} \after \tstrength{\e_1}{\G}{A} \after \pr{\idg}{f}\\
+                 & = \deno{\gtyperelation{\doin{x}{v_1}{v_2}}{\M{\e_1\dot\e_2}{A}}}
+            \end{split}
+        \end{equation}
+        \case{If}
+        By inversion, we have $\gberelation{v}{v'}{\B}$, $\gberelation{v_1}{v_1'}{\M{\e_1}{A}}$ and $\gberelation{v_2}{v_2'}{\M{\e_2}{B}}$
+        By induction, we therefore have $\deno{\gtyperelation{v}{\B}} = \deno{\gtyperelation{v'}{B}}$, $\deno{\gtyperelation{v_1}{ A}}= \deno{\gtyperelation{v_1'}{ A}}$ and $\deno{\typerelation{\gax}{v_2}{\M{\e_2}{B}}} = \deno{\typerelation{\gax}{v_2'}{\M{\e_2}{B}}}$
+        
+        Then let
+        \begin{align*}
+            f &{}=\deno{\gtyperelation{v}{\B}} = \deno{\gtyperelation{v'}{B}}\\
+            g &{}=\deno{\gtyperelation{v_1}{\M{\e_1}{A}}}= \deno{\gtyperelation{v_1'}{\M{\e_1}{A}}}\\
+            h &{}=\deno{\typerelation{\gax}{v_2}{\M{\e_2}{B}}} = \deno{\typerelation{\gax}{v_2'}{\M{\e_2}{B}}}
+        \end{align*}
+        
+        
+        
+        And so
+        \begin{equation}
+            \begin{split}
+                \deno{\gtyperelation{\pifthenelse{A}{v}{v_1}{v_2}}} & = \ifMorph{f}{g}{h}\\
+                 & = \deno{\gtyperelation{\doin{x}{v_1}{v_2}}{\M{\e_1\dot\e_2}{A}}}
+            \end{split}
+        \end{equation}
+        \case{Subtype}
+        By inversion, we have $\gberelation{v_1}{v_2}{A}$, and $A \subtype B$ 
+        By induction, we therefore have $\deno{\gtyperelation{v_1}{A}} = \deno{\gtyperelation{v_2}{A}}$
+        
+        Then let
+        \begin{align*}
+            f &{}=\deno{\gtyperelation{v_1}{A}} = \deno{\gtyperelation{v_2}{B}}\\
+            g &{}=\deno{A \subtype B}
+        \end{align*}
+        
+        
+        
+        And so
+        \begin{equation}
+                \deno{\gtyperelation{v_1}{B}} = g \after f = \deno{\gtyperelation{v_1}{B}}
+        \end{equation}
+        
+        $$\square$$
+    \end{proof}
+\end{framed}
 
 \end{document} 
