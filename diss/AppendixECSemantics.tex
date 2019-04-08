@@ -3,13 +3,8 @@
 
 \begin{document}
 
-\todo{Boxify Theorems + proofs}
-\todo{Theorem-ify properties}
+
 \todo{Be careful on language used}
-\todo{referencing}
-\todo{Fix Cases}
-\todo{Well Formed-ness, etc}
-\todo{Well formedness of subtyping + weakening}
 
 \abstract
 This document contains a terse explanation of the semantics of the Effect Calculus in an S-Category.
@@ -18,7 +13,6 @@ This document contains a terse explanation of the semantics of the Effect Calcul
 \chapter{Language Definition}
 
 \section{Terms}
-\subsection{Value Terms}
 
 \begin{equation}
     \begin{split}
@@ -67,7 +61,7 @@ An environment, $G \gens \nil \mid \gax$
 \paragraph{$\ok{}$ Predicate}
 \begin{itemize}
     \item $\ntreerulez{Atom}{\ok{\nil}}$
-    \item $\ntreeruleI{Var}{\ok{\G} }{ x\notin \dom{\G}}{\ok{\gax}}$
+    \item $\ntreeruleII{Var}{\ok{\G} }{ x\notin \dom{\G}}{\ok{\gax}}$
 \end{itemize}
 
 
@@ -91,9 +85,9 @@ An environment, $G \gens \nil \mid \gax$
 
 \subsection{Ok Lemma}
 
-\begin{theorem}[Ok Lemma]
+\begin{lemma}[Ok Lemma]\label{OkLemma}
     If $\gtyperelation{v}{A}$ then $\ok{\G}$.
-\end{theorem}
+\end{lemma}
 
 
 \begin{framed}
@@ -104,7 +98,7 @@ An environment, $G \gens \nil \mid \gax$
 \end{framed}
 
 \chapter{Category Requirements}
-$\C$ should be an S-Category instantiated with the relevant Subtyping and subeffecting morphisms and natural transformations.
+$\C$ should be an S-Category instantiated with the relevant subtyping and subeffecting morphisms and natural transformations.
 
 \chapter{Denotations}
 \section{Helper Morphisms}
@@ -160,7 +154,7 @@ $$\deno{\gtyperelation{v}{A}}: \G \rightarrow A$$
 
 Denotations are defined recursively over the typing derivation of a term. Hence, they implicitly depend on the exact derivation used. Since, as proven in the chapter on the uniqueness of derivations, the denotations of all type derivations yielding the same type relation $\gtyperelation{v}{A}$ are equal, we need not refer to the derivation that yielded each denotation.
 
-\subsection{Denotation of Value Terms}
+\subsection{Denotation of Terms}
 \begin{itemize}
     \item $\ntreeruleI{Unit}{\ok{\G}}{\deno{\typerelation{\G}{\u}{\U}} = \term{\G} : \G \rightarrow \1}$
         
@@ -176,9 +170,6 @@ Denotations are defined recursively over the typing derivation of a term. Hence,
     
     \item $\ntreeruleII{Subtype}{f = \deno{\typerelation{\G}{v}{A}} : \G \rightarrow A}{ g = \deno{A \subtype B}}{\deno{\typerelation{\G}{v}{B}} = g \after f : \G \rightarrow B}$
   
-\end{itemize}
-\subsection{Denotation of Computation Terms}
-\begin{itemize}     
     \item $\ntreeruleI{Return}{f = \deno{\typerelation{\G}{v}{A}}}{\deno{\typerelation{\G}{\return{v}}{\moa}} = \point{A} \after f}$
         
  
@@ -240,7 +231,6 @@ $$
 
 If $A = B$, then the subtype relation is the identity subtype ($A \subtype A$).
 
-\subsection{Value Terms}
 \case{Lambda}
 The reduced derivation of $\gtyperelation{\lam{x}{A}{v}}{\fntype{A'}{B'}}$ is:
 
@@ -263,8 +253,6 @@ Where
 \end{equation}
 is the reduced derivation of $\typerelation{\gax}{v}{\M{\e'}{B}}$ if it exists.
 
-
-\subsection{Computation Terms}
 \case{Return}
 The reduced denotation of $\gtyperelation{\return{v}}{\meb}$ is 
 $$
@@ -405,15 +393,14 @@ We introduce a function, $\reduce$ that maps each valid type derivation of $\gty
 
         $\reduce(\truleconst) = \truleconst$
 
-    \subsection{Value Types}
-        \paragraph{Var}
+        \case{Var}
         \begin{equation}
             \reduce(\ntreeruleI{Var}{\ok{\G}}{\typerelation{\gax}{x}{A}}) =  \ntreeruleI{Var}{\ok{\G}}{\typerelation{\gax}{x}{A}}
         \end{equation}
 
         Preserves denotation trivially.
 
-        \paragraph{Weaken}
+        \case{Weaken}
         \subparagraph{$\reduce$ definition}
         To find:
         \begin{equation}
@@ -466,7 +453,7 @@ We introduce a function, $\reduce$ that maps each valid type derivation of $\gty
 
         So the denotations of the un-reduced and reduced derivations are equal.
 
-        \paragraph{Lambda}
+        \case{Lambda}
         \subparagraph{$\reduce$ definition}
             To find:
         
@@ -518,7 +505,7 @@ We introduce a function, $\reduce$ that maps each valid type derivation of $\gty
                         & = after \qt{By definition}\\
             \end{align*}
 
-        \paragraph{Subtype}
+        \case{Subtype}
         \subparagraph{$\reduce$ definition}
         To find:
         \begin{equation}
@@ -546,8 +533,8 @@ We introduce a function, $\reduce$ that maps each valid type derivation of $\gty
                 & = \deno{A' \subtype B} \after \D'\qt{Subtyping relations are unique} \\
                 & = after \\
             \end{align*}
-    \subsection{Computation Types}
-        \paragraph{Return}
+    
+        \case{Return}
         \subparagraph{$\reduce$ definition}
         To find:
         
@@ -593,7 +580,7 @@ We introduce a function, $\reduce$ that maps each valid type derivation of $\gty
                 &{}=\deno{\1\subeffect\1}_{A} \after \T{\1}{\deno{A'\subtype A}}\after\point{A'}\after\D'\qt{Since $\deno{\1\subeffect\1}$ is the identity Nat-Trans }\\
                 &{}=after\qt{By definition}\\
             \end{align*}
-        \paragraph{Apply}
+        \case{Apply}
         \subparagraph{$\reduce$ definition}
         To find:
         \begin{equation}
@@ -679,7 +666,7 @@ We introduce a function, $\reduce$ that maps each valid type derivation of $\gty
                 & = h_B\after\T{\e'}{g}\after\app\after\pr{\D'_1}{f\after f'\after \D'_2}\\
                 & = after\qt{By defintion}
             \end{align*}
-        \paragraph{If}
+        \case{If}
        
         \subparagraph{$\reduce$ definition}
         \begin{equation}
@@ -709,7 +696,7 @@ We introduce a function, $\reduce$ that maps each valid type derivation of $\gty
             Since calling $\reduce{}$ on the sub-derivations preserves their denotations, this definition trivially preserves the denotation of the derivation.
 
 
-            \paragraph{Bind}
+            \case{Bind}
             \subparagraph{$\reduce$ definition}
 
             To find
@@ -882,11 +869,11 @@ The denotation of a weakening relation is defined as follows:
 
 \begin{framed}
     \begin{proof}
-        \subparagraph{Case Id}
+        \case{Id}
         Then $\G' = \G$ and so $\dom{\G'} = \dom{\G}$.
-        \subparagraph{Case Project}
+        \case{Project}
         By inversion and induction, $\dom{\G}\subseteq\dom{\G'}\subseteq\dom{\G'\cup\left\{x\right\}}$
-        \subparagraph{Case Extend}
+        \case{Extend}
         By inversion and induction, $\dom{\G}\subseteq\dom{\G'}$ so 
         $$\dom{\gax} = \dom{\G}\cup\left\{x\right\} \subseteq\dom{\G'}\cup\left\{x\right\} = \dom{\G',x:A}$$
     \end{proof}
@@ -902,19 +889,19 @@ The denotation of a weakening relation is defined as follows:
 \begin{framed}
     \begin{proof}
         
-        \subparagraph{Case Id}
+        \case{Id}
         $$\ntreeruleI{Id}{\ok{\G}}{\wrel{\i}{\G}{\G}}$$
         
         By inversion, $\ok{\G}$.
         
-        \subparagraph{Case Project}
+        \case{Project}
         $$\ntreeruleII{Project}{\wrel{\w}{\G'}{\G}}{ x \notin \dom{\G'}}{\wrel{\w \pi}{\G, x: A}{\G}}$$
         
         By inversion, $\wrel{\w}{\G'}{\G}$ and $x\notin \dom{\G'}$.
         
         Hence by induction $\ok{\G'}$, $\ok{\G}$. Since $x\notin\dom{\G'}$, we have $\ok{\G', x:A}$.
         
-        \subparagraph{Case Extend}
+        \case{Extend}
         $\ntreeruleIII{Extend}{\wrel{\w}{\G'}{\G}}{ x \notin \dom{\G'}}{ A \subtype B}{\wrel{w \x}{\G', x: A}{\G, x: B}}$, 
         
         By inversion, we have 
@@ -935,7 +922,7 @@ The denotation of a weakening relation is defined as follows:
 \end{theorem}
 
 \begin{proof}
-    Proved in parallel with theorem \ref{WeakeningDenotation} below
+    Proved in parallel with theorem \ref{WeakeningDenotations} below
 \end{proof}
 
 
@@ -1013,7 +1000,7 @@ The denotation of a weakening relation is defined as follows:
                  & = \D\after\deno{\wrel{\w}{\G'}{\G}}\qt{By Definition}
             \end{align*}
         
-            \subparagraph{Case $x \neq x'$}
+            \case{$x \neq x'$}
             Then 
             \begin{equation}
                 \D = \ntreeruleI{Weaken}{\treeruleI{\D_1}{\typerelation{\G''}{x}{A}}}{\gtyperelation{x}{A}}
@@ -1042,7 +1029,6 @@ The denotation of a weakening relation is defined as follows:
                 & = \D\after\deno{\wrel{\w}{\G'}{\G}}\qt{By definition}
             \end{align*}
         
-        \subsection{Value Terms}
         From this point onwards, since we no-longer case split over the weakening relations, we write the denotation $\deno{\wrel{\w}{\G'}{\G'}}$, simply as $\w$.
         
         
@@ -1130,7 +1116,6 @@ The denotation of a weakening relation is defined as follows:
             & = \D\after\w \qt{By Definition}\\
         \end{align*}
         
-        \subsection{Computation Terms}
         \case{Return}
         We have the sub-derivation $\D_1$ such that
         \begin{equation}
@@ -1334,7 +1319,7 @@ The denotation of a weakening relation is defined as follows:
         (\apply{v_1}{v_2})\ssi&= \apply{(v_1\ssi)}{v_2\ssi}\\
         (\doin{x}{v_1}{v_2})&= \doin{x}{(v_1\ssi)}{(v_2\ssi)}\qt{If } x\#\si\\
     \end{align*}
-\subsection{Well Formed-ness}
+\subsection{Wellformedness}
 Define the relation $$\typerelation{\G'}{\si}{\G}$$ by:
 
 \begin{itemize}
@@ -1352,19 +1337,19 @@ Define the relation $$\typerelation{\G'}{\si}{\G}$$ by:
 \subsection{Simple Properties Of Substitution}
 
 \begin{property}[Ok Relation]\label{SubPropOne}
-    If $\typerelation{\G'}{\si}{\G}$ then  $\ok{\G}$ and $\ok{\G'}$. Since $\ok{\G'}$ holds by the Nil-axiom. $\ok{\G}$ holds by induction on the well-formed-ness relation.
+    If $\typerelation{\G'}{\si}{\G}$ then  $\ok{\G}$ and $\ok{\G'}$. Since $\ok{\G'}$ holds by the Nil-axiom. $\ok{\G}$ holds by induction on the wellformedness relation.
 \end{property}
 
 \begin{property}[Weakening]\label{SubPropTwo}
     If $\typerelation{\G'}{\si}{\G}$ then $\wrel{\w}{\G''}{\G'}$ implies $\typerelation{\G''}{\si}{\G}$.
-    This holds by induction over well-formed-ness relation. For each $x\setto v$ in $\si$, $\typerelation{\G''}{v}{A}$ holds if $\typerelation{\G'}{v}{A}$ holds.
+    This holds by induction over wellformedness relation. For each $x\setto v$ in $\si$, $\typerelation{\G''}{v}{A}$ holds if $\typerelation{\G'}{v}{A}$ holds.
 \end{property}
 
 \begin{property}[Extension]\label{SubPropThree}
     If $\typerelation{\G'}{\si}{\G}$ then $x \notin (\dom{\G} \cup \dom{\G''})$ implies $\typerelation{(\G', x: A)}{(\si, x \setto x)}{(\gax)}$.
     This occurs since $\wrel{\i\pi}{\G',x: A}{\G'}$, so by property \ref{SubPropTwo}, 
     $\typerelation{\G', x: A}{\si}{\G}$.
-    In addition, $\typerelation{\G', x: A}{x}{A}$ trivially, so by the rule \textbf{Extend}, well-formed-ness holds for
+    In addition, $\typerelation{\G', x: A}{x}{A}$ trivially, so by the rule \textbf{Extend}, wellformedness holds for
     \begin{equation}
         \typerelation{(\G', x:A)}{(\si, x\setto x)}{(\gax)}
     \end{equation}
@@ -1379,7 +1364,7 @@ Define the relation $$\typerelation{\G'}{\si}{\G}$$ by:
 We have the following non-trivial property of substitution:
 
 
-\begin{theorem}[Substitution Preserves Typing Relation]
+\begin{theorem}[Substitution Preserves Typing Relation]\label{SubsTyping}
 
     If $\typerelation{\G}{g}{A}$ and $\typerelation{\G'}{\si}{\G}$ then $\typerelation{\G'}{v\ssi}{A}$.
 \end{theorem}
@@ -1444,13 +1429,13 @@ We have the following non-trivial property of substitution:
                 }{\typerelation{\G}{\lam{x}{A}{v}}{\ab}}
             \end{equation}
             Using alpha equivalence, we pick $x\notin(\dom{\G}\cup\dom{\G'})$
-            Hence, by property 3, we have
+            Hence, by property \ref{SubPropThree}, we have
         
             \begin{equation}
                 \typerelation{(\G', x:A )}{(\si, x\setto x)}{\gax}
             \end{equation}
         
-            So by induction using $\si,x\setto x$, we have $\D'$ such that:
+            So by induction using $\si, x\setto x$, we have $\D'$ such that:
         
             \begin{equation}
                 \ntreeruleI{Fn}{
@@ -1551,7 +1536,7 @@ We have the following non-trivial property of substitution:
                 }{\typerelation{\G}{\doin{x}{v_1}{v_2}}{\M{\e_1\dot\e_2}{B}}}
             \end{equation}
         
-            Using alpha-equivalence, we pick $x\notin(\dom{\G}\cup\dom{\G'})$. Hence by property 3, $$\typerelation{(\G, x: A)}{(\si, x\setto x)}{(\gax)}$$
+            Using alpha-equivalence, we pick $x\notin(\dom{\G}\cup\dom{\G'})$. Hence by property \ref{SubPropThree}, $$\typerelation{(\G, x: A)}{(\si, x\setto x)}{(\gax)}$$
             By induction on $\D_1, \D_2$, we have $\D_1', \D_2'$ such that:
             \begin{equation}
                 \ntreeruleII{Bind}{
@@ -1653,7 +1638,7 @@ We have the following non-trivial property of substitution:
     \begin{proof}
         This is proved by induction over the derivation of $\typerelation{\G}{v}{A}$.
         We shall use $\si$ to denote $\deno{\typerelation{\G'}{\si}{\G}}$ where it is clear from the context.
-        \subsection{Proof For Value Terms}
+        
         \case{Var}
         By inversion $\G = \G'', x:A$
         \begin{equation}
@@ -1679,7 +1664,7 @@ We have the following non-trivial property of substitution:
             \ntreeruleI{Weaken}{\treeruleI{\D_1}{\typerelation{\G''}{x}{A}}}{\typerelation{\G'',y: B}{x}{A}}
         \end{equation}
         
-        Also by inversion of the well-formed-ness of $\typerelation{\G'}{\si}{\G}$, we have $\typerelation{\G'}{\si'}{\G''}$ and 
+        Also by inversion of the wellformedness of $\typerelation{\G'}{\si}{\G}$, we have $\typerelation{\G'}{\si'}{\G''}$ and 
         
         \begin{equation}
             \deno{\typerelation{\G'}{\si}{\G}} = \pr{\deno{\typerelation{\G'}{\si}{\G''}}}{\deno{\typerelation{\G'}{v}{B}}}
@@ -1761,7 +1746,7 @@ We have the following non-trivial property of substitution:
                 &= \deno{A\subtype B}\after\D_1\after\si\qt{By induction}\\
                 &= \D\after\si\qt{By definition}\\
         \end{align*}
-        \subsection{Proof For Computation Terms}
+        
         \case{Return}
         
         By inversion, we have $\D_1$ such that:
@@ -1872,7 +1857,7 @@ We have the following non-trivial property of substitution:
             }
         \end{equation}
         
-        By property 3,
+        By property \ref{SubPropThree},
         
         \begin{equation}
             \typerelation{(\G', x:A)}{(\si, x\setto x}{(\gax)}
@@ -1931,7 +1916,7 @@ For each type environment $\G$, define the identity substitution $I_{\G}$ as so:
 
 
 \begin{property}[Wellformedness]\label{IdPropOne}
-    If $\ok{\G}$ then $\typerelation{\G}{I_{\G}}{\G}$, proved trivially by induction over the well formed-ness relation.
+    If $\ok{\G}$ then $\typerelation{\G}{I_{\G}}{\G}$, proved trivially by induction over the wellformedness relation.
 \end{property}
 
 
@@ -2068,7 +2053,7 @@ And $v_1\ssub{x}{v} = v_1\sub{I_{\G}, x\setto{v}}$
                 \gtyperelation{v_2}{A}
             }{\gtyperelation{\apply{(\lam{x}{A}{v_1})}{v_2}}{B}}$$
         
-            By the substitution rule \todo{which?}, we have 
+            By the substitution typing theorem \ref{SubsTyping}, we have 
             $$\ntreeruleII{Substitution}{\typerelation{\gax}{v_1}{B}}{\gtyperelation{v_2}{A}}{\gtyperelation{v_1\ssub{x}{v_2}}{B}}$$
         
         
@@ -2083,7 +2068,7 @@ And $v_1\ssub{x}{v} = v_1\sub{I_{\G}, x\setto{v}}$
                 \ntreeruleII{Bind}{\ntreeruleI{Return}{\gtyperelation{v_1}{A}}{\gtyperelation{\return{v_1}}{\moa}}}{\typerelation{\gax}{v_2}{\meb}}{\gtyperelation{\doin{x}{\return{v_1}}{v_2}}{\M{\1\dot\e}{B} = \meb}}
             \end{equation}
         
-            And by the substitution typing rule we have: \todo{Which Rule?}
+            And by the substitution typing theorem \ref{SubsTyping} we have: 
         
             \begin{equation}
                 \gtyperelation{v_2\ssub{x}{v_1}}{\meb}
@@ -2107,7 +2092,7 @@ And $v_1\ssub{x}{v} = v_1\sub{I_{\G}, x\setto{v}}$
             
             $$\wrel{(\i\pi\times)}{(\gax, y: B)}{(\gby)}$$
         
-            So by the weakening property \todo{which?}, $\typerelation{\gax, y: B}{v_3}{\M{\e_3}{C}}$
+            So by the weakening property \ref{WeakeningTyping}, $\typerelation{\gax, y: B}{v_3}{\M{\e_3}{C}}$
         
             Hence we can construct the type derivations:
             \begin{equation} 
@@ -2175,7 +2160,7 @@ And $v_1\ssub{x}{v} = v_1\sub{I_{\G}, x\setto{v}}$
             \end{equation}
         
             \case{If-True}
-                By inversion, we have $\gtyperelation{v_1}{ A}$, $\gtyperelation{v_2}{ A}$. Hence by the typing lemma \todo{Which?}, we have $\ok{\G}$ so $\gtyperelation{\t}{\B}$ by the axiom typing rule.
+                By inversion, we have $\gtyperelation{v_1}{ A}$, $\gtyperelation{v_2}{ A}$. Hence by the typing ok lemma \ref{OkLemma}, we have $\ok{\G}$ so $\gtyperelation{\t}{\B}$ by the axiom typing rule.
         
                 Hence 
                 \begin{equation}
@@ -2468,7 +2453,7 @@ And $v_1\ssub{x}{v} = v_1\sub{I_{\G}, x\setto{v}}$
         \scalebox{0.8}{\parbox{1.2\linewidth}{%
         \begin{align*}
                 F & = \tstrength{\e_1\dot\e_2}{\G}{B}\after(\idg\times\bind{\e_1}{\e_2}{B})\after(\idg\times\T{\e_1}{g})\after\pr{\idg}{\tstrength{\e_1}{\G}{A}\after\pr{\idg}{f}}\\
-                &  = \bind{\e_1}{\e_2}{(\G\times B)} \after \T{\e_1}{\tstrength{\e_2}{\G}{B}} \after\tstrength{\e_1}{\G}{(\T{\e_2}{B})} \after (\idg \after\T{\e_1}{g})\after\pr{\idg}{\tstrength{\e_1}{\G}{A}\after\pr{\idg}{f}}\qt{By \todo{ref: mu+tstrength}}
+                &  = \bind{\e_1}{\e_2}{(\G\times B)} \after \T{\e_1}{\tstrength{\e_2}{\G}{B}} \after\tstrength{\e_1}{\G}{(\T{\e_2}{B})} \after (\idg \after\T{\e_1}{g})\after\pr{\idg}{\tstrength{\e_1}{\G}{A}\after\pr{\idg}{f}}\qt{By commutativity of bind and tensor-strength}
                 \\ & = \bind{\e_1}{\e_2}{(\G \times B))} \after \T{\e_1}{(\tstrength{\e_2}{\G}{B} \after (\idg \times g))} \after \tstrength{\e_1}{\G}{(\G \times A)} \after \pr{\idg}{\tstrength{\e_1}{\G}{A}\after\pr{\idg}{f}}\qt{By naturality of v-strength}
         \end{align*}
         }}
@@ -2502,7 +2487,7 @@ And $v_1\ssub{x}{v} = v_1\sub{I_{\G}, x\setto{v}}$
             G = \T{\e_1}{(\idg\times g)}\after\tstrength{\e_1}{\G}{\G \times A}\after(\idg\times\tstrength{\e_1}{\G}{A})\after\pr{\idg}{\pr{\idg}{f}}
         \end{equation}
         
-        From the rule \todo{Ref} showing the commutativity of tensor strength with $\alpha$, the following commutes
+       Using the commutativity of tensor strength with the associativity natural transformation $\a$, we have:
         
         \begin{tikzcd}
             \G 
