@@ -1,8 +1,181 @@
-\documentclass{report}
-\input{../proofs/header.tex}
+% Won't compile on its own.
 
 % A list of properties that an S-preserving functor should preserve.
 
-\begin{document}
+
+
+\chapter{S-Category Functors}
+
+This appendix gives a terse introduction to the properties of functors between S-categories. In particular, it covers re-indexing functors $f\star$ and the quantification functor $\allI$.
+
+\section{Re-Indexing Functors}\label{AppendixReindexingFunctors}
+For each morphism $f: I' \rightarrow I$ in $\C$, there should be a co-variant, re-indexing functor  $f\star: \C(I) \rightarrow \C(I')$, which is S-preserving. That is, it preserves the S-category structure of $\C(I)$. (See below). $(-)\star$ should be a contra-variant functor in its $\C$ argument and co-variant in its right argument.
+
+\begin{itemize}
+    \item $(g\after f)\star(a) = f\star(\g\star(a))$
+    \item $\Id{I}\star(a) = a$
+    \item $f\star(\Id{A}) = \Id{f\star(A)}$
+    \item $f\star(a\after b) = f\star(a)\after f\star(b)$
+\end{itemize}
+\subsection{Preserves Ground Types}
+If $\deno{\g}\in\obj\C(I)$ then $f\star\deno{\g} = \deno{\g}\in\obj\C(I')$
+\subsection{$f\star$ Preserves Products}
+If $\pr{g}{h}:\C(I)(Z, X\times Y)$
+Then 
+\begin{align*}
+    f\star(X\times Y) & = f\star(X)\times f\star(Y)\\
+    f\star(\pr{g}{h}) & = \pr{f\star(g)}{f\star{h}}&:\C(I')(f\star Z, f\star(X)\times f\star(Y))\\
+    f\star(\p) & = \p&:\C(I')(f\star(X)\times f\star(Y), f\star(X)) \\
+    f\star(\pp) &= \pp&:\C(I')(f\star(X)\times f\star(Y), f\star(Y))
+\end{align*}
+
+\subsection{$f\star$ Preserves Terminal Object}
+If $\Id{A}:\C(I)(A, \1)$
+Then 
+\begin{align*}
+    f\star(\1) & = \1 \\
+    f\star(\term{A}) & = \term{f\star(A)}&:\C(I')(f\star A, \1)\\
+\end{align*}
+
+\subsection{$f\star$ Preserves Exponentials}
+\begin{align*}
+    f\star(Z^X) & = (f\star(Z))^{(f\star(X))}\\
+     f\star(\app) &= \app&:\C(I')(f\star(Z^X)\times f\star(X), f\star(Z))\\
+     f\star(\cur{g}) &= \cur{f\star(g)}&:\C(I')(f\star(Y)\times f\star(X), f\star(Z)^{f\star(X)})
+\end{align*}
+
+\subsection{$f\star$ Preserves Co-product on Terminal}
+
+\begin{align*}
+    f\star(\1+\1) &= \1+\1\\
+    f\star(\inl)  &= \inl&:\C(I')(\1, \1+\1) \\
+    f\star(\inr) &= \inr&:\C(I')(\1, \1+\1) \\
+    f\star([g, h]) &= [f\star(g), f\star(h)]&:\C(I')(\1+\1, f\star(Z))
+\end{align*}
+
+\subsection{$f\star$ Preserves Graded Monad}
+\begin{align*}
+    f\star(\tea) &= \T{f\star(\e)}{f\star(A)}&:\C(I')\\    
+    f\star(\point{A}) &= \point{f\star(A)}&:\C(I')(f\star(A), f\star(\toa))\\
+    f\star(\bind{\e_1}{\e_2}{A}) &= \bind{f\star(\e_1)}{f\star(\e_2)}{f\star(A)}&:\C(I')(f\star(\T{\e_1}{\T{\e_2}{A}}), f\star(\T{\e_1\dot\e_2}{A}))\\
+\end{align*}
+
+\subsection{$f\star$ and Effects}
+\begin{align*}
+    f\star(\1) &= \1 \qt{The unit effect}\\
+    f\star(\e_1\dot\e_2) &= f\star(\e_1)\dot f\star(\e_2)\qt{Multiplication}\\
+\end{align*}
+
+This is done By
+\begin{align*}
+    f\star\deno{\typerelation{\P}{\e}{\effect}} & = \deno{\typerelation{\P}{\e}{\effect}}\after f
+\end{align*}
+
+\subsection{$f\star$ Preserves Tensor Strength}
+\begin{align*}
+    f\star(\tstrength{\e}{A}{B}) &= \tstrength{f\star(\e)}{f\star(A)}{f\star(B)} &: \C(I')(f\star(A\times\teb), f\star(\T{\e}{(A\times B)}))
+\end{align*}
+\subsection{$f\star$ Preserves Ground Constants}
+For each ground constant $\deno{\const{A}}$ in $\C(I)$,
+
+\begin{align*}
+    f\star(\deno{\const{A}}) = \const{f\star(A)} : \C(I')(\1, f\star(A))
+\end{align*}
+\subsection{$f\star$ Preserves Ground Subeffecting}
+For ground effects $e_1, e_2$ such that $e_1\subeffect e_2$
+
+
+
+\begin{align*}
+    f\star(e) & = e: \C(I')\\
+    f\star\db{\e_1\subeffect e_2}_A = \db{e_1 \subeffect e_2}_{f\star(A)} &:\C(I'){f\star(\T{e_1}{A}), f\star(\T{e_2}{A})} \\
+\end{align*}
+\subsection{$f\star$ Preserves Ground Subtyping}
+For ground types $\g_1, \g_2$ such that $\g_1\subtypeg\g_2$
+
+\begin{align*}
+    f\star{\g} = \g: \C(I')(\1, \g)\\
+    f\star(\deno{\g_1 \subtypeg \g_2}) & = \deno{\g_1 \subtypeg \g_2} &: \C(I')(\g_1, \g_2)\\
+\end{align*}
+
+\section{The $\allI$ functor}
+
+We expand $\allI: \C(I\times U) \rightarrow \C(I)$ to be a functor which is right adjoint to the re-indexing functor $\pstar$.
+
+\begin{equation}
+    \bar{(\_)}: \C(I\times U)(\pstar A, B) \leftrightarrow \C(I)(A, \allI B) : \widehat{(\_)}
+\end{equation}
+
+For $A\in\obj\C(I)$, $B\in\obj\C(I\times U)$.
+
+Hence the action of $\allI$ on a morphism $l : A\rightarrow A'$ is as follows:
+\begin{eqnarray}
+    \allI(l) = \bar{l\after\counit{A}}
+\end{eqnarray}
+Where $\e_A: \C(I\times U)(\pstar\allI A \rightarrow A)$ is the co-unit of the adjunction.
+
+\subsection{Beck Chevalley Condition}
+We need to be able to commute the $\allI$ functor with re-indexing functors. A natural way to do this is:
+\begin{align*}
+    \theta\star\after\allI & = \allII\after(\theta\times\Id{U})\star
+\end{align*}
+
+We shall also require that the canonical natural-transformation between these functors is the identity.
+
+That is, $\bar{(\theta\times\Id{U})\star(\counit{})} = \Id{}: \theta\star\after\allI \rightarrow \allII\after(\theta\times\Id{U})\star\in \C(I')$
+
+This shall be called the Beck-Chevalley condition.
+
+
+\section{Naturality Corollaries}
+Here are some simple corollaries of the adjunction between $\pstar$ and $\allI$.
     
-\end{document}
+    \subsection{Naturality}
+    By the definition of an adjunction:
+    
+    \begin{equation}
+        \bar{f\after\pstar(n)} = \bar{f}\after n
+    \end{equation}
+    
+    \subsection{$\bar{(-)}$ and Re-indexing Functors}
+    By assuming the Beck-Chevalley condition that:
+    
+    \begin{equation}
+        \bar{(\theta\times\Id{U})\star(\counit{})} = \Id{}: \theta\star\after\allI \rightarrow \allII\after(\theta\times\Id{U})\star
+    \end{equation}
+    
+    We then have:
+    
+    \begin{align*}
+        \theta\star\unit{A}:\quad&\theta\star A \rightarrow \theta\star\after\allI\after\pstar A\\
+        \theta\star\unit{} =& \bar{(\theta\times\Id{U})\star(\counit{\pstar})}\after\theta\star\unit{}\\
+        =& (\allII\after(\theta\times\Id{U})\star)(\counit{\pstar})\after\unit{(\allII\after(\theta\times\Id{U})\star)\after\pstar}\after\theta\star\unit{}\\
+        = & (\allII\after(\theta\times\Id{U})\star)(\counit{\pstar})\after\unit{\theta\star\after\allI\after\pstar}\after\theta\star\unit{}\\
+        = & (\allII\after(\theta\times\Id{U})\star)(\counit{\pstar}) \after(\theta\star\after\allI\after\pstar)\unit{} \after\unit{(\theta\times\Id{U})\star}\\
+        = & (\theta\star\after\allI)(\counit{\pstar}
+        \after\pstar\unit{})\after\unit{(\theta\times\Id{U})\star}\\
+        = & (\theta\star\after\allI)(\Id{})\after\unit{(\theta\times\Id{U})\star}\\
+        = & \unit{(\theta\times\Id{U})\star}
+    \end{align*}
+    \begin{align*}
+        \theta\star(\bar{f}) & = \theta\star(\allI(f)\after\eta_A)\\
+        & = \theta\star(\allI(f))\after\theta\star(\eta_A)\\
+        & =  (\allII\after(\theta\times\Id{U})\star)f \after\unit{(\theta\times\Id{U})\star A}\\
+        & = \bar{(\theta\times\Id{U})\star f}\\
+    \end{align*}
+    
+    \subsection{$\hat{(-)}$ and Re-Indexing Functors}
+    \begin{align*}
+        \theta\star(\pr{\Id{I}}{\rho}\star(\widehat{m})) &= (\pr{\Id{I}}{\rho}\after\theta)\star(\widehat{m})\\
+        & = ((\theta\times\Id{U})\after\pr{\Id{I}}{\rho})\star(\widehat{m})\\
+        & = \pr{\Id{I}}{\rho\after\theta}\star(\theta\times\Id{U})\star(\widehat{m}) \\
+        & = \pr{\Id{I}}{\theta\star\rho}\star(\theta\star(\widehat{m}))
+    \end{align*}
+
+\subsection{Pushing Morphisms into $f\star$}
+
+\begin{align*}
+    \pr{\Id{I}}{\rho}\star(\widehat{m})\after n &= \pr{\Id{I}}{\rho}\star(\widehat{m})\after\pr{\Id{I}}{\rho}\star\p\star(n)\\
+    & = \pr{\Id{I}}{\rho}\star(\widehat{m}\after\pstar(n))\\
+    &= \pr{\Id{I}}{\rho}\star(\widehat{m\after n})
+\end{align*}

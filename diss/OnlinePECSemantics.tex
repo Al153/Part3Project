@@ -222,7 +222,7 @@ For each instance of the well formed weakening relation on effect-variable envir
 \end{equation}.
 
 \section{Fibre Categories}
-Each set of morphisms $\C(I)$ corresponds to a semantic-closed (S-closed) category. That is, a category satisfying all the properties needed for the non-polymorphic language:
+Each set of morphisms $\C(I)$ corresponds to a semantic category (S-category). That is, a category satisfying all the properties needed for the non-polymorphic language:
 
 \begin{itemize}
     \item Cartesian Closed
@@ -235,7 +235,7 @@ Each set of morphisms $\C(I)$ corresponds to a semantic-closed (S-closed) catego
 
 \section{Re-Indexing Functors}
    \todo{Use this section for the S-Preservation definition appendix}
-For each morphism $f: I' \rightarrow I$ in $\C$, there should be a co-variant, re-indexing functor  $f\star: \C(I) \rightarrow \C(I')$, which is S-closed. That is, it preserves the S-closed properties of $\C(I)$. (See below).
+For each morphism $f: I' \rightarrow I$ in $\C$, there should be a co-variant, re-indexing functor  $f\star: \C(I) \rightarrow \C(I')$, which is S-preserving. That is, it preserves the S-category structure of $\C(I)$. (See below).
 
 $(-)\star$ should be a contra-variant functor in its $\C$ argument and co-variant in its right argument.
 
@@ -283,11 +283,20 @@ Then
 
 \subsection{$f\star$ Preserves Graded Monad}
 \begin{align*}
-    f\star(\tea) &= \T{f\star(\e)}{f\star(A)}&:\C(I')\\
-    f\star(\1) &= \1 \qt{The unit effect}\\
+    f\star(\tea) &= \T{f\star(\e)}{f\star(A)}&:\C(I')\\    
     f\star(\point{A}) &= \point{f\star(A)}&:\C(I')(f\star(A), f\star(\toa))\\
     f\star(\bind{\e_1}{\e_2}{A}) &= \bind{f\star(\e_1)}{f\star(\e_2)}{f\star(A)}&:\C(I')(f\star(\T{\e_1}{\T{\e_2}{A}}), f\star(\T{\e_1\dot\e_2}{A}))\\
-    f\star(\e_1\dot\e_2) &= f\star(\e_1)\dot f\star(\e_2)\\
+\end{align*}
+
+\subsection{$f\star$ and Effects}
+\begin{align*}
+    f\star(\1) &= \1 \qt{The unit effect}\\
+    f\star(\e_1\dot\e_2) &= f\star(\e_1)\dot f\star(\e_2)\qt{Multiplication}\\
+\end{align*}
+
+This is done By
+\begin{align*}
+    f\star\deno{\typerelation{\P}{\e}{\effect}} & = \deno{\typerelation{\P}{\e}{\effect}}\after f
 \end{align*}
 
 \subsection{$f\star$ Preserves Tensor Strength}
@@ -329,7 +338,7 @@ For $A\in\obj\C(I)$, $B\in\obj\C(I\times U)$.
 
 Hence the action of $\allI$ on a morphism $l : A\rightarrow A'$ is as follows:
 \begin{eqnarray}
-    \allI(l) = \bar{l\after\e_A}
+    \allI(l) = \bar{l\after\counit{A}}
 \end{eqnarray}
 Where $\e_A: \C(I\times U)(\pstar\allI A \rightarrow A)$ is the co-unit of the adjunction.
 
@@ -978,7 +987,7 @@ In this section, we state and prove a theorem that the action of a simultaneous 
 \begin{framed}
     \begin{proof}
         
-        By induction on the derivation on $\deno{A\subtypep B}$. Using S-closure of $\si\star$ 
+        By induction on the derivation on $\deno{A\subtypep B}$. Using S-preserving property of $\si\star$ 
         
         \case{Ground}
         \begin{align*}
@@ -1055,7 +1064,7 @@ In this section, we state and prove a theorem that the action of a simultaneous 
         \case{Nil}
         \begin{align*}
             \si\star\deno{\wellformedok{\P}{\nil}} &=\si\star\1\\
-            & = \1\qt{By S-closure}\\
+            & = \1\qt{By S-preservation}\\
             &= \deno{\wellformedok{\P'}{\nil}}\\
             &= \deno{\wellformedok{\P'}{\nil\ssi}}\\
         \end{align*}
@@ -1249,7 +1258,7 @@ Then \begin{eqnarray}
         \si\star(\D) = \inl\after \term{\G_I\ssi} = \D'
     \end{equation}
     
-    Since $\si\star$ is S-closed.
+    Since $\si\star$ is S-preserving.
     
     \case{Constant}
     
@@ -1264,7 +1273,7 @@ Then \begin{eqnarray}
         \si\star(\D) = \si\star\deno{\const{A}}\after \term{\G_I\ssi}=\deno{\const{A\ssi}}\after \term{\G_I\ssi}  = \D'
     \end{equation}
     
-    Since $\si\star$ is S-closed.
+    Since $\si\star$ is S-preserving.
     
     \case{Subtype}
     
@@ -1299,7 +1308,7 @@ Then \begin{eqnarray}
     So
     \begin{align*}
         \si\star(\D) & = \si\star(\cur{\D_1})\\
-        & = \cur{\si\star(\D_1)}\qt{By S-closure}\\
+        & = \cur{\si\star(\D_1)}\qt{By S-preservation}\\
         & = \cur{\D_1'}\qt{By induction}\\
         & = \D'
     \end{align*}
@@ -1320,7 +1329,7 @@ Then \begin{eqnarray}
     
     \begin{align*}
         \si\star\D & = \si\star(\app\after\pr{\D_1}{\D_2})\\
-        & = \app\after\pr{\si\star(\D_1)}{\si\star(\D_2)}\qt{By S-closure}\\
+        & = \app\after\pr{\si\star(\D_1)}{\si\star(\D_2)}\qt{By S-preservation}\\
         & = \app\after\pr{\D_1'}{\D_2'}\qt{By Induction}\\
         & = \D'
     \end{align*}
@@ -1340,7 +1349,7 @@ Then \begin{eqnarray}
     
     \begin{align*}
         \si\star(\D) &= \si\star(\point{A_I}\after \D_1)\\
-                & = \point{A_{I'}} \after\si\star(\D_1)\qt{By S-closure}\\
+                & = \point{A_{I'}} \after\si\star(\D_1)\qt{By S-preservation}\\
                 & = \point{A_{I'}} \after\D_1'\\
                 & = \D'
     \end{align*}
@@ -1737,7 +1746,7 @@ In this section, we state and prove a theorem that the action of a simultaneous 
     
     \begin{proof}
         
-        By induction on the derivation on $\deno{A\subtypep B}$. Using S-closure of $\w\star$ 
+        By induction on the derivation on $\deno{A\subtypep B}$. Using S-preserving property of $\w\star$ 
         
         \case{Ground}
         \begin{align*}
@@ -1808,7 +1817,7 @@ If $\wrel{\w}{\P'}{\P}$ and $\wellformedok{\P}{\G}$  then $\wellformedok{\P'}{\G
         \case{Nil}
         \begin{align*}
             \w\star\deno{\wellformedok{\P}{\nil}} &=\w\star\1\\
-            & = \1\qt{By S-closure}\\
+            & = \1\qt{By S-preservation}\\
             &= \deno{\wellformedok{\P'}{\nil}}\\
         \end{align*}
         
@@ -1979,7 +1988,7 @@ If $\wrel{\w}{\P'}{\P}$ and $\wellformedok{\P}{\G}$  then $\wellformedok{\P'}{\G
             \w\star(\D) = \inl\after \term{\G_{I'}} = \D'
         \end{equation}
         
-        Since $\w\star$ is S-closed.
+        Since $\w\star$ is S-preserving.
         
         \case{Constant}
         
@@ -1994,7 +2003,7 @@ If $\wrel{\w}{\P'}{\P}$ and $\wellformedok{\P}{\G}$  then $\wellformedok{\P'}{\G
             \w\star(\D) = \w\star\deno{\const{A}}\after \term{\G_{I'}}=\deno{\const{A_{I'}}}\after \term{\G_{I'}}  = \D'
         \end{equation}
         
-        Since $\w\star$ is S-closed.
+        Since $\w\star$ is S-preserving.
         
         \case{Subtype}
         
@@ -2029,7 +2038,7 @@ If $\wrel{\w}{\P'}{\P}$ and $\wellformedok{\P}{\G}$  then $\wellformedok{\P'}{\G
         So
         \begin{align*}
             \w\star(\D) & = \w\star(\cur{\D_1})\\
-            & = \cur{\w\star(\D_1)}\qt{By S-closure}\\
+            & = \cur{\w\star(\D_1)}\qt{By S-preservation}\\
             & = \cur{\D_1'}\qt{By induction}\\
             & = \D'
         \end{align*}
@@ -2050,7 +2059,7 @@ If $\wrel{\w}{\P'}{\P}$ and $\wellformedok{\P}{\G}$  then $\wellformedok{\P'}{\G
         
         \begin{align*}
             \w\star\D & = \w\star(\app\after\pr{\D_1}{\D_2})\\
-            & = \app\after\pr{\w\star(\D_1)}{\w\star(\D_2)}\qt{By S-closure}\\
+            & = \app\after\pr{\w\star(\D_1)}{\w\star(\D_2)}\qt{By S-preservation}\\
             & = \app\after\pr{\D_1'}{\D_2'}\qt{By Induction}\\
             & = \D'
         \end{align*}
@@ -2070,7 +2079,7 @@ If $\wrel{\w}{\P'}{\P}$ and $\wellformedok{\P}{\G}$  then $\wellformedok{\P'}{\G
         
         \begin{align*}
             \w\star(\D) &= \w\star(\point{A_I}\after \D_1)\\
-                    & = \point{A_{I'}} \after\w\star(\D_1)\qt{By S-closure}\\
+                    & = \point{A_{I'}} \after\w\star(\D_1)\qt{By S-preservation}\\
                     & = \point{A_{I'}} \after\D_1'\\
                     & = \D'
         \end{align*}

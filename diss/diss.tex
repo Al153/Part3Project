@@ -1,5 +1,6 @@
 \documentclass{Report}
 \input{../proofs/header.tex}
+
 \newcommand*{\mystrut}{\rule[-0.05\baselineskip]{0pt}{2\baselineskip}}
 
 \usepackage{graphicx}
@@ -22,7 +23,7 @@ To date, there has been limited work on the semantics of languages with polymorp
 
 In this dissertation, I present several pieces of work. Firstly, I introduce a modern definition of a lambda-calculus-based language with an explicit graded monad to handle a variety of effects. This calculus is then extended using polymorphic terms to yield a more general polymorphic effect calculus. Next, I give an indexed-category-based denotational semantics for the language, along with an outline of a proof for the soundness of these semantics. Following this, I present a method of transforming a model of a non-polymorphic language into a model of the language with polymorphism over effects.
 
-The full proofs can be found online on my github repository (\needsRef{link}), since due to the number of theorems and cases, the total size is well over 100 pages of definitions, theorems, and proofs.
+The full proofs, though in a terser format, can be found online on my github repository\footnote{\todo{Correct Link}}, since due to the number of theorems and cases, the total size is well over 100 pages of definitions, theorems, and proofs.
 
 \tableofcontents
 
@@ -994,7 +995,7 @@ As suggested in section \ref{LanguageFeatureRequirements}, since EC contains mul
     \end{definition}
 \end{framed}
 
-A full derivation and proof of soundness of the semantics of the Effect Calculus can be found online on my github repository\footnote{https://github.com/Al153/Part3Project/blob/master/diss/AppendixECSemantics.pdf} as it is too long to include here and many of the concepts are repeated later in the remainder of this dissertation anyway. The categorical semantics of the Effect Calculus requires an S-category not only to simply model all of the features of EC but also to use the various commutivity diagrams and rules to manipulate the expressions encountered when proving properties of the semantics. Again, as all these manipulations are also applied when proving the semantics of PEC, I shall not go into further detail here.
+A full derivation and proof of soundness of the semantics of the Effect Calculus can be found online on my github repository \footnote{\todo{Correct Link}} as it is too long to include here and many of the concepts are repeated later in the remainder of this dissertation anyway. The categorical semantics of the Effect Calculus requires an S-category not only to simply model all of the features of EC but also to use the various commutivity diagrams and rules to manipulate the expressions encountered when proving properties of the semantics. Again, as all these manipulations are also applied when proving the semantics of PEC, I shall not go into further detail here.
 
 
 
@@ -1039,7 +1040,7 @@ A full derivation and proof of soundness of the semantics of the Effect Calculus
 
 
 \section{Required Category Structure}\label{PECRequirements}
-In order to model the polymorphism of PEC, we need to now look at an indexed category. This consists of a base category, $\C$ in which we can interpret the possible effect environments in, and a mapping from objects in the base category to S-categories in the category of S-categories. This mapping is denoted from this point onwards as $\C(-)$ and the induced categories $\C(\deno{\P})$ are called ``fibres''. Furthermore, I shall shortly extend this mapping into a contravariant functor. The term ``S-preserving'' indicates that all functors derived from $\C$ within this category preserve the properties of S-categories, which are explained in section \ref{SCategoryIntro}. A functor $F$ preserves the properties of S-categories if it preserves each of the features within an S-category. For example $F(A\times B) = (FA)\times (FB)$. For a full list of properties that an S-preserving functor should preserve, please see appendix \needsRef{Link}. To extend our mapping $\C(-)$ to a contravariant functor, it needs to map morphisms in the base category $\C$ to functors between fibres.  Thus, each morphism $\theta: \deno{\P'}\rightarrow\deno{\P}$ in $\C$ should induce an S-preserving, re-indexing functor $\theta\star: \C(\deno{\P})\rightarrow\C(\deno{\P'})$ between the fibres.
+In order to model the polymorphism of PEC, we need to now look at an indexed category. This consists of a base category, $\C$ in which we can interpret the possible effect environments in, and a mapping from objects in the base category to S-categories in the category of S-categories. This mapping is denoted from this point onwards as $\C(-)$ and the induced categories $\C(\deno{\P})$ are called \textit{fibres}. Furthermore, I shall shortly extend this mapping into a contravariant, \textit{S-preserving}, functor. The term ``S-preserving'' indicates that all functors derived from $\C$ within this category preserve the properties of S-categories, which are explained in section \ref{SCategoryIntro}. A functor $F$ preserves the properties of S-categories if it preserves each of the features within an S-category. For example $F(A\times B) = (FA)\times (FB)$. For a full list of properties that an S-preserving functor should preserve, please see appendix \ref{AppendixReindexingFunctors}. To extend our mapping $\C(-)$ to a contravariant functor, it needs to map morphisms in the base category $\C$ to functors between fibres.  Thus, each morphism $\theta: \deno{\P'}\rightarrow\deno{\P}$ in $\C$ should induce an S-preserving, re-indexing functor $\theta\star: \C(\deno{\P})\rightarrow\C(\deno{\P'})$ between the fibres.
 
 The essential idea from this point on is that we have defined several relations of the form $\wellformed{\texttt{Env}}{\texttt{Conclusion}}$, such as the typing relation $\gpetyperelation{v}{A}$, and the well-formedness relation on effects $\wellformed{\P}{\e}$. Each instance of such a relation has a denotation that is an object or morphism in a category. For example, $\deno{\typerelation{\P}{\e}{\effect}}$ is a morphism in the base category, $\deno{\typerelation{\P}{A}{\type}}$ is an object in the fibre (S-category) induced by $\P$, and $\deno{\gpetyperelation{v}{A}}$ is morphism between the objects which denote $\G$ and $A$ in the fibre induced by $\P$.
 
@@ -2883,7 +2884,7 @@ Morphisms $E^n \rightarrow E$ in $\Eff$ are monotone functions taking $n$ ground
     \label{MulDefinition}
 \end{figure}
 
-Next we must pick our fibre categories for non-zero values of $n$. A simple instantiation is to pick each fibre $\C(E^n)$ to be the functor category $[E^n, \set]$,  where $E^n$ is a discrete category (a category that only contains the identity morphisms). That is, the category of functions returning an object in $\set$ given $n$ ground effects. Morphisms between objects are functions which, given a collection of ground effects, yield a morphism (function) in $C$. If $m\in [E^n, \set](A, B)$ then $m\ev\in\set(A\ev, B\ev)$. The fibres, $[E^n, C]$ are S-categories. This can be proved by constructing the S-category structures pointwise with respect to their parameter $\ev \in E^n$ as seen in figures \ref{HowToBuildCCC} - \ref{HowToBuildSubtyping}. Full proofs of the naturality and monad laws can be found \needsRef{link/appendix}.
+Next we must pick our fibre categories for non-zero values of $n$. A simple instantiation is to pick each fibre $\C(E^n)$ to be the functor category $[E^n, \set]$,  where $E^n$ is a discrete category (a category that only contains the identity morphisms). That is, the category of functions returning an object in $\set$ given $n$ ground effects. Morphisms between objects are functions which, given a collection of ground effects, yield a morphism (function) in $C$. If $m\in [E^n, \set](A, B)$ then $m\ev\in\set(A\ev, B\ev)$. The fibres, $[E^n, C]$ are S-categories. This can be proved by constructing the S-category structures pointwise with respect to their parameter $\ev \in E^n$ as seen in figures \ref{HowToBuildCCC} - \ref{HowToBuildSubtyping}. Full proofs of the naturality and monad laws can be found in appendix \ref{NaturalityAndMonadLawsProof}.
 
 
 
@@ -3065,7 +3066,7 @@ Now we need to define the required morphisms between fibres. Firstly, for any fu
         \textbf{Re-Indexing Functors are S-Preserving}
                 
         \begin{theorem}
-            The re-indexing functors are also S-preserving. That is all the S-category features in $[E^n, \set]$ are preserved by $\theta\star$ in $[E^m, \set]$. For a full list of features please see appendix \needsRef{}.
+            The re-indexing functors are also S-preserving. That is all the S-category features in $[E^n, \set]$ are preserved by $\theta\star$ in $[E^m, \set]$. For a full list of features and their proofs, please see appendix \ref{ReindexingFunctorProperties}.
         \end{theorem}
         
         
@@ -3127,9 +3128,7 @@ We can now prove that $\pstar \dashv \allEn$. To do this, we need a natural bije
     \bar{(-)}: [E^{n+1}, \set](\pstar A, B) \rightleftharpoons [E^n,\set] (A, \allEn B): \widehat{(-)}
 \end{equation}
 
-The leftwards and rightwards components of this bijection can be derived as follows. The leftwards component maps each morphism to a finite pairing of the morphism over each ground effect. The inverse is simply to project out the appropriate value of $\e$ from the product. These mappings can be seen in figure \ref{AdjunctionDefinition}. These transformations give rise to the unit and co-unit of the adjunction, which are defined in figure \ref{UnitCoUnitDefinition}. The unit and co-unit allow us to prove that this construction is an adjunction (figure \ref{AdjunctionProof}). 
-
-Finally, we need to prove that the Beck-Chevalley conditions given in \ref{PECRequirements} holds. The proof of the appropriate theorems are given in figure \ref{BeckChevalley1}.
+The leftwards and rightwards components of this bijection can be derived as follows. The leftwards component maps each morphism to a finite pairing of the morphism over each ground effect. The inverse is simply to project out the appropriate value of $\e$ from the product. These mappings can be seen in figure \ref{AdjunctionDefinition}. These transformations give rise to the unit and co-unit of the adjunction, which are defined in figure \ref{UnitCoUnitDefinition}. The unit and co-unit allow us to prove that this construction is an adjunction (figure \ref{AdjunctionProof}).  Finally, we need to prove that the Beck-Chevalley conditions given in \ref{PECRequirements} holds. The proof of the appropriate theorems are given in figure \ref{BeckChevalley1}.
 
 
 
@@ -3284,4 +3283,13 @@ This work forms a potential foundation for more precise analysis tools which cou
 
 \bibliography{diss} 
 \bibliographystyle{ieeetr}
+
+
+
+%% Appendices
+\appendix
+\input{AppendixSCategoryFunctors.tex}
+\input{AppendixFunctorCategoryStructures.tex}
+
+
 \end{document}
