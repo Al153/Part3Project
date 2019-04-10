@@ -7,7 +7,7 @@
 \usepackage{amssymb}
 
 \usepackage{amsmath}
-\usepackage[a4paper,includeheadfoot,margin=2.54cm]{geometry}
+
 
 % For typesetting tree rules
 \usepackage{mathpartir}
@@ -29,12 +29,19 @@
 %Theorems
 \usepackage[utf8]{inputenc}
 \usepackage[english]{babel}
+
+\ifdefined\PRESENTATIONMODE
+\else
+\usepackage[a4paper,includeheadfoot,margin=2.54cm]{geometry}
 \newtheorem{theorem}{Theorem}[section]
 \newtheorem{corollary}{Corollary}[theorem]
 \newtheorem{lemma}[theorem]{Lemma}
+\newtheorem{definition}{Definition}[section]
+\fi
+
 \newtheorem{property}[theorem]{Property}
 \theoremstyle{definition}
-\newtheorem{definition}{Definition}[section]
+
 
 \usepackage{tikz}
 

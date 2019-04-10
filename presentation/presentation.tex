@@ -1,0 +1,123 @@
+\documentclass{beamer}
+\usetheme{Boadilla}
+
+\newcommand\PRESENTATIONMODE[0]{Helper command to allow beamer to work with the header}
+\input{../proofs/header.tex}
+
+\title{A Denotational Semantics for Polymorphic Effect Systems}
+\subtitle{Part III Project}
+\author{Alexander Taylor, at736}
+\institute{University of Cambridge}
+\date{\today}
+
+\begin{document}
+
+\begin{frame}
+    \titlepage
+\end{frame}
+
+\begin{frame}{Introduction Slide}    
+\end{frame}
+
+\begin{frame}{What is denotational Semantics? }
+       
+\end{frame}
+
+\begin{frame}{Denotational Semantics using Category Theory}
+    
+
+    (Objects, Morphisms, etc)
+\end{frame}
+
+\begin{frame}{Language features (1)}
+        cartesian closed categories - pairs, unit, and functions
+\end{frame}
+
+\begin{frame}{Language features (2)}
+        Monads, graded monads    
+\end{frame}
+
+\begin{frame}{Language Features (3)}
+    Subtyping, Subeffecting, If-Expressions
+\end{frame}
+
+\begin{frame}{An Effectful Language}
+    EC Syntax + example program    
+\end{frame}
+
+\begin{frame}{Semantics of EC}
+    - example of some denotational rules
+    - S-Category
+\end{frame}
+
+\begin{frame}{An Ugly Example}
+    - Example of a program that would benefit from polymorphism.    
+\end{frame}
+
+\begin{frame}{Let's add polymorphism}
+    - PEC Syntax, Type System (Particularly Gen and Spec rules)
+\end{frame}
+
+\begin{frame}{An Ugly Example - With a Makeover}
+- Example of a program that would benefit from polymorphism.  
+\end{frame}
+
+\begin{frame}{How do we Model the Semantics of a Polymorphic Language?}
+    - For a given effect variable environment $\P$, excluding the polymorphic terms, we have EC, which there exist models for.
+    - Effect-variable environments of length $n$ are isomorphic by $\a$-equivalence
+\end{frame}
+
+\begin{frame}{How do we Model the Semantics of a Polymorphic Language?}
+(So we can build up stack of S-categories)
+(diagram of the category stack)
+("Need to have a way of moving between S-categories")
+\end{frame}
+
+\begin{frame}{Base Category}
+    - We need a way of reasoning about effect-variable environment categorically
+
+    - We can model effects and environments in new category.
+
+    - Objects: $\1$, $U$, $U^n$ (write I for $U^n$)
+    - Morphisms: $\deno{e}: \1\rightarrow U$
+    - Monoidal operator $\Mul: \ciu\times\ciu\rightarrow\ciu$
+    - Can represent each effect environment as an object $I$, and common transformations between environments, such as weakening and substitutions, are morphisms between effect environments.
+\end{frame}
+
+\begin{frame}{Indexed Category}
+    
+\end{frame}
+
+\begin{frame}{Quantification}
+
+\end{frame}
+    
+\begin{frame}{Instantiating a Model (1)}
+    - Can we actually instantiate a category with the required structure?
+
+    - Models of particular instantiations of EC based on $\set$ exist.
+
+    - Next step is use a $\set$-based model to build a model of EC
+\end{frame}
+
+\begin{frame}{Instantiating a Model (2) - Base Category}
+    - Category of monotone functions of ground effects (with no variables) to ground effects.
+    - $\deno{\typerelation{\nil,\a}{\a\dot\texttt{IO}}{\effect}} = e\mapsto e\dot\texttt{IO}$
+\end{frame}
+
+\begin{frame}{Instantiating a Model (3) - Fibres}
+    - The fibre $\C(n)$ is the category of functors $[E^n, \set]$
+    - I.E. objects are functions that take a vector of ground effects and return sets
+    - Morphisms are functions that return functions in $\set$
+    - S-Category features (products, exponentials, graded monad) can be constructed pointwise
+\end{frame}
+
+\begin{frame}{Instantiating a Model (4) - Functors and Adjunctions}
+    - Re-indexing functors are formed by pre-composition
+    - $\allEn$ functor is formed by a product over all effects.
+    - Adjunction operations become pairing and projection.
+\end{frame}
+
+
+
+\end{document}
