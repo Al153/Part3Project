@@ -1,7 +1,10 @@
 \documentclass{beamer}
 \usetheme{Boadilla}
 
-\newcommand\PRESENTATIONMODE[0]{Helper command to allow beamer to work with the header}
+\newcommand\PRESENTATIONMODE[0]{signal command to allow beamer to work with the header file}
+
+\newcommand\script[1]{}
+
 \input{../proofs/header.tex}
 
 \title{A Denotational Semantics for Polymorphic Effect Systems}
@@ -17,60 +20,175 @@
 \end{frame}
 
 \begin{frame}{Introduction Slide}    
+    - code example
+        - "apply" function + three different invocations
+            - Launch Missile
+            - Throw Error
+            - Read environment variables
+    \script{
+        - Imagine you're a compiler trying to analyse the side effects of this \texttt{doAction} function here.
+
+        - You're not having the best of times
+        - it's used three times with three different side effect - one's irrevocable - you can't speculatively execute it, one alters control flow, and the last accesses immutable state so you can do all sorts of optimisations.
+        
+        - Using some simple  analysis, you can create three separate instantiations of the function to analyse, so it's not too difficult in this case.
+        - However in programs with higher order functions, creating these separate instantiations is undecidable in general
+
+        - With a polymorphic effect system, it becomes a bit easier to analyse programs like this. But how do you know that your tools and optimisations are sound?
+    }
 \end{frame}
 
 \begin{frame}{What is denotational Semantics? }
-       
+        - Type relation instance
+        - mapping function ($\deno{-}$)
+        - compositional, sound, adequate?
+        - equivalence $ \Leftrightarrow$ equal denotations
+    \script{
+        - Denotational semantics is where we create a mapping between program terms and an abstract mathematical structure.
+        - We want this to be compositional - meaning that each term's denotation is defined in terms of its subterms 
+        - It should also be sound, meaning that equivalent program terms up-for, for example, beta-eta reduction, have equal denotations.
+        - we also want it to be adequate - if two terms have equal denotations, then that should mean something useful about the relation of the two terms (e.g. can replace one by the other, etc)
+    }
 \end{frame}
 
 \begin{frame}{Denotational Semantics using Category Theory}
     
 
     (Objects, Morphisms, etc)
+
+    \script{
+        - In part II, we used domains to handle the semantics of non-termination. Lurking beneath this notion is the idea that we can use category theoretic structure to construct our denotations.
+
+        - Here we map types and type environments to objects in a particular category, and correctly typed terms to morphisms (arrows) in the category.
+
+        - One more structure we need is a functor - a map of objects to objects and morphisms to morphisms that preserves composition of terms.
+    }
 \end{frame}
 
 \begin{frame}{Language features (1)}
         cartesian closed categories - pairs, unit, and functions
+
+        \script{
+            Now let's look at what category theoretic structure you need to model different language features.
+            
+            - For lambda calculus style languages, you need at least a cartesian closed category.
+
+            - In terms of the category of sets, this gives you sets of pairs of objects, sets of functions, and the single element set.
+
+            - These are used to model pairs, lambda terms, giving us higher order functions, and the terminal, single element set allows us to interpret the unit type and ground terms.
+        }
 \end{frame}
 
 \begin{frame}{Language features (2)}
-        Monads, graded monads    
+        Monads, graded monads   
+
+        - diagrams, natural transformations
+        
+        \script{
+            - To handle effectful computations in a pure langauge like haskell, you need to use something called a monad.
+
+            - This actually comes from when Moggi first discovered how to model effectful programs.
+            - You need this structure of a functor from your category to itself, together with some natural transformation operations for creating and composing effectful operations.
+            - If you squint a bit, they even look like the programming language monad definition.
+
+            - An issue with haskell is that each monad only gives you one effect. If you want a program that does IO, contains state, has exceptions, and does non-determinism, you end up with a stack of monads.
+            - This is still imprecise for meaningful analysis
+            - A solution is a graded monad.
+            - We now have one functor, indexed by a monoid of effect symbols. The rules and morphisms stay the same but are now also indexed. 
+
+        }
 \end{frame}
 
 \begin{frame}{Language Features (3)}
     Subtyping, Subeffecting, If-Expressions
+
+    - If expression example
+    - Co-product diagram
+    \script{
+        - Finally, we may want to add if expressions to our language. 
+        - This can be fairly easily be done using co-products (the generalisation of what disjoint unions on sets are)
+        - But leads to an issue when effects are involved. Both branches of the expression need to have the same type, but we might want to write programs where one side has a different effect.
+
+        - To allow more programs to type correctly, we need to introduce subtyping and appropriate morphisms to handle this.
+     }
 \end{frame}
 
 \begin{frame}{An Effectful Language}
     EC Syntax + example program    
+
+    \script{
+        - Let's now describe a simple effectful, lambda-calculus-based, language, EC.
+        - It has an explicit graded monad, subtyping, if-statements
+
+        - Here's a simple program written in EC.
+    }
 \end{frame}
 
 \begin{frame}{Semantics of EC}
     - example of some denotational rules
-    - S-Category
+        - return?
+        - lambda?
+        - bind?
+    - S-Category - definition
+
+    \script{
+        - As described, all of the language features can be modelled in a cartesian closed category with a graded monad, a coproduct, and subtyping morphisms.
+
+        - Known as an S-Category
+
+        - Here's an example, if we have the denotation of an expression here, we can get the denotation of using it as a pure computation by postcomposing with the unit of the graded monad.
+
+    }
 \end{frame}
 
 \begin{frame}{An Ugly Example}
     - Example of a program that would benefit from polymorphism.    
+
+    \script{
+        - Here's a program that's quite ugly with lots of code reuse, since we explicitly state types in the expressions. 
+        - we end up with two instantiations of the same function - more work for the compiler
+    }
 \end{frame}
 
 \begin{frame}{Let's add polymorphism}
     - PEC Syntax, Type System (Particularly Gen and Spec rules)
+    \script{
+        - Let's now add some polymorphism syntax to EC.
+        - This gives us the polymorphic effect calculus.
+        - Notice now that in our type rules, we now have an effect-variable environment. Important later
+    }
 \end{frame}
 
 \begin{frame}{An Ugly Example - With a Makeover}
-- Example of a program that would benefit from polymorphism.  
+    - Example of a program that would benefit from polymorphism.
+    \script{
+        - We've now added polymorphism, which makes our ugly program more concise.
+        - We can reuse this function
+    }
 \end{frame}
 
 \begin{frame}{How do we Model the Semantics of a Polymorphic Language?}
     - For a given effect variable environment $\P$, excluding the polymorphic terms, we have EC, which there exist models for.
     - Effect-variable environments of length $n$ are isomorphic by $\a$-equivalence
+
+    \script{
+        - If we fix the effect-variable environment, and disallow polymorphic terms, then PEC terms become EC terms for a particular instantiation.
+        - We already know how to build models for PEC
+        -It's also the case that effect-variable environments can type the same set of relations, upto alpha equivalence.
+        - So there is a countable set of these EC instantiations
+    }
 \end{frame}
 
 \begin{frame}{How do we Model the Semantics of a Polymorphic Language?}
-(So we can build up stack of S-categories)
-(diagram of the category stack)
-("Need to have a way of moving between S-categories")
+    - Stack of S-categories and their morphisms
+
+    - type rule for generalisation
+    - "Need functors"
+
+\script{
+    - So we can imagine a stack of these S-Categories, called fibres
+    - In order to model polymorphism, we need to have ways of moving morphisms between these fibres - we need functors
+}
 \end{frame}
 
 \begin{frame}{Base Category}
@@ -82,40 +200,102 @@
     - Morphisms: $\deno{e}: \1\rightarrow U$
     - Monoidal operator $\Mul: \ciu\times\ciu\rightarrow\ciu$
     - Can represent each effect environment as an object $I$, and common transformations between environments, such as weakening and substitutions, are morphisms between effect environments.
+
+    \script{
+        - So we need a way of reasoning about the transformations of effect-variable environments in a category theoretic manner
+        - To do this, we need a base category, containing a terminal object, an object $U$ representing the kind of effects, and finite products on $U$ 
+        - $U^n$ represents the effect-variable environment of length $n$. We'll now use $I$ to indicate this.
+        
+        - Since all the ground effects have morphisms in this category, we can construct morphisms for substitutions and weakenings of the effect environment.
+    }
 \end{frame}
 
 \begin{frame}{Indexed Category}
+    - full index diagram with fibres, re-indexing functor
+
+    \script{
+        - So now we can construct this structure
+        - called an index category
+        - We have a functor mapping each object representing an effect-variable environment to the relevant S-category fibre.
+        - Also contravariantly, meaning the direction of the morphism changes, maps morphisms in the base category to re-indexing functors between the relevant fibres.
+        - So now we can perform substitutions and weakenings on the effect environment and get the right behaviour on the semantics of the EC instantiation
+    }
     
 \end{frame}
 
 \begin{frame}{Quantification}
+    - Quantification functor definition
+    
+    \script{
+        - We now need to think about the polymorphic terms
+        - For quantification, we need another functor, $\allI$ which maps a type rule with an extra effect variable to one quantified over that variable
+        - In order for specialisation to work, this quantification functor needs to be a right adjoint to the opposite operation of weakening the effect environment
+        - Adjunction of functors is essentially a weaker version of an isomorphism of the categories they're between.
+        - Going out on one functor and coming back on the other isn't quite the same as the identity, but it has a well defined action.
+    }
 
 \end{frame}
     
 \begin{frame}{Instantiating a Model (1)}
+    final indexed category construction
+
     - Can we actually instantiate a category with the required structure?
 
     - Models of particular instantiations of EC based on $\set$ exist.
 
     - Next step is use a $\set$-based model to build a model of EC
+    \script{
+        - So far, we've only said what structures are required to model PEC.
+        - Haven't shown that there actually exists an indexed category with the required properties
+        - so let's do that
+        - It's fairly well known that you can instantiate models of languages with the same features as EC in the category of sets and functions
+        - We want to extend one of these models into one for PEC
+    }
 \end{frame}
 
 \begin{frame}{Instantiating a Model (2) - Base Category}
     - Category of monotone functions of ground effects (with no variables) to ground effects.
     - $\deno{\typerelation{\nil,\a}{\a\dot\texttt{IO}}{\effect}} = e\mapsto e\dot\texttt{IO}$
+    - $\Mul(f, g)\ev = (f\ev)\dot(g\ev) $
+
+    \script{
+        - Firstly, we want to build a base category
+        - to do this, we shall consider the category of monotone functions taking vectors of ground effects and returning ground effects
+        - We construct the multiplication operator using the $\dot$ monoid operator from the EC spec
+    }
 \end{frame}
 
 \begin{frame}{Instantiating a Model (3) - Fibres}
     - The fibre $\C(n)$ is the category of functors $[E^n, \set]$
     - I.E. objects are functions that take a vector of ground effects and return sets
     - Morphisms are functions that return functions in $\set$
-    - S-Category features (products, exponentials, graded monad) can be constructed pointwise
+    - S-Category features (products, exponentials, graded monad) can be constructed pointwise (Graded monad definition)
+
+    \script{
+        - Now we can think about the fibres
+        - These are functor categories
+        - I.E. their objects are functions returning sets and their morphisms are dependently typed functions
+        - We can construct all the of the S-Category structure  as pointwise
+    }
 \end{frame}
 
 \begin{frame}{Instantiating a Model (4) - Functors and Adjunctions}
     - Re-indexing functors are formed by pre-composition
     - $\allEn$ functor is formed by a product over all effects.
     - Adjunction operations become pairing and projection.
+
+    \script{
+        - Finally, we need to construct the various functors
+        - Reindexing functors are done using precomposition
+        - quantification consists of a product over all ground effects
+    }
+\end{frame}
+
+\begin{frame}{The End}
+    - Dissertation and github links
+
+    \script{Thanks}
+    
 \end{frame}
 
 
