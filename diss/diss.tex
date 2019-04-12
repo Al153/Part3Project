@@ -48,7 +48,7 @@ def check[E: Effect](
     val ok: Boolean = promptBool(
         "Are you sure you want to do this?"
     )
-    If (ok) {
+    if (ok) {
         action()
     } else {
        abort()
@@ -1306,7 +1306,7 @@ This finally gives us the ability to express the denotations of well-typed terms
         \\
         \\        
         \[
-            \ntreeruleII{Apply}{f = \deno{\gpetyperelation{v_1}{\ab}}: \G \rightarrow (B)^{A}}{g=\deno{\gpetyperelation{v_2}{A}}: \G \rightarrow A}{\deno{\gpetyperelation{\apply{v_1}{v_2}}{\b}}= \app\after\pr{f}{g}: \G \rightarrow B }
+            \ntreeruleII{Apply}{f = \deno{\gpetyperelation{v_1}{\ab}}: \G \rightarrow (B)^{A}}{g=\deno{\gpetyperelation{v_2}{A}}: \G \rightarrow A}{\deno{\gpetyperelation{\apply{v_1}{v_2}}{B}}= \app\after\pr{f}{g}: \G \rightarrow B }
         \]
         \\
         \\        

@@ -19,12 +19,24 @@
     \titlepage
 \end{frame}
 
-\begin{frame}{Introduction Slide}    
-    - code example
-        - "apply" function + three different invocations
-            - Launch Missile
-            - Throw Error
-            - Read environment variables
+\begin{frame}[fragile]{Motivating Polymorphic Effect Analysis}    
+
+\begin{verbatim}
+def logAction(
+    action: Unit => String
+): Unit {
+    log.info(action())
+}  
+\end{verbatim}
+
+\begin{verbatim}
+logAction(() => FireMissiles(); "Launched Missiles)
+
+logAction(() => throwError("My Error"))
+
+logAction(() => readEnvironmentVariables)
+\end{verbatim}
+
     \script{
         - Imagine you're a compiler trying to analyse the side effects of this \texttt{doAction} function here.
 
@@ -39,10 +51,13 @@
 \end{frame}
 
 \begin{frame}{What is denotational Semantics? }
-        - Type relation instance
-        - mapping function ($\deno{-}$)
-        - compositional, sound, adequate?
-        - equivalence $ \Leftrightarrow$ equal denotations
+    \begin{itemize}
+        \item A mapping $\deno{-}: \text{Language Structure} \rightarrow \text{Mathematical Structure}$
+        \item In particular want to define $\deno{\gtyperelation{t}{A}}$
+        \item Needs to be \textit{compositional}, \textit{sound}
+        \item And \textit{adequate} for our needs
+    \end{itemize}
+
     \script{
         - Denotational semantics is where we create a mapping between program terms and an abstract mathematical structure.
         - We want this to be compositional - meaning that each term's denotation is defined in terms of its subterms 
@@ -52,9 +67,12 @@
 \end{frame}
 
 \begin{frame}{Denotational Semantics using Category Theory}
-    
+    \begin{itemize}
+        \item Interested in: Objects, Morphisms, and Functors
+        \item $\deno{A}, \deno{\G} \in\obj\C$
+        \item $\deno{\gtyperelation{t}{A}}: \deno{\G}\rightarrow \deno{A}$
+    \end{itemize}
 
-    (Objects, Morphisms, etc)
 
     \script{
         - In part II, we used domains to handle the semantics of non-termination. Lurking beneath this notion is the idea that we can use category theoretic structure to construct our denotations.
@@ -65,8 +83,14 @@
     }
 \end{frame}
 
-\begin{frame}{Language features (1)}
-        cartesian closed categories - pairs, unit, and functions
+\begin{frame}{Language features (1) - Lambda Calculus}
+
+        A cartesian closed category (CCC) consists of:
+        \begin{itemize}
+            \item Products $A\times B$ - models tuples
+            \item A terminal object $\1$ - models the \U\texttt{  }type
+            \item Exponential objects $B^A$ - models functions as first-class objects
+        \end{itemize}
 
         \script{
             Now let's look at what category theoretic structure you need to model different language features.
@@ -79,13 +103,20 @@
         }
 \end{frame}
 
-\begin{frame}{Language features (2)}
-        Monads, graded monads   
-
-        - diagrams, natural transformations
+\begin{frame}{Language features (2.A) - Monads}
+        A (strong) monad consists of:
+        \begin{itemize}
+            \item A functor $\T{}{}: \C\rightarrow \C$
+            \item Join and Unit natural transformations
+            \begin{itemize}
+                \item  $\bindmu_{A}: \T{}{\T{}{A}}\rightarrow \T{}{A}$
+                \item $\point{A}: A\rightarrow \T{}{A}$
+            \end{itemize}
+            \item Tensor strength natural transformation $\strengtht_{A, B}: A\times\T{}{B}\rightarrow \T{}{(A\times B)}$
+        \end{itemize}
         
         \script{
-            - To handle effectful computations in a pure langauge like haskell, you need to use something called a monad.
+            - To handle effectful computations in a pure language like haskell, you need to use something called a monad.
 
             - This actually comes from when Moggi first discovered how to model effectful programs.
             - You need this structure of a functor from your category to itself, together with some natural transformation operations for creating and composing effectful operations.
@@ -93,43 +124,126 @@
 
             - An issue with haskell is that each monad only gives you one effect. If you want a program that does IO, contains state, has exceptions, and does non-determinism, you end up with a stack of monads.
             - This is still imprecise for meaningful analysis
+        }
+
+
+\end{frame}
+
+\begin{frame}{Language features (2.B) - Graded Monads}
+    A (strong) graded monad consists of:
+        \begin{itemize}
+            \item An indexed functor $\T{\e}{}: \C\rightarrow \C$
+            \item Indexed Join and Unit natural transformations
+            \begin{itemize}
+                \item  $\bind{\e_1}{\e_2}{A}: \T{\e_1}{\T{\e_2}{A}}\rightarrow \T{\e_1\dot \e_2}{A}$\
+                \item $\point{A}: A\rightarrow \T{\1}{A}$
+            \end{itemize}
+            \item Tensor strength natural transformation $\tstrength{\e}{A}{B}: A\times\T{\e}{B}\rightarrow \T{\e}{(A\times B)}$
+        \end{itemize}
+
+        \script{
             - A solution is a graded monad.
             - We now have one functor, indexed by a monoid of effect symbols. The rules and morphisms stay the same but are now also indexed. 
 
-        }
+        }    
 \end{frame}
 
-\begin{frame}{Language Features (3)}
-    Subtyping, Subeffecting, If-Expressions
-
+\begin{frame}{Language Features (3.A) - If-Expressions}
     - If expression example
     - Co-product diagram
+
+    \begin{itemize}
+        \item $\pifthenelse{A}{b}{t}{f}$
+        \item If expressions modelled by co-products
+        \item 
+        \begin{tikzcd}[ampersand replacement=\&]
+            \&  A   \& \\
+            \G \arrow{ur}{t} \arrow [r, "\inl"] \&   (\G + \G) \arrow{u}{[t, f]}  \& \arrow{l}[swap]{\inr} \arrow{ul}[swap]{f} \G\\
+        \end{tikzcd}
+    \end{itemize}
+    
+
+
     \script{
         - Finally, we may want to add if expressions to our language. 
         - This can be fairly easily be done using co-products (the generalisation of what disjoint unions on sets are)
-        - But leads to an issue when effects are involved. Both branches of the expression need to have the same type, but we might want to write programs where one side has a different effect.
-
-        - To allow more programs to type correctly, we need to introduce subtyping and appropriate morphisms to handle this.
      }
 \end{frame}
 
+\begin{frame}[fragile]{Language Features 3.B - An Issue}
+    Consider this:
+
+\begin{verbatim}
+    if (UserConfirms) then Save() else pass;
+\end{verbatim}
+
+\begin{itemize}
+    \item Branches have different effects
+    \item So have different types!
+    \item This doesn't type correctly
+\end{itemize}
+
+\script{        
+    - But leads to an issue when effects are involved. Both branches of the expression need to have the same type, but we might want to write programs where one side has a different effect.
+}
+
+\end{frame}
+
+\begin{frame}{Language Features 3.C - Subtyping}
+    $$\ntreeruleII{Subtype}{\gtyperelation{t}{A}}{A \subtype B}{\gtyperelation{t}{B}}$$
+
+    \begin{itemize}
+        \item This needs a denotation
+        \item So introduce $\deno{A\subtype B}$
+        \item $\deno{\gtyperelation{t}{B}} = \deno{A\subtype B}\after \deno{\gtyperelation{t}{A}}$
+    \end{itemize}
+
+    \script{
+        - To allow more programs to type correctly, we need to introduce subtyping and appropriate morphisms to handle this.
+    }
+\end{frame}
+
 \begin{frame}{An Effectful Language}
-    EC Syntax + example program    
+    \begin{align*}
+        v ::= & \const{A} \mid x\mid \t \mid\f \mid\u\mid\lam{x}{A}{v}\mid\apply{v_1}{v_2}\mid\return{v}\\
+        & \mid\doin{x}{v_1}{v_2}\mid\pifthenelse{A}{v}{v_1}{v_2} 
+    \end{align*}
+    
+    \begin{align*}
+        A, B, C ::= \g\mid \ab \mid\mea
+    \end{align*}
+
+    \[
+        \ntreeruleI{Return}{\gtyperelation{v}{A}}{\gtyperelation{\return{v}}{\moa}}
+    \quad
+    \ntreeruleII{Apply}{\gtyperelation{v_1}{\ab}}{\gtyperelation{v_2}{A}}{\gtyperelation{\apply{v_1}{v_2}}{B}}
+    \]
 
     \script{
         - Let's now describe a simple effectful, lambda-calculus-based, language, EC.
         - It has an explicit graded monad, subtyping, if-statements
-
-        - Here's a simple program written in EC.
     }
 \end{frame}
 
 \begin{frame}{Semantics of EC}
-    - example of some denotational rules
-        - return?
-        - lambda?
-        - bind?
-    - S-Category - definition
+    \begin{itemize}
+        \item Can build a model of EC when we have
+        \begin{itemize}
+            \item CCC
+            \item Co-product
+            \item Strong Graded Monad
+            \item Subtyping morphisms
+        \end{itemize}
+        \item We'll call this an S-category
+    \end{itemize}
+    
+    \[
+        \scalebox{.8}{$
+        \ntreeruleI{Return}{f = \deno{\gtyperelation{v}{A}}}{\deno{\gtyperelation{\return{v}}{\moa}} = \point{A} \after f}
+        \quad
+        \ntreeruleI{Fn}{f = \deno{\typerelation{\gax}{v}{B}} : \G \times A \rightarrow B}{\deno{\gtyperelation{\lam{x}{A}{v}}{\ab}} = \cur{f} : \G \rightarrow B^A}
+        $}
+    \]
 
     \script{
         - As described, all of the language features can be modelled in a cartesian closed category with a graded monad, a coproduct, and subtyping morphisms.
@@ -141,17 +255,48 @@
     }
 \end{frame}
 
-\begin{frame}{An Ugly Example}
-    - Example of a program that would benefit from polymorphism.    
+\begin{frame}[fragile]{An Ugly Example}
 
+    \begin{lstlisting}[
+        mathescape,
+        columns=fullflexible,
+        basicstyle=\fontfamily{lmvtt}\selectfont,
+      ]
+let $twiceIO$ = $\lambda$ $action$: $\M{\texttt{IO}}{\U}$. (
+    do $\_$ $\texttt{<-}$ $action$ in $action$
+)
+
+let $twiceState$ = $\lambda$ $action$: $\M{\texttt{State}}{\U}$. (
+    do $\_$ $\texttt{<-}$ $action$ in $action$
+)
+
+do $\_$ $\texttt{<-}$ $twiceState$(increment) in $twiceIO$(writeLog)
+    \end{lstlisting}
     \script{
         - Here's a program that's quite ugly with lots of code reuse, since we explicitly state types in the expressions. 
         - we end up with two instantiations of the same function - more work for the compiler
     }
 \end{frame}
 
-\begin{frame}{Let's add polymorphism}
-    - PEC Syntax, Type System (Particularly Gen and Spec rules)
+\begin{frame}{Let's Add Polymorphism}
+   
+\begin{align*}
+    v::=\text{..}\mid\elam{\a}{v}\mid\eapp{v}{\e}
+\end{align*}
+
+\begin{align*}
+    A, B, C::=\text{...}\mid \all{\a}{A}
+\end{align*}
+
+\begin{align*}
+    \e ::= e \mid \a \mid \e\dot\e
+\end{align*}
+
+    \[
+        \ntreeruleI{Effect-Gen}{\etyperelation{\P,\a}{\G}{v}{A}}{\gpetyperelation{\elam{\a}{v}}{\all{\a}{A}}}
+        \quad
+        \ntreeruleII{Effect-Spec}{\gpetyperelation{v}{\all{\a}A}}{\wellformed{\P}{\e}}{\gpetyperelation{\eapp{v}{\e}}{A\ssub{\a}{\e}}}    
+    \]
     \script{
         - Let's now add some polymorphism syntax to EC.
         - This gives us the polymorphic effect calculus.
@@ -159,8 +304,20 @@
     }
 \end{frame}
 
-\begin{frame}{An Ugly Example - With a Makeover}
-    - Example of a program that would benefit from polymorphism.
+\begin{frame}[fragile]{An Ugly Example - With a Makeover}
+    \begin{lstlisting}[
+        mathescape,
+        columns=fullflexible,
+        basicstyle=\fontfamily{lmvtt}\selectfont,
+      ]
+let $twice$ = $\Lambda$ $eff$.(
+    $\lambda$ $action$: $\M{eff}{\U}$. (
+        do $\_$ $\texttt{<-}$ $action$ in $action$
+    )
+)
+
+do $\_$ $\texttt{<-}$ ($twice$ State increment) in ($twice$ IO writeLog)
+    \end{lstlisting}
     \script{
         - We've now added polymorphism, which makes our ugly program more concise.
         - We can reuse this function
@@ -168,8 +325,13 @@
 \end{frame}
 
 \begin{frame}{How do we Model the Semantics of a Polymorphic Language?}
-    - For a given effect variable environment $\P$, excluding the polymorphic terms, we have EC, which there exist models for.
-    - Effect-variable environments of length $n$ are isomorphic by $\a$-equivalence
+
+    \begin{itemize}
+        \item For a fixed effect variable environment $\P$ and terms with no polymorphic sub-terms, we have EC
+        \item Effect-variable environments of length $n$ are isomorphic by $\a$-equivalence
+    \end{itemize}
+    
+    
 
     \script{
         - If we fix the effect-variable environment, and disallow polymorphic terms, then PEC terms become EC terms for a particular instantiation.
@@ -211,7 +373,65 @@
 \end{frame}
 
 \begin{frame}{Indexed Category}
-    - full index diagram with fibres, re-indexing functor
+
+    \begin{tikzpicture}[->,>=stealth', scale=0.7, every node/.style={scale=0.7}]
+        % Draw the env objects
+        \foreach \y[count=\c,evaluate={\yi=int(\c-1)}] in {3, 4, 5}{
+            \node[fill,circle,inner sep=2pt,label=left:{\small $\P_\yi$}] (d\yi) at (0,\y) {};
+        }
+
+        % draw the ... above the env objects
+        \foreach \y[count=\c,evaluate={\yi=int(\c-1)}] in {5.5, 6, 6.5}{
+            \node[fill, circle, inner sep=1pt] (dd\yi) at (0,\y){};
+        }
+        % Draw the index category
+        \node[fit=(d0) (d1) (d2) (dd0) (dd1) (dd2),ellipse,draw,minimum width=2cm] {};
+
+        %draw the s-category stack
+        \foreach \y[count=\c,evaluate={\yi=int(\c-1)}] in {2, 4, 6}{
+            \node[circle, draw, inner sep=1pt, fill, label=above:{$\G$}] (g\yi) at (7,\y){};
+            \node[circle, draw, inner sep=1pt, fill, label=above:{$A$}] (a\yi) at (9,\y){};
+            \draw[->](g\yi) to[bend right=5] node[below]{\tiny $\deno{\etyperelation{\P_\yi}{\G}{v}{A}}$} (a\yi);
+            \node[ellipse, draw, minimum width=5cm, minimum height=15mm,label=right:$S_\yi$] (s\yi) at (8,\y){};
+        }
+
+        % Hidden ellipse to draw functors to
+        \node[ellipse, minimum width=5cm, minimum height=15mm] (s3) at (8,8){};
+
+        %Draw the ... for the s-category stack
+        \foreach \y[count=\c,evaluate={\yi=int(\c-1)}] in {7, 7.5, 8}{
+            \node[fill, circle, inner sep=1pt] (p\yi) at (8, \y){};
+        }
+
+        % Draw index arrows
+        \foreach \i in {0, 1, 2}{
+            \draw[->, thick] (d\i) to (s\i);
+        }
+
+        % draw the re-indexing functors
+
+        \foreach \source[count=\dest] in {0, 1, 2}{
+            \draw[->, thick](s\source.north west) to[bend left=10] node[left]{$\pstar$} (s\dest.south west);
+        }
+
+        % Draw the quantification functors
+        %\foreach \dest[count=\source] in {0, 1, 2}{
+        %    \draw[->, thick] 
+        %    (s\source.south east) to[bend left=10] node[right]{$\forall_{\P_\dest}$} (s\dest.north east);
+        %}
+
+        % Draw the internal morphisms in base category
+        \foreach \dest[count=\source] in {0, 1}{
+            \draw[->]
+            (d\source) to[bend right=10] node[right]{$\p$} (d\dest);
+        }
+
+        %Draw the bracket
+
+        \draw [decoration={brace,amplitude=8pt},decorate] ($(s2)+(10em,1ex)$) -- ($(s0)+(10em,-1ex)$);
+        \node[text width=20mm] (Label) at (14,5){Fibres for each effect environment};
+    \end{tikzpicture}
+
 
     \script{
         - So now we can construct this structure
@@ -224,7 +444,14 @@
 \end{frame}
 
 \begin{frame}{Quantification}
-    - Quantification functor definition
+    \begin{itemize}
+        \item What about effect-generalisation?
+        \item $\ntreeruleI{Effect-Gen}{\etyperelation{\P,\a}{\G}{v}{A}}{\etyperelation{\P}{\G}{\elam{\a}{v}}{\all{\a}{A}}}$
+        \item Need to map $\deno{\etyperelation{\P,\a}{\G}{v}{A}}$ to $\deno{\etyperelation{\P}{\G}{\elam{\a}{v}}{\all{\a}{A}}}$
+        \item For specialisation to work, needs: $\pstar\dashv\allI$
+    \end{itemize}
+
+
     
     \script{
         - We now need to think about the polymorphic terms
@@ -237,13 +464,70 @@
 \end{frame}
     
 \begin{frame}{Instantiating a Model (1)}
-    final indexed category construction
 
-    - Can we actually instantiate a category with the required structure?
+        \begin{tikzpicture}[->,>=stealth', scale=0.5, every node/.style={scale=0.5}]
+            % Draw the env objects
+            \foreach \y[count=\c,evaluate={\yi=int(\c-1)}] in {3, 4, 5}{
+                \node[fill,circle,inner sep=2pt,label=left:{\small $\P_\yi$}] (d\yi) at (0,\y) {};
+            }
+    
+            % draw the ... above the env objects
+            \foreach \y[count=\c,evaluate={\yi=int(\c-1)}] in {5.5, 6, 6.5}{
+                \node[fill, circle, inner sep=1pt] (dd\yi) at (0,\y){};
+            }
+            % Draw the index category
+            \node[fit=(d0) (d1) (d2) (dd0) (dd1) (dd2),ellipse,draw,minimum width=2cm] {};
+    
+            %draw the s-category stack
+            \foreach \y[count=\c,evaluate={\yi=int(\c-1)}] in {2, 4, 6}{
+                \node[circle, draw, inner sep=1pt, fill, label=above:{$\G$}] (g\yi) at (7,\y){};
+                \node[circle, draw, inner sep=1pt, fill, label=above:{$A$}] (a\yi) at (9,\y){};
+                \draw[->](g\yi) to[bend right=5] node[below]{\tiny $\deno{\etyperelation{\P_\yi}{\G}{v}{A}}$} (a\yi);
+                \node[ellipse, draw, minimum width=5cm, minimum height=15mm,label=right:$S_\yi$] (s\yi) at (8,\y){};
+            }
+    
+            % Hidden ellipse to draw functors to
+            \node[ellipse, minimum width=5cm, minimum height=15mm] (s3) at (8,8){};
+    
+            %Draw the ... for the s-category stack
+            \foreach \y[count=\c,evaluate={\yi=int(\c-1)}] in {7, 7.5, 8}{
+                \node[fill, circle, inner sep=1pt] (p\yi) at (8, \y){};
+            }
+    
+            % Draw index arrows
+            \foreach \i in {0, 1, 2}{
+                \draw[->, thick] (d\i) to (s\i);
+            }
+    
+            % draw the re-indexing functors
+    
+            \foreach \source[count=\dest] in {0, 1, 2}{
+                \draw[->, thick](s\source.north west) to[bend left=10] node[left]{$\pstar$} (s\dest.south west);
+            }
+    
+            % Draw the quantification functors
+            \foreach \dest[count=\source] in {0, 1, 2}{
+                \draw[->, thick] 
+                (s\source.south east) to[bend left=10] node[right]{$\forall_{\P_\dest}$} (s\dest.north east);
+            }
+    
+            % Draw the internal morphisms in base category
+            \foreach \dest[count=\source] in {0, 1}{
+                \draw[->]
+                (d\source) to[bend right=10] node[right]{$\p$} (d\dest);
+            }
+    
+            %Draw the bracket
+    
+            \draw [decoration={brace,amplitude=8pt},decorate] ($(s2)+(10em,1ex)$) -- ($(s0)+(10em,-1ex)$);
+            \node[text width=20mm] (Label) at (14,5){Fibres for each effect environment};
+        \end{tikzpicture}
 
-    - Models of particular instantiations of EC based on $\set$ exist.
-
-    - Next step is use a $\set$-based model to build a model of EC
+    \begin{itemize}
+        \item Can we actually instantiate a category with the required structure? 
+        \item Starting point a model of EC in $\set$
+    \end{itemize}
+    
     \script{
         - So far, we've only said what structures are required to model PEC.
         - Haven't shown that there actually exists an indexed category with the required properties
@@ -254,9 +538,11 @@
 \end{frame}
 
 \begin{frame}{Instantiating a Model (2) - Base Category}
-    - Category of monotone functions of ground effects (with no variables) to ground effects.
-    - $\deno{\typerelation{\nil,\a}{\a\dot\texttt{IO}}{\effect}} = e\mapsto e\dot\texttt{IO}$
-    - $\Mul(f, g)\ev = (f\ev)\dot(g\ev) $
+\begin{itemize}
+    \item Use $\Eff$ - category of monotone functions of tuples of ground effects to ground effects
+    \item $\deno{\typerelation{\nil,\a, \b}{\b\dot(\a\dot\texttt{IO})}{\effect}} = (e_1, e_2)\mapsto e_2\dot(e_1\dot\texttt{IO})$
+    \item $\Mul(f, g)\ev = (f\ev)\dot(g\ev) $
+\end{itemize}
 
     \script{
         - Firstly, we want to build a base category
@@ -266,10 +552,12 @@
 \end{frame}
 
 \begin{frame}{Instantiating a Model (3) - Fibres}
-    - The fibre $\C(n)$ is the category of functors $[E^n, \set]$
-    - I.E. objects are functions that take a vector of ground effects and return sets
-    - Morphisms are functions that return functions in $\set$
-    - S-Category features (products, exponentials, graded monad) can be constructed pointwise (Graded monad definition)
+    \begin{itemize}
+        \item The fibre $\C(n)$ is the category of functors $[E^n, \set]$
+        \item I.E. objects are functions that take a vector of ground effects and return a set.
+        \item Morphisms are functions that return functions in $\set$
+        \item S-Category features
+    \end{itemize}
 
     \script{
         - Now we can think about the fibres
@@ -280,9 +568,19 @@
 \end{frame}
 
 \begin{frame}{Instantiating a Model (4) - Functors and Adjunctions}
-    - Re-indexing functors are formed by pre-composition
-    - $\allEn$ functor is formed by a product over all effects.
-    - Adjunction operations become pairing and projection.
+
+    Re-indexing functors act by pre-composition
+    \begin{align*}
+        A\in&\quad [E^n, \set]\\
+        \theta\star(A) \emv =&\quad  A(\theta(\emv))\\
+        \theta\star(f) \emv =&\quad f(\theta(\emv)): \theta\star(A) \rightarrow \theta\star(B)\\
+    \end{align*}
+
+
+    The quantification functor takes a product over all ground effects
+    \begin{align*}
+        \allEn(A)\env =&\Pi_{\e\in E}{A(\env, \e)}
+    \end{align*}
 
     \script{
         - Finally, we need to construct the various functors
