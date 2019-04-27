@@ -1,0 +1,467 @@
+\documentclass{Report}
+\input{../proofs/header.tex}
+
+
+\newcommand{\relates}[0]{\lhd}
+\newcommand{\logRel}[3]{#1 \relates_{#2} #3}
+\newcommand{\plogRel}[4]{#1 \relates_{\wellformed{#2}{#3}} #4}
+
+\newcommand{\zberelation}[3]{\berelation{}{#1}{#2}{#3}}
+\newcommand\ztyperelation[2]{\typerelation{}{#1}{#2}}
+
+\newcommand{\N}[0]{\mathbb{N}}
+\renewcommand\put[0]{\texttt{put}}
+\newcommand\ecput[0]{\texttt{EC}_\put}
+\newcommand\ecputA[0]{\texttt{EC}_\put^A}
+\newcommand\ecputG[0]{\texttt{EC}_\put^G}
+
+\newcommand\mna[0]{\M{n}{A}}
+\newcommand\mmb[0]{\M{m}{B}}
+\newcommand\mnb[0]{\M{n}{B}}
+\newcommand\mma[0]{\M{m}{A}}
+
+\newcommand{\setcomp}[2]{\{#1 \mid #2 \}}
+
+\begin{document}
+\chapter{Adequacy of a Model of the Effect Calculus}
+    \section{Instantiation of the Effect Calculus}
+    Let us instantiate the effect calculus to be a language in which one can write programs which can create an output signal. The effect system of EC is then used to count an upper bound on the number of outputs that a program can make. This language shall be called $\ecput$
+
+    \subsection{Ground Types}
+    We simply use the basic ground types.
+
+    \begin{equation}
+        \label{AdequacyGroundTypes}
+        \g \gens \B \mid \U
+    \end{equation}
+
+    \subsection{Graded Monad}
+    We grade index the graded monad with a partially ordered monoid derived from the natural numbers.
+
+    \begin{equation}
+        E = (\N, 0, +, \leq)        
+    \end{equation}
+
+    This means that the $\doin{x}{v}{v'}$ type rule adds together the upper bounds on the two expressions to give an upper bound on the number of outputs of the sequenced expression. The $\return{v}$ type rule acknowledges that a pure expression does not have any output.
+
+    \subsection{Constants}
+    We extend the set of constant, built in expressions to include a \put\s statement which makes a single output action.
+
+    \begin{equation}
+        \label{AdequacyConstants}
+        \const{A} \gens \t^\B \mid \f^\B \mid \u^\U \mid \put^{\M{1}{\U}}        
+    \end{equation}
+
+    \subsection{Subtyping}
+    The ground subtyping relation is the trivial identity relation. This is extended using the subeffect and function subtyping rules given in \todo{Ref}.
+
+
+    \section{Instantiation of a Model of the Effect Calculus}
+
+    Let us now instantiate a model of $\ecput$ in $\set$, the category of sets and functions.
+
+    \subsection{Cartesian Closed Category}
+    Is given by the usage of $\set$.
+    
+    \subsection{Graded Monad}
+    The strong graded monad is given by tagging values of the underlying type with the number of output operations required to compute that value.
+
+    \begin{align}
+        \label{AdequacyGradedMonad}
+        \T{n}{A} & = \setcomp{(n', a)}{n'\leq n\wedge a\in A}\\
+        \bind{m}{n}{A} & = (m', (n', a))\mapsto (n' + m', a)\\
+        \point{A} & = a\mapsto (0, a)\\\
+        \tstrength{n}{A}{B} & = (a, (n', b)) \mapsto (n', (a, b))
+    \end{align}
+
+
+\subsection{Subeffecting Natural Transformations}
+These natural transformations are given by inclusion functions (identities), since $(n',a)\in\T{n}{A} \implies (n'\leq n \leq m, a\in A)\implies (n',a)\in\T{n}{B}$. Other subtyping morphisms are generated using the usual method according to the subtype derivation.
+
+\subsection{Ground Denotations}
+We define denotations for ground types as follows:
+
+\begin{align}
+    \label{AdequacyGroundTypeDenotations}
+    \deno{\U} & = \{\singleton\}\\
+    \deno{\B} & = \{\top, \bot\}
+\end{align}
+
+We then define denotations for the constant expressions, including the \put operation. 
+
+\begin{align}
+    \label{AdequacyGroundTermDenotations}
+    \deno{\u} & = \singleton\mapsto \singleton\\
+    \deno{\t} & = \singleton\mapsto \top\\
+    \deno{\f} & = \singleton\mapsto \bot\\
+    \deno{\put} & = \singleton\mapsto (1, \singleton)\\
+\end{align}
+
+
+
+\subsection{Soundness}
+This category is now an S-category and hence a sound model for $\ecput$.
+
+\subsection{Denotational Shorthand}
+
+In the remaining sections I shall use $\deno{\ztyperelation{v}{A}}$ to indicate $\deno{\typerelation{\nil}{v}{A}}(\singleton)$.
+
+\section{Programming With Put}
+
+This simple language now has some extra properties which the general EC does not have.
+
+\begin{definition}[Powers of Put as an Equational Equivalence Class]
+Define $\put^n$ as follows:
+
+\begin{align}
+    \label{PutnDefinition}
+    \zberelation{\put^0}{&{\s}\return{\u}}{\M{0}{\U}}\\ 
+    \zberelation{\put^{n+1}}{&{\s}\doin{\_}{\put^n}{\put}}{\M{n+1}{\U}}
+\end{align}
+\end{definition}
+
+
+\begin{lemma}[Denotations of Powers of Put]
+    Powers of put have a simple denotation.
+$\deno{\ztyperelation{\put^n}{\M{n}{\U}}} = (n, \singleton)$    
+\end{lemma}
+
+\begin{proof}
+    By induction on $n$.
+
+    \case{0}
+    
+    \begin{equation}
+        \deno{\ztyperelation{\put^0}{\M{0}{\U}}} = \point{}(\singleton) = (0, \singleton)
+    \end{equation}
+    
+    \case{n+1}
+    \begin{align}
+        \deno{\ztyperelation{\put^{n+1}}{\M{0}{\U}}} & = (\bindmu\after\T{n}{(\deno{\typerelation{\nil}{\put}{\M{1}{\U}}}\after\p)}\after \strengtht)(\singleton, \deno{\ztyperelation{\put^n}{\M{n}{\U}}})\\
+        & = (n+1, \singleton)
+    \end{align}
+\end{proof}
+
+\begin{theorem}[Put Reordering Theorem]
+    For all $\ztyperelation{v}{\mna}$, there exist $\ztyperelation{v'}{A}$, $n' \leq n$ such that $\zberelation{v}{\doin{_}{\put^{n'}}{\return{v'}}}{\mna}$.
+\end{theorem}
+
+\begin{proof}
+    By induction over typing rules capable of producing types of the form $\mna$.
+
+    \case{Return}
+
+    $$\zberelation{\return{v}}{\doin{\_}{\return{\u}}{\return{v}}}{\M{0}{A}}$$
+
+    $v' = v$, $n' = 0$.
+
+    \case{Subtype}
+
+    \begin{equation}
+        \ntreeruleII{Subtype}{\ztyperelation{v}{\mna}}{\subeffecttree{n}{A}{m}{B}}{\ztyperelation{v}{\mmb}}
+    \end{equation}
+
+    By induction, $\exists n', v'. \zberelation{v}{\doin{\_}{\put^{n'}}{\return{v'}}}{\mna}$
+
+    $n' \leq n \leq m$, and due to the subtyping equational equivalence rule, $\zberelation{v}{\doin{\_}{\put^{n'}}{\return{v'}}}{\mmb}$.
+
+
+    \case{Bind}
+    
+    $$\ntreeruleII{Bind}{\ztyperelation{v}{\mna}}{\typerelation{x: A}{u}{\mmb}}{\ztyperelation{\doin{x}{v}{u}}{\M{n+m}{B}}}$$
+
+    So, by induction, $\zberelation{v}{\doin{\_}{n'}{\return{v'}}}{\mna}$. Hence,
+
+
+    \begin{align}
+        \zberelation{\doin{x}{v}{u}}{&\s\doin{x}{(\doin{\_}{n'}{\return{v'}}})}{\M{n+m}{B}}\\
+        \beequiv&\s\doin{\_}{\put^{n'}}{\doin{x}{\return{v'}}{u}}\\
+        \beequiv&\s \doin{\_}{\put^{n'}}{u\ssub{x}{v'}}
+    \end{align}
+
+    By induction $\zberelation{u\ssub{x}{v'}}{\doin{\_}{\put^{m'}}{\return{u'}}}{\mmb}$.
+
+    So
+
+    \begin{align}
+        \zberelation{\doin{x}{v}{u}}{&\s\doin{\_}{\put^{n'}}{u\ssub{x}{v'}}}{\M{n+m}{B}} \\
+        \beequiv & \s\doin{\_}{\put^{n'}}{(\doin{\_}{\put^{m'}}{\return{u'}})}\\
+        \beequiv &\s \s\doin{\_}{\put^{n'+m'}}{\return{u'}}
+    \end{align}
+
+    Where $n' + m'\leq n+m$
+    
+    
+\case{If}
+
+\begin{equation}
+    \ntreeruleIII{If}{\ztyperelation{b}{\B}}{\ztyperelation{v_1}{\mna}}{\ztyperelation{v_2}{\mna}}{\ztyperelation{\pifthenelse{b}{\mna}{v_1}{v_2}}{\mna}}    
+\end{equation}
+
+Since we can't construct booleans in any other way, $\zberelation{b}{\t}{\B}$ or $\zberelation{b}{\f}{\B}$.
+
+By induction, we have $\zberelation{v_1}{\doin{\_}{\put^{n_1'}}{v_1'}}{\mna}$ and $\zberelation{v_2}{\doin{\_}{\put^{n_2'}}{v_2'}}{\mna}$.
+
+So we can case split on what $b$ reduces to.
+
+\case{$\zberelation{b}{\t}{\B}$}
+\begin{align}
+   \zberelation{\pifthenelse{b}{v_1}{v_2}}{&\s v_1}{\mna}\\
+   \beequiv&\s \doin{\_}{\put^{n_1'}}{v_1'}
+\end{align}
+
+\case{$\zberelation{b}{\f}{\B}$}
+\begin{align}
+    \zberelation{\pifthenelse{b}{v_1}{v_2}}{&\s v_2}{\mna}\\
+    \beequiv&\s \doin{\_}{\put^{n_2'}}{v_2'}
+ \end{align} 
+
+ Thus in both cases, there exists picks for $n'$ and $v'$.
+
+ \case{Apply}
+
+ \begin{equation}
+     \ntreeruleII{Apply}{\ztyperelation{v_1}{\fntype{A}{\mnb}}}{\ztyperelation{v_2}{A}}{\ztyperelation{\apply{v_1}{v_2}}{\mnb}}
+ \end{equation}
+
+ So $\zberelation{v_1}{\lam{x}{A'}{u}}{\fntype{A}{\mnb}}$, with $A \subtype A'$, since $\ecput$ is strongly normalizing. So using equational equivalence, we have the following:
+
+ \begin{align}
+     \zberelation{\apply{v_1}{v_2}}{&\s u\ssub{x}{v_2}}{\mnb}\\
+     \beequiv&\s \doin{\_}{\put^{n'}}{\return{u'}}\qt{By induction}
+ \end{align}
+
+\end{proof}
+
+\begin{corollary}[Denotational Equivalence]
+    Due to soundness, $\deno{\ztyperelation{v}{\mna}} = (n', \deno{\ztyperelation{v'}{A}})$
+\end{corollary}
+
+\section{Logical Relations}
+
+\begin{equation}
+    \label{LogicalRelationType}
+    \relates_A \in \deno{A} \times \ecputA    
+\end{equation}
+
+\section{Definition}
+\begin{definition}[Logical Relation]
+
+    \begin{align}
+        \label{LogicalRelationDefinition}
+        \logRel{d}{\U}{v} & \Leftrightarrow (d=\singleton \implies \zberelation{v}{\u}{\U})\\
+        \logRel{d}{\B}{v} & \Leftrightarrow ((d=\top \implies \zberelation{v}{\t}{\B}) \wedge (d=\bot \implies \zberelation{v}{\f}{\B}))\\
+        \logRel{d}{\ab}{v} & \Leftrightarrow (\forall e, u. \logRel{e}{A}{u}\implies \logRel{d(e)}{B}{\apply{v}{u}})\\
+        \logRel{d}{\mna}{v}&\Leftrightarrow  (d= (n', d')\in \T{n}{\deno{A}} \implies \exists v'. \logRel{d'}{A}{v'} \wedge \ztyperelation{v'}{A}\wedge \zberelation{v}{\doin{\_}{\put^{n'}}{\return{v'}}}{\mna})
+    \end{align}
+\end{definition}
+\section{Subtyping}
+
+\begin{theorem}[Logical Relation and Subtyping]
+    If $A\subtype B$ and $\logRel{d}{A}{v}$ then $\logRel{d}{B}{v]}$
+\end{theorem}
+
+\begin{proof}
+    By induction on the derivation of $A\subtype B$.
+
+    \case{Ground}
+        $A\subtype B\implies A = B$, since ground subtyping is the identity relation.
+
+    \case{Fun}
+        $A\subtype B\implies A = \fntype{A_1}{A_2}, B = \fntype{B_1}{B_2}$ where $B_1\subtype A_1$ and $A_2\subtype B_2$.
+
+        By the definition of the $\relates_{\ab}$ relation, $\logRel{d}{\ab}{v} \Leftrightarrow (\forall e, u. \logRel{e}{A}{u}\implies \logRel{d(e)}{B}{\apply{v}{u}})$.
+
+        So 
+
+        \begin{align}
+            \forall e, u. \logRel{e}{B_1}{u} & \implies \logRel{e}{A_1}{u} \qt{By induction $B_1\subtype A_1$}\\
+            & \implies \logRel{d(e)}{A_2}{\apply{u}{v}}\qt{By definition}\\
+            & \implies \logRel{d(e)}{B_2}{\apply{u}{v}}\qt{By induction $A_2\subtype B_2$}
+        \end{align}
+
+        As required.
+    \case{Effect}
+
+    $\M{n_1}{A_1} \subtype \M{n_2}{A_2} \implies n_1\leq n_2, A_1\subtype A_2$
+
+    \begin{align}
+        \logRel{d}{\M{n_1}{A_1}}{v} & \implies  d=(n_1', d') \wedge n_1' \leq n_1\leq n_2 \wedge \exists v'. (\logRel{d'}{A_1}{v'} \wedge\zberelation{v}{\doin{\_}{\put^{n'}}{\return{v'}}}{\M{n_1}{A_1}})\\
+        & \implies \ztyperelation{v_1'}{A_2} \wedge \logRel{d'}{A_2}{v'} \wedge \zberelation{v}{\doin{\_}{\put^{n'}}{\return{v'}}}{\M{n_1}{A_2}}\\
+        & \implies \logRel{d}{\M{n_2}{A_2}}{v}
+    \end{align}
+\end{proof}
+
+\section{Fundamental Property}\label{FundProp}
+Let $\relates_\G \in \deno{\G}\times \ecputG$ mean:
+
+\begin{equation}
+    \label{LogicalRelationTypeEnvironment}
+    \logRel{\rho}{\G}{\si} \Leftrightarrow \forall x. \logRel{\rho(x)}{\G(x)}{\si(x)}
+\end{equation}
+
+
+\begin{theorem}[Fundamental Theorem]
+    If $\logRel{\rho}{\G}{\si}$ then $\logRel{\deno{\gtyperelation{v}{A}}\rho}{A}{v\ssi}$ up to equational equivalence.    
+\end{theorem}
+
+\begin{proof}
+    By induction over the derivation of $\gtyperelation{v}{A}$
+
+    \case{Variables}
+    \begin{equation}
+        \deno{\gtyperelation{x}{\G(x)}} = \logRel{\rho(x)}{\G(x)}{\si(x)}\beequiv x\ssi
+    \end{equation}
+
+    \case{Constants}
+    \begin{align}
+        \deno{\gtyperelation{\t}{\B}} \rho & = \top \wedge \zberelation{\t\ssi}{\t}{\B} \qt{ So } \logRel{\top}{\B}{\t\ssi}\\
+        \deno{\gtyperelation{\f}{\B}} \rho & = \bot \wedge \zberelation{\f\ssi}{\f}{\B} \qt{ So } \logRel{\top}{\B}{\f\ssi}\\
+        \deno{\gtyperelation{\u}{\U}} \rho & = \singleton \wedge \zberelation{\u\ssi}{\u}{\U} \qt{ So } \logRel{\singleton}{\U}{\u\ssi}\\
+        \deno{\gtyperelation{\put}{\M{1}{\U}}} \rho & = (1, \singleton)\wedge \zberelation{\put}{\doin{\_}{\put^1}{\return{\u}}}{\M{1}{\U}}\\ 
+    \end{align}
+
+
+    \case{Subtype}
+
+    \begin{equation}
+        \deno{\gtyperelation{v}{B}}\rho = \logRel{\deno{\gtyperelation{v}{A}}}{A}{v\ssi}
+    \end{equation}
+
+    Since $A\subtype B \wedge \logRel{d}{A}{v} \implies \logRel{d}{B}{v}$, $\logRel{\deno{\gtyperelation{v}{B}}}{B}{v\ssi}$.
+
+    \case{Fn}
+
+    For all $\logRel{d}{A}{u}$, 
+    \begin{align}
+        (\deno{\gtyperelation{\lam{x}{A}{v}}{\ab}}\rho)d & = (\cur{\deno{\typerelation{\gax}{v}{B}}}\rho)d\\
+        & = \deno{\typerelation{\gax}{v}{B}}(\rho[x\mapsto d])\\
+    \end{align}
+
+    Since $\logRel{d}{A}{u}$, $\logRel{(\rho[x\mapsto d])}{\gax}{(\si, x\setto u)}$, so by induction
+    \begin{align}
+        (\deno{\gtyperelation{\lam{x}{A}{v}}{\ab}}\rho)d = \logRel{\deno{\typerelation{\gax}{v}{B}}(\rho[x\mapsto d])&}{B}{v\sub{\si, x\setto u}}
+        \\
+        \logRel{&}{B}{v\ssi\ssub{x}{u}}\\
+        & \beequiv \apply{(\lam{x}{A}{(v\ssi)})}{u}
+    \end{align}
+\end{proof}
+
+\case{Apply}
+\begin{equation}
+    \deno{\gtyperelation{\apply{v}{u}}{B}}\rho = (\deno{\gtyperelation{v}{\ab}}\rho)(\deno{\gtyperelation{u}{A}}\rho)
+\end{equation}
+
+By induction $\logRel{\deno{\gtyperelation{v}{\ab}}\rho}{\ab}{v\ssi}$ and $\logRel{\deno{\gtyperelation{u}{A}}\rho}{A}{u\ssi}$. So by the definition of $\relates_\ab$, 
+
+\begin{align}
+    \deno{\gtyperelation{\apply{v}{u}}{B}}\rho =\logRel{(\deno{\gtyperelation{v}{\ab}}\rho)(\deno{\gtyperelation{u}{A}}\rho)}{B}{\apply{(v\ssi)}{(u\ssi)}\beequiv (\apply{v}{u})\ssi}
+\end{align}
+
+\case{Return}
+
+\begin{equation}
+    \deno{\gtyperelation{v}{\M{0}{A}}}\rho = (0, \deno{\gtyperelation{v}{A}})
+\end{equation}
+
+By induction, $\logRel{\deno{\gtyperelation{v}{A}}}{A}{v\ssi}$, so by picking $v' = v\ssi$
+
+\begin{equation}
+    \zberelation{(\return{v})\ssi}{\return{(v\ssi)\beequiv \doin{\_}{\put^0}{\return{v'}}}}{\M{0}{A}}
+\end{equation}
+
+So $\logRel{\deno{\gtyperelation{\return{v}}{\M{0}{A}}}}{\M{0}{A}}{(\return{v})\ssi}$
+
+\case{Bind}
+
+By inversion, $\deno{\gtyperelation{\doin{x}{v}{u}}{\M{m+n}{B}}}\rho = (m'+n', d_u)$, where $(n', d_u) = \deno{\typerelation{\gax}{u}{\mnb}}(\rho[x\mapsto d_v])$, and $(n', d_v) = \deno{\gtyperelation{v}{\mma}}\rho$.
+
+By induction, $\logRel{(m', t_v)}{\mma}{v[\ssi]}$. So $\exists v'$ such that $\zberelation{v\ssi}{\doin{\_}{\put^{m'}}{\return{v'}}}{\mma}$. So $\logRel{(\rho[x\mapsto d_v])}{\gax}{(\ssi, x\setto v')}$.
+
+So by induction $\logRel{\deno{\typerelation{\gax}{u}{\mnb}}(\rho[x\mapsto d_v])}{\mnb}{u\sub{\si, x\setto v'}}$.
+
+Hence, $\exists u'$ such that $\zberelation{u\sub{\si, x\setto v'}}{\doin{\_}{\put^{n'}{\return{u'}}}}{\M{m + n}{B}}$ and $\logRel{t_u}{\mnb}{u'}$.
+
+Hence,
+
+\begin{align}
+    \zberelation{\doin{x}{v\ssi}{u\ssi}&}{\doin{x}{(\doin{\_}{\put^{m'}}{\return{v'}})}{(u\ssi)}}{\M{m+n}{B}}\\
+    &\beequiv\doin{\_}{\put^{m'}}{u\sub{\si, x\setto{v'}}}\\
+    &\beequiv\doin{\_}{\put^{m'+n'}}{\return{u'}}
+\end{align}
+
+So $\logRel{\deno{\gtyperelation{\doin{x}{v}{u}}{\M{m+n}{B}}}\rho}{\M{m+n}{B}}{(\doin{x}{v}{u})\ssi}$.
+
+
+\case{If}
+
+By inversion, $\deno{\gtyperelation{\pifthenelse{A}{b}{v_1}{v_2}}{A}}\rho = \begin{cases}
+    \deno{\gtyperelation{v_1}{A}}\rho \qt{If }\deno{\gtyperelation{b}{\B}}\rho = \top\\
+    \deno{\gtyperelation{v_2}{A}}\rho \qt{If }\deno{\gtyperelation{b}{\B}}\rho = \bot
+\end{cases}
+$.
+
+By induction,
+
+\begin{align}
+    \logRel{\deno{\gtyperelation{b}{\B}&}\rho}{\B}{b\ssi}\\
+    \logRel{\deno{\gtyperelation{v_1}{A}&}\rho}{A}{v_1\ssi}\\
+    \logRel{\deno{\gtyperelation{v_2}{A}&}\rho}{A}{v_2\ssi}
+\end{align}
+
+\subcase{$\deno{\gtyperelation{b}{\B}}\rho =  \top$}
+    \begin{equation}
+        \logRel{\deno{\gtyperelation{\pifthenelse{A}{b}{v_1}{v_2}}{A}}\rho = \deno{\gtyperelation{v_1}{A}}\rho}{A}{v_1\ssi\beequiv (\pifthenelse{A}{b}{v_1}{v_2})\ssi}
+    \end{equation}
+
+\subcase{$\deno{\gtyperelation{b}{\B}}\rho =  \bot$}
+\begin{equation}
+    \logRel{\deno{\gtyperelation{\pifthenelse{A}{b}{v_1}{v_2}}{A}}\rho = \deno{\gtyperelation{v_2}{A}}\rho}{A}{v_2\ssi\beequiv (\pifthenelse{A}{b}{v_1}{v_2})\ssi}
+\end{equation}
+
+\section{Adequacy}
+\begin{theorem}[Adequacy]
+For $G$ defined as:
+
+\begin{align}
+    G\gens \B \mid \U \mid \M{n}{G}
+\end{align}
+
+Equality of denotations implies equational equality.
+
+\begin{equation}
+    \deno{\ztyperelation{v}{G}} = \deno{\ztyperelation{u}{G}} \implies \zberelation{v}{u}{G}
+\end{equation}
+
+\end{theorem}
+
+\begin{proof}
+    By induction on the structure of $G$, making use of the fundamental property \ref{FundProp}.
+
+    \case{Boolean}
+    Let $d=\deno{\ztyperelation{v}{\B}}=\deno{\ztyperelation{v}{\B}}\in \{\top, \bot\}$. By the fundamental property, $\logRel{d}{\B}{v}$  and $\logRel{d}{\B}{v}$.
+
+    \subcase{$d=\top$}
+    Then $\zberelation{v\beequiv\t}{u}{\B}$
+
+    
+    \subcase{$d=\bot$}
+    Then $\zberelation{v\beequiv\f}{u}{\B}$
+
+    \case{Unit}
+    Let $\singleton=\deno{\ztyperelation{v}{\U}}=\deno{\ztyperelation{v}{\U}}\in \{\singleton\}$. By the fundamental property, $\logRel{d}{\U}{v}$  and $\logRel{d}{\U}{v}$. Hence $\zberelation{v\beequiv\u}{u}{\U}$.
+
+    \case{Effect}
+
+    Let $(n', d) = \deno{\ztyperelation{v}{\M{n}{G}}} = \deno{\ztyperelation{u}{\M{n}{G}}}$. By the fundamental property, $\logRel{(n', d)}{\M{n}{G}}{v}$ and $\logRel{(n', d)}{\M{n}{G}}{u}$. So there exists $u', v'$ such that $\logRel{d'}{G}{u'}$ and $\logRel{d'}{G}{u'}$ and:
+
+    \begin{align}
+        \zberelation{v&}{\doin{\_}{\put^{n'}}{\return{v'}}}{\M{n}{G}}\\
+        &\beequiv \doin{\_}{\put^{n'}}{\return{u'}}\\
+        & \beequiv u
+    \end{align}
+    
+$\square$
+\end{proof}
+
+\end{document}
