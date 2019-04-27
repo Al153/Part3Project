@@ -477,4 +477,27 @@
         
         \newcommand\counit[1]{\boldsymbol{\epsilon}_{#1}}
         \newcommand\unit[1]{\boldsymbol{\eta}_{#1}}
+
+
+        
+%% Adequacy shorthands
+\newcommand{\relates}[0]{\lhd}
+\newcommand{\logRel}[3]{#1 \relates_{#2} #3}
+\newcommand{\plogRel}[4]{#1 \relates_{\wellformed{#2}{#3}} #4}
+
+\newcommand{\zberelation}[3]{\berelation{}{#1}{#2}{#3}}
+\newcommand\ztyperelation[2]{\typerelation{}{#1}{#2}}
+
+\newcommand{\N}[0]{\mathbb{N}}
+\renewcommand\put[0]{\texttt{put}}
+\newcommand\ecput[0]{\texttt{EC}_\put}
+\newcommand\ecputA[0]{\texttt{EC}_\put^A}
+\newcommand\ecputG[0]{\texttt{EC}_\put^G}
+
+\newcommand\mna[0]{\M{n}{A}}
+\newcommand\mmb[0]{\M{m}{B}}
+\newcommand\mnb[0]{\M{n}{B}}
+\newcommand\mma[0]{\M{m}{A}}
+
+\newcommand{\setcomp}[2]{\{#1 \mid #2 \}}
 \fi
