@@ -520,7 +520,7 @@ When we combine an effect system with if-expressions, we come across another, la
     }
 \end{equation}
 
-To model sub-typing, we need a way to convert morphisms $\deno{\gtyperelation{v}{A}}: \G\rightarrow A$ to $\deno{\gtyperelation{v}{B}}:\G\rightarrow B$ when $A\subtype B$. This can be done if for each instance of $A\subtype B$, we have a there is morphism $\deno{A\subtype B}: A \rightarrow B$. These morphisms should respect the antisymmetry, transitivity, and reflexivity of the subtyping relation, meaning that $\deno{B\subtype C}\after\deno{A\subtype B} = \deno{A\subtype C}$ and $\deno{A\subtype A} = \Id{A}$.
+To model subtyping, we need a way to convert morphisms $\deno{\gtyperelation{v}{A}}: \G\rightarrow A$ to $\deno{\gtyperelation{v}{B}}:\G\rightarrow B$ when $A\subtype B$. This can be done if for each instance of $A\subtype B$, we have a there is morphism $\deno{A\subtype B}: A \rightarrow B$. These morphisms should respect the antisymmetry, transitivity, and reflexivity of the subtyping relation, meaning that $\deno{B\subtype C}\after\deno{A\subtype B} = \deno{A\subtype C}$ and $\deno{A\subtype A} = \Id{A}$.
 
 Polymorphism is a harder concept to explain intuitively. The particular flavour of polymorphism that this dissertation discusses is System-F-Style parametric polymorphism. For a given type-system feature $F$, such as types, effects, type constructors, or some other language specific feature, we can add parametric polymorphism over $F$ by allowing instances of $F$ to be replaced by $F$ variables and introducing certain type expressions to modify the types. For example, let us look at system F \cite{SystemFIntroduction}. System F has polymorphism over types. This means that we can replace a type expression with a type variable parameter. We also need to be able to syntactically generalise over type parameters and to be able to specify a particular type parameter's value. This requires us to extend the syntax of the simply typed lambda calculus with the appropriate specialisation and generalisation terms as well as parameterised types, as seen in figure \ref{SystemFTermsTypes}.
 
@@ -785,6 +785,9 @@ The ground effects form the same monotonic, partially-ordered monoid $(E, \dot, 
     (E_\P, \dotp, \1, \subeffectp)
 \end{equation}
 
+
+\todo{This needs to be less vague.}
+
 Where $E_\P$ is the closure of $E\cup \left\{\a\mid\a\in\P\right\}$ under $\dotp$, which is defined as:
 
 \begin{equation}
@@ -981,7 +984,7 @@ $}
 
 
 \chapter{The Semantics of PEC in an Strictly Indexed Category}
-
+\todo{More Signposting/Commentary}
 In this chapter, I  describe the category structure required to interpret an instance of the PEC. I then present denotations of each type of structure in the language, such as types, effects, terms, substitutions, and environment weakenings. Finally, I provide outlines and interesting cases of the proofs of the lemmas leading up to and including soundness of the semantics with respect to a $\beta\eta$-conversion-based equational equivalence. However, firstly I shall give a brief treatment to the semantics of EC.
 
 
@@ -1324,7 +1327,7 @@ This finally gives us the ability to express the denotations of well-typed terms
     \label{TermDenotations}
 \end{figure}
 
-The least intuitive of these denotations is that of effect application (specialisation) in equation \ref{EffectApplication}. As explained later in section \ref{SubsAndWeakening} the re-indexing functor represents application of the substitution (\todo{I don't think this is circular logic, but would like another pair of eyes if possible}) $\ssub{\b}{\e}$. By doing type analysis on the co-unit morphism $ \counit{\deno{\typerelation{\P,\b}{A\ssub{\a}{\b}}{\type}}}$, as in figure \ref{CoUnitType}  we can see that before the application of the substitution, the co-unit natural transformation takes a quantified type to a substituted type under an extended effect environment. By applying the substitution re-indexing functor in figure \ref{ReIndexedCoUnitType}, we substitute $\e$ for the extra effect variable, $\b$. In the case of the quantified type, as $\b$ is not used, the substitution has no effect, but in the case of the substituted type, the substitutions compose to yield the substitution $\ssub{\a}{\e}$. This composes with the expression denotation $g$ to give the applied denotation in figure \ref{EffectSpecComp}.
+The least intuitive of these denotations is that of effect application (specialisation) in equation \ref{EffectApplication}. As explained later in section \ref{SubsAndWeakening} the re-indexing functor represents application of the substitution $\ssub{\b}{\e}$. By doing type analysis on the co-unit morphism $ \counit{\deno{\typerelation{\P,\b}{A\ssub{\a}{\b}}{\type}}}$, as in figure \ref{CoUnitType}  we can see that before the application of the substitution, the co-unit natural transformation takes a quantified type to a substituted type under an extended effect environment. By applying the substitution re-indexing functor in figure \ref{ReIndexedCoUnitType}, we substitute $\e$ for the extra effect variable, $\b$. In the case of the quantified type, as $\b$ is not used, the substitution has no effect, but in the case of the substituted type, the substitutions compose to yield the substitution $\ssub{\a}{\e}$. This composes with the expression denotation $g$ to give the applied denotation in figure \ref{EffectSpecComp}.
 
 
 \begin{figure}
@@ -2840,8 +2843,8 @@ This case makes use of the adjunction properties of $\allI, \pstar$. Let  $h = \
 
 This completes the proof of soundness for this semantics.
 
-\chapter{Instantiating a Model of PEC}
-
+\chapter{Building a Model of PEC}
+\todo{Rename instantiate}
 Now we have proved that an appropriate categorical structure can model PEC, it remains to show that it is feasible to construct such an indexed category. There exist $\set$-based models for the semantics of many effectful languages with a graded monad, such as a certain instantiations of the Effect Calculus \cite{Katsumata:2014}. More specifically, it is possible to treat $\set$ as an S-category. Hence, I use a $\set$ based S-category as a starting point. In this section, I  demonstrate how to construct an strictly indexed S-category, which can model the PEC, from such an S-category.
 
 Suppose we have an S-category structure derived from $\set$ which models an instance of EC. That is, there exists a graded monad $\Tz{}{}, \bindmu^0, \pointz{}, \strengtht^0$ on $\set$, and there exist subtyping functions $\deno{A\subtypeg B}: A \rightarrow B$ for each instance of the ground subtyping relation, and natural transformations $\deno{\e_1 \subeffectz \e_2}: \Tz{\e_1}{} \rightarrow \Tz{\e_2}{}$ for each instance of the subeffecting relation. Further more, $\set$ is cartesian closed and has co-products for all pairs of objects. Since this structure is a model for the EC, it is graded by a partially-ordered monoid on ground effects: $(E, \subeffectz, \1, \dot)$. I have marked each of these instances of S-category structure with $0$ to indicate that they occur in the fibre induced by the empty effect-variable environment.
