@@ -80,7 +80,7 @@ $\P\gens\nil\mid\P, \a$
 \paragraph{Membership of Effect Environments}
 Informally, $\a \in \P$ if $\a$ appears in the list represented by $\P$.
 
-\paragraph{$\ok{}$ Predicate On Effect Environments}
+\paragraph{$\okt$ Predicate On Effect Environments}
 \begin{itemize}
     \item $\ntreerulez{Nil}{\ok{\nil}}$
     \item $\condtreeruleI{Extend}{\ok{\P}}{\ok{\P, \a}}{ \a\notin \P}$
@@ -154,7 +154,7 @@ We now define a predicate on type environments and effect environments: $\oke{\P
 If $\gpetyperelation{v}{A}$ then $\oke{\P}{\G}$.
 \paragraph{Proof}
 If $\ok{\gax}$ then by inversion. $\ok{\G}$.
-Only the type rule \texttt{Weaken} adds terms to the environment from its preconditions to its post-condition and it does so in an $\ok{}$ preserving way. Any type derivation tree has at least one leaf. All leaves are axioms which require $\oke{\P}{\G}$. And all non axiom derivations preserve the $\ok{}$ property.
+Only the type rule \texttt{Weaken} adds terms to the environment from its preconditions to its post-condition and it does so in an $\okt$ preserving way. Any type derivation tree has at least one leaf. All leaves are axioms which require $\oke{\P}{\G}$. And all non axiom derivations preserve the $\okt$ property.
 
 
 
@@ -547,7 +547,7 @@ Here are some simple corollaries of the adjunction between $\pstar$ and $\allI$.
         
         \begin{property}[Wellformedness]\label{EffectSubsPropertyOne}
             If $\typerelation{\P'}{\si}{\P}$ then $\ok{\P'}$ (By  the 
-            Nil case) and $\ok{\P}$ Since each use of the extend case preserves $\ok{}$.
+            Nil case) and $\ok{\P}$ Since each use of the extend case preserves $\okt$.
         \end{property}
 
         \begin{property}[Weakening]\label{EffectSubsPropertyTwo}

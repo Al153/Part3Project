@@ -1,0 +1,422 @@
+\documentclass{Report}
+\input{../proofs/header.tex}
+
+\newcommand{\pecput}[0]{\texttt{PEC}_\put}
+\newcommand{\pecputA}[0]{\texttt{PEC}_\put^{\wellformed{\P}{A}}}
+\newcommand{\pecputG}[0]{\texttt{PEC}_\put^{\wellformed{\P}{\G}}}
+\newcommand\eLogRel[4]{\logRel{#2}{\wellformed{#1}{#3}}{#4}}
+\newcommand\peLogRel[3]{\eLogRel{\P}{#1}{#2}{#3}}
+
+\newcommand{\zptyperelation}[2]{\typerelation{\P}{#1}{#2}}
+\newcommand{\zpberelation}[2]{\berelation{\P}{#1}{#2}}
+
+\newcommand{\fapply}[0]{^E}
+\newcommand\liftp[0]{^\pi}
+\newcommand{\pe}[0]{\pi_\e}
+
+\begin{document}
+\chapter{Adequacy of a Model of the Polymorphic Effect Calculus}
+    \section{Instantiation of the Polymorphic Effect Calculus}
+    Let us instantiate the polymorphic effect calculus to be a language in which one can write programs which can create an output signal. The effect system of EC is then used to count an upper bound on the number of outputs that a program can make. This language shall be called $\pecput$
+
+    \subsection{Ground Types}
+    We simply use the basic ground types.
+
+    \begin{equation}
+        \label{AdequacyGroundTypes}
+        \g \gens \B \mid \U
+    \end{equation}
+
+    \subsection{Graded Monad}
+    We grade index the base graded monad with a partially ordered monoid derived from the natural numbers.
+
+    \begin{equation}
+        E = (\N, 0, +, \leq)        
+    \end{equation}
+    This extended as described in the dissertation \todo{Ref}, to symbolically include variables $\a, \b, \g$ which range over the natural numbers.
+
+    This means that the $\doin{x}{v}{v'}$ type rule adds together the upper bounds on the two expressions to give an upper bound on the number of outputs of the sequenced expression. The $\return{v}$ type rule acknowledges that a pure expression does not have any output.
+
+    \subsection{Constants}
+    We extend the set of constant, built in expressions to include a \put\s statement which makes a single output action.
+
+    \begin{equation}
+        \label{AdequacyConstants}
+        \const{A} \gens \t^\B \mid \f^\B \mid \u^\U \mid \put^{\M{1}{\U}}        
+    \end{equation}
+
+    \subsection{Subtyping}
+    The ground subtyping relation is the trivial identity relation. This is extended using the subeffect and function subtyping rules given in \todo{Ref}.
+
+
+    \section{Instantiation of a Model of the Polymorphic Effect Calculus}
+
+    Let us now instantiate a model of $\pecput$ in the indexed category derived as in chapter \todo{ref} from a model of the polymorphic version of $\pecput$ in $\set$, the category of sets and functions.
+
+    \subsection{Cartesian Closed Category}
+    Is given by the usage of $\set$.
+    
+    \subsection{Graded Monad}
+    The strong graded monad on $\set$ is given by tagging values of the underlying type with the number of output operations required to compute that value.
+
+    \begin{align}
+        \label{AdequacyGradedMonad}
+        \Tz{n}{A} & = \setcomp{(n', a)}{n'\leq n\wedge a\in A}\\
+        \bindz{m}{n}{A} & = (m', (n', a))\mapsto (n' + m', a)\\
+        \pointz{A} & = a\mapsto (0, a)\\\
+        \tstrengthz{n}{A}{B} & = (a, (n', b)) \mapsto (n', (a, b))
+    \end{align}
+
+
+\subsection{Subeffecting Natural Transformations}
+These natural transformations are given by inclusion functions (identities), since $n\leq m\wedge (n',a)\in\Tz{n}{A} \implies (n'\leq n \leq m, a\in A)\implies (n',a)\in\Tz{m}{A}$. Other subtyping morphisms are generated using the usual method according to the subtype derivation.
+
+\subsection{Ground Denotations}
+We define denotations for ground types as follows:
+
+\begin{align}
+    \label{AdequacyGroundTypeDenotations}
+    \deno{\wellformed{\P}\U} & = \ev\mapsto\{\singleton\}\\
+    \deno{\wellformed{\P}\B} & = \ev\mapsto \{\top, \bot\}
+\end{align}
+
+We then define denotations for the constant expressions, including the \put operation. 
+
+\begin{align}
+    \label{AdequacyGroundTermDenotations}
+    \deno{\u} & = \ev\mapsto\singleton\mapsto \singleton\\
+    \deno{\t} & = \ev\mapsto\singleton\mapsto \top\\
+    \deno{\f} & = \ev\mapsto\singleton\mapsto \bot\\
+    \deno{\put} & = \ev\mapsto\singleton\mapsto (1, \singleton)\\
+\end{align}
+
+
+
+\subsection{Soundness}
+This category is now an Indexed-S-category and hence a sound model for $\pecput$ when completed using the techniques in chapter \todo{ref}.
+
+\subsection{Denotational Shorthands}
+
+In the remaining sections, I shall use $\deno{\zptyperelation{v}{A}}$ to indicate $\ev\mapsto(\deno{\etyperelation{\P}{\nil}{v}{A}}\ev)(\singleton)$.
+
+Furthermore, I shall use some extra notation to aid manipulation of the dependently typed values.
+
+Denotations of PEC terms are dependently typed functions $\deno{\gpetyperelation{v}{A}}: \ev: E^n\rightarrow \G\ev \rightarrow A\ev$. However, we shall often want to talk about the result of applying such a term to a dependently typed argument. Therefore we introduce the notation $\_\fapply$ to apply the function in the functor-category domain.
+
+\begin{align*}
+    d:&\quad\ev:E^n \rightarrow A\ev \rightarrow B\ev\\
+    d\fapply:&\quad (\ev:E^n\rightarrow A\ev) \rightarrow (\ev: E^n\rightarrow B\ev)\\
+    \qt{Let}\quad e:&\quad E^n \rightarrow A\ev\\
+    d\fapply e=&\quad \ev\mapsto (d\ev)(e\ev)
+\end{align*}
+
+Another piece of notation to introduce when dealing with dependent functions that return product types is to lift the dependent function into a product of dependent functions.
+
+\begin{align*}
+    d:&\quad \ev:E^n \rightarrow (A\ev\times B\ev)
+    \\
+    d\liftp:&\quad (E^n\rightarrow A\ev)\times(E^n\rightarrow B\ev)\\
+    d\liftp=&\quad(\ev\mapsto \p(d\ev), \ev\mapsto \pp(d\ev))
+\end{align*}
+
+
+\section{Programming With Put}
+
+This simple language now has some extra properties which the general EC does not have.
+
+\begin{definition}[Powers of Put as an Equational Equivalence Class]
+Define $\put^n$ as follows:
+
+\begin{align*}
+    \label{PutnDefinition}
+    \zpberelation{\put^0}{&{\s}\return{\u}}{\M{0}{\U}}\\ 
+    \zpberelation{\put^{m+1}}{&{\s}\doin{\_}{\put^n}{\put}}{\M{m+1}{\U}}
+\end{align*}
+\end{definition}
+
+
+\begin{lemma}[Denotations of Powers of Put]
+    Powers of put have a simple denotation.
+$\deno{\zptyperelation{\put^m}{\M{m}{\U}}} = \ev\mapsto(m, \singleton)$    
+\end{lemma}
+
+\begin{proof}
+    By induction on $m$.
+
+    \case{0}
+    
+    \begin{equation}
+        \deno{\zptyperelation{\put^0}{\M{0}{\U}}} = \pointn{}(\singleton) = \ev\mapsto(0, \singleton)
+    \end{equation}
+    
+    \case{m+1}
+    \begin{align*}
+        \deno{\zptyperelation{\put^{m+1}}{\M{0}{\U}}} & = (\bindmu^n\after\Tn{m}{(\deno{\typerelation{\nil}{\put}{\M{1}{\U}}}\after\p)}\after \strengtht^n)(\singleton, \deno{\zptyperelation{\put^m}{\M{n}{\U}}})\\
+        & = \ev\mapsto(m+1, \singleton)
+    \end{align*}
+\end{proof}
+
+\section{Logical Relations}
+
+\begin{equation}
+    \label{LogicalRelationType}
+    \relates_{\wellformed{\P}{A}} \in \deno{\wellformed{\P}{A}} \times \pecputA    
+\end{equation}
+
+\subsection{Definition}
+\begin{definition}[Logical Relation]
+
+    \begin{align*}
+        \label{LogicalRelationDefinition}
+        \peLogRel{d}{\U}{v} & \Leftrightarrow (d=\singleton \wedge \zpberelation{v}{\u}{\U})\\
+        \peLogRel{d}{\B}{v} & \Leftrightarrow ((d=\top \wedge \zpberelation{v}{\t}{\B}) \vee (d=\bot \wedge \zpberelation{v}{\f}{\B}))\\
+        \peLogRel{d}{\ab}{v} & \Leftrightarrow (\forall e, u. \peLogRel{e}{A}{u}\implies \peLogRel{d(e)}{B}{(\apply{v}{u})})\\
+        \peLogRel{d}{\mna}{v}&\Leftrightarrow  (d\liftp = (\ev\mapsto n', d')\in \T{n}{\deno{A}}
+        \\ & \wedge \exists v'. (\peLogRel{d'}{A}{v'} \wedge \zptyperelation{v'}{A}\wedge \zpberelation{v}{\doin{\_}{\put^{n'}}{\return{v'}}}{\mna}))
+        \\
+        \peLogRel{d}{\all{a}{A}}{v} & \Leftrightarrow \forall{n}\in E. \peLogRel{\pi_n\fapply(d)}{A\ssub{\a}{n}}{\eapp{v}{n}}
+    \end{align*}
+\end{definition}
+\subsection{Subtyping}
+
+\begin{theorem}[Logical Relation and Subtyping]
+    If $A\subtypep B$ and $\peLogRel{d}{A}{v}$ then $\peLogRel{d}{B}{v}$
+\end{theorem}
+
+\begin{proof}
+    By induction on the derivation of $A\subtypep B$.
+
+    \case{Ground}
+        $A\subtypep B\implies A = B$, since ground subtyping is the identity relation.
+
+    \case{Fun}
+        $A\subtypep B\implies A = \fntype{A_1}{A_2}, B = \fntype{B_1}{B_2}$ where $B_1\subtypep A_1$ and $A_2\subtypep B_2$.
+
+        By the definition of the $\relates_{\wellformed{\P}{\ab}}$ relation, $\peLogRel{d}{\ab}{v} \Leftrightarrow (\forall e, u. \peLogRel{e}{A}{u}\implies \peLogRel{d(e)}{B}{\apply{v}{u}})$.
+
+        So 
+
+        \begin{align*}
+            \forall e, u. \peLogRel{e}{B_1}{u} & \implies \peLogRel{e}{A_1}{u} \qt{By induction $B_1\subtypep A_1$}\\
+            & \implies \peLogRel{d(e)}{A_2}{\apply{u}{v}}\qt{By definition}\\
+            & \implies \peLogRel{d(e)}{B_2}{\apply{u}{v}}\qt{By induction $A_2\subtypep B_2$}
+        \end{align*}
+
+        As required.
+    \case{Effect}
+
+    $\M{n_1}{A_1} \subtypep \M{n_2}{A_2} \implies n_1\leq n_2, A_1\subtypep A_2$
+
+    \begin{align*}
+        \peLogRel{d}{\M{n_1}{A_1}}{v} & \implies  d=(n_1', d') \wedge n_1' \leq n_1\leq n_2 \wedge \exists v'. (\peLogRel{d'}{A_1}{v'} \wedge\zpberelation{v}{\doin{\_}{\put^{n'}}{\return{v'}}}{\M{n_1}{A_1}})\\
+        & \implies \zptyperelation{v_1'}{A_2} \wedge \peLogRel{d'}{A_2}{v'} \wedge \zpberelation{v}{\doin{\_}{\put^{n'}}{\return{v'}}}{\M{n_1}{A_2}}\\
+        & \implies \peLogRel{d}{\M{n_2}{A_2}}{v}
+    \end{align*}
+
+    \case{Quantification}
+    $\all{\a}{A_1}\subtypep \all{\a}{A_2}\implies A_1\subtype A_2$
+
+    So:
+
+    \begin{align*}
+        \peLogRel{d}{\all{\a}{A_1}}{v} & \implies \peLogRel{\all{\e}{\pe\fapply(d)}}{A_1\ssub{\e}{\a}}{v\ssub{\e}{\a}}\\
+        & \implies \peLogRel{\all{\e}{\pe\fapply(d)}}{A_2\ssub{\e}{\a}}{v\ssub{\e}{\a}}\\
+        & \implies \peLogRel{d}{\all{\a}{A_2}}{v}
+    \end{align*}
+\end{proof}
+
+\subsection{Fundamental Property}\label{FundProp}
+Let $\relates_{\wellformedok{\P}{\G}} \in \deno{\G}\times \pecputG$ mean:
+
+\begin{equation}
+    \label{LogicalRelationTypeEnvironment}
+    \peLogRel{\rho}{\G}{\si} \Leftrightarrow \forall x. \peLogRel{\rho(x)}{\G(x)}{\si(x)}
+\end{equation}
+
+
+\begin{theorem}[Fundamental Theorem]
+    If $\peLogRel{\rho}{\G}{\si}$ then $\peLogRel{\deno{\gpetyperelation{v}{A}}\fapply\rho}{A}{v\ssi}$ up to equational equivalence.    
+\end{theorem}
+
+\begin{proof}
+    By induction over the derivation of $\gpetyperelation{v}{A}$
+
+    \case{Variables}
+    \begin{equation}
+        \deno{\gpetyperelation{x}{\G(x)}}\fapply\rho = \peLogRel{\rho(x)}{\G(x)}{\si(x)}\beequiv x\ssi
+    \end{equation}
+
+    \case{Constants}
+    \begin{align*}
+        \deno{\gpetyperelation{\t}{\B}}\fapply\rho & = \top \wedge \zpberelation{\t\ssi}{\t}{\B} \qt{ So } \peLogRel{\deno{\gpetyperelation{\t}{\B}}\fapply\rho}{\B}{\t\ssi}\\
+        \deno{\gpetyperelation{\f}{\B}}\fapply\rho & = \bot \wedge \zpberelation{\f\ssi}{\f}{\B} \qt{ So } \peLogRel{\deno{\gpetyperelation{\t}{\B}}\fapply\rho}{\B}{\f\ssi}\\
+        \deno{\gpetyperelation{\u}{\U}}\fapply\rho & = \singleton \wedge \zpberelation{\u\ssi}{\u}{\U} \qt{ So } \peLogRel{\deno{\gpetyperelation{\u}{\U}}\fapply\rho}{\U}{\u\ssi}\\
+        \deno{\gpetyperelation{\put}{\M{1}{\U}}}\fapply\rho & = (1, \singleton)\wedge \zpberelation{\put}{\doin{\_}{\put^1}{\return{\u}}}{\M{1}{\U}}\\ 
+    \end{align*}
+
+
+    \case{Subtype}
+
+    \begin{equation}
+        \deno{\gpetyperelation{v}{B}}\fapply\rho = \peLogRel{\deno{\gpetyperelation{v}{A}}\fapply\rho}{A}{v\ssi}
+    \end{equation}
+
+    Since $A\subtypep B \wedge \peLogRel{d}{A}{v} \implies \peLogRel{d}{B}{v}$, we have that $\peLogRel{\deno{\gpetyperelation{v}{B}}}{B}{v\ssi}$.
+
+    \case{Fn}
+
+    For all $\peLogRel{d}{A}{u}$, 
+    \begin{align*}
+        (\deno{\gpetyperelation{\lam{x}{A}{v}}{\ab}}\fapply\rho)\fapply d & = (\cur{\deno{\typerelation{\gax}{v}{B}}}\fapply\rho)\fapply d\\
+        & = \deno{\typerelation{\gax}{v}{B}}\fapply (\rho[x\mapsto d])\\
+    \end{align*}
+
+    Since $\peLogRel{d}{A}{u}$, we have $\peLogRel{(\rho[x\mapsto d])}{\gax}{(\si, x\setto u)}$, so by induction
+    \begin{align*}
+        (\deno{\gpetyperelation{\lam{x}{A}{v}}{\ab}}\fapply\rho)\fapply d = \peLogRel{\deno{\typerelation{\gax}{v}{B}}\fapply(\rho[x\mapsto d])&}{B}{v\sub{\si, x\setto u}}
+        \\
+        \peLogRel{&}{B}{v\ssi\ssub{x}{u}}\\
+        & \beequiv \apply{(\lam{x}{A}{(v\ssi)})}{u}
+    \end{align*}
+\end{proof}
+
+\case{Apply}
+\begin{equation}
+    \deno{\gpetyperelation{\apply{v}{u}}{B}}\fapply\rho = (\deno{\gpetyperelation{v}{\ab}}\fapply\rho)\fapply(\deno{\gpetyperelation{u}{A}}\fapply\rho)
+\end{equation}
+
+By induction $\peLogRel{\deno{\gpetyperelation{v}{\ab}}\fapply\rho}{\ab}{v\ssi}$ and $\peLogRel{\deno{\gpetyperelation{u}{A}}\fapply\rho}{A}{u\ssi}$. So by the definition of $\relates_{\wellformed{\P}{\ab}}$, 
+
+\begin{align*}
+    \deno{\gpetyperelation{\apply{v}{u}}{B}}\fapply\rho =\peLogRel{(\deno{\gpetyperelation{v}{\ab}}\fapply\rho)\fapply(\deno{\gpetyperelation{u}{A}}\fapply\rho)}{B}{\apply{(v\ssi)}{(u\ssi)}\beequiv (\apply{v}{u})\ssi}
+\end{align*}
+
+\case{Return}
+
+\begin{equation}
+    \deno{\gpetyperelation{v}{\M{0}{A}}}\fapply\rho\liftp = (\ev\mapsto 0, \deno{\gpetyperelation{v}{A}}\fapply\rho)
+\end{equation}
+
+By induction, $\peLogRel{\deno{\gpetyperelation{v}{A}}}{A}{v\ssi}$, so by picking $v' = v\ssi$
+
+\begin{equation}
+    \zpberelation{(\return{v})\ssi}{\return{(v\ssi)\beequiv \doin{\_}{\put^0}{\return{v'}}}}{\M{0}{A}}
+\end{equation}
+
+So $\peLogRel{\deno{\gpetyperelation{\return{v}}{\M{0}{A}}}\fapply\rho}{\M{0}{A}}{(\return{v})\ssi}$
+
+\case{Bind}
+
+By inversion, $(\deno{\gpetyperelation{\doin{x}{v}{u}}{\M{m+n}{B}}}\fapply\rho)\liftp = (\ev\mapsto m'+n', d_u)$, where $(\ev\mapsto n', d_u) = (\deno{\typerelation{\gax}{u}{\mnb}}\fapply(\rho[x\mapsto d_v]))\liftp$, and $(\ev\mapsto n', d_v) = (\deno{\gpetyperelation{v}{\mma}}\fapply\rho)\liftp$.
+
+By induction, $\peLogRel{(\ev\mapsto m', d_v)}{\mma}{v\ssi}$. So $\exists v'$ such that $\zpberelation{v\ssi}{\doin{\_}{\put^{m'}}{\return{v'}}}{\mma}$. So $\peLogRel{(\rho[x\mapsto d_v])}{\gax}{(\ssi, x\setto v')}$.
+
+So by induction $\peLogRel{\deno{\typerelation{\gax}{u}{\mnb}}\fapply(\rho[x\mapsto d_v])}{\mnb}{u\sub{\si, x\setto v'}}$.
+
+Hence, $\exists u'$ such that $\zpberelation{u\sub{\si, x\setto v'}}{\doin{\_}{\put^{n'}{\return{u'}}}}{\M{m + n}{B}}$ and $\peLogRel{d_u}{\mnb}{u'}$.
+
+Hence,
+
+\begin{align*}
+    \zpberelation{\doin{x}{v\ssi}{u\ssi}&}{\doin{x}{(\doin{\_}{\put^{m'}}{\return{v'}})}{(u\ssi)}}{\M{m+n}{B}}\\
+    &\beequiv\doin{\_}{\put^{m'}}{u\sub{\si, x\setto{v'}}}\\
+    &\beequiv\doin{\_}{\put^{m'+n'}}{\return{u'}}
+\end{align*}
+
+So $\peLogRel{\deno{\gpetyperelation{\doin{x}{v}{u}}{\M{m+n}{B}}}\fapply\rho}{\M{m+n}{B}}{(\doin{x}{v}{u})\ssi}$.
+
+
+\case{If}
+
+By inversion, $\deno{\gpetyperelation{\pifthenelse{A}{b}{v_1}{v_2}}{A}}\fapply\rho = \begin{cases}
+    \deno{\gpetyperelation{v_1}{A}}\fapply\rho \qt{If }\deno{\gpetyperelation{b}{\B}}\fapply\rho = \ev\mapsto \top\\
+    \deno{\gpetyperelation{v_2}{A}}\fapply\rho \qt{If }\deno{\gpetyperelation{b}{\B}}\fapply\rho = \ev\mapsto \bot
+\end{cases}
+$.
+
+By induction,
+
+\begin{align*}
+    \peLogRel{\deno{\gpetyperelation{b}{\B}&}\fapply\rho}{\B}{b\ssi}\\
+    \peLogRel{\deno{\gpetyperelation{v_1}{A}&}\fapply\rho}{A}{v_1\ssi}\\
+    \peLogRel{\deno{\gpetyperelation{v_2}{A}&}\fapply\rho}{A}{v_2\ssi}
+\end{align*}
+
+\subcase{$\deno{\gpetyperelation{b}{\B}}\fapply\rho =  \ev\mapsto \top$ and $\zpberelation{b}{\t}{\B}$}
+    \begin{equation}
+        \peLogRel{\deno{\gpetyperelation{\pifthenelse{A}{b}{v_1}{v_2}}{A}}\fapply\rho = \deno{\gpetyperelation{v_1}{A}}\fapply\rho}{A}{v_1\ssi\beequiv (\pifthenelse{A}{b}{v_1}{v_2})\ssi}
+    \end{equation}
+
+\subcase{$\deno{\gpetyperelation{b}{\B}}\fapply\rho = \ev\mapsto \bot$ and $\zpberelation{b}{\f}{\B}$}
+\begin{equation}
+    \peLogRel{\deno{\gpetyperelation{\pifthenelse{A}{b}{v_1}{v_2}}{A}}\fapply\rho = \deno{\gpetyperelation{v_2}{A}}\fapply\rho}{A}{v_2\ssi\beequiv (\pifthenelse{A}{b}{v_1}{v_2})\ssi}
+\end{equation}
+
+\case{Gen}
+
+By inversion, $\deno{\gpetyperelation{\elam{\a}{v}}{\all{\a}{A}}} = \bar{\deno{\etyperelation{\P,\a}{\G}{v}{A}}}$ and by induction, $\eLogRel{\P,\a}{(\deno{\etyperelation{\P,\a}{\G}{v}{A}}\fapply\rho)}{A}{v\ssi}$.
+
+\begin{align*}
+    \forall{\e}. \pe(\deno{\gpetyperelation{\elam{\a}{v}}{\all{\a}{A}}}\fapply\rho)&= \ev \mapsto \pe(\ev)(\finpr{\deno{\etyperelation{\P, \a}{\G}{v}{A}}(\ev, \e')}{\e'\in E}(\rho \ev))\\
+    & = \ev \mapsto (\deno{\etyperelation{\P, \a}{\G}{v}{A}}(\ev, \e)(\rho \ev))\\
+    & = \ev \mapsto (\pr{\Id{I}}{\deno{\wellformed{\P}{\e}}}\star\deno{\etyperelation{\P,\a}{\G}{v}{A}})\ev (\rho\ev)\\
+    & = (\pr{\Id{I}}{\deno{\wellformed{\P}{\e}}}\star\deno{\etyperelation{\P,\a}{\G}{v}{A}})\fapply \rho\\
+    & = \deno{\gpetyperelation{v\ssub{\a}{\e}}{A\ssub{\a}{\e}}}\\
+    & \relates_{\wellformed{\P}{A\ssub{\a}{\e}}}{v\ssub{\a}{\e}}\fapply\rho
+\end{align*}
+
+\case{Spec}
+Required to prove $\peLogRel{\deno{\gpetyperelation{\eapp{v}{\e}}{A\ssub{\a}{\e}}}\fapply\rho}{A\ssub{\a}{\e}}{(\eapp{v}{\e})\ssi\beequiv\eapp{(v\ssi)}{\e}}$.
+
+By inversion and induction, $\peLogRel{\deno{\gpetyperelation{v}{\all{\a}{A}}}}{\all{\a}{A}}{v\ssi}$. So, $\forall\e. \peLogRel{\pe\fapply(\deno{\gpetyperelation{v}{\all{\a}{A}}}\fapply\rho)}{A\ssub{\a}{\e}}{\eapp{(v\ssi)}{\e}}$
+
+\begin{align*}
+    \deno{\gpetyperelation{\eapp{}{}}}
+\end{align*}
+
+\section{Adequacy}
+\begin{theorem}[Adequacy]
+For $G$ defined as:
+
+\begin{align*}
+    G\gens \B \mid \U \mid \M{n}{G}
+\end{align*}
+
+Equality of denotations implies equational equality.
+
+\begin{equation}
+    \deno{\zptyperelation{v}{G}} = \deno{\zptyperelation{u}{G}} \implies \zpberelation{v}{u}{G}
+\end{equation}
+
+\end{theorem}
+
+\begin{proof}
+    By induction on the structure of $G$, making use of the fundamental property \ref{FundProp}.
+
+    \case{Boolean}
+    Let $d=\deno{\zptyperelation{v}{\B}}=\deno{\zptyperelation{v}{\B}}\in \{\top, \bot\}$. By the fundamental property, $\peLogRel{d}{\B}{v}$  and $\peLogRel{d}{\B}{v}$.
+
+    \subcase{$d=\top$}
+    Then $\zpberelation{v\beequiv\t}{u}{\B}$
+
+    
+    \subcase{$d=\bot$}
+    Then $\zpberelation{v\beequiv\f}{u}{\B}$
+
+    \case{Unit}
+    Let $\singleton=\deno{\zptyperelation{v}{\U}}=\deno{\zptyperelation{v}{\U}}\in \{\singleton\}$. By the fundamental property, $\peLogRel{d}{\U}{v}$  and $\peLogRel{d}{\U}{v}$. Hence $\zpberelation{v\beequiv\u}{u}{\U}$.
+
+    \case{Effect}
+
+    Let $(n', d) = \deno{\zptyperelation{v}{\M{n}{G}}} = \deno{\zptyperelation{u}{\M{n}{G}}}$. By the fundamental property, $\peLogRel{(n', d)}{\M{n}{G}}{v}$ and $\peLogRel{(n', d)}{\M{n}{G}}{u}$. So there exists $u', v'$ such that $\peLogRel{d'}{G}{u'}$ and $\peLogRel{d'}{G}{u'}$ and:
+
+    \begin{align*}
+        \zpberelation{v&}{\doin{\_}{\put^{n'}}{\return{v'}}}{\M{n}{G}}\\
+        &\beequiv \doin{\_}{\put^{n'}}{\return{u'}}\\
+        & \beequiv u
+    \end{align*}
+
+$\square$
+\end{proof}
+
+\end{document}

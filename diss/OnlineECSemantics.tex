@@ -56,7 +56,7 @@ An environment, $G \gens \nil \mid \gax$
     \item $\dom{\nil} = \emptyset$
     \item $\dom{\gax} =  \dom{\G}  \cup \left\{x \right\}$
 \end{itemize}
-\paragraph{$\ok{}$ Predicate}
+\paragraph{$\okt$ Predicate}
 \begin{itemize}
     \item $\ntreerulez{Nil}{\ok{\nil}}$
     \item $\ntreeruleII{Var}{\ok{\G} }{ x\notin \dom{\G}}{\ok{\gax}}$
@@ -91,7 +91,7 @@ An environment, $G \gens \nil \mid \gax$
 \begin{framed}
     \begin{proof}
         If $\ok{\gax}$ then by inversion $\ok{\G}$
-        Only the type rule \texttt{Weaken} adds terms to the environment from its preconditions to its post-condition and it does so in an $\ok{}$ preserving way. Any type derivation tree has at least one leaf. All leaves are axioms which require $\ok{\G}$. And all non-axiom derivations preserve the $\ok{}$ property.
+        Only the type rule \texttt{Weaken} adds terms to the environment from its preconditions to its post-condition and it does so in an $\okt$ preserving way. Any type derivation tree has at least one leaf. All leaves are axioms which require $\ok{\G}$. And all non-axiom derivations preserve the $\okt$ property.
     \end{proof}
 \end{framed}
 
@@ -139,7 +139,7 @@ Again, since we can infer the denotation function, Let us drop the denotation sy
 $$\deno{\ab} = (B)^A$$
 
 \subsection{Denotation of Type Environments}
-Given a function $\deno{\_}$ mapping types to objects in the category $\C$, we can define the denotation of an $\ok{}$ type environment $\G$.
+Given a function $\deno{\_}$ mapping types to objects in the category $\C$, we can define the denotation of an $\okt$ type environment $\G$.
 $$\deno{\nil} = \1$$
 $$\deno{\gax} = (\deno{\G}\times\deno{A}) $$
 

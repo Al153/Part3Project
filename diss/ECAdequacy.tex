@@ -56,7 +56,7 @@
 
 
 \subsection{Subeffecting Natural Transformations}
-These natural transformations are given by inclusion functions (identities), since $(n',a)\in\T{n}{A} \implies (n'\leq n \leq m, a\in A)\implies (n',a)\in\T{n}{B}$. Other subtyping morphisms are generated using the usual method according to the subtype derivation.
+These natural transformations are given by inclusion functions (identities), since $n\leq m\wedge (n',a)\in\T{n}{A} \implies (n'\leq n \leq m, a\in A)\implies (n',a)\in\T{m}{A}$. Other subtyping morphisms are generated using the usual method according to the subtype derivation.
 
 \subsection{Ground Denotations}
 We define denotations for ground types as follows:
@@ -122,101 +122,6 @@ $\deno{\ztyperelation{\put^n}{\M{n}{\U}}} = (n, \singleton)$
     \end{align}
 \end{proof}
 
-\begin{theorem}[Put Reordering Theorem]
-    For all $\ztyperelation{v}{\mna}$, there exist $\ztyperelation{v'}{A}$, $n' \leq n$ such that $\zberelation{v}{\doin{_}{\put^{n'}}{\return{v'}}}{\mna}$.
-\end{theorem}
-
-\begin{proof}
-    By induction over typing rules capable of producing types of the form $\mna$.
-
-    \case{Return}
-
-    $$\zberelation{\return{v}}{\doin{\_}{\return{\u}}{\return{v}}}{\M{0}{A}}$$
-
-    $v' = v$, $n' = 0$.
-
-    \case{Subtype}
-
-    \begin{equation}
-        \ntreeruleII{Subtype}{\ztyperelation{v}{\mna}}{\subeffecttree{n}{A}{m}{B}}{\ztyperelation{v}{\mmb}}
-    \end{equation}
-
-    By induction, $\exists n', v'. \zberelation{v}{\doin{\_}{\put^{n'}}{\return{v'}}}{\mna}$
-
-    $n' \leq n \leq m$, and due to the subtyping equational equivalence rule, $\zberelation{v}{\doin{\_}{\put^{n'}}{\return{v'}}}{\mmb}$.
-
-
-    \case{Bind}
-    
-    $$\ntreeruleII{Bind}{\ztyperelation{v}{\mna}}{\typerelation{x: A}{u}{\mmb}}{\ztyperelation{\doin{x}{v}{u}}{\M{n+m}{B}}}$$
-
-    So, by induction, $\zberelation{v}{\doin{\_}{n'}{\return{v'}}}{\mna}$. Hence,
-
-
-    \begin{align}
-        \zberelation{\doin{x}{v}{u}}{&\s\doin{x}{(\doin{\_}{n'}{\return{v'}}})}{\M{n+m}{B}}\\
-        \beequiv&\s\doin{\_}{\put^{n'}}{\doin{x}{\return{v'}}{u}}\\
-        \beequiv&\s \doin{\_}{\put^{n'}}{u\ssub{x}{v'}}
-    \end{align}
-
-    By induction $\zberelation{u\ssub{x}{v'}}{\doin{\_}{\put^{m'}}{\return{u'}}}{\mmb}$.
-
-    So
-
-    \begin{align}
-        \zberelation{\doin{x}{v}{u}}{&\s\doin{\_}{\put^{n'}}{u\ssub{x}{v'}}}{\M{n+m}{B}} \\
-        \beequiv & \s\doin{\_}{\put^{n'}}{(\doin{\_}{\put^{m'}}{\return{u'}})}\\
-        \beequiv &\s \s\doin{\_}{\put^{n'+m'}}{\return{u'}}
-    \end{align}
-
-    Where $n' + m'\leq n+m$
-    
-    
-\case{If}
-
-\begin{equation}
-    \ntreeruleIII{If}{\ztyperelation{b}{\B}}{\ztyperelation{v_1}{\mna}}{\ztyperelation{v_2}{\mna}}{\ztyperelation{\pifthenelse{b}{\mna}{v_1}{v_2}}{\mna}}    
-\end{equation}
-
-Since we can't construct booleans in any other way, $\zberelation{b}{\t}{\B}$ or $\zberelation{b}{\f}{\B}$.
-
-By induction, we have $\zberelation{v_1}{\doin{\_}{\put^{n_1'}}{v_1'}}{\mna}$ and $\zberelation{v_2}{\doin{\_}{\put^{n_2'}}{v_2'}}{\mna}$.
-
-So we can case split on what $b$ reduces to.
-
-\case{$\zberelation{b}{\t}{\B}$}
-\begin{align}
-   \zberelation{\pifthenelse{b}{v_1}{v_2}}{&\s v_1}{\mna}\\
-   \beequiv&\s \doin{\_}{\put^{n_1'}}{v_1'}
-\end{align}
-
-\case{$\zberelation{b}{\f}{\B}$}
-\begin{align}
-    \zberelation{\pifthenelse{b}{v_1}{v_2}}{&\s v_2}{\mna}\\
-    \beequiv&\s \doin{\_}{\put^{n_2'}}{v_2'}
- \end{align} 
-
- Thus in both cases, there exists picks for $n'$ and $v'$.
-
- \case{Apply}
-
- \begin{equation}
-     \ntreeruleII{Apply}{\ztyperelation{v_1}{\fntype{A}{\mnb}}}{\ztyperelation{v_2}{A}}{\ztyperelation{\apply{v_1}{v_2}}{\mnb}}
- \end{equation}
-
- So $\zberelation{v_1}{\lam{x}{A'}{u}}{\fntype{A}{\mnb}}$, with $A \subtype A'$, since $\ecput$ is strongly normalizing. So using equational equivalence, we have the following:
-
- \begin{align}
-     \zberelation{\apply{v_1}{v_2}}{&\s u\ssub{x}{v_2}}{\mnb}\\
-     \beequiv&\s \doin{\_}{\put^{n'}}{\return{u'}}\qt{By induction}
- \end{align}
-
-\end{proof}
-
-\begin{corollary}[Denotational Equivalence]
-    Due to soundness, $\deno{\ztyperelation{v}{\mna}} = (n', \deno{\ztyperelation{v'}{A}})$
-\end{corollary}
-
 \section{Logical Relations}
 
 \begin{equation}
@@ -224,7 +129,7 @@ So we can case split on what $b$ reduces to.
     \relates_A \in \deno{A} \times \ecputA    
 \end{equation}
 
-\section{Definition}
+\subsection{Definition}
 \begin{definition}[Logical Relation]
 
     \begin{align}
@@ -235,7 +140,7 @@ So we can case split on what $b$ reduces to.
         \logRel{d}{\mna}{v}&\Leftrightarrow  (d= (n', d')\in \T{n}{\deno{A}} \implies \exists v'. \logRel{d'}{A}{v'} \wedge \ztyperelation{v'}{A}\wedge \zberelation{v}{\doin{\_}{\put^{n'}}{\return{v'}}}{\mna})
     \end{align}
 \end{definition}
-\section{Subtyping}
+\subsection{Subtyping}
 
 \begin{theorem}[Logical Relation and Subtyping]
     If $A\subtype B$ and $\logRel{d}{A}{v}$ then $\logRel{d}{B}{v]}$
@@ -272,7 +177,7 @@ So we can case split on what $b$ reduces to.
     \end{align}
 \end{proof}
 
-\section{Fundamental Property}\label{FundProp}
+\subsection{Fundamental Property}\label{FundProp}
 Let $\relates_\G \in \deno{\G}\times \ecputG$ mean:
 
 \begin{equation}
@@ -290,7 +195,7 @@ Let $\relates_\G \in \deno{\G}\times \ecputG$ mean:
 
     \case{Variables}
     \begin{equation}
-        \deno{\gtyperelation{x}{\G(x)}} = \logRel{\rho(x)}{\G(x)}{\si(x)}\beequiv x\ssi
+        \deno{\gtyperelation{x}{\G(x)}}\rho = \logRel{\rho(x)}{\G(x)}{\si(x)}\beequiv x\ssi
     \end{equation}
 
     \case{Constants}
@@ -308,14 +213,14 @@ Let $\relates_\G \in \deno{\G}\times \ecputG$ mean:
         \deno{\gtyperelation{v}{B}}\rho = \logRel{\deno{\gtyperelation{v}{A}}}{A}{v\ssi}
     \end{equation}
 
-    Since $A\subtype B \wedge \logRel{d}{A}{v} \implies \logRel{d}{B}{v}$, $\logRel{\deno{\gtyperelation{v}{B}}}{B}{v\ssi}$.
+    Since $A\subtype B \wedge \logRel{d}{A}{v} \implies \logRel{d}{B}{v}$, we have that $\logRel{\deno{\gtyperelation{v}{B}}}{B}{v\ssi}$.
 
     \case{Fn}
 
     For all $\logRel{d}{A}{u}$, 
     \begin{align}
         (\deno{\gtyperelation{\lam{x}{A}{v}}{\ab}}\rho)d & = (\cur{\deno{\typerelation{\gax}{v}{B}}}\rho)d\\
-        & = \deno{\typerelation{\gax}{v}{B}}(\rho[x\mapsto d])\\
+        & = \deno{\typerelation{\gax}{v}{B}\rho}(\rho[x\mapsto d])\\
     \end{align}
 
     Since $\logRel{d}{A}{u}$, $\logRel{(\rho[x\mapsto d])}{\gax}{(\si, x\setto u)}$, so by induction
@@ -341,7 +246,7 @@ By induction $\logRel{\deno{\gtyperelation{v}{\ab}}\rho}{\ab}{v\ssi}$ and $\logR
 \case{Return}
 
 \begin{equation}
-    \deno{\gtyperelation{v}{\M{0}{A}}}\rho = (0, \deno{\gtyperelation{v}{A}})
+    \deno{\gtyperelation{v}{\M{0}{A}}}\rho = (0, \deno{\gtyperelation{v}{A}}\rho)
 \end{equation}
 
 By induction, $\logRel{\deno{\gtyperelation{v}{A}}}{A}{v\ssi}$, so by picking $v' = v\ssi$
@@ -350,17 +255,17 @@ By induction, $\logRel{\deno{\gtyperelation{v}{A}}}{A}{v\ssi}$, so by picking $v
     \zberelation{(\return{v})\ssi}{\return{(v\ssi)\beequiv \doin{\_}{\put^0}{\return{v'}}}}{\M{0}{A}}
 \end{equation}
 
-So $\logRel{\deno{\gtyperelation{\return{v}}{\M{0}{A}}}}{\M{0}{A}}{(\return{v})\ssi}$
+So $\logRel{\deno{\gtyperelation{\return{v}}{\M{0}{A}}}}{\M{0}{A}\rho}{(\return{v})\ssi}$
 
 \case{Bind}
 
 By inversion, $\deno{\gtyperelation{\doin{x}{v}{u}}{\M{m+n}{B}}}\rho = (m'+n', d_u)$, where $(n', d_u) = \deno{\typerelation{\gax}{u}{\mnb}}(\rho[x\mapsto d_v])$, and $(n', d_v) = \deno{\gtyperelation{v}{\mma}}\rho$.
 
-By induction, $\logRel{(m', t_v)}{\mma}{v[\ssi]}$. So $\exists v'$ such that $\zberelation{v\ssi}{\doin{\_}{\put^{m'}}{\return{v'}}}{\mma}$. So $\logRel{(\rho[x\mapsto d_v])}{\gax}{(\ssi, x\setto v')}$.
+By induction, $\logRel{(m', d_v)}{\mma}{v\ssi}$. So $\exists v'$ such that $\zberelation{v\ssi}{\doin{\_}{\put^{m'}}{\return{v'}}}{\mma}$. So $\logRel{(\rho[x\mapsto d_v])}{\gax}{(\ssi, x\setto v')}$.
 
 So by induction $\logRel{\deno{\typerelation{\gax}{u}{\mnb}}(\rho[x\mapsto d_v])}{\mnb}{u\sub{\si, x\setto v'}}$.
 
-Hence, $\exists u'$ such that $\zberelation{u\sub{\si, x\setto v'}}{\doin{\_}{\put^{n'}{\return{u'}}}}{\M{m + n}{B}}$ and $\logRel{t_u}{\mnb}{u'}$.
+Hence, $\exists u'$ such that $\zberelation{u\sub{\si, x\setto v'}}{\doin{\_}{\put^{n'}{\return{u'}}}}{\M{m + n}{B}}$ and $\logRel{d_u}{\mnb}{u'}$.
 
 Hence,
 
