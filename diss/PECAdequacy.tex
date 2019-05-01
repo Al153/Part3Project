@@ -191,10 +191,10 @@ $\deno{\zptyperelation{\put^m}{\M{m}{\U}}} = \ev\mapsto(m, \singleton)$
 \begin{proof}
     By induction on the derivation of $A\subtypep B$.
 
-    \case{Ground}
+    \case{\sground}
         $A\subtypep B\implies A = B$, since ground subtyping is the identity relation.
 
-    \case{Fun}
+    \case{\sfun}
         $A\subtypep B\implies A = \fntype{A_1}{A_2}, B = \fntype{B_1}{B_2}$ where $B_1\subtypep A_1$ and $A_2\subtypep B_2$.
 
         By the definition of the $\relates_{\wellformed{\P}{\ab}}$ relation, $\peLogRel{d}{\ab}{v} \Leftrightarrow (\forall e, u. \peLogRel{e}{A}{u}\implies \peLogRel{d(e)}{B}{\apply{v}{u}})$.
@@ -208,7 +208,7 @@ $\deno{\zptyperelation{\put^m}{\M{m}{\U}}} = \ev\mapsto(m, \singleton)$
         \end{align*}
 
         As required.
-    \case{Effect}
+    \case{\seffect}
 
     $\M{n_1}{A_1} \subtypep \M{n_2}{A_2} \implies n_1\leq n_2, A_1\subtypep A_2$
 
@@ -218,7 +218,7 @@ $\deno{\zptyperelation{\put^m}{\M{m}{\U}}} = \ev\mapsto(m, \singleton)$
         & \implies \peLogRel{d}{\M{n_2}{A_2}}{v}
     \end{align*}
 
-    \case{Quantification}
+    \case{\squant}
     $\all{\a}{A_1}\subtypep \all{\a}{A_2}\implies A_1\subtype A_2$
 
     So:
@@ -260,7 +260,7 @@ Let $\relates_{\wellformedok{\P}{\G}} \in \deno{\G}\times \pecputG$ mean:
     \end{align*}
 
 
-    \case{Subtype}
+    \case{\vsubtype}
 
     \begin{equation}
         \deno{\gpetyperelation{v}{B}}\fapply\rho = \peLogRel{\deno{\gpetyperelation{v}{A}}\fapply\rho}{A}{v\ssi}
@@ -268,7 +268,7 @@ Let $\relates_{\wellformedok{\P}{\G}} \in \deno{\G}\times \pecputG$ mean:
 
     Since $A\subtypep B \wedge \peLogRel{d}{A}{v} \implies \peLogRel{d}{B}{v}$, we have that $\peLogRel{\deno{\gpetyperelation{v}{B}}}{B}{v\ssi}$.
 
-    \case{Fn}
+    \case{\vfun}
 
     For all $\peLogRel{d}{A}{u}$, 
     \begin{align*}
@@ -285,7 +285,7 @@ Let $\relates_{\wellformedok{\P}{\G}} \in \deno{\G}\times \pecputG$ mean:
     \end{align*}
 \end{proof}
 
-\case{Apply}
+\case{\vapply}
 \begin{equation}
     \deno{\gpetyperelation{\apply{v}{u}}{B}}\fapply\rho = (\deno{\gpetyperelation{v}{\ab}}\fapply\rho)\fapply(\deno{\gpetyperelation{u}{A}}\fapply\rho)
 \end{equation}
@@ -296,7 +296,7 @@ By induction $\peLogRel{\deno{\gpetyperelation{v}{\ab}}\fapply\rho}{\ab}{v\ssi}$
     \deno{\gpetyperelation{\apply{v}{u}}{B}}\fapply\rho =\peLogRel{(\deno{\gpetyperelation{v}{\ab}}\fapply\rho)\fapply(\deno{\gpetyperelation{u}{A}}\fapply\rho)}{B}{\apply{(v\ssi)}{(u\ssi)}\beequiv (\apply{v}{u})\ssi}
 \end{align*}
 
-\case{Return}
+\case{\vreturn}
 
 \begin{equation}
     \deno{\gpetyperelation{v}{\M{0}{A}}}\fapply\rho\liftp = (\ev\mapsto 0, \deno{\gpetyperelation{v}{A}}\fapply\rho)
@@ -310,7 +310,7 @@ By induction, $\peLogRel{\deno{\gpetyperelation{v}{A}}}{A}{v\ssi}$, so by pickin
 
 So $\peLogRel{\deno{\gpetyperelation{\return{v}}{\M{0}{A}}}\fapply\rho}{\M{0}{A}}{(\return{v})\ssi}$
 
-\case{Bind}
+\case{\vbind}
 
 By inversion, $(\deno{\gpetyperelation{\doin{x}{v}{u}}{\M{m+n}{B}}}\fapply\rho)\liftp = (\ev\mapsto m'+n', d_u)$, where $(\ev\mapsto n', d_u) = (\deno{\typerelation{\gax}{u}{\mnb}}\fapply(\rho[x\mapsto d_v]))\liftp$, and $(\ev\mapsto n', d_v) = (\deno{\gpetyperelation{v}{\mma}}\fapply\rho)\liftp$.
 
@@ -331,7 +331,7 @@ Hence,
 So $\peLogRel{\deno{\gpetyperelation{\doin{x}{v}{u}}{\M{m+n}{B}}}\fapply\rho}{\M{m+n}{B}}{(\doin{x}{v}{u})\ssi}$.
 
 
-\case{If}
+\case{\vif}
 
 By inversion, $\deno{\gpetyperelation{\pifthenelse{A}{b}{v_1}{v_2}}{A}}\fapply\rho = \begin{cases}
     \deno{\gpetyperelation{v_1}{A}}\fapply\rho \qt{If }\deno{\gpetyperelation{b}{\B}}\fapply\rho = \ev\mapsto \top\\
@@ -357,7 +357,7 @@ By induction,
     \peLogRel{\deno{\gpetyperelation{\pifthenelse{A}{b}{v_1}{v_2}}{A}}\fapply\rho = \deno{\gpetyperelation{v_2}{A}}\fapply\rho}{A}{v_2\ssi\beequiv (\pifthenelse{A}{b}{v_1}{v_2})\ssi}
 \end{equation}
 
-\case{Gen}
+\case{\vgen}
 
 By inversion, $\deno{\gpetyperelation{\elam{\a}{v}}{\all{\a}{A}}} = \bar{\deno{\etyperelation{\P,\a}{\G}{v}{A}}}$ and by induction, $\eLogRel{\P,\a}{(\deno{\etyperelation{\P,\a}{\G}{v}{A}}\fapply\rho)}{A}{v\ssi}$.
 
@@ -370,7 +370,7 @@ By inversion, $\deno{\gpetyperelation{\elam{\a}{v}}{\all{\a}{A}}} = \bar{\deno{\
     & \relates_{\wellformed{\P}{A\ssub{\a}{\e}}}{v\ssub{\a}{\e}}\fapply\rho
 \end{align*}
 
-\case{Spec}
+\case{\vspec}
 Required to prove $\peLogRel{\deno{\gpetyperelation{\eapp{v}{\e}}{A\ssub{\a}{\e}}}\fapply\rho}{A\ssub{\a}{\e}}{(\eapp{v}{\e})\ssi\beequiv\eapp{(v\ssi)}{\e}}$.
 
 By inversion and induction, $\peLogRel{\deno{\gpetyperelation{v}{\all{\a}{A}}}}{\all{\a}{A}}{v\ssi}$. So, $$\forall\e. \peLogRel{\pe\fapply(\deno{\gpetyperelation{v}{\all{\a}{A}}}\fapply\rho)}{A\ssub{\a}{\e}}{\eapp{(v\ssi)}{\e}}$$
@@ -415,7 +415,7 @@ Equality of denotations implies equational equality.
     \case{Unit}
     Let $\singleton=\deno{\zptyperelation{v}{\U}}=\deno{\zptyperelation{v}{\U}}\in \{\ev\mapsto\singleton\}$. By the fundamental property, $\peLogRel{d}{\U}{v}$  and $\peLogRel{d}{\U}{v}$. Hence $\zpberelation{v\beequiv\u}{u}{\U}$.
 
-    \case{Effect}
+    \case{\teffect}
 
     Let $(\ev\mapsto n', \ev\mapsto d) = \deno{\zptyperelation{v}{\M{n}{G}}}\liftp = \deno{\zptyperelation{u}{\M{n}{G}}}\liftp$. By the fundamental property, $\peLogRel{(\ev\mapsto(n', d))}{\M{n}{G}}{v}$ and $\peLogRel{(\ev\mapsto(n', d))}{\M{n}{G}}{u}$. So there exists $u', v'$ such that $\peLogRel{d'}{G}{u'}$ and $\peLogRel{d'}{G}{u'}$ and:
 

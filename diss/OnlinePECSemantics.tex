@@ -3,11 +3,6 @@
 
 \begin{document}
 
-
-\todo{E-, T- prepend to rule names}
-\todo{Check rule names in textit}
-\todo{Check rule names in case}
-
 \abstract
 
 This (online only) document contains full proofs and derivations of all of the theorems for the soundness of PEC semantics. It is not intended to have the same polish as the dissertation.
@@ -87,36 +82,36 @@ Informally, $\a \in \P$ if $\a$ appears in the list represented by $\P$.
 
 \paragraph{$\okt$ Predicate On Effect Environments}
 \begin{itemize}
-    \item $\ntreerulez{Nil}{\ok{\nil}}$
-    \item $\condtreeruleI{Extend}{\ok{\P}}{\ok{\P, \a}}{ \a\notin \P}$
+    \item $\ntreerulez{\pnil}{\ok{\nil}}$
+    \item $\condtreeruleI{\pextend}{\ok{\P}}{\ok{\P, \a}}{ \a\notin \P}$
 \end{itemize}
 
 \paragraph{Wellformedness of effects}
 We define a relation $\wellformed{\P}{\e}$.
 
 \begin{itemize}
-    \item $\ntreeruleI{Ground}{\ok{\P}}{\wellformed{\P}{e}}$
-    \item $\ntreeruleI{Var}{\ok{\P,\a}}{\wellformed{\P,\a}{\a}}$
-    \item $\condtreeruleI{Weaken}{\wellformed{\P}{\a}}{\wellformed{\P,\b}{\a}}{\a\neq\b, b\notin\P}$
-    \item $\ntreeruleII{Compose}{\wellformed{\P}{\e_1}}{\wellformed{\P}{\e_2}}{\wellformed{\P}{\e_1\dot\e_2}}$
+    \item $\ntreeruleI{\eground}{\ok{\P}}{\wellformed{\P}{e}}$
+    \item $\ntreeruleI{\vvar}{\ok{\P,\a}}{\wellformed{\P,\a}{\a}}$
+    \item $\condtreeruleI{\eweaken}{\wellformed{\P}{\a}}{\wellformed{\P,\b}{\a}}{\a\neq\b, b\notin\P}$
+    \item $\ntreeruleII{\ecompose}{\wellformed{\P}{\e_1}}{\wellformed{\P}{\e_2}}{\wellformed{\P}{\e_1\dot\e_2}}$
 \end{itemize}
 
 \paragraph{Wellformedness of Types}
 We define a relation $\wellformed{\P}{A}$ on types.
 
 \begin{itemize}
-    \item $\ntreerulez{Ground}{\wellformed{\P}{\g}}$
-    \item $\ntreeruleII{Fn}{\wellformed{\P}{A}}{\wellformed{\P}{B}}{\wellformed{\P}{\ab}}$
-    \item $\ntreeruleII{Effect}{\wellformed{\P}{A}}{\wellformed{\P}{\e}}{\wellformed{\P}{\mea}}$
-    \item $\ntreeruleI{Quantification}{\wellformed{\P,\a}{A}}{\wellformed{\P}{\all{\a}{A}}}$
+    \item $\ntreerulez{\tground}{\wellformed{\P}{\g}}$
+    \item $\ntreeruleII{\tfun}{\wellformed{\P}{A}}{\wellformed{\P}{B}}{\wellformed{\P}{\ab}}$
+    \item $\ntreeruleII{\teffect}{\wellformed{\P}{A}}{\wellformed{\P}{\e}}{\wellformed{\P}{\mea}}$
+    \item $\ntreeruleI{\tquant}{\wellformed{\P,\a}{A}}{\wellformed{\P}{\all{\a}{A}}}$
 \end{itemize}
 
 \paragraph{Ok Predicate on Type Environments}
 We now define a predicate on type environments and effect environments: $\oke{\P}{\G}$
 
 \begin{itemize}
-    \item $\ntreerulez{Nil}{\oke{\P}{\nil}}$
-    \item $\ntreeruleIII{Extend}{\oke{\P}{\G}}{ x\notin\dom{\G}}{ \wellformed{\P}{A}}{\oke{\P}{\gax}}$
+    \item $\ntreerulez{\envnil}{\oke{\P}{\nil}}$
+    \item $\ntreeruleIII{\envextend}{\oke{\P}{\G}}{ x\notin\dom{\G}}{ \wellformed{\P}{A}}{\oke{\P}{\gax}}$
 \end{itemize}
 
 
@@ -124,42 +119,42 @@ We now define a predicate on type environments and effect environments: $\oke{\P
 \subsection{Subtyping}
     There exists a subtyping partial-order relation $\subtype_{\ground}$ over ground types that is:
     \begin{itemize}
-        \item $\ntreerulez{Reflexive}{A \subtype_{\ground} A}$
-        \item $\ntreeruleII{Transitive}{A \subtype_{\ground} B }{ B \subtype_{\ground} C}{A \subtype_{\ground} C}$
+        \item $\ntreerulez{\sreflexive}{A \subtype_{\ground} A}$
+        \item $\ntreeruleII{\stransitive}{A \subtype_{\ground} B }{ B \subtype_{\ground} C}{A \subtype_{\ground} C}$
     \end{itemize}
 
     We extend this relation with the (Fn) and (Quantification) subtyping rules to yield the full subtyping relation under an effect environment, $\P$, $\subtypep$
 
     \begin{itemize}
-        \item $\ntreeruleI{Ground}{A \subtype_{\ground} B}{A \subtypep B}$
-        \item $\ntreeruleII{Fn}{A \subtypep A' }{ B' \subtypep B }{\fntype{A'}{B'} \subtypep \ab}$
-        \item $\ntreeruleII{Quantification}{A\subtypep A'}{a\notin\P}{\all{\a}{A}\subtypep\all{a}{A'}}$
-        \item $\ntreeruleII{Effect}{A\subtypep B}{ \e_1\subeffectp\e_2}{\M{\e_1}{A}\subtypep\M{\e_2}{B}}$
+        \item $\ntreeruleI{\sground}{A \subtype_{\ground} B}{A \subtypep B}$
+        \item $\ntreeruleII{\sfun}{A \subtypep A' }{ B' \subtypep B }{\fntype{A'}{B'} \subtypep \ab}$
+        \item $\ntreeruleII{\squant}{A\subtypep A'}{a\notin\P}{\all{\a}{A}\subtypep\all{a}{A'}}$
+        \item $\ntreeruleII{\seffect}{A\subtypep B}{ \e_1\subeffectp\e_2}{\M{\e_1}{A}\subtypep\M{\e_2}{B}}$
     \end{itemize}
 
 \subsection{Type Rules}
 \begin{itemize}
-    \item $\ntreeruleII{Const}{\oke{\P}{\G}}{\wellformed{\P}{A}}{\gpetyperelation{\const{A}}{A}}$
-    \item $\ntreeruleI{Unit}{\oke{\P}{\G}}{\gpetyperelation{\u}{\U}}$
-    \item $\ntreeruleI{True}{\oke{\P}{\G}}{\gpetyperelation{\t}{\B}}$
-    \item $\ntreeruleI{False}{\oke{\P}{\G}}{\gpetyperelation{\f}{\B}}$
-    \item $\ntreeruleI{Var}{\oke{\P}{\gax}}{\etyperelation{\P}{\gax}{x}{A}}$
-    \item $\condtreeruleII{Weaken}{\etyperelation{\P}{\G}{x}{A}}{\wellformed{\P}{B}}{\etyperelation{\P}{\gby}{x}{A}}{x \neq y, y\notin \dom{\G}}$
-    \item $\ntreeruleI{Fn}{\etyperelation{\P}{\gax}{v}{B}}{\etyperelation{\P}{\G}{\lam{x}{A}{v}}{\ab}}$
-    \item $\ntreeruleII{Sub}{\etyperelation{\P}{\G}{v}{A}}{ A \subtypep B}{\etyperelation{\P}{\G}{v}{B}}$
-    \item $\ntreeruleI{Effect-Gen}{\etyperelation{\P,\a}{\G}{v}{A}}{\gpetyperelation{\elam{\a}{v}}{\all{\a}{A}}}$
-    \item $\ntreeruleII{Effect-Spec}{\gpetyperelation{v}{\all{\a}A}}{\wellformed{\P}{\e}}{\gpetyperelation{\eapp{v}{\e}}{A\ssub{\a}{\e}}}$
-    \item $\ntreeruleI{Return}{\gpetyperelation{v}{A}}{\gpetyperelation{\return{v}}{\moa}}$
-    \item $\ntreeruleII{Apply}{\gpetyperelation{v_1}{\aeb}}{\gpetyperelation{v_2}{A}}{\gpetyperelation{\apply{v_1}{v_2}}{\meb}}$
-    \item $\ntreeruleIII{If}{\gpetyperelation{v}{\B} }{ \gpetyperelation{v_1}{A}}{\gpetyperelation{v_2}{A}}{\gpetyperelation{\pifthenelse{A}{v}{v_1}{v_2}}{A}}$
-    \item $\ntreeruleII{Do}{\gpetyperelation{v_1}{\M{\e_1}{A}} }{ \etyperelation{\P}{\gax}{v_2}{\M{\e_2}{B}}}{\gpetyperelation{\doin{x}{v_1}{v_2}}{\M{\e_1 \dot \e_2}{B}}}$
+    \item $\ntreeruleII{\vconst}{\oke{\P}{\G}}{\wellformed{\P}{A}}{\gpetyperelation{\const{A}}{A}}$
+    \item $\ntreeruleI{\vunit}{\oke{\P}{\G}}{\gpetyperelation{\u}{\U}}$
+    \item $\ntreeruleI{\vtrue}{\oke{\P}{\G}}{\gpetyperelation{\t}{\B}}$
+    \item $\ntreeruleI{\vfalse}{\oke{\P}{\G}}{\gpetyperelation{\f}{\B}}$
+    \item $\ntreeruleI{\vvar}{\oke{\P}{\gax}}{\etyperelation{\P}{\gax}{x}{A}}$
+    \item $\condtreeruleII{\vweaken}{\etyperelation{\P}{\G}{x}{A}}{\wellformed{\P}{B}}{\etyperelation{\P}{\gby}{x}{A}}{x \neq y, y\notin \dom{\G}}$
+    \item $\ntreeruleI{\vfun}{\etyperelation{\P}{\gax}{v}{B}}{\etyperelation{\P}{\G}{\lam{x}{A}{v}}{\ab}}$
+    \item $\ntreeruleII{\vsubtype}{\etyperelation{\P}{\G}{v}{A}}{ A \subtypep B}{\etyperelation{\P}{\G}{v}{B}}$
+    \item $\ntreeruleI{\vgen}{\etyperelation{\P,\a}{\G}{v}{A}}{\gpetyperelation{\elam{\a}{v}}{\all{\a}{A}}}$
+    \item $\ntreeruleII{\vspec}{\gpetyperelation{v}{\all{\a}A}}{\wellformed{\P}{\e}}{\gpetyperelation{\eapp{v}{\e}}{A\ssub{\a}{\e}}}$
+    \item $\ntreeruleI{\vreturn}{\gpetyperelation{v}{A}}{\gpetyperelation{\return{v}}{\moa}}$
+    \item $\ntreeruleII{\vapply}{\gpetyperelation{v_1}{\aeb}}{\gpetyperelation{v_2}{A}}{\gpetyperelation{\apply{v_1}{v_2}}{\meb}}$
+    \item $\ntreeruleIII{\vif}{\gpetyperelation{v}{\B} }{ \gpetyperelation{v_1}{A}}{\gpetyperelation{v_2}{A}}{\gpetyperelation{\pifthenelse{A}{v}{v_1}{v_2}}{A}}$
+    \item $\ntreeruleII{\vbind}{\gpetyperelation{v_1}{\M{\e_1}{A}} }{ \etyperelation{\P}{\gax}{v_2}{\M{\e_2}{B}}}{\gpetyperelation{\doin{x}{v_1}{v_2}}{\M{\e_1 \dot \e_2}{B}}}$
 \end{itemize}
 
 \subsection{Ok Lemma}
 If $\gpetyperelation{v}{A}$ then $\oke{\P}{\G}$.
 \paragraph{Proof}
 If $\ok{\gax}$ then by inversion. $\ok{\G}$.
-Only the type rule \texttt{Weaken} adds terms to the environment from its preconditions to its post-condition and it does so in an $\okt$ preserving way. Any type derivation tree has at least one leaf. All leaves are axioms which require $\oke{\P}{\G}$. And all non axiom derivations preserve the $\okt$ property.
+Only the type rule \textit{(\vweaken)} adds terms to the environment from its preconditions to its post-condition and it does so in an $\okt$ preserving way. Any type derivation tree has at least one leaf. All leaves are axioms which require $\oke{\P}{\G}$. And all non axiom derivations preserve the $\okt$ property.
 
 
 
@@ -420,9 +415,9 @@ Here are some simple corollaries of the adjunction between $\pstar$ and $\allI$.
         \subsection{Relation}
 
         \begin{itemize}
-            \item $\ntreeruleI{Id}{\ok{\P}}{\wrel{\i}{\P}{\P}}$
-            \item $\ntreeruleI{Project}{\wrel{\w}{\P'}{\P}}{\wrel{\w\pi}{(\P', \a)}{\P}}$
-            \item $\ntreeruleI{Extend}{\wrel{\w}{\P'}{\P}}{\wrel{\w\x}{(\P', \a)}{(\P, \a)}}$
+            \item $\ntreeruleI{\eid}{\ok{\P}}{\wrel{\i}{\P}{\P}}$
+            \item $\ntreeruleI{\eproject}{\wrel{\w}{\P'}{\P}}{\wrel{\w\pi}{(\P', \a)}{\P}}$
+            \item $\ntreeruleI{\eextend}{\wrel{\w}{\P'}{\P}}{\wrel{\w\x}{(\P', \a)}{(\P, \a)}}$
         \end{itemize}
         \subsection{Weakening Properties}
         \begin{property}[Weakening Preserves Ok]
@@ -487,8 +482,8 @@ Here are some simple corollaries of the adjunction between $\pstar$ and $\allI$.
         \end{equation}
 
         \begin{itemize}
-            \item $\ntreeruleI{Nil}{\ok{\P'}}{\typerelation{\P'}{\nil}{\nil}}$
-            \item $\ntreeruleIII{Extend}{\typerelation{\P'}{\si}{\P}}{\wellformed{\P'}{\e}}{\a\notin\P}{\typerelation{\P'}{\si, \a \setto\e}{(\P, \a)}}$
+            \item $\ntreeruleI{\esubnil}{\ok{\P'}}{\typerelation{\P'}{\nil}{\nil}}$
+            \item $\ntreeruleIII{\eqsubtype}{\typerelation{\P'}{\si}{\P}}{\wellformed{\P'}{\e}}{\a\notin\P}{\typerelation{\P'}{\si, \a \setto\e}{(\P, \a)}}$
         \end{itemize}
 
     \subsection{Actions}
@@ -574,13 +569,13 @@ Type environment weakenings are inductively defined with respect to an effect en
 
 
 \[
-    \ntreeruleI{Id}{\wellformedok{\P}{\G}}{\pewrel{\i}{\G}{\G}}
+    \ntreeruleI{\tid}{\wellformedok{\P}{\G}}{\pewrel{\i}{\G}{\G}}
     \quad  
-    \condtreeruleII{Project}{\pewrel{\w}{\G'}{\G}}{\typerelation{\P}{A}{\type}}{\pewrel{\w \pi}{\G, x: A}{\G}}{x \notin \dom{\G'}}
+    \condtreeruleII{\tproject}{\pewrel{\w}{\G'}{\G}}{\typerelation{\P}{A}{\type}}{\pewrel{\w \pi}{\G, x: A}{\G}}{x \notin \dom{\G'}}
 \]
 
 \[
-    \condtreeruleII{Extend}{\pewrel{\w}{\G'}{\G}}{ A \subtype B}{\pewrel{\w \x}{\G', x: A}{\G, x: B}}{x \notin \dom{\G'}}
+    \condtreeruleII{\textend}{\pewrel{\w}{\G'}{\G}}{ A \subtype B}{\pewrel{\w \x}{\G', x: A}{\G, x: B}}{x \notin \dom{\G'}}
 \]
 
 \section{Term-Environment Substitutions}
@@ -595,9 +590,9 @@ Type environment weakenings are inductively defined with respect to an effect en
     The relation instance $\typerelation{\P'}{\si}{\P}$ means that $\si$ is a substitution from $\P'$ to $\P$. It is defined inductively using the following rules.
 
     \[
-        \ntreeruleI{Nil}{\ok{\P'}}{\typerelation{\P'}{\nil}{\nil}}
+        \ntreeruleI{\tsubnil}{\ok{\P'}}{\typerelation{\P'}{\nil}{\nil}}
         \quad\quad
-        \condtreeruleII{Extend}{\typerelation{\P'}{\si}{\P}}{\wellformed{\P'}{\e}}{\typerelation{\P'}{\si, \a \setto\e}{(\P, \a)}}{\a\notin\P}
+        \condtreeruleII{\tsubextend}{\typerelation{\P'}{\si}{\P}}{\wellformed{\P'}{\e}}{\typerelation{\P'}{\si, \a \setto\e}{(\P, \a)}}{\a\notin\P}
     \]
 
     \subsection{Action on Terms}
@@ -632,7 +627,7 @@ Type environment weakenings are inductively defined with respect to an effect en
         \begin{property}[Extension]\label{TermSubsPropThree}
             If $\etyperelation{\P}{\G'}{\si}{\G}$ then $x \notin (\dom{\G} \cup \dom{\G''})$ implies $\etyperelation{\P}{(\G', x: A)}{(\si, x \setto x)}{(\gax)}$. Since $\wrel{\i\pi}{\G',x: A}{\G'}$, so by property \ref{TermSubsPropTwo}, 
             $$\etyperelation{\P}{\G', x: A}{\si}{\G}$$
-            In addition, $\etyperelation{\P}{\G', x: A}{x}{A}$ trivially, so by the rule \textbf{Extend}, wellformedness holds for
+            In addition, $\etyperelation{\P}{\G', x: A}{x}{A}$ trivially, so by the rule \textit{(\tsubextend)}, wellformedness holds for
             \begin{equation}
                 \etyperelation{\P}{(\G', x:A)}{(\si, x\setto v)}{(\gax)}
             \end{equation}
@@ -715,31 +710,31 @@ For each instance of the typing relation, define a denotation morphism: $\deno{\
 For each ground constant, $\const{A}$, there exists $c: \1 \rightarrow A_I$ in $\C(I)$.
 
 \begin{itemize}
-    \item $\ntreeruleI{Unit}{\wellformedok{\P}{\G}}{\deno{\etyperelation{\P}{\G}{\u}{\U}} = \term{\G} : \G_I \rightarrow \1}$
+    \item $\ntreeruleI{\vunit}{\wellformedok{\P}{\G}}{\deno{\etyperelation{\P}{\G}{\u}{\U}} = \term{\G} : \G_I \rightarrow \1}$
         
-    \item $\ntreeruleI{Const}{\wellformedok{\P}{\G}}{\deno{\etyperelation{\P}{\G}{\const{A}}{A}} = \deno{\const{A}} \after \term{\G} : \G \rightarrow \deno{A}}$
+    \item $\ntreeruleI{\vconst}{\wellformedok{\P}{\G}}{\deno{\etyperelation{\P}{\G}{\const{A}}{A}} = \deno{\const{A}} \after \term{\G} : \G \rightarrow \deno{A}}$
          
-    \item $\ntreeruleI{True}{\wellformedok{\P}{\G}}{\deno{\etyperelation{\P}{\G}{\t}{\B}} = \inl \after \term{\G} : \G \rightarrow \deno{\B} = \1+\1}$
+    \item $\ntreeruleI{\vtrue}{\wellformedok{\P}{\G}}{\deno{\etyperelation{\P}{\G}{\t}{\B}} = \inl \after \term{\G} : \G \rightarrow \deno{\B} = \1+\1}$
         
-    \item $\ntreeruleI{False}{\wellformedok{\P}{\G}}{\deno{\etyperelation{\P}{\G}{\f}{\B}} = \inr \after \term{\G} : \G \rightarrow \deno{\B} = \1+\1}$
+    \item $\ntreeruleI{\vfalse}{\wellformedok{\P}{\G}}{\deno{\etyperelation{\P}{\G}{\f}{\B}} = \inr \after \term{\G} : \G \rightarrow \deno{\B} = \1+\1}$
         
-    \item $\ntreeruleI{Var}{\wellformedok{\P}{\G}}{\deno{\etyperelation{\P}{\gax}{x}{A}} = \pp: \G \times A \rightarrow A}$
-    \item $\ntreeruleI{Weaken}{f = \deno{\gpetyperelation{x}{A}}: \G \rightarrow A}{\deno{\etyperelation{\P}{\gby}{x}{A}} = f \after \p: \G \times B \rightarrow A}$
-    \item $\ntreeruleI{Fn}{f = \deno{\etyperelation{\P}{\gax}{v}{B}} : \G \times A \rightarrow B}{\deno{\etyperelation{\P}{\G}{\lam{x}{A}{v}}{\ab}} = \cur{f} : \G \rightarrow (B)^A}$
+    \item $\ntreeruleI{\vvar}{\wellformedok{\P}{\G}}{\deno{\etyperelation{\P}{\gax}{x}{A}} = \pp: \G \times A \rightarrow A}$
+    \item $\ntreeruleI{\vweaken}{f = \deno{\gpetyperelation{x}{A}}: \G \rightarrow A}{\deno{\etyperelation{\P}{\gby}{x}{A}} = f \after \p: \G \times B \rightarrow A}$
+    \item $\ntreeruleI{\vfun}{f = \deno{\etyperelation{\P}{\gax}{v}{B}} : \G \times A \rightarrow B}{\deno{\etyperelation{\P}{\G}{\lam{x}{A}{v}}{\ab}} = \cur{f} : \G \rightarrow (B)^A}$
     
-    \item $\ntreeruleII{Subtype}{f = \deno{\etyperelation{\P}{\G}{v}{A}} : \G \rightarrow A}{ g = \deno{A \subtypep B}}{\deno{\etyperelation{\P}{\G}{v}{B}} = g \after f : \G \rightarrow B}$
+    \item $\ntreeruleII{\vsubtype}{f = \deno{\etyperelation{\P}{\G}{v}{A}} : \G \rightarrow A}{ g = \deno{A \subtypep B}}{\deno{\etyperelation{\P}{\G}{v}{B}} = g \after f : \G \rightarrow B}$
   
-    \item $\ntreeruleI{Return}{f = \deno{\etyperelation{\P}{\G}{v}{A}}}{\deno{\etyperelation{\P}{\G}{\return{v}}{\moa}} = \point{A} \after f}$
+    \item $\ntreeruleI{\vreturn}{f = \deno{\etyperelation{\P}{\G}{v}{A}}}{\deno{\etyperelation{\P}{\G}{\return{v}}{\moa}} = \point{A} \after f}$
         
  
-    \item \scalebox{.9}{$\ntreeruleIII{If}{f = \deno{\etyperelation{\P}{\G}{v}{\B}}: \G\rightarrow\1+\1 }{ g = \deno{\etyperelation{\P}{\G}{v_1}{\mea}}}{ h = \deno{\etyperelation{\P}{\G}{v_2}{\mea}}}{\deno{{\etyperelation{\P}{\G}{\ifthenelse{\e}{A}{v}{v_1}{v_2}}{\mea}}} = \app\after((\fld{\cur{g\after\pp}}{\cur{h\after\pp}}\after f)\times \idg)\after \diag{\G} : \G \rightarrow \tea}$}
+    \item \scalebox{.9}{$\ntreeruleIII{\vif}{f = \deno{\etyperelation{\P}{\G}{v}{\B}}: \G\rightarrow\1+\1 }{ g = \deno{\etyperelation{\P}{\G}{v_1}{\mea}}}{ h = \deno{\etyperelation{\P}{\G}{v_2}{\mea}}}{\deno{{\etyperelation{\P}{\G}{\ifthenelse{\e}{A}{v}{v_1}{v_2}}{\mea}}} = \app\after((\fld{\cur{g\after\pp}}{\cur{h\after\pp}}\after f)\times \idg)\after \diag{\G} : \G \rightarrow \tea}$}
         
-    \item $\ntreeruleII{Bind}{f = \deno{\etyperelation{\P}{\G}{v_1}{\M{\e_1}{A}} : \G \rightarrow \T{\e_1}{A}}}{{ g = \deno{\etyperelation{\P}{\gax}{v_2}{\M{\e_2}{B}}}}: \G \times A \rightarrow \T{\e_2}{B}}{\deno{\etyperelation{\P}{\G}{\doin{x}{v_1}{v_2}}{\M{\e_1 \dot \e_2}{B}}} = \bind{\e_1}{\e_2}{B} \after \T{\e_1}{g} \after \tstrength{\G}{A}{\e_1} \after \pr{\idg}{f}: \G \rightarrow \T{\e_1 \dot \e_2}{B}}$ 
+    \item $\ntreeruleII{\vbind}{f = \deno{\etyperelation{\P}{\G}{v_1}{\M{\e_1}{A}} : \G \rightarrow \T{\e_1}{A}}}{{ g = \deno{\etyperelation{\P}{\gax}{v_2}{\M{\e_2}{B}}}}: \G \times A \rightarrow \T{\e_2}{B}}{\deno{\etyperelation{\P}{\G}{\doin{x}{v_1}{v_2}}{\M{\e_1 \dot \e_2}{B}}} = \bind{\e_1}{\e_2}{B} \after \T{\e_1}{g} \after \tstrength{\G}{A}{\e_1} \after \pr{\idg}{f}: \G \rightarrow \T{\e_1 \dot \e_2}{B}}$ 
    
-    \item $\ntreeruleII{Apply}{f = \deno{\gpetyperelation{v_1}{\ab}}: \G \rightarrow (B)^{A} }{ g=\deno{\gpetyperelation{v_2}{A}}: \G \rightarrow A}{\deno{\gpetyperelation{\apply{v_1}{v_2}}{B}}= \app\after\pr{f}{g}: \G \rightarrow B }$
-    \item $\ntreeruleI{Effect-Gen}{f = \deno{\etyperelation{\P,\a}{\G}{v}{A}}: \ciuw(\G, A)}{\deno{\gpetyperelation{\elam{\a}{A}}{\all{\e}{A}}} = \bar{f}: \C(I)(\G, \allI(A))}$
+    \item $\ntreeruleII{\vapply}{f = \deno{\gpetyperelation{v_1}{\ab}}: \G \rightarrow (B)^{A} }{ g=\deno{\gpetyperelation{v_2}{A}}: \G \rightarrow A}{\deno{\gpetyperelation{\apply{v_1}{v_2}}{B}}= \app\after\pr{f}{g}: \G \rightarrow B }$
+    \item $\ntreeruleI{\vgen}{f = \deno{\etyperelation{\P,\a}{\G}{v}{A}}: \ciuw(\G, A)}{\deno{\gpetyperelation{\elam{\a}{A}}{\all{\e}{A}}} = \bar{f}: \C(I)(\G, \allI(A))}$
     
-    \item $\ntreeruleII{Effect-Spec}{g=\deno{\gpetyperelation{v}{\all{\a}{A}}}: \C(I)(\G, \allI(A))}{ h = \deno{\typerelation{\P}{\e}{\effect}}: \ciu}{\deno{\gpetyperelation{\eapp{v}{\e}}{A\ssub{\a}{\e}}} = \pr{\Id{I}}{h}\star(\e_{\deno{\typerelation{\P,\b}{A\ssub{\a}{\b}}{\type}}})\after g: \C(I)(\G, A\ssub{\a}{\e})}$
+    \item $\ntreeruleII{\vspec}{g=\deno{\gpetyperelation{v}{\all{\a}{A}}}: \C(I)(\G, \allI(A))}{ h = \deno{\typerelation{\P}{\e}{\effect}}: \ciu}{\deno{\gpetyperelation{\eapp{v}{\e}}{A\ssub{\a}{\e}}} = \pr{\Id{I}}{h}\star(\e_{\deno{\typerelation{\P,\b}{A\ssub{\a}{\b}}{\type}}})\after g: \C(I)(\G, A\ssub{\a}{\e})}$
 \end{itemize}
 
 \section{Term Weakening}
@@ -772,15 +767,15 @@ In this section, we state and prove a theorem that the action of a simultaneous 
 
 \begin{framed}
     \begin{proof}
-        \case{Ground}
+        \case{\eground}
         $\si(e) = e$, so $\wellformed{\P'}{\si(\e)}$ holds.
-        \case{Compose}
+        \case{\ecompose}
         \bi, $\wellformed{\P}{\e_1}$ and $\wellformed{\P}{\e_2}$ so $\wellformed{\P'}{\si(\e_1)}$ and $\wellformed{\P'}{\si(\e_2)}$ by induction and hence $\wellformed{\P'}{\si(\e_1\dot\e_2)}$
-        \case{Var}
+        \case{\evar}
         \bi, $\P=\P'',\a$ and $\ok{\P'',\a}$. Hence by case splitting on $\i$, we see that $\si=\si', \a\setto\e$.
         
-        So by inversion, $\wellformed{\si}{\e}$ so $\wellformed{\P'}{\si(\a)=\e}$
-        \case{Weaken}
+        So by inversion, $\wellformed{\P}{\e}$ so $\wellformed{\P'}{\si(\a)=\e}$
+        \case{\eweaken}
         By inversion,  $\P=\P'', \b$ and $\wellformed{\P''}{\a}$, so $\si=\si'\b\setto\e$.
         
         So $\typerelation{\P'}{\si'}{\P''}$.
@@ -817,21 +812,21 @@ In this section, we state and prove a theorem that the action of a simultaneous 
     \begin{proof}
         By induction on the derivation on $\deno{\typerelation{\P}{\e}{\effect}}$
         
-        \case{Ground}
+        \case{\eground}
         \begin{align*}
             \deno{\typerelation{\P}{e}{\effect}}\after\si & = \deno{e}\after\term{I}\after\si \\
             & = \deno{e}\after\term{I'} \\
             & = \deno{\typerelation{\P'}{e}{\type}}\\
         \end{align*}
         
-        \case{Var}
+        \case{\evar}
         \begin{align*}
             \deno{\typerelation{\P,\a}{\a}{\effect}}\after\si' &= \pp\after\pr{\si}{\deno{\typerelation{\P'}{\e}{\effect}}}\qt{By inversion, $\si' = (\si, \a\setto\e)$}\\
             & =\deno{\typerelation{\P'}{\e}{\effect}} \\
             &= \deno{\typerelation{\P'}{\si'(\a)}{\effect}}\\
         \end{align*}
         
-        \case{Weaken}
+        \case{\eweaken}
         \begin{align*}
             \deno{\typerelation{\P, \b}{\a}{\type}}\after\si' &= \deno{\typerelation{\P}{\a}{\type}} \after \p\after\pr{\si}{\deno{\typerelation{\P'}{\e}{\effect}}}\qt{By inversion, $\si' = (\si, \b\setto\e)$}\\
             & = \deno{\typerelation{\P}{\a}{\type}}\after\si\\
@@ -839,7 +834,7 @@ In this section, we state and prove a theorem that the action of a simultaneous 
             & = \deno{\typerelation{\P'}{\si'(\a)}{\type}}\\
         \end{align*}
         
-        \case{Compose}
+        \case{\ecompose}
         \begin{align*}
             \deno{\typerelation{\P}{\e_1\dot\e_2}{\type}} \after\si &=
             \Mul_{I}(\deno{\typerelation{\P}{\e_1}{\effect}}, \deno{\typerelation{\P}{\e_2}{\effect}})\after \si \\
@@ -860,13 +855,13 @@ In this section, we state and prove a theorem that the action of a simultaneous 
 
 \begin{framed}    
     \begin{proof}
-        \case{Ground}
+        \case{\tground}
         
         $\ok{\P'}$ so $\wellformed{\P'}{\g}$ and $\g\ssi=\g$.
         
         Hence $\wellformed{\P'}{\g\ssi}$.
         
-        \case {Fn}
+        \case{\tfun}
         
         By inversion,  $\wellformed{\P}{A}$ and $\wellformed{\P}{B}$.
         
@@ -882,13 +877,13 @@ In this section, we state and prove a theorem that the action of a simultaneous 
         
         
         
-        \case{Effect}
+        \case{\teffect}
         
         \bi, $\wellformed{\P}{\e}$ and $\wellformed{\P}{A}$ so by induction and substitution of effect preserving effect-wellformedness, 
         
         $\wellformed{\P'}{\si(\e)}$ and $\wellformed{\P'}{A\ssi}$ so $\wellformed{\P}{\M{\si(\e)}{A\ssi}}$ so $\wellformed{\P'}{(\mea)\ssi}$
         
-        \case{Quantification}
+        \case{\tquant}
         \bi, $\wellformed{\P,\a}{A}$. So by picking $\a\notin\P\wedge\a\notin\P'$ using $\a$-equivalence, we have $\typerelation{(\P',\a)}{(\si\a\setto\a)}{(\P,\a)}$.
         
         So by induction $\wellformed{(\P, \a)}{A\sub{\si,\a\setto\a}}$
@@ -909,20 +904,20 @@ In this section, we state and prove a theorem that the action of a simultaneous 
     \begin{proof}
         By induction on the derivation on $\deno{\typerelation{\P}{A}{\type}}$. Making use of the S-Closure of the re-indexing functor.
         
-        \case{Ground}
+        \case{\tground}
         \begin{align*}
             \si\star\deno{\typerelation{\P}{\g}{\type}} &= \si\star\deno{\g}\\
             & =  \deno{\g}\qt{By S-Closure}\\
             & = \deno{\typerelation{\P'}{\g\ssi}{\type}}
         \end{align*}
         
-        \case{Effect}
+        \case{\teffect}
         \begin{align*}
             \si\star\deno{\typerelation{\P}{\mea}{\type}} & =  \si\star(\T{\deno{\typerelation{\P}{\e}{\effect}}}{\deno{\typerelation{\P}{A}{\type}}})\\
             &= \T{\si\star(\deno{\typerelation{\P}{\e}{\effect}})}{\si\star(\deno{\typerelation{\P}{A}{\type}})}\\
             & = \deno{\typerelation{\P'}{(\mea)\ssi}{\type}}
         \end{align*}
-        \case{Quantification}
+        \case{\tquant}
             \begin{align*}
                 \si\star\deno{\typerelation{\P}{\all{\a}A}{\type}} & = \si\star(\allI(\deno{\typerelation{\P,\a}{A}{\type}}))\\
                 & = \allI((\si\times\Id{U})\star\deno{\typerelation{\P,\a}{A}{\type}})\qt{By Beck-Chevalley}\\
@@ -932,7 +927,7 @@ In this section, we state and prove a theorem that the action of a simultaneous 
                 & = \deno{\typerelation{\P'}{(\all{\a}{A})\ssi}{\type}}\\
             \end{align*}
         
-        \case{Fn}
+        \case{\tfun}
         \begin{align*}
             \si\star\deno{\typerelation{\P}{\ab}{\type}} &= \si\star(\deno{\typerelation{\P}{B}{\type}}^{\deno{\typerelation{\P}{A}{\type}}})\\
             &=\si\star(\deno{\typerelation{\P}{B}{\type}})^{\si\star(\deno{\typerelation{\P}{A}{\type}})}\\
@@ -952,12 +947,12 @@ In this section, we state and prove a theorem that the action of a simultaneous 
     \begin{proof}
         By induction on the subtyping relation
         
-        \case{Ground}
+        \case{\sground}
         \bi, $A\subtypeg B$, so $A, B$ are ground types.
         Hence $A\ssi = A$ and $B\ssi = B$.
         So $A\ssi\subtypepp B\ssi$
         
-        \case{Fn}
+        \case{\sfun}
         \bi, $A'\subtypep A$ and $B\subtypep B'$.
         
         So by induction, $A'\ssi\subtypepp A\ssi$ and $B\ssi\subtypepp B'\ssi$.
@@ -966,7 +961,7 @@ In this section, we state and prove a theorem that the action of a simultaneous 
         
         So $(\ab)\ssi\subtypepp (\fntype{A'}{B'})\ssi$
         
-        \case{Effect}
+        \case{\seffect}
         
         \bi, $A\subtypep B$, $\e_1\subeffectp\e_2$.
         
@@ -978,7 +973,7 @@ In this section, we state and prove a theorem that the action of a simultaneous 
         
         So $(\M{\e_1}{A})\ssi \subtypepp(\M{\e_2}{B})\ssi$
         
-        \case{Quantification}
+        \case{\squant}
         By inversion, $A\subtypepa B$ and $\ok{\P,\a}$. Picking $\a\notin\P'$ by $\a$ equivalence, and by the extension lemma \ref{EffectSubsPropertyThree}, $\typerelation{(\P,\a)}{(\si, \a\setto\a)}{(\P,\a)}$. Hence, by induction $A\sub{\si, \a\setto\a}\subtypeppa B\sub{\si, \a\setto\a}$, so $\all{\a}{A}\subtypepp\all{\a}{B}$.
         $$\square$$
     \end{proof}
@@ -994,14 +989,14 @@ In this section, we state and prove a theorem that the action of a simultaneous 
         
         By induction on the derivation on $\deno{A\subtypep B}$. Using S-preserving property of $\si\star$ 
         
-        \case{Ground}
+        \case{\sground}
         \begin{align*}
             \si\star(\g_1\subtypeg\g_2) &= (\g_1\subtypeg\g_2)
         \end{align*}
         
         Since $\si\star$ is s-closed.
         
-        \case{Effect}
+        \case{\seffect}
         \begin{align*}
             \si\star\deno{\M{\e_1}{A} \subtypep \M{\e_2}{B}} & = \si\star(\deno{\e_1\subeffectp\e_2})\after\si\star(\T{\e_1}(\deno{A\subtypep B})) \\ 
              &= \deno{\si(\e_1)\subeffectpp\si(\e_2)} \after \T{\si(\e_1)}{\deno{A\ssi\subtypepp B\ssi}}\qt{By S-Closure}\\
@@ -1009,7 +1004,7 @@ In this section, we state and prove a theorem that the action of a simultaneous 
              &= \deno{(\M{\e_1}{A})\ssi\subtypepp\M{\e_2}{B}\ssi}\\
         \end{align*}
         
-        \case{Quantification}
+        \case{\squant}
             \begin{align*}
                 \si\star\deno{\all{\a}{A}\subtypep\all{\a}{B}} &= \si\star(\allI(\deno{A\subtypepa B})) \\
                 &=\allII((\si\times\Id{U})\star(\deno{A\subtypepa B}))\\
@@ -1017,7 +1012,7 @@ In this section, we state and prove a theorem that the action of a simultaneous 
                 &= \deno{(\all{\a}{A})\ssi \subtypepp(\all{\a}{B})\ssi}\\
             \end{align*}
         
-        \case{Fn}
+        \case{\sfun}
         
         \begin{align*}
             \si\star&\deno{(\ab)\subtypep\fntype{A'}{B'}} \\
@@ -1041,10 +1036,10 @@ In this section, we state and prove a theorem that the action of a simultaneous 
 
 \begin{framed}   
     \begin{proof}
-        \case{Nil}
+        \case{\envnil}
         $\ok{\P}\implies\ok{\P'}$ so $\wellformedok{\P'}{\nil}$
         and $\nil\ssi = \nil$
-        \case{Extend}
+        \case{\envextend}
         \bi, $\wellformedok{\P}{\G}$ and $\wellformed{\P}{A}$.
         
         By induction and substitution preserving wellformedness of types, $\wellformedok{\P'}{\G'\ssi}$ and $\wellformed{\P'}{A\ssi}$.
@@ -1066,7 +1061,7 @@ In this section, we state and prove a theorem that the action of a simultaneous 
     \begin{proof}
         By induction on the derivation on $\deno{\wellformedok{\P}{\G}}$. Using the S-Closure of the re-indexing functor.
         
-        \case{Nil}
+        \case{\envnil}
         \begin{align*}
             \si\star\deno{\wellformedok{\P}{\nil}} &=\si\star\1\\
             & = \1\qt{By S-preservation}\\
@@ -1074,7 +1069,7 @@ In this section, we state and prove a theorem that the action of a simultaneous 
             &= \deno{\wellformedok{\P'}{\nil\ssi}}\\
         \end{align*}
         
-        \case{Extend}
+        \case{\envextend}
         \begin{align*}
            \si\star\deno{\wellformedok{\P}{\gax}} &= \si\star(\deno{\wellformedok{\P}{\G}} \times \deno{\typerelation{\P}{A}{\type}}) \\
            & = (\si\star\deno{\wellformedok{\P}{\G}} \times \si\star\deno{\typerelation{\P}{A}{\type}})\\
@@ -1096,13 +1091,13 @@ In this section, we state and prove a theorem that the action of a simultaneous 
 \begin{framed}
     \begin{proof}
         
-    \case{Const}
+    \case{\vconst}
     \bi, $\wellformedok{\P}{\G}$.
     
     So $\wellformedok{\P'}{\G}$
     
     So $\etyperelation{\P'}{\G\ssi}{\const{A\ssi}}{A\ssi}$
-    \case{True, False, Unit}
+    \case{\vtrue, \vfalse, \vunit}
     The logic is the same for each of these cases, so we look at the case $\t$ only.
     
     \bi, $\wellformedok{\P}{\G}$.
@@ -1113,7 +1108,7 @@ In this section, we state and prove a theorem that the action of a simultaneous 
     
     Since $\t\ssi=\t$ and $\B\ssi=\B$.
     
-    \case{Var}
+    \case{\vvar}
     By inversion,  $\G = \G', x:A$ and $\wellformedok{\P}{\G', x:A}$.
     
     So since substitution preserves wellformedness of type environments, $\wellformedok{\P'}{\G'\ssi, x:A\ssi}$
@@ -1122,7 +1117,7 @@ In this section, we state and prove a theorem that the action of a simultaneous 
     
     Since $x\ssi = x$
     
-    \case{Weaken}
+    \case{\vweaken}
     By inversion,  $\G = \G', y:B$, $\wellformed{\P}{B}$, and $\etyperelation{\P}{\G'}{x}{A}$. $x \neq y$
     
     By induction and the theorem that effect-environment substitution preserves type wellformedness, we have: $\etyperelation{\P'}{\G'\ssi}{x}{A\ssi}$ and $\wellformed{\P'}{B\ssi}$
@@ -1132,7 +1127,7 @@ In this section, we state and prove a theorem that the action of a simultaneous 
     Since $x\ssi = x$, $\G\ssi = (\G'\ssi, y:B\ssi)$
     
     
-    \case{Fn}
+    \case{\vfun}
     By inversion,  $\etyperelation{\P}{\gax}{v}{B}$.
     
     So, by induction $\etyperelation{\P'}{(\gax)\ssi}{v\ssi}{B\ssi}$.
@@ -1147,7 +1142,7 @@ In this section, we state and prove a theorem that the action of a simultaneous 
     
     $\etyperelation{\P'}{\G\ssi}{(\lam{x}{A}{v})\ssi}{(\ab)\ssi)}$
     
-    \case{Apply}
+    \case{\vapply}
     \bi, $\gpetyperelation{v_1}{\ab}$, $\gpetyperelation{V_2}{A}$.
     
     So by induction, $\etyperelation{\P'}{\G\ssi}{v_1\ssi}{\fntype{(A\ssi)}{(B\ssi)}}$.
@@ -1155,14 +1150,14 @@ In this section, we state and prove a theorem that the action of a simultaneous 
     So $\etyperelation{\P'}{\G\ssi}{\apply{(v_1\ssi)}{(v_2\ssi)}}{B\ssi}$.
     
     So $\etyperelation{\P'}{\G\ssi}{(\apply{v_1}{v_2})\ssi}{(\ab)\ssi}$
-    \case{Subtype}
+    \case{\vsubtype}
     
     \bi, $\gpetyperelation{v}{A}$ and $\wellformed{\P}{A\subtype B}$
     
     So by induction and effect-environment substitution preserving subtyping, $\etyperelation{\P'}{\G\ssi}{v\ssi}{A\ssi}$ and $\wellformed{\P'}{A\ssi\subtype B\ssi}$
     
     So $\etyperelation{\P'}{\G\ssi}{v\ssi}{B\ssi}$
-    \case{Return}
+    \case{\vreturn}
     \bi, $\gpetyperelation{v}{A}$
     
     So by induction, $\etyperelation{\P'}{\G\ssi}{v\ssi}{A\ssi}$
@@ -1170,7 +1165,7 @@ In this section, we state and prove a theorem that the action of a simultaneous 
     So $\etyperelation{\P'}{\G\ssi}{\return{(v\ssi)}}{\M{\1}{(A\ssi)}}$
     
     Hence $\etyperelation{\P'}{\G\ssi}{(\return{v})\ssi}{(\moa)\ssi}$
-    \case{Bind}
+    \case{\vbind}
     
     \bi, $\gpetyperelation{v_1}{\M{\e_1}{A}}$ and $\etyperelation{\P}{\gax}{v_2}{\M{\e_2}{B}}$.
     
@@ -1179,7 +1174,7 @@ In this section, we state and prove a theorem that the action of a simultaneous 
     And so $\etyperelation{\P'}{\G\ssi}{\doin{x}{(v_1\ssi)}{(v_2\ssi)}}{\M{\si(\e_1)\dot(\e_2\ssi)}{B\ssi}}$
     
     
-    \case{If}
+    \case{\vif}
     
     \bi, $\gpetyperelation{v}{\B}$, $\gpetyperelation{v_1}{A}$, and $\gpetyperelation{v_2}{A}$
     
@@ -1192,7 +1187,7 @@ In this section, we state and prove a theorem that the action of a simultaneous 
     
     So $\etyperelation{\P'}{\G\ssi}{(\pifthenelse{A}{v}{v_1}{v_2})\ssi}{A\ssi}$
     
-    \case{Effect-Gen}
+    \case{\vgen}
     \bi, $\etyperelation{\P,\a}{\G}{v}{A}$.
     
     So by the substitution property \ref{EffectSubsPropertyThree}, pick $\a\notin\P'\wedge\a\notin\P$ so we have:
@@ -1205,7 +1200,7 @@ In this section, we state and prove a theorem that the action of a simultaneous 
     
     So $\etyperelation{\P'}{\G\ssi}{v\ssi}{(\all{\a}{A})\ssi}$
     
-    \case{Effect-Spec}
+    \case{\vspec}
     \bi, $\gpetyperelation{v}{\all{\a}{A}}$, $\wellformed{\P}{\e}$.
     
     So by induction and effect-environment substitution preserving wellformedness of effects: $\etyperelation{\P'}{\G\ssi}{v\ssi}{(\all{\a}{A})\ssi}$ and $\wellformed{\P'}{\si(\e)}$
@@ -1239,7 +1234,7 @@ Then \begin{eqnarray}
         
     By induction over the derivation of $\D$. Using the S-Closure of $\si\star$. We use $\G_I$ to indicate $\deno{\wellformedok{\P}{\G}}$, an $A_I$ to indicate $\deno{\typerelation{\P}{A}{\type}}$
     
-    \case{Unit}
+    \case{\vunit}
     
     \begin{equation}
         \D = \term{\G_I}
@@ -1251,7 +1246,7 @@ Then \begin{eqnarray}
         \si\star(\D) = \term{\G_I\ssi} = \D'
     \end{equation}
     
-    \case{True, False}
+    \case{\vtrue, \vfalse}
     Giving the case for true as false is the same but using $\inr$
     \begin{equation}
         \D = \inl\after\term{\G_I}
@@ -1265,8 +1260,7 @@ Then \begin{eqnarray}
     
     Since $\si\star$ is S-preserving.
     
-    \case{Constant}
-    
+    \case{\vconst}
     
     \begin{equation}
         \D = \deno{\const{A}}\after\term{\G_I}
@@ -1280,7 +1274,7 @@ Then \begin{eqnarray}
     
     Since $\si\star$ is S-preserving.
     
-    \case{Subtype}
+    \case{\vsubtype}
     
     Let \begin{equation}
         \D_1 = \deno{\gpetyperelation{v}{A}}
@@ -1299,7 +1293,7 @@ Then \begin{eqnarray}
         & = D'
     \end{align*}
     
-    \case{Fn}
+    \case{\vfun}
     Let \begin{equation}
         \D_1 = \deno{\etyperelation{\P}{\gax}{v}{B}}
     \end{equation}
@@ -1318,7 +1312,7 @@ Then \begin{eqnarray}
         & = \D'
     \end{align*}
     
-    \case{Apply}
+    \case{\vapply}
     Let \begin{align*}
         \D_1 &= \deno{\gpetyperelation{v_1}{\ab}}\\
         \D_2 &= \deno{\gpetyperelation{v_2}{A}}
@@ -1339,7 +1333,7 @@ Then \begin{eqnarray}
         & = \D'
     \end{align*}
     
-    \case{Return}
+    \case{\vreturn}
     Let \begin{equation}
         \D_1 = \deno{\gpetyperelation{v}{A}}
     \end{equation}
@@ -1359,7 +1353,7 @@ Then \begin{eqnarray}
                 & = \D'
     \end{align*}
     
-    \case{Bind}
+    \case{\vbind}
     Let \begin{align*}
         \D_1 &= \deno{\gpetyperelation{v_1}{\M{\e_1}{A}}}\\
         \D_2 &= \deno{\etyperelation{\P}{\gax}{v_2}{\M{\e_2}{B}}}
@@ -1381,7 +1375,7 @@ Then \begin{eqnarray}
         &= \D'\\
     \end{align*}
     
-    \case{If}
+    \case{\vif}
     
     Let \begin{align*}
         \D_1 &= \deno{\gpetyperelation{v}{\B}}\\
@@ -1405,7 +1399,7 @@ Then \begin{eqnarray}
     \end{align*}
     
     
-    \case{Effect-Gen}
+    \case{\vgen}
     
     Let \begin{equation}
         \D_1 = \deno{\etyperelation{\P,\a}{\G}{v}{A}}
@@ -1431,7 +1425,7 @@ Then \begin{eqnarray}
         & = \D'
     \end{align*}
     
-    \case{Effect-Spec}
+    \case{\vspec}
     
     Let \begin{align*}
         \D_1 &= \deno{\gpetyperelation{v}{\all{\a}{A}}}\\
@@ -1497,12 +1491,12 @@ In this section, we state and prove a theorem that the action of a simultaneous 
         \begin{proof}
             
             By induction over the wellformedness of effects
-            \case{Ground}
+            \case{\eground}
             \bi, $\ok{\P}\wedge\e\in E$.
             Hence by the ok-property, $\ok{\P'}$
             So $\wellformed{\P'}{\e}$
         
-            \case{Var}
+            \case{\evar}
         
             $\P = \P'', \a$
         
@@ -1512,7 +1506,7 @@ In this section, we state and prove a theorem that the action of a simultaneous 
                 So $\w = \w'\x$
                 So $\wrel{\w'}{\P'''}{\P''}$, and hence:
                 \begin{equation}
-                    \ntreeruleI{Var}{\ok{\P''', \a}}{\wellformed{\P''',\a}{\a}}
+                    \ntreeruleI{\evar}{\ok{\P''', \a}}{\wellformed{\P''',\a}{\a}}
                 \end{equation}
             \subcase{$\P' = \P''', \b$} and $\b \neq\a$
         
@@ -1520,10 +1514,10 @@ In this section, we state and prove a theorem that the action of a simultaneous 
         
             By induction, $\wrel{\w'}{\P'''}{\P}$
             so \begin{equation}
-                \ntreeruleI{Weaken}{\wellformed{\P'''}{\a}}{\wellformed{\P'}{\a}}
+                \ntreeruleI{\eweaken}{\wellformed{\P'''}{\a}}{\wellformed{\P'}{\a}}
             \end{equation}
         
-            \case{Weaken}
+            \case{\eweaken}
         
             \bi, $\P = \P'', \b$.
         
@@ -1534,11 +1528,11 @@ In this section, we state and prove a theorem that the action of a simultaneous 
         
             So by induction
             \begin{equation}
-                \ntreeruleI{weak}{\wellformed{\P'''}{\a}}{\wellformed{\P'}{\a}}
+                \ntreeruleI{\eweaken}{\wellformed{\P'''}{\a}}{\wellformed{\P'}{\a}}
             \end{equation}
         
         
-            \case{Effect}
+            \case{\ecompose}
         
             \bi, $\wellformed{\P}{\e_1}$ and $\wellformed{\P}{\e_2}$. So by induction,
             $\wellformed{\P'}{\e_1}$ and $\wellformed{\P'}{\e_2}$, and so:
@@ -1559,14 +1553,14 @@ In this section, we state and prove a theorem that the action of a simultaneous 
     \begin{proof}
         By induction on the derivation on $\deno{\typerelation{\P}{\e}{\effect}}$
         
-        \case{Ground}
+        \case{\tground}
         \begin{align*}
             \deno{\typerelation{\P}{e}{\effect}}\after\w & = \deno{e}\after\term{I}\after\w \\
             & = \deno{e}\after\term{I'} \\
             & = \deno{\typerelation{\P'}{e}{\type}}\\
         \end{align*}
         
-        \case{Var}
+        \case{\evar}
         Case split on $\w$.
         \subcase{$\w = \i$}
         Then $\P' = \P$ and $\w = \Id{I}$. So the theorem holds trivially.
@@ -1593,7 +1587,7 @@ In this section, we state and prove a theorem that the action of a simultaneous 
             &= \deno{\typerelation{\P'}{\a}{\effect}}
         \end{align*}
         
-        \case{Weaken}
+        \case{\eweaken}
         \begin{equation}
             \deno{\typerelation{\P,\b}{\a}{\effect}}\after\w = \deno{\typerelation{\P}{\a}{\effect}}\after\p\after\w
         \end{equation}
@@ -1625,7 +1619,7 @@ In this section, we state and prove a theorem that the action of a simultaneous 
             & = \deno{\typerelation{\P'}{\a}{\effect}}\\
         \end{align*}
         
-        \case{Compose}
+        \case{\ecompose}
         \begin{align*}
             \deno{\typerelation{\P}{\e_1\dot\e_2}{\type}} \after\w &=
             \Mul_I(\deno{\typerelation{\P}{\e_1}{\effect}}, \deno{\typerelation{\P}{\e_2}{\effect}})\after \w \\
@@ -1646,15 +1640,15 @@ In this section, we state and prove a theorem that the action of a simultaneous 
 
 \begin{framed}
     \begin{proof}
-            \case{Ground}
+            \case{\tground}
             \bi, $\ok{\P}$, hence by property 1 of weakening, $\ok{\P'}$. Hence $\wellformed{\P'}{\g}$.
-            \case{Fn}
+            \case{\tfun}
             \bi, $\wellformed{\P}{A}$, $\wellformed{\P}{B}$.
             So by induction $\wellformed{\P'}{A}$, $\wellformed{\P'}{B}$, hence,
         
             $$\wellformed{\P'}{\ab}$$
         
-            \case{Effect}
+            \case{\teffect}
         
             By inversion,  $\wellformed{\P}{A}$, and $\wellformed{\P}{\e}$.
         
@@ -1664,7 +1658,7 @@ In this section, we state and prove a theorem that the action of a simultaneous 
         
             So $$\wellformed{\P'}{\mea}$$
         
-            \case{Quantification}
+            \case{\tquant}
             \bi, $\wellformed{\P,\a}{A}$
             Picking $\a\notin\P'$ using $\a$-conversion.
         
@@ -1687,20 +1681,20 @@ In this section, we state and prove a theorem that the action of a simultaneous 
     \begin{proof}
             By induction on the derivation on $\deno{\typerelation{\P}{A}{\type}}$. Making use of the S-Closure of the re-indexing functor.
             
-            \case{Ground}
+            \case{\tground}
             \begin{align*}
                 \w\star\deno{\typerelation{\P}{\g}{\type}} &= \w\star\deno{\g}\\
                 & =  \deno{\g}\qt{By S-Closure}\\
                 & = \deno{\typerelation{\P'}{\g}{\type}}
             \end{align*}
             
-            \case{Effect}
+            \case{\teffect}
             \begin{align*}
                 \w\star\deno{\typerelation{\P}{\mea}{\type}}\after\w & =  \w\star(\T{\deno{\typerelation{\P}{\e}{\effect}}}{\deno{\typerelation{\P}{A}{\type}}})\\
                 &= \T{\w\star(\deno{\typerelation{\P}{\e}{\effect}})}{\w\star(\deno{\typerelation{\P}{A}{\type}})}\\
                 & = \deno{\typerelation{\P'}{\mea}{\type}}
             \end{align*}
-            \case{Quantification}
+            \case{\tquant}
                 \begin{align*}
                     \w\star\deno{\typerelation{\P}{\all{\a}A}{\type}} & = \w\star(\allI(\deno{\typerelation{\P,\a}{A}{\type}}))\\
                     & = \allI((\w\times\Id{U})\star\deno{\typerelation{\P,\a}{A}{\type}})\qt{By Beck-Chevalley}\\
@@ -1711,7 +1705,7 @@ In this section, we state and prove a theorem that the action of a simultaneous 
     \end{proof}
         
 \end{framed}
-    \case{Fn}
+    \case{\tfun}
     \begin{align*}
         \w\star\deno{\typerelation{\P}{\ab}{\type}} &= \w\star(\deno{\typerelation{\P}{B}{\type}}^{\deno{\typerelation{\P}{A}{\type}}})\\
         &=\w\star(\deno{\typerelation{\P}{B}{\type}})^{\w\star(\deno{\typerelation{\P}{A}{\type}})}\\
@@ -1728,16 +1722,16 @@ In this section, we state and prove a theorem that the action of a simultaneous 
 
 \begin{framed}
     \begin{proof}
-        \case{Ground}
+        \case{\sground}
             By inversion, $A\subtypeg B$, so $A\subtypepp B$
     
-        \case{Fn}
+        \case{\sfun}
             By inversion, $A'\subtypep A$ and $B\subtypep B'$, so by induction $A'\subtypepp A$ and $B\subtypepp B'$, so $\fntype{A}{B}\subtypepp \fntype{A'}{B'}$.
     
-        \case{Quantification}
+        \case{\squant}
             By inversion, $A\subtypepa A'$. So since $\wrel{\w\x}{\P',\a}{\P,\a}$, by induction, $A\subtypeppa A'$, so $\all{\a}{A}\subtypepp \all{\a}{A'}$.   
     
-        \case{Effect}
+        \case{\seffect}
             By inversion, $A \subtype A'$ and $e\subeffectp e'$. By induction $A\subtypepp A'$ and by the weakening-subeffecting theorem, $e\subeffectpp e'$, so $\mea\subtypepp \M{\e'}{A'}$
     \end{proof}
 \end{framed}
@@ -1753,14 +1747,14 @@ In this section, we state and prove a theorem that the action of a simultaneous 
         
         By induction on the derivation on $\deno{A\subtypep B}$. Using S-preserving property of $\w\star$ 
         
-        \case{Ground}
+        \case{\tground}
         \begin{align*}
             \w\star(\g_1\subtypeg\g_2) &= (\g_1\subtypeg\g_2)
         \end{align*}
         
         Since $\w\star$ is s-closed.
         
-        \case{Effect}
+        \case{\seffect}
         \begin{align*}
             \w\star\deno{\M{\e_1}{A} \subtypep \M{\e_2}{B}} & = \w\star(\deno{\e_1\subeffectp\e_2})\after\w\star(\T{\e_1}(\deno{A\subtypep B})) \\ 
              &= \deno{\e_1\subeffectpp\e_2} \after \T{\e_1}{\deno{A\subtypepp B}}\qt{By S-Closure}\\
@@ -1768,7 +1762,7 @@ In this section, we state and prove a theorem that the action of a simultaneous 
              &= \deno{(\M{\e_1}{A})\subtypepp\M{\e_2}{B}}\\
         \end{align*}
         
-        \case{Quantification}
+        \case{\squant}
         Note $\deno{\wrel{\w\x}{\P',\a}{\P,\a}} = (\w\times\Id{U})$
             \begin{align*}
                 \w\star\deno{\all{\a}{A}\subtypep\all{\a}{B}} &= \w\star(\allI(\deno{A\subtypepa B})) \\
@@ -1777,7 +1771,7 @@ In this section, we state and prove a theorem that the action of a simultaneous 
                 &= \deno{(\all{\a}{A}) \subtypepp(\all{\a}{B})}\\
             \end{align*}
         
-        \case{Fn}
+        \case{\sfun}
         \begin{align*}
             \w\star\deno{(\ab)\subtypep\fntype{A'}{B'}} &= \w\star(\deno{B\subtypep B'}^{A'}\after B^{\deno{A'\subtypep A}})\\
             &= \w\star(\cur{\deno{B\subtypep B'}\after\app})\after\w\star(\cur{\app\after(\Id{B}\times\deno{A'\subtypep A})})\\
@@ -1797,9 +1791,9 @@ If $\wrel{\w}{\P'}{\P}$ and $\wellformedok{\P}{\G}$  then $\wellformedok{\P'}{\G
 
 \begin{framed}
      \begin{proof}
-            \case{Nil}
+            \case{\envnil}
             By inversion,  $\ok{\P}$ so $\wellformedok{\P}{\nil}$
-            \case{Extend}
+            \case{\envextend}
         
             By inversion,  $\wellformedok{\P}{\G}$, $x\in\dom{\G}$, $\wellformed{\P}{A}$
         
@@ -1819,14 +1813,14 @@ If $\wrel{\w}{\P'}{\P}$ and $\wellformedok{\P}{\G}$  then $\wellformedok{\P'}{\G
     \begin{proof}
         By induction on the derivation on $\deno{\wellformedok{\P}{\G}}$. Using the S-Closure of the re-indexing functor.
         
-        \case{Nil}
+        \case{\envnil}
         \begin{align*}
             \w\star\deno{\wellformedok{\P}{\nil}} &=\w\star\1\\
             & = \1\qt{By S-preservation}\\
             &= \deno{\wellformedok{\P'}{\nil}}\\
         \end{align*}
         
-        \case{Extend}
+        \case{\envextend}
         \begin{align*}
            \w\star\deno{\wellformedok{\P}{\gax}} &= \w\star(\deno{\wellformedok{\P}{\G}} \times \deno{\typerelation{\P}{A}{\type}}) \\
            & = (\w\star\deno{\wellformedok{\P}{\G}} \times \w\star\deno{\typerelation{\P}{A}{\type}})\\
@@ -1847,17 +1841,18 @@ If $\wrel{\w}{\P'}{\P}$ and $\wellformedok{\P}{\G}$  then $\wellformedok{\P'}{\G
 
 \begin{framed}
     \begin{proof}
-            \case{Constants}
+            \case{\vconst}
             If $\wellformedok{\P}{\G}$ then $\wellformedok{\P'}{\G}$ so:
         
             \begin{equation}
-                \ntreeruleI{Const}{\wellformedok{\P'}{\G}}{\etyperelation{\P'}{\G}{\const{A}}{A}}
+                \ntreeruleI{\vconst}{\wellformedok{\P'}{\G}}{\etyperelation{\P'}{\G}{\const{A}}{A}}
             \end{equation}
         
             \case{Variables}
             If $\wellformedok{\P}{\G}$ then $\wellformedok{\P'}{\G}$ so:
             So, $\etyperelation{\P'}{G}{x}{A}$, if $\etyperelation{\P}{G}{x}{A}$
-            \case{Fn}
+
+            \case{\vfun}
             \bi, $\etyperelation{\P}{\gax}{v}{B}$, so by induction $\etyperelation{\P'}{\gax}{v}{B}$.
         
             So,
@@ -1866,7 +1861,7 @@ If $\wrel{\w}{\P'}{\P}$ and $\wellformedok{\P}{\G}$  then $\wellformedok{\P'}{\G
                 \etyperelation{\P'}{\G}{\lam{x}{A}{v}}{\ab}
             \end{equation}
         
-            \case{Apply}
+            \case{\vapply}
             By inversion,  $\gpetyperelation{v_1}{\ab}$ and $\gpetyperelation{v_2}{A}$.
         
             Hence by induction,
@@ -1874,7 +1869,7 @@ If $\wrel{\w}{\P'}{\P}$ and $\wellformedok{\P}{\G}$  then $\wellformedok{\P'}{\G
         
             So $$\gppetyperelation{\app{v_1}{v_2}}{B}$$
         
-            \case{Return}
+            \case{\vreturn}
         
             By inversion,  $\gpetyperelation{v}{A}$ 
             
@@ -1882,7 +1877,7 @@ If $\wrel{\w}{\P'}{\P}$ and $\wellformedok{\P}{\G}$  then $\wellformedok{\P'}{\G
         
             Hence $\gppetyperelation{\return{v}}{\moa}$
         
-            \case{Bind}
+            \case{\vbind}
         
             By inversion,  $\gpetyperelation{v_1}{\M{\e_1}{A}}$ and $\etyperelation{\P}{\gax}{\e_2}{\M{\e_2}{A}}$.
         
@@ -1894,7 +1889,7 @@ If $\wrel{\w}{\P'}{\P}$ and $\wellformedok{\P}{\G}$  then $\wellformedok{\P'}{\G
                 \gppetyperelation{\doin{x}{v_1}{v_2}}{\M{\e_1\dot\e_2}{B}}
             \end{equation}
         
-            \case{If}
+            \case{\vif}
         
             By inversion,  $\gpetyperelation{v}{\B}$, $\gpetyperelation{v_1}{A}$, and $\gpetyperelation{v_2}{A}$.
         
@@ -1907,7 +1902,7 @@ If $\wrel{\w}{\P'}{\P}$ and $\wellformedok{\P}{\G}$  then $\wellformedok{\P'}{\G
                 \gppetyperelation{\pifthenelse{A}{v}{v_1}{v_2}}{A}
             \end{equation}
         
-            \case{Subtype}
+            \case{\vsubtype}
             By inversion,  $\gpetyperelation{v}{A}$, and $A\subtype B$.
         
             So by induction:
@@ -1917,7 +1912,7 @@ If $\wrel{\w}{\P'}{\P}$ and $\wellformedok{\P}{\G}$  then $\wellformedok{\P'}{\G
                 \gppetyperelation{v}{B}
             \end{equation}
         
-            \case{Effect-Gen}
+            \case{\vgen}
             By inversion,  $\etyperelation{\P, \a}{\G}{v}{A}$
         
             By picking $\a\notin\P'$ using $\a$-conversion.
@@ -1934,7 +1929,7 @@ If $\wrel{\w}{\P'}{\P}$ and $\wellformedok{\P}{\G}$  then $\wellformedok{\P'}{\G
                 \gppetyperelation{\elam{\a}{v}}{\all{a}{A}}
             \end{equation}
         
-            \case{Effect-Spec}
+            \case{\vspec}
         
             \bi, $\gpetyperelation{v}{\all{\a}{A}}$, and $\wellformed{\P}{\e}$.
         
@@ -1969,7 +1964,7 @@ If $\wrel{\w}{\P'}{\P}$ and $\wellformedok{\P}{\G}$  then $\wellformedok{\P'}{\G
     \begin{proof}
         By induction over the derivation of $\D$. Using the S-Closure of $\w\star$. We use $\G_I$ to indicate $\deno{\wellformedok{\P}{\G}}$, an $A_I$ to indicate $\deno{\typerelation{\P}{A}{\type}}$
         
-        \case{Unit}
+        \case{\vunit}
         
         \begin{equation}
             \D = \term{\G_I}
@@ -1981,7 +1976,7 @@ If $\wrel{\w}{\P'}{\P}$ and $\wellformedok{\P}{\G}$  then $\wellformedok{\P'}{\G
             \w\star(\D) = \term{\G_{I'}} = \D'
         \end{equation}
         
-        \case{True, False}
+        \case{\vtrue, \vfalse}
         Giving the case for true as false is the same but using $\inr$
         \begin{equation}
             \D = \inl\after\term{\G_I}
@@ -1995,7 +1990,7 @@ If $\wrel{\w}{\P'}{\P}$ and $\wellformedok{\P}{\G}$  then $\wellformedok{\P'}{\G
         
         Since $\w\star$ is S-preserving.
         
-        \case{Constant}
+        \case{\vconst}
         
         
         \begin{equation}
@@ -2010,7 +2005,7 @@ If $\wrel{\w}{\P'}{\P}$ and $\wellformedok{\P}{\G}$  then $\wellformedok{\P'}{\G
         
         Since $\w\star$ is S-preserving.
         
-        \case{Subtype}
+        \case{\vsubtype}
         
         Let \begin{equation}
             \D_1 = \deno{\gpetyperelation{v}{A}}
@@ -2029,7 +2024,7 @@ If $\wrel{\w}{\P'}{\P}$ and $\wellformedok{\P}{\G}$  then $\wellformedok{\P'}{\G
             & = D'
         \end{align*}
         
-        \case{Fn}
+        \case{\vfun}
         Let \begin{equation}
             \D_1 = \deno{\etyperelation{\P}{\gax}{v}{B}}
         \end{equation}
@@ -2048,7 +2043,7 @@ If $\wrel{\w}{\P'}{\P}$ and $\wellformedok{\P}{\G}$  then $\wellformedok{\P'}{\G
             & = \D'
         \end{align*}
         
-        \case{Apply}
+        \case{\vapply}
         Let \begin{align*}
             \D_1 &= \deno{\gpetyperelation{v_1}{\ab}}\\
             \D_2 &= \deno{\gpetyperelation{v_2}{A}}
@@ -2069,7 +2064,7 @@ If $\wrel{\w}{\P'}{\P}$ and $\wellformedok{\P}{\G}$  then $\wellformedok{\P'}{\G
             & = \D'
         \end{align*}
         
-        \case{Return}
+        \case{\vreturn}
         Let \begin{equation}
             \D_1 = \deno{\gpetyperelation{v}{A}}
         \end{equation}
@@ -2089,7 +2084,7 @@ If $\wrel{\w}{\P'}{\P}$ and $\wellformedok{\P}{\G}$  then $\wellformedok{\P'}{\G
                     & = \D'
         \end{align*}
         
-        \case{Bind}
+        \case{\vbind}
         Let \begin{align*}
             \D_1 &= \deno{\gpetyperelation{v_1}{\M{\e_1}{A}}}\\
             \D_2 &= \deno{\etyperelation{\P}{\gax}{v_2}{\M{\e_2}{B}}}
@@ -2111,7 +2106,7 @@ If $\wrel{\w}{\P'}{\P}$ and $\wellformedok{\P}{\G}$  then $\wellformedok{\P'}{\G
             &= \D'\\
         \end{align*}
         
-        \case{If}
+        \case{\vif}
         
         Let \begin{align*}
             \D_1 &= \deno{\gpetyperelation{v}{\B}}\\
@@ -2135,7 +2130,7 @@ If $\wrel{\w}{\P'}{\P}$ and $\wellformedok{\P}{\G}$  then $\wellformedok{\P'}{\G
         \end{align*}
         
         
-        \case{Effect-Gen}
+        \case{\vgen}
         
         Let \begin{equation}
             \D_1 = \deno{\etyperelation{\P,\a}{\G}{v}{A}}
@@ -2161,7 +2156,7 @@ If $\wrel{\w}{\P'}{\P}$ and $\wellformedok{\P}{\G}$  then $\wellformedok{\P'}{\G
             & = \D'
         \end{align*}
         
-        \case{Effect-Spec}
+        \case{\vspec}
         
         Let \begin{align*}
             \D_1 &= \deno{\gpetyperelation{v}{\all{\a}{A}}}\\
@@ -2234,10 +2229,10 @@ If $\wrel{\w}{\P'}{\P}$ and $\wellformedok{\P}{\G}$  then $\wellformedok{\P'}{\G
     \begin{proof}
         By induction on the structure of $\si$, making use of the weakening of term denotations above.
         
-        \case{Nil}
+        \case{\tsubnil}
         Then $\si = \term{\G'_{I}}$, so $\w\star(\si) = \term{\G'_{I'}} = \deno{\etyperelation{\P'}{\G'}{\si}{\G}}$
         
-        \case{Extend}
+        \case{\tsubextend}
         Then $\si = (\si',x\setto v)$
         
         \begin{align*}
@@ -2260,13 +2255,13 @@ If $\wrel{\w}{\P'}{\P}$ and $\wellformedok{\P}{\G}$  then $\wellformedok{\P'}{\G
 
 \begin{framed}
     \begin{proof}
-        \case{Id}
+        \case{\tid}
         By inversion, $\oke{\P}{\G}$, so $\oke{\P'}{\G}$, so $\ewrel{\P'}{\w}{\G}{\G}$.
 
-        \case{Project}
+        \case{\tproject}
         By inversion, $\oke{\P}{A}$ and $\ewrel{\P}{\w}{\G'}{\G}$, so by induction and the preservation of wellformedness of types, $\oke{\P'}{A}$ and $\ewrel{\P'}{\w}{\G'}{\G}$. Hence $\ewrel{\P'}{\w\p}{\G', x: A}{\G}$
         
-        \case{Extend}
+        \case{\textend}
         By inversion, $\oke{\P}{A}$ and $\ewrel{\P}{\w}{\G'}{\G}$, $A\subtypep B$. So by induction and the preservation of wellformedness of types, $\oke{\P'}{A}$ and $\ewrel{\P'}{\w}{\G'}{\G}$, $A\subtypepp B$. Since $A\subtypepp B$, $\wellformed{\P'}{B}$. Hence $\ewrel{\P'}{\w\x}{\G', x: A}{\G: B}$.
     \end{proof}
 \end{framed}
@@ -2284,7 +2279,7 @@ If $\wrel{\w}{\P'}{\P}$ and $\wellformedok{\P}{\G}$  then $\wellformedok{\P'}{\G
         
         By induction on the structure of $\w_1$.
         
-        \case{Id}
+        \case{\tid}
         Then $\w_1 = \i$, so its denotation is $\w_1 = \Id{\G_I}$
         
         So
@@ -2292,11 +2287,11 @@ If $\wrel{\w}{\P'}{\P}$ and $\wellformedok{\P}{\G}$  then $\wellformedok{\P'}{\G
           \w\star(\Id{\G_I}) = \Id{\G_{I'}} = \deno{\ewrel{\P'}{\i}{\G}{\G}}  
         \end{equation}
         
-        \case{Project}
+        \case{\tproject}
         Then $\w_1 = \w_1'\pi$
         
         \begin{equation}
-            \ntreeruleI{Project}{\ewrel{\P}{\w_1'}{\G'}{\G}}{\ewrel{\P}{\w_1\pi}{\G',x:A}{\G}}
+            \ntreeruleI{\tproject}{\ewrel{\P}{\w_1'}{\G'}{\G}}{\ewrel{\P}{\w_1\pi}{\G',x:A}{\G}}
         \end{equation}
         
         So $\w_1 = \w_1'\after\p$
@@ -2309,11 +2304,11 @@ If $\wrel{\w}{\P'}{\P}$ and $\wellformedok{\P}{\G}$  then $\wellformedok{\P'}{\G
             & = \deno{\ewrel{\P'}{\w_1}{\G', x:A}{\G}}
         \end{align*}
         
-        \case{Extend}
+        \case{\textend}
         Then $\w_1 = \w_1'\x$
         
         \begin{equation}
-            \ntreeruleII{Extend}{\ewrel{\P}{\w_1'}{\G'}{\G}}{ A\subtypep B}{\ewrel{\P}{\w_1\x}{\G',x:A}{\G, x:B}}
+            \ntreeruleII{\textend}{\ewrel{\P}{\w_1'}{\G'}{\G}}{ A\subtypep B}{\ewrel{\P}{\w_1\x}{\G',x:A}{\G, x:B}}
         \end{equation}
         
         So $\w_1 = \w_1'\times\deno{A\subtypep B}$
@@ -2344,10 +2339,10 @@ If $\wrel{\w}{\P'}{\P}$ and $\wellformedok{\P}{\G}$  then $\wellformedok{\P'}{\G
         This is proved by induction over the derivation of $\etyperelation{\P}{\G}{v}{A}$.
         We shall use $\si$ to denote $\deno{\etyperelation{\P}{\G'}{\si}{\G}}$ where it is clear from the context.
         
-        \case{Var}
+        \case{\vvar}
         By inversion, $\G = \G'', x:A$
         \begin{equation}
-            \ntreeruleI{Var}{\wellformedok{\P}{\G}}{\etyperelation{\P}{\G'', x:A}{x}{A}}
+            \ntreeruleI{\vvar}{\wellformedok{\P}{\G}}{\etyperelation{\P}{\G'', x:A}{x}{A}}
         \end{equation}
         By inversion, $\si = \si', x\setto v$ and $\etyperelation{\P}{\G'}{v}{A}$.
         
@@ -2363,12 +2358,12 @@ If $\wrel{\w}{\P'}{\P}$ and $\wellformedok{\P}{\G}$  then $\wellformedok{\P'}{\G
         \end{align*}
         
         
-        \case{Weaken}
+        \case{\vweaken}
         By inversion, $\G = \G', y:B$ and $\si = \si', y\setto v$
         and we have $\D_1$ deriving:
         
         \begin{equation}
-            \ntreeruleI{Weaken}{\treeruleI{\D_1}{\etyperelation{\P}{\G''}{x}{A}}}{\etyperelation{\P}{\G'',y: B}{x}{A}}
+            \ntreeruleI{\vweaken}{\treeruleI{\D_1}{\etyperelation{\P}{\G''}{x}{A}}}{\etyperelation{\P}{\G'',y: B}{x}{A}}
         \end{equation}
         
         Also by inversion of the wellformedness of $\etyperelation{\P}{\G'}{\si}{\G}$, we have $\etyperelation{\P}{\G'}{\si'}{\G''}$ and 
@@ -2394,7 +2389,7 @@ If $\wrel{\w}{\P'}{\P}$ and $\wellformedok{\P}{\G}$  then $\wellformedok{\P'}{\G
                 & = \D\after\si\qt{By defintion.}
         \end{align*}
         
-        \case{Constants}
+        \case{\vconst}
         The logic for all constant terms ($\t,\f,\u,\const{A}$) is the same.
         Let
         \begin{equation}
@@ -2407,18 +2402,18 @@ If $\wrel{\w}{\P'}{\P}$ and $\wellformedok{\P}{\G}$  then $\wellformedok{\P'}{\G
         \end{align*}
         
         
-        \case{Fn}
+        \case{\vfun}
         
         By inversion, we have $\D_1$ such that
         \begin{equation}
-            \D = \ntreeruleI{Fn}{
+            \D = \ntreeruleI{\vfun}{
                 \treeruleI{\D_1}{\etyperelation{\P}{\G, x:A}{v}{B}}
             }{\etyperelation{\P}{\G}{\lam{x}{A}{v}}{\ab}}
         \end{equation}
         
         By induction of $\D_1$ we have $\D_1'$ such that
         \begin{equation}
-            \D' = \ntreeruleI{Fn}{
+            \D' = \ntreeruleI{\vfun}{
                 \treeruleI{\D_1'}{\etyperelation{\P}{\G', x:A}{(v\ssi)}{B}}
             }{\etyperelation{\P}{\G}{(\lam{x}{A}{v})\ssi}{\ab}}
         \end{equation}
@@ -2435,17 +2430,17 @@ If $\wrel{\w}{\P'}{\P}$ and $\wellformedok{\P}{\G}$  then $\wellformedok{\P'}{\G
                 & = \cur{\D_1}\after\si\qt{By the exponential property (Uniqueness)}\\
                 &= \D\after\si\qt{By Definition}\\
         \end{align*}
-        \case{Subtype}
+        \case{\vsubtype}
         By inversion, there exists derivation $\D_1$ such that:
         
         \begin{equation}
-            \D = \ntreeruleII{Subtype}{\treeruleI{\D_1}{\etyperelation{\P}{\G}{v}{A}}}{ A\subtypep B}{\etyperelation{\P}{\G}{v}{B}}
+            \D = \ntreeruleII{\vsubtype}{\treeruleI{\D_1}{\etyperelation{\P}{\G}{v}{A}}}{ A\subtypep B}{\etyperelation{\P}{\G}{v}{B}}
         \end{equation}
         
         By induction on $\D_1$, we find $\D_1'$ such that $\D_1' = \D_1\after\si$ and:
         
         \begin{equation}
-            \D' = \ntreeruleII{Subtype}{\treeruleI{\D_1'}{\etyperelation{\P}{\G'}{v\ssi}{A}}}{ A\subtypep B}{\etyperelation{\P}{\G'}{v\ssi}{B}}
+            \D' = \ntreeruleII{\vsubtype}{\treeruleI{\D_1'}{\etyperelation{\P}{\G'}{v\ssi}{A}}}{ A\subtypep B}{\etyperelation{\P}{\G'}{v\ssi}{B}}
         \end{equation}
         
         Hence,
@@ -2456,17 +2451,17 @@ If $\wrel{\w}{\P'}{\P}$ and $\wellformedok{\P}{\G}$  then $\wellformedok{\P'}{\G
                 &= \D\after\si\qt{By definition}\\
         \end{align*}
         
-        \case{Return}
+        \case{\vreturn}
         
         By inversion, we have $\D_1$ such that:
         \begin{equation}
-            \D = \ntreeruleI{Return}{\treeruleI{\D_1}{\etyperelation{\P}{\G}{v}{A}}}{\etyperelation{\P}{\G}{\return{v}}{\moa}}
+            \D = \ntreeruleI{\vreturn}{\treeruleI{\D_1}{\etyperelation{\P}{\G}{v}{A}}}{\etyperelation{\P}{\G}{\return{v}}{\moa}}
         \end{equation}
         
         By induction on $\D_1$, we find $\D_1'$ such that $\D_1' = \D_1\after\si$ and:
         
         \begin{equation}
-            \D' = \ntreeruleI{Return}{\treeruleI{\D_1'}{\etyperelation{\P}{\G'}{v\ssi}{A}}}{\etyperelation{\P}{\G'}{(\return{v})\ssi}{\moa}}
+            \D' = \ntreeruleI{\vreturn}{\treeruleI{\D_1'}{\etyperelation{\P}{\G'}{v\ssi}{A}}}{\etyperelation{\P}{\G'}{(\return{v})\ssi}{\moa}}
         \end{equation}
         
         Hence,
@@ -2476,10 +2471,10 @@ If $\wrel{\w}{\P'}{\P}$ and $\wellformedok{\P}{\G}$  then $\wellformedok{\P'}{\G
             & = \point{A}\after\D_1\after\si\qt{By induction}\\
             & = \D\after\si\qt{By Definition}\\
         \end{align*}
-        \case{Apply}
+        \case{\vapply}
         By inversion, we find $\D_1, \D_2$ such that
         \begin{equation}
-            \D = \ntreeruleII{Apply}{\treeruleI{\D_1}{\etyperelation{\P}{\G}{v_1}{\ab}}}{\treeruleI{\D_2}{\etyperelation{\P}{\G}{v_2}{A}}}{\etyperelation{\P}{\G}{\apply{v_1}{v_2}}{B}}
+            \D = \ntreeruleII{\vapply}{\treeruleI{\D_1}{\etyperelation{\P}{\G}{v_1}{\ab}}}{\treeruleI{\D_2}{\etyperelation{\P}{\G}{v_2}{A}}}{\etyperelation{\P}{\G}{\apply{v_1}{v_2}}{B}}
         \end{equation}
         
         By induction we find $\D_1', \D_2'$ such that 
@@ -2490,7 +2485,7 @@ If $\wrel{\w}{\P'}{\P}$ and $\wellformedok{\P}{\G}$  then $\wellformedok{\P'}{\G
         
         And
         \begin{equation}
-            \D' = \ntreeruleII{Apply}{\treeruleI{\D_1'}{\etyperelation{\P}{\G'}{v_1\ssi}{\ab}}}{\treeruleI{\D_2'}{\etyperelation{\P}{\G'}{v_2\ssi}{A}}}{\etyperelation{\P}{\G'}{(\apply{v_1}{v_2})\ssi}{B}}
+            \D' = \ntreeruleII{\vapply}{\treeruleI{\D_1'}{\etyperelation{\P}{\G'}{v_1\ssi}{\ab}}}{\treeruleI{\D_2'}{\etyperelation{\P}{\G'}{v_2\ssi}{A}}}{\etyperelation{\P}{\G'}{(\apply{v_1}{v_2})\ssi}{B}}
         \end{equation}
         
         Hence
@@ -2501,12 +2496,12 @@ If $\wrel{\w}{\P'}{\P}$ and $\wellformedok{\P}{\G}$  then $\wellformedok{\P'}{\G
                 & = \D\after\si\qt{By Definition}\\
         \end{align*}
         
-        \case{If}
+        \case{\vif}
         
         
         By inversion, we find $\D_1, \D_2, \D_3$ such that
         \begin{equation}
-            \D = \ntreeruleIII{If}{\treeruleI{\D_1}{\etyperelation{\P}{\G}{v}{\B}}}{\treeruleI{\D_2}{\etyperelation{\P}{\G}{v_1}{A}}}{\treeruleI{\D_3}{\etyperelation{\P}{\G}{v_2}{A}}}{\etyperelation{\P}{\G}{\pifthenelse{A}{v}{v_1}{v_2}}{A}}
+            \D = \ntreeruleIII{\vif}{\treeruleI{\D_1}{\etyperelation{\P}{\G}{v}{\B}}}{\treeruleI{\D_2}{\etyperelation{\P}{\G}{v_1}{A}}}{\treeruleI{\D_3}{\etyperelation{\P}{\G}{v_2}{A}}}{\etyperelation{\P}{\G}{\pifthenelse{A}{v}{v_1}{v_2}}{A}}
         \end{equation}
         
         By induction we find $\D_1', \D_2', \D_3'$ such that 
@@ -2518,7 +2513,7 @@ If $\wrel{\w}{\P'}{\P}$ and $\wellformedok{\P}{\G}$  then $\wellformedok{\P'}{\G
         
         And
         \begin{equation}
-            \D' = \ntreeruleIII{If}{\treeruleI{\D_1'}{\etyperelation{\P}{\G'}{v\ssi}{\B}}}{\treeruleI{\D_2'}{\etyperelation{\P}{\G'}{v_1\ssi}{A}}}{\treeruleI{\D_3'}{\etyperelation{\P}{\G'}{v_2\ssi}{A}}}{\etyperelation{\P}{\G'}{(\pifthenelse{A}{v}{v_1}{v_2})\ssi}{A}}
+            \D' = \ntreeruleIII{\vif}{\treeruleI{\D_1'}{\etyperelation{\P}{\G'}{v\ssi}{\B}}}{\treeruleI{\D_2'}{\etyperelation{\P}{\G'}{v_1\ssi}{A}}}{\treeruleI{\D_3'}{\etyperelation{\P}{\G'}{v_2\ssi}{A}}}{\etyperelation{\P}{\G'}{(\pifthenelse{A}{v}{v_1}{v_2})\ssi}{A}}
         \end{equation}
         
         Since $\si: \G' \rightarrow \G$, let $(\tea)^{\si}: \tea^{\G}\rightarrow\tea^{\G'}$ be as defined in ExSh 3 (\footnote{https://www.cl.cam.ac.uk/teaching/1819/L108/exercises/L108-exercise-sheet-3.pdf})
@@ -2551,12 +2546,12 @@ If $\wrel{\w}{\P'}{\P}$ and $\wellformedok{\P}{\G}$  then $\wellformedok{\P'}{\G
         }}
         
         
-        \case{Bind}
+        \case{\vbind}
         
         By inversion, we have $\D_1, \D_2$ such that:
         
         \begin{equation}
-            \D = \ntreeruleII{Bind}{
+            \D = \ntreeruleII{\vbind}{
                 \treeruleI{\D_1}{\etyperelation{\P}{\G}{v_1}{A}}
                 }{
                 \treeruleI{\D_2}{\etyperelation{\P}{\G, x:A }{v_1}{B}}
@@ -2587,7 +2582,7 @@ If $\wrel{\w}{\P'}{\P}$ and $\wellformedok{\P}{\G}$  then $\wellformedok{\P'}{\G
         And:
         
         \begin{equation}
-            \D' = \ntreeruleII{Bind}{
+            \D' = \ntreeruleII{\vbind}{
                 \treeruleI{\D_1'}{\etyperelation{\P}{\G'}{v_1\ssi}{A}}
                 }{
                 \treeruleI{\D_2'}{\etyperelation{\P}{\G', x:A }{v_1\ssi}{B}}
@@ -2608,18 +2603,18 @@ If $\wrel{\w}{\P'}{\P}$ and $\wellformedok{\P}{\G}$  then $\wellformedok{\P'}{\G
         \end{align*}
         }}
         
-        \case{Effect-Gen}
+        \case{\vgen}
         
         By inversion, we have $\D_1$ such that
         
         \begin{equation}
-            \D = \ntreeruleI{Effect-Gen}{\treeruleI{\D_1}{\etyperelation{\P,\a}{\G}{v}{A}}}{\gpetyperelation{\elam{\a}{v}}{\all{\e}{A}}}
+            \D = \ntreeruleI{\vgen}{\treeruleI{\D_1}{\etyperelation{\P,\a}{\G}{v}{A}}}{\gpetyperelation{\elam{\a}{v}}{\all{\e}{A}}}
         \end{equation}
         
         By induction, we derive $\D_1'$ such that
         
         \begin{equation}
-            \D' = \ntreeruleI{Effect-Gen}{\treeruleI{\D_1'}{\etyperelation{\P,\a}{\G'}{v\ssi}{A}}}{\etyperelation{\P}{\G'}{(\elam{\a}{v})\ssi}{\all{\e}{A}}}
+            \D' = \ntreeruleI{\vgen}{\treeruleI{\D_1'}{\etyperelation{\P,\a}{\G'}{v\ssi}{A}}}{\etyperelation{\P}{\G'}{(\elam{\a}{v})\ssi}{\all{\e}{A}}}
         \end{equation}
         
         Where 
@@ -2636,16 +2631,16 @@ If $\wrel{\w}{\P'}{\P}$ and $\wellformedok{\P}{\G}$  then $\wellformedok{\P'}{\G
             & = \D'
         \end{align*}
         
-        \case{Effect-Spec}
+        \case{\vspec}
         By inversion, we derive $\D_1$ such that
         \begin{equation}
-            \D = \ntreeruleII{Effect-Spec}{\treeruleI{\D_1}{\etyperelation{\P}{\G}{v}{\all{\a}{A}}}}{\wellformed{\P}{\e}}{\etyperelation{\P}{\G}{\eapp{v}{\e}}{A\ssub{\a}{\e}}}
+            \D = \ntreeruleII{\vspec}{\treeruleI{\D_1}{\etyperelation{\P}{\G}{v}{\all{\a}{A}}}}{\wellformed{\P}{\e}}{\etyperelation{\P}{\G}{\eapp{v}{\e}}{A\ssub{\a}{\e}}}
         \end{equation}
         
         By induction, we derive $\D_1'$ such that
         
         \begin{equation}
-            \D' = \ntreeruleII{Effect-Spec}{\treeruleI{\D_1'}{\etyperelation{\P}{\G'}{v\ssi}{\all{\a}{A}}}}{\wellformed{\P}{\e}}{\etyperelation{\P}{\G'}{(\eapp{v}{\e})\ssi}{A\ssub{\a}{\e}}}
+            \D' = \ntreeruleII{\vspec}{\treeruleI{\D_1'}{\etyperelation{\P}{\G'}{v\ssi}{\all{\a}{A}}}}{\wellformed{\P}{\e}}{\etyperelation{\P}{\G'}{(\eapp{v}{\e})\ssi}{A\ssub{\a}{\e}}}
         \end{equation}
         
         Where 
@@ -2680,7 +2675,7 @@ If $\wrel{\w}{\P'}{\P}$ and $\wellformedok{\P}{\G}$  then $\wellformedok{\P'}{\G
         
         We induct over the structure of typing derivations of $\gpetyperelation{v}{A}$, assuming $\ewrel{\P}{\w}{\G'}{\G}$ holds. In each case, we construct the new derivation $\D'$ from the derivation $\D$ giving $\gpetyperelation{v}{A}$ and show that $\D\after\deno{\ewrel{\P}{\w}{\G'}{\G}} = \D'$
         
-            \case{Var and Weaken}
+            \case{\vvar and \vweaken}
                 We case split on the weakening $\w$.
                 \subcase{$\w = \i$}
                 Then $\G' = \G$, and so $\etyperelation{\P}{\G'}{x}{A}$ holds and the derivation $\D'$ is the same as $\D$
@@ -2696,7 +2691,7 @@ If $\wrel{\w}{\P'}{\P}$ and $\wellformedok{\P}{\G}$  then $\wellformedok{\P'}{\G
                 
                 , and hence by the weaken rule, we have 
                 \begin{equation}
-                    \ntreeruleI{Weaken}{\etyperelation{\P}{\G''}{x}{A}}{\etyperelation{\P}{\G'', x':A' }{x}{A}}
+                    \ntreeruleI{\vweaken}{\etyperelation{\P}{\G''}{x}{A}}{\etyperelation{\P}{\G'', x':A' }{x}{A}}
                 \end{equation}
         
                 This preserves denotations:
@@ -2721,8 +2716,8 @@ If $\wrel{\w}{\P'}{\P}$ and $\wellformedok{\P}{\G}$  then $\wellformedok{\P'}{\G
                 Then we derive the new derivation, $\D'$ as so:
         
                 \begin{equation}
-                    \ntreeruleII{Subtype}{
-                        \ntreeruleI{Var}{\oke{\P}{\G}}{\etyperelation{\P}{\G''', x: B}{x}{B}}
+                    \ntreeruleII{\vsubtype}{
+                        \ntreeruleI{\vvar}{\oke{\P}{\G}}{\etyperelation{\P}{\G''', x: B}{x}{B}}
                         }{
                         B \subtypep A
                     }{
@@ -2741,7 +2736,7 @@ If $\wrel{\w}{\P'}{\P}$ and $\wellformedok{\P}{\G}$  then $\wellformedok{\P'}{\G
                 \subcase{$x \neq x'$}
                 Then 
                 \begin{equation}
-                    \D = \ntreeruleI{Weaken}{\treeruleI{\D_1}{\etyperelation{\P}{\G''}{x}{A}}}{\gpetyperelation{x}{A}}
+                    \D = \ntreeruleI{\vweaken}{\treeruleI{\D_1}{\etyperelation{\P}{\G''}{x}{A}}}{\gpetyperelation{x}{A}}
                 \end{equation}
         
                 By induction with $\ewrel{\P}{\w}{\G'''}{\G''}$,
@@ -2750,7 +2745,7 @@ If $\wrel{\w}{\P'}{\P}$ and $\wellformedok{\P}{\G}$  then $\wellformedok{\P'}{\G
                 We have the weakened derivation:
         
                 \begin{equation}
-                    \D' = \ntreeruleI{Weaken}{\treeruleI{\D_1'}{\etyperelation{\P}{\G'''}{x}{A}}}{\etyperelation{\P}{\G'}{x}{A}}
+                    \D' = \ntreeruleI{\vweaken}{\treeruleI{\D_1'}{\etyperelation{\P}{\G'''}{x}{A}}}{\etyperelation{\P}{\G'}{x}{A}}
                 \end{equation}
         
                 This preserves denotations:
@@ -2771,11 +2766,11 @@ If $\wrel{\w}{\P'}{\P}$ and $\wellformedok{\P}{\G}$  then $\wellformedok{\P'}{\G
             From this point onwards, since we no-longer case split over the weakening relations, we write the denotation $\deno{\ewrel{\P}{\w}{\G'}{\G'}}$, simply as $\w$.
         
         
-            \case{Constant}
+            \case{\vconst}
             The constant typing rules, $\u$, $\t$, $\f$, $\const{A}$, all proceed by the same logic. Hence I shall only prove the theorems for the case $\const{A}$.
         
             \begin{equation}
-                \ntreeruleI{Const}{\wellformedok{\P}{\G}}{\gpetyperelation{\const{A}}{A}}
+                \ntreeruleI{\vconst}{\wellformedok{\P}{\G}}{\gpetyperelation{\const{A}}{A}}
             \end{equation}
         
             By inversion, we have $\wellformedok{\P}{\G}$, so we have $\wellformedok{\P}{\G'}$.
@@ -2783,7 +2778,7 @@ If $\wrel{\w}{\P'}{\P}$ and $\wellformedok{\P}{\G}$  then $\wellformedok{\P'}{\G
             Hence
         
             \begin{equation}
-                \ntreeruleI{Const}{\wellformedok{\P}{\G'}}{\etyperelation{\P}{\G'}{\const{A}}{A}}
+                \ntreeruleI{\vconst}{\wellformedok{\P}{\G'}}{\etyperelation{\P}{\G'}{\const{A}}{A}}
             \end{equation}
             Holds.
         
@@ -2797,11 +2792,11 @@ If $\wrel{\w}{\P'}{\P}$ and $\wellformedok{\P}{\G}$  then $\wellformedok{\P'}{\G
             \end{align*}
         
         
-            \case{Fn}
+            \case{\vfun}
             By inversion, we have a derivation $\D_1$ giving
         
             \begin{equation}
-                \D = \ntreeruleI{Fn}{
+                \D = \ntreeruleI{\vfun}{
                     \treeruleI{\D_1}{\etyperelation{\P}{\gax}{v}{B}}
                 }{\gpetyperelation{\lam{x}{A}{v}}{\ab}}
             \end{equation}
@@ -2815,7 +2810,7 @@ If $\wrel{\w}{\P'}{\P}$ and $\wellformedok{\P}{\G}$  then $\wellformedok{\P'}{\G
             Hence, by induction, using $\ewrel{\P}{\w\x}{(\G,x:  A)}{(\gax)}$, we derive $\D_1'$:
         
             \begin{equation}
-                \D' = \ntreeruleI{Fn}{
+                \D' = \ntreeruleI{\vfun}{
                     \treeruleI{\D_1'}{\etyperelation{\P}{\G',x: A}{v}{B}}
                 }{\etyperelation{\P}{\G',x: A}{\lam{x}{A}{v}}{\ab}}
             \end{equation}
@@ -2831,10 +2826,10 @@ If $\wrel{\w}{\P'}{\P}$ and $\wellformedok{\P}{\G}$  then $\wellformedok{\P'}{\G
             \end{align*}
         
         
-            \case{Subtyping}
+            \case{\vsubtype}
         
             \begin{equation}
-                \ntreeruleII{Subtype}{\gpetyperelation{v}{A}}{ A\subtypep B}{\gpetyperelation{v}{B}}
+                \ntreeruleII{\vsubtype}{\gpetyperelation{v}{A}}{ A\subtypep B}{\gpetyperelation{v}{B}}
             \end{equation}
         
             by inversion, we have a derivation $\D_1$
@@ -2844,7 +2839,7 @@ If $\wrel{\w}{\P'}{\P}$ and $\wellformedok{\P}{\G}$  then $\wellformedok{\P'}{\G
         
             So by induction, we have a derivation $\D_1'$ such that:
             \begin{equation}
-                \ntreeruleII{Subtype}{\treeruleI{\D_1'}{\etyperelation{\P}{\G'}{v}{a}}}{ A \subtypep B}{\etyperelation{\P}{\G'}{v}{B}}
+                \ntreeruleII{\vsubtype}{\treeruleI{\D_1'}{\etyperelation{\P}{\G'}{v}{a}}}{ A \subtypep B}{\etyperelation{\P}{\G'}{v}{B}}
             \end{equation}
         
             This preserves denotations:
@@ -2855,15 +2850,15 @@ If $\wrel{\w}{\P'}{\P}$ and $\wellformedok{\P}{\G}$  then $\wellformedok{\P'}{\G
                 & = \D\after\w \qt{By Definition}\\
             \end{align*}
         
-            \case{Return}
+            \case{\vreturn}
             We have the Subderivation $\D_1$ such that
             \begin{equation}
-                \D = \ntreeruleI{Return}{\treeruleI{\D_1}{\gpetyperelation{v}{A}}}{\gpetyperelation{\return{v}}{\moa}}
+                \D = \ntreeruleI{\vreturn}{\treeruleI{\D_1}{\gpetyperelation{v}{A}}}{\gpetyperelation{\return{v}}{\moa}}
             \end{equation}
         
             Hence, by induction, with $\ewrel{\P}{\w}{\G'}{\G}$, we find the derivation $\D_1'$ such that:
             \begin{equation}
-                \D' = \ntreeruleI{Return}{\treeruleI{\D_1'}{\etyperelation{\P}{\G'}{v}{A}}}{\etyperelation{\P}{\G'}{\return{v}}{\moa}}
+                \D' = \ntreeruleI{\vreturn}{\treeruleI{\D_1'}{\etyperelation{\P}{\G'}{v}{A}}}{\etyperelation{\P}{\G'}{\return{v}}{\moa}}
             \end{equation}
         
             This preserves denotations:
@@ -2874,12 +2869,12 @@ If $\wrel{\w}{\P'}{\P}$ and $\wellformedok{\P}{\G}$  then $\wellformedok{\P'}{\G
                     & = \D\after\w\qt{By Definition}
             \end{align*}
         
-            \case{Apply}
+            \case{\vapply}
                 By inversion, we have derivations $\D_1$, $\D_2$ such that
         
                 \begin{equation}
                     \D = 
-                    \ntreeruleII{Apply}{
+                    \ntreeruleII{\vapply}{
                         \treeruleI{\D_1}{\gpetyperelation{v_1}{\ab}}
                         }{
                         \treeruleI{\D_2}{\gpetyperelation{v_2}{A}}
@@ -2893,7 +2888,7 @@ If $\wrel{\w}{\P'}{\P}$ and $\wellformedok{\P}{\G}$  then $\wellformedok{\P'}{\G
                 
                 \begin{equation}
                     \D' = 
-                    \ntreeruleII{Apply}{
+                    \ntreeruleII{\vapply}{
                         \treeruleI{\D_1'}{\etyperelation{\P}{\G'}{v_1}{\ab}}
                         }{
                         \treeruleI{\D_2'}{\etyperelation{\P}{\G'}{v_2}{A}}
@@ -2910,12 +2905,12 @@ If $\wrel{\w}{\P'}{\P}$ and $\wellformedok{\P}{\G}$  then $\wellformedok{\P'}{\G
                     &= \app\after\pr{\D_1}{\D_2}\after\w\\
                     &= \D\after\w\qt{By Definition}
                 \end{align*}
-            \case{If}
+            \case{\vif}
             By inversion, we have the Subderivations $\D_1,\D_2,\D_3$, such that:
         
         
             \begin{equation}
-                \D = \ntreeruleIII{If}{
+                \D = \ntreeruleIII{\vif}{
                     \treeruleI{\D_1}{\etyperelation{\P}{\G}{v}{\B}}
                     }{
                     \treeruleI{\D_2}{\etyperelation{\P}{\G}{v_1}{A}}
@@ -2929,7 +2924,7 @@ If $\wrel{\w}{\P'}{\P}$ and $\wellformedok{\P}{\G}$  then $\wellformedok{\P'}{\G
             By induction, this gives us the Subderivations $\D_1', \D_2', \D_3'$ such that
         
             \begin{equation}
-                \D' = \ntreeruleIII{If}{
+                \D' = \ntreeruleIII{\vif}{
                     \treeruleI{\D_1'}{\etyperelation{\P}{\G'}{v}{\B}}
                     }{
                     \treeruleI{\D_2'}{\etyperelation{\P}{\G'}{v_1}{A}}
@@ -2977,12 +2972,12 @@ If $\wrel{\w}{\P'}{\P}$ and $\wellformedok{\P}{\G}$  then $\wellformedok{\P'}{\G
             \end{align*}
             }}
         
-            \case{Bind}
+            \case{\vbind}
             By inversion, we have derivations $\D_1, \D_2$ such that:
         
         
             \begin{equation}
-                \D = \ntreeruleII{Bind}{
+                \D = \ntreeruleII{\vbind}{
                     \treeruleI{\D_1}{\etyperelation{\P}{\G}{v_1}{\M{\E_1}{A}}}
                     }{
                     \treeruleI{\D_2}{\etyperelation{\P}{\G,x: A}{v_2}{\M{\e_2}{B}}}
@@ -2994,7 +2989,7 @@ If $\wrel{\w}{\P'}{\P}$ and $\wellformedok{\P}{\G}$  then $\wellformedok{\P'}{\G
             If $\ewrel{\P}{\w}{\G'}{\G}$ then $\ewrel{\P}{\w\x}{\G',x:A}{\gax}$, so by induction, we can derive $\D_1'$, $\D_2'$ such that:
         
             \begin{equation}
-                \D' = \ntreeruleII{Bind}{
+                \D' = \ntreeruleII{\vbind}{
                     \treeruleI{\D_1'}{\etyperelation{\P}{\G'}{v_1}{\M{\e_1}{A}}}
                     }{
                     \treeruleI{\D_2'}{\etyperelation{\P}{\G',x: A}{v_2}{\M{\e_2}{B}}}
@@ -3015,18 +3010,18 @@ If $\wrel{\w}{\P'}{\P}$ and $\wellformedok{\P}{\G}$  then $\wellformedok{\P'}{\G
         
         
         
-            \case{Effect-Gen}
+            \case{\vgen}
         
             By inversion, we have $\D_1$ such that
             
             \begin{equation}
-                \D = \ntreeruleI{Effect-Gen}{\treeruleI{\D_1}{\etyperelation{\P,\a}{\G}{v}{A}}}{\gpetyperelation{\elam{\a}{v}}{\all{\e}{A}}}
+                \D = \ntreeruleI{\vgen}{\treeruleI{\D_1}{\etyperelation{\P,\a}{\G}{v}{A}}}{\gpetyperelation{\elam{\a}{v}}{\all{\e}{A}}}
             \end{equation}
             
             By induction, we derive $\D_1'$ such that
             
             \begin{equation}
-                \D' = \ntreeruleI{Effect-Gen}{\treeruleI{\D_1'}{\etyperelation{\P,\a}{\G'}{v}{A}}}{\etyperelation{\P}{\G'}{(\elam{\a}{v})}{\all{\e}{A}}}
+                \D' = \ntreeruleI{\vgen}{\treeruleI{\D_1'}{\etyperelation{\P,\a}{\G'}{v}{A}}}{\etyperelation{\P}{\G'}{(\elam{\a}{v})}{\all{\e}{A}}}
             \end{equation}
             
             Where 
@@ -3043,16 +3038,16 @@ If $\wrel{\w}{\P'}{\P}$ and $\wellformedok{\P}{\G}$  then $\wellformedok{\P'}{\G
                 & = \D'
             \end{align*}
             
-            \case{Effect-Spec}
+            \case{\vspec}
             By inversion, we derive $\D_1$ such that
             \begin{equation}
-                \D = \ntreeruleII{Effect-Spec}{\treeruleI{\D_1}{\etyperelation{\P}{\G}{v}{\all{\a}{A}}}}{\wellformed{\P}{\e}}{\etyperelation{\P}{\G}{\eapp{v}{\e}}{A\ssub{\a}{\e}}}
+                \D = \ntreeruleII{\vspec}{\treeruleI{\D_1}{\etyperelation{\P}{\G}{v}{\all{\a}{A}}}}{\wellformed{\P}{\e}}{\etyperelation{\P}{\G}{\eapp{v}{\e}}{A\ssub{\a}{\e}}}
             \end{equation}
             
             By induction, we derive $\D_1'$ such that
             
             \begin{equation}
-                \D' = \ntreeruleII{Effect-Spec}{\treeruleI{\D_1'}{\etyperelation{\P}{\G'}{v}{\all{\a}{A}}}}{\wellformed{\P}{\e}}{\etyperelation{\P}{\G'}{\eapp{v}{\e}}{A\ssub{\a}{\e}}}
+                \D' = \ntreeruleII{\vspec}{\treeruleI{\D_1'}{\etyperelation{\P}{\G'}{v}{\all{\a}{A}}}}{\wellformed{\P}{\e}}{\etyperelation{\P}{\G'}{\eapp{v}{\e}}{A\ssub{\a}{\e}}}
             \end{equation}
             
             Where 
@@ -3075,7 +3070,7 @@ If $\wrel{\w}{\P'}{\P}$ and $\wellformedok{\P}{\G}$  then $\wellformedok{\P'}{\G
 \chapter{Unique Denotation Theorem}
 
 \section{Reduced Type Derivation}
-    A reduced type derivation is one where subtype and subeffect rules must, and may only, occur at the root or directly above an \textbf{if}, or \textbf{apply} rule.
+    A reduced type derivation is one where subtype and subeffect rules must, and may only, occur at the root or directly above an \textit{(\vif)}, or \textbf{(\vapply)} rule.
     
     In this section, I shall prove that there is at most one reduced derivation of $\gpetyperelation{v}{A}$. Secondly, I shall present a function for generating reduced derivations from arbitrary typing derivations, in a way that does not change the denotations. These imply that all typing derivations of a type-relation have the same denotation.
     
@@ -3097,7 +3092,7 @@ If $\wrel{\w}{\P'}{\P}$ and $\wellformedok{\P}{\G}$  then $\wellformedok{\P'}{\G
             Then the unique reduced derivation of $\gpetyperelation{x}{A}$ is, if $A' \subtypep A$, as below:
             
             \begin{equation}
-                \ntreeruleII{Subtype}{\ntreeruleI{Var}{\wellformedok{\P}{\G', x: A'}}{\etyperelation{\P}{\G,x: A'}{x}{A'}}}{ A' \subtypep A}{\etyperelation{\P}{\G', x: A'}{x}{A}}
+                \ntreeruleII{\vsubtype}{\ntreeruleI{\vvar}{\wellformedok{\P}{\G', x: A'}}{\etyperelation{\P}{\G,x: A'}{x}{A'}}}{ A' \subtypep A}{\etyperelation{\P}{\G', x: A'}{x}{A}}
             \end{equation}
             
             \subcase{$\G = \G', y: B$} with $y \neq x$.
@@ -3114,31 +3109,31 @@ If $\wrel{\w}{\P'}{\P}$ and $\wellformedok{\P}{\G}$  then $\wellformedok{\P'}{\G
             
             
             \begin{equation}
-                \ntreeruleII{Subtype}{
-                    \ntreeruleI{Weaken}{
+                \ntreeruleII{\vsubtype}{
+                    \ntreeruleI{\vweaken}{
                         \treeruleI{\D}{\etyperelation{\P}{\G, x: A'}{x}{A'}}
                     }{\gpetyperelation{x}{A'}}   
                 }{ A' \subtypep A
                 }{\gpetyperelation{x}{A}}
             \end{equation}
             
-            \case{Constants}
+            \case{\vconst}
             For each of the constants, ($\const{A}$, $\t$, $\f$, $\u$), there is exactly one possible derivation for $\etyperelation{\P}{\G}{c}{A}$ for a given A. I shall give examples using the case $\const{A}$
             
             
             $$
-                \ntreeruleII{Subtype}{\truleconst}{ A \subtypep B}{\gpetyperelation{\const{A}}{B}}
+                \ntreeruleII{\vsubtype}{\truleconst}{ A \subtypep B}{\gpetyperelation{\const{A}}{B}}
             $$
             
             If $A = B$, then the subtype relation is the identity subtype ($A \subtypep A$).
             
-            \case{Fn}
+            \case{\vfun}
             The reduced derivation of $\gpetyperelation{\lam{x}{A}{v}}{\fntype{A'}{B'}}$ is:
             
             
             $$
-            \ntreeruleII{Subtype}
-            {\ntreeruleI{Fn}{\treeruleI{\D}{\etyperelation{\P}{\gax}{v}{B}}}
+            \ntreeruleII{\vsubtype}
+            {\ntreeruleI{\vfun}{\treeruleI{\D}{\etyperelation{\P}{\gax}{v}{B}}}
             {
                 \gpetyperelation{\lam{x}{A}{B}}{\ab}}
                 }{
@@ -3150,16 +3145,16 @@ If $\wrel{\w}{\P'}{\P}$ and $\wellformedok{\P}{\G}$  then $\wellformedok{\P'}{\G
             
             Where 
             \begin{equation}
-                \ntreeruleII{Subtype}{\treeruleI{\D}{\etyperelation{\P}{\gax}{v}{B}}}{ B\subtypep B'}{\etyperelation{\P}{\gax}{v}{B'}}
+                \ntreeruleII{\vsubtype}{\treeruleI{\D}{\etyperelation{\P}{\gax}{v}{B}}}{ B\subtypep B'}{\etyperelation{\P}{\gax}{v}{B'}}
             \end{equation}
             is the reduced derivation of $\etyperelation{\P}{\gax}{v}{B}$ if it exists.
             
-            \case{Return}
+            \case{\vreturn}
             The reduced denotation of $\gpetyperelation{\return{v}}{B}$ is 
             $$
-                \ntreeruleII{Subtype}
+                \ntreeruleII{\vsubtype}
                 {
-                    \ntreeruleI{Return}
+                    \ntreeruleI{\vreturn}
                     {\treeruleI{\D}{\gpetyperelation{v}{A}}}
                     {\gpetyperelation{\return{v}}{\moa}}
                     }{
@@ -3170,7 +3165,7 @@ If $\wrel{\w}{\P'}{\P}$ and $\wellformedok{\P}{\G}$  then $\wellformedok{\P'}{\G
             
             Where $$\edeltavrule{\P}{\G}{v}{A}{B}$$ is the reduced derivation of $\gpetyperelation{v}{B}$
             
-            \case{Apply}
+            \case{\vapply}
             If 
             $$
                 \edeltavrule{\P}{\G}{v_1}{\ab}{\fntype{A'}{B'}}
@@ -3185,13 +3180,13 @@ If $\wrel{\w}{\P'}{\P}$ and $\wellformedok{\P}{\G}$  then $\wellformedok{\P'}{\G
             Then we can construct the reduced derivation of $\gpetyperelation{\apply{v_1}{v_2}}{B}$ as
             
             $$
-                \ntreeruleII{Subtype}{
-                    \ntreeruleII{Apply}{
+                \ntreeruleII{\vsubtype}{
+                    \ntreeruleII{\vapply}{
                         \treeruleI{\D}{
                             \gpetyperelation{v_1}{\ab}
                         }
                         }{
-                        \ntreeruleII{Subtype}{
+                        \ntreeruleII{\vsubtype}{
                             \treeruleI{\D'}{
                                 \gpetyperelation{v}{A''}
                             } }{ A'' \subtypep A
@@ -3206,7 +3201,7 @@ If $\wrel{\w}{\P'}{\P}$ and $\wellformedok{\P}{\G}$  then $\wellformedok{\P'}{\G
                     \gpetyperelation{\apply{v_1}{v_2}}{B'}
                 }
             $$
-            \case{If}
+            \case{\vif}
             Let
             
             \begin{equation}
@@ -3226,9 +3221,9 @@ If $\wrel{\w}{\P'}{\P}$ and $\wellformedok{\P}{\G}$  then $\wellformedok{\P'}{\G
             Then the only reduced derivation of $\gpetyperelation{\pifthenelse{A}{v}{v_1}{v_2}}{B}$ is:
             
             \begin{equation}
-                \ntreeruleII{Subtype}{
+                \ntreeruleII{\vsubtype}{
                     \scalebox{.8}{$
-                    \ntreeruleIII{If}{
+                    \ntreeruleIII{\vif}{
                         \scalebox{.5}{$
                             \edeltavrule{\P}{\G}{v}{B'}{\B}
                         $}}{\scalebox{.5}{$
@@ -3241,7 +3236,7 @@ If $\wrel{\w}{\P'}{\P}$ and $\wellformedok{\P}{\G}$  then $\wellformedok{\P'}{\G
                 {\gpetyperelation{\pifthenelse{A}{v}{v_1}{v_2}}{B}}
             \end{equation}
             
-            \case{Bind}
+            \case{\vbind}
             This case makes use of the weakening theorem on term environments. Let the trees in equations \ref{UniqueBindOne}, \ref{UniqueBindTwo} be the respective unique reduced type derivations of the subterms. By weakening, $\ewrel{\P}{\i\x}{(\G, x:A)}{(\G, x: A')}$ so if there's a derivation of $\etyperelation{\P}{(\G, x:A')}{v_2}{B}$, there's also one of $\etyperelation{\P}{\gax}{v_2}{B}$ (equation \ref{UniqueBindThree}). 
 
     \begin{equation}\label{UniqueBindOne}
@@ -3260,8 +3255,8 @@ If $\wrel{\w}{\P'}{\P}$ and $\wellformedok{\P}{\G}$  then $\wellformedok{\P'}{\G
 
     \begin{equation}\label{UniqueBindResult}
         \resizebox{.9\hsize}{!}{
-        \ntreeruleII{Subtype}{
-            \ntreeruleII{Bind}{
+        \ntreeruleII{\vsubtype}{
+            \ntreeruleII{\vbind}{
                 \treeruleI{\D}{\gpetyperelation{v_1}{\M{\e_1}{A}}}
             }{
                 \treeruleI{\D''}{\etyperelation{\P}{\G, x:A}{v_2}{\M{\e_2}{B}}}
@@ -3276,15 +3271,15 @@ If $\wrel{\w}{\P'}{\P}$ and $\wellformedok{\P}{\G}$  then $\wellformedok{\P'}{\G
     }
     \end{equation}
     
-            \case{Effect-Gen}
+            \case{\vgen}
             
             The unique reduced derivation of $\gpetyperelation{\elam{\a}{A}}{\all{\a}{B}}$
             
             is 
             
             \begin{equation}
-                \ntreeruleII{Subtype}{
-                    \ntreeruleI{Effect-Gen}{
+                \ntreeruleII{\vsubtype}{
+                    \ntreeruleI{\vgen}{
                         \treeruleI{\D}{\etyperelation{\P,\a}{\G}{v}{A}}
                     }{
                         \gpetyperelation{\elam{\a}{v}}{\all{\a}{A}}
@@ -3298,7 +3293,7 @@ If $\wrel{\w}{\P'}{\P}$ and $\wellformedok{\P}{\G}$  then $\wellformedok{\P'}{\G
             
             Where
             \begin{eqnarray}
-                \ntreeruleII{Subtype}{
+                \ntreeruleII{\vsubtype}{
                     \treeruleI{\D}{\etyperelation{\P,\a}{\G}{v}{A}}
                     }{
                     A\subtypepa B
@@ -3309,14 +3304,14 @@ If $\wrel{\w}{\P'}{\P}$ and $\wellformedok{\P}{\G}$  then $\wellformedok{\P'}{\G
             
             Is the unique reduced derivation of $\etyperelation{\P,\a}{\G}{v}{B}$
             
-            \case{Effect-Spec}
+            \case{\vspec}
             The unique reduced derivation of $\gpetyperelation{\eapp{v}{\a}}{B'}$
             
             is 
             
             \begin{equation}
-                \ntreeruleII{Subtype}{
-                    \ntreeruleII{Effect-Spec}{
+                \ntreeruleII{\vsubtype}{
+                    \ntreeruleII{\vspec}{
                         \treeruleI{\D}{\gpetyperelation{v}{\all{\a}{A}}}}{\wellformed{\P}{\e}
                     }{\gpetyperelation{\eapp{v}{\e}}{A\ssub{\a}{\e}}}
                     }{            
@@ -3327,8 +3322,8 @@ If $\wrel{\w}{\P'}{\P}$ and $\wellformedok{\P}{\G}$  then $\wellformedok{\P'}{\G
             Where $B\ssub{\a}{\e}\subtypep B'$
             and
             \begin{equation}
-                \ntreeruleII{Subtype}{
-                    \treeruleI{\D}{\gpetyperelation{v}{\all{\a}{B}}}}{ \ntreeruleI{Quantification}{A\subtypepa B}{\all{\a}{A}\subtypep\all{\a}{B}}
+                \ntreeruleII{\vsubtype}{
+                    \treeruleI{\D}{\gpetyperelation{v}{\all{\a}{B}}}}{ \ntreeruleI{\squant}{A\subtypepa B}{\all{\a}{A}\subtypep\all{\a}{B}}
                 }{\gpetyperelation{v}{\all{\a}{B}}}
             \end{equation}
         \end{proof}
@@ -3348,29 +3343,29 @@ If $\wrel{\w}{\P'}{\P}$ and $\wellformedok{\P}{\G}$  then $\wellformedok{\P'}{\G
         
                     $\reduce(\truleconst) = \truleconst$
         
-                    \case{Var}
+                    \case{\vvar}
                     \begin{equation}
-                        \reduce(\ntreeruleI{Var}{\wellformedok{\P}{\G}}{\etyperelation{\P}{\gax}{x}{A}}) =  \ntreeruleI{Var}{\wellformedok{\P}{\G}}{\etyperelation{\P}{\gax}{x}{A}}
+                        \reduce(\ntreeruleI{\vvar}{\wellformedok{\P}{\G}}{\etyperelation{\P}{\gax}{x}{A}}) =  \ntreeruleI{\vvar}{\wellformedok{\P}{\G}}{\etyperelation{\P}{\gax}{x}{A}}
                     \end{equation}
         
                     Preserves denotation trivially.
         
-                    \case{Weaken}
+                    \case{\vweaken}
                     \subparagraph{$\reduce$ definition}
                     To find:
                     \begin{equation}
-                        \reduce(\ntreeruleI{Weaken}{\treeruleI{\D}{\gpetyperelation{x}{A}}}{\etyperelation{\P}{\gby}{x}{A}})
+                        \reduce(\ntreeruleI{\vweaken}{\treeruleI{\D}{\gpetyperelation{x}{A}}}{\etyperelation{\P}{\gby}{x}{A}})
                     \end{equation}
         
                     Let 
                     \begin{equation}\label{WeakenDeltaReduction}
-                        \ntreeruleII{Subtype}{\treeruleI{\D'}{\gpetyperelation{x}{A}}}{ A'\subtypep A}{\gpetyperelation{x}{A}} = \reduce(\D)
+                        \ntreeruleII{\vsubtype}{\treeruleI{\D'}{\gpetyperelation{x}{A}}}{ A'\subtypep A}{\gpetyperelation{x}{A}} = \reduce(\D)
                     \end{equation}
         
                     In 
                     \begin{equation}
-                        \ntreeruleII{Subtype}{
-                        \ntreeruleI{Weaken}{
+                        \ntreeruleII{\vsubtype}{
+                        \ntreeruleI{\vweaken}{
                             \treeruleI{\D'}{\gpetyperelation{x}{A'}}
                         } {
                             \etyperelation{\P}{\gby}{x}{A'}
@@ -3383,13 +3378,13 @@ If $\wrel{\w}{\P'}{\P}$ and $\wellformedok{\P}{\G}$  then $\wellformedok{\P'}{\G
                     \subparagraph{Preserves Denotation}
                     Using the construction of denotations, we can find the denotation of the original derivation to be:
                     \begin{equation}
-                        \deno{\ntreeruleI{Weaken}{\treeruleI{\D}{\gpetyperelation{x}{A}}}{\etyperelation{\P}{\gby}{x}{A}}} = \D \after \p
+                        \deno{\ntreeruleI{\vweaken}{\treeruleI{\D}{\gpetyperelation{x}{A}}}{\etyperelation{\P}{\gby}{x}{A}}} = \D \after \p
                     \end{equation}
         
                     Similarly, the denotation of the reduced denotation is:
                     \begin{equation}
-                        \deno{\ntreeruleII{Subtype}{
-                            \ntreeruleI{Weaken}{
+                        \deno{\ntreeruleII{\vsubtype}{
+                            \ntreeruleI{\vweaken}{
                                 \treeruleI{\D'}{\gpetyperelation{x}{A'}}
                             } {
                                 \etyperelation{\P}{\gby}{x}{A'}
@@ -3408,12 +3403,12 @@ If $\wrel{\w}{\P'}{\P}$ and $\wellformedok{\P}{\G}$  then $\wellformedok{\P'}{\G
         
                     So the denotations of the un-reduced and reduced derivations are equal.
         
-                    \case{Fn}
+                    \case{\vfun}
                     \subparagraph{$\reduce$ definition}
                         To find:
                     
                         \begin{equation}
-                            \reduce(\ntreeruleI{Fn}{
+                            \reduce(\ntreeruleI{\vfun}{
                                 \treeruleI{\D}{\etyperelation{\P}{\gax}{v}{B}}
                             }{\gpetyperelation{\lam{x}{A}{v}}{\ab}})
                         \end{equation}
@@ -3421,7 +3416,7 @@ If $\wrel{\w}{\P'}{\P}$ and $\wellformedok{\P}{\G}$  then $\wellformedok{\P'}{\G
                         Let 
         
                         \begin{equation}
-                            \ntreeruleII{Subtype}{
+                            \ntreeruleII{\vsubtype}{
                                 \treeruleI{\D'}{\etyperelation{\P}{\gax}{v}{B'}}
                                 B' \subtypep B
                             }{
@@ -3432,8 +3427,8 @@ If $\wrel{\w}{\P'}{\P}$ and $\wellformedok{\P}{\G}$  then $\wellformedok{\P'}{\G
                         In
         
                         \begin{equation}
-                            \ntreeruleII{Subtype}{
-                                \ntreeruleI{Fn}{
+                            \ntreeruleII{\vsubtype}{
+                                \ntreeruleI{\vfun}{
                                     \treeruleI{
                                         \D'
                                     }{
@@ -3465,21 +3460,21 @@ If $\wrel{\w}{\P'}{\P}$ and $\wellformedok{\P}{\G}$  then $\wellformedok{\P'}{\G
                                     & = after \qt{By definition}\\
                         \end{align*}
         
-                    \case{Subtype}
+                    \case{\vsubtype}
                     \subparagraph{$\reduce$ definition}
                     To find:
                     \begin{equation}
-                        \reduce(\ntreeruleII{Subtype}{\treeruleI{\D}{\gpetyperelation{v}{A}}}{ A \subtypep B}{\gpetyperelation{v}{B}})
+                        \reduce(\ntreeruleII{\vsubtype}{\treeruleI{\D}{\gpetyperelation{v}{A}}}{ A \subtypep B}{\gpetyperelation{v}{B}})
                     \end{equation}
         
                     Let 
                     \begin{equation}\label{SubtypeDeltaReduction}
-                        \ntreeruleII{Subtype}{\treeruleI{\D'}{\gpetyperelation{x}{A}}}{ A'\subtypep A}{\gpetyperelation{x}{A}} = \reduce(\D)
+                        \ntreeruleII{\vsubtype}{\treeruleI{\D'}{\gpetyperelation{x}{A}}}{ A'\subtypep A}{\gpetyperelation{x}{A}} = \reduce(\D)
                     \end{equation}
         
                     In 
                     \begin{equation}
-                        \ntreeruleII{Subtype}{
+                        \ntreeruleII{\vsubtype}{
                             \treeruleI{\D'}{\gpetyperelation{v}{A'}}
                         }{
                         A' \subtypep A \subtypep B
@@ -3493,12 +3488,12 @@ If $\wrel{\w}{\P'}{\P}$ and $\wellformedok{\P}{\G}$  then $\wellformedok{\P'}{\G
                             & = \deno{A' \subtypep B} \after \D'\qt{Subtyping relations are unique} \\
                             & = after \\
                         \end{align*}
-                    \case{Return}
+                    \case{\vreturn}
                     \subparagraph{$\reduce$ definition}
                     To find:
                     
                         \begin{equation}
-                            \reduce(\ntreeruleI{Return}{
+                            \reduce(\ntreeruleI{\vreturn}{
                                 \treeruleI{\D}{\gpetyperelation{v}{A}}
                             }{\gpetyperelation{\return{v}}{\moa}})
                         \end{equation}
@@ -3506,7 +3501,7 @@ If $\wrel{\w}{\P'}{\P}$ and $\wellformedok{\P}{\G}$  then $\wellformedok{\P'}{\G
                         Let 
         
                         \begin{equation}
-                            \ntreeruleII{Subtype}{
+                            \ntreeruleII{\vsubtype}{
                                 \treeruleI{\D'}{\gpetyperelation{v}{A'}}
                                 }{
                                 A' \subtypep A
@@ -3518,8 +3513,8 @@ If $\wrel{\w}{\P'}{\P}$ and $\wellformedok{\P}{\G}$  then $\wellformedok{\P'}{\G
                         In
         
                         \begin{equation}
-                            \ntreeruleII{Subtype}{
-                                \ntreeruleI{Return}{
+                            \ntreeruleII{\vsubtype}{
+                                \ntreeruleI{\vreturn}{
                                     \treeruleI{
                                     \D'
                                 }{
@@ -3541,11 +3536,11 @@ If $\wrel{\w}{\P'}{\P}$ and $\wellformedok{\P}{\G}$  then $\wellformedok{\P'}{\G
                             &{}=\db{\1\subeffectp\1}_{M, A} \after \T{\1}{\deno{A'\subtypep A}}\after\point{A'}\after\D'\qt{Since $\deno{\1\subeffectp\1}$ is the identity Nat-Trans }\\
                             &{}=after\qt{By definition}\\
                         \end{align*}
-                    \case{Apply}
+                    \case{\vapply}
                     \subparagraph{$\reduce$ definition}
                     To find:
                     \begin{equation}
-                        \reduce(\ntreeruleII{Apply}{
+                        \reduce(\ntreeruleII{\vapply}{
                             \treeruleI{\D_1}{
                                 \gpetyperelation{v_1}{\ab}
                             }
@@ -3560,14 +3555,14 @@ If $\wrel{\w}{\P'}{\P}$ and $\wellformedok{\P}{\G}$  then $\wellformedok{\P'}{\G
         
                     Let
                     \begin{align*}
-                        \ntreeruleII{Subtype}{
+                        \ntreeruleII{\vsubtype}{
                             \treeruleI{\D'_1}{\gpetyperelation{v_1}{\fntype{A'}{B'}}}
                             }{
                             \fntype{A'}{B'}\subtypep\fntype{A}{B}
                         }{
                             \gpetyperelation{v_1}{\ab}
                         } & = \reduce(\D_1)\\
-                        \ntreeruleII{Subtype}{
+                        \ntreeruleII{\vsubtype}{
                             \treeruleI{\D'_2}{\gpetyperelation{v}{A'}}
                             }{
                             A'\subtypep A
@@ -3579,15 +3574,15 @@ If $\wrel{\w}{\P'}{\P}$ and $\wellformedok{\P}{\G}$  then $\wellformedok{\P'}{\G
                     In
                     \begin{equation}
                         \scalebox{.9}{$
-                        \ntreeruleII{Subtype}{
-                            \ntreeruleII{Apply}{
+                        \ntreeruleII{\vsubtype}{
+                            \ntreeruleII{\vapply}{
                                 \treeruleI{
                                     \D'_1
                                 }{
                                     \gpetyperelation{v_1}{\fntype{A'}{B'}}
                                 }
                             }{
-                                \ntreeruleII{Subtype}{
+                                \ntreeruleII{\vsubtype}{
                                     \treeruleI{\D'_2}{\gpetyperelation{v_2}{A''}}
                                     }{
                                     A'' \subtypep A \subtypep A'
@@ -3629,11 +3624,11 @@ If $\wrel{\w}{\P'}{\P}$ and $\wellformedok{\P}{\G}$  then $\wellformedok{\P'}{\G
                             & = g\after\app\after\pr{\D'_1}{f\after f'\after \D'_2}\\
                             & = after\qt{By defintion}
                         \end{align*}
-                    \case{If}
+                    \case{\vif}
                    
                     \subparagraph{$\reduce$ definition}
                         \begin{align*}
-                            \reduce(&\ntreeruleIII{If}{
+                            \reduce(&\ntreeruleIII{\vif}{
                                 \treeruleI{\D_1}{\gpetyperelation{v}{\B}}
                                 }{
                                 \treeruleI{\D_2}{\gpetyperelation{v_1}{A}}
@@ -3642,7 +3637,7 @@ If $\wrel{\w}{\P'}{\P}$ and $\wellformedok{\P}{\G}$  then $\wellformedok{\P'}{\G
                             }{
                                 \gpetyperelation{\pifthenelse{A}{v}{v_1}{v_2}}{A}
                             }) \\
-                            & = \ntreeruleIII{If}{
+                            & = \ntreeruleIII{\vif}{
                                 \treeruleI{\reduce(\D_1)}{\gpetyperelation{v}{\B}}
                                 }{
                                 \treeruleI{\reduce(\D_2)}{\gpetyperelation{v_1}{A}}
@@ -3657,13 +3652,13 @@ If $\wrel{\w}{\P'}{\P}$ and $\wellformedok{\P}{\G}$  then $\wellformedok{\P'}{\G
                         Since calling $\reduce{}$ on the Subderivations preserves their denotations, this definition trivially preserves the denotation of the derivation.
         
         
-                        \case{Bind}
+                        \case{\vbind}
                         \subparagraph{$\reduce$ definition}
         
                         To find
                         \begin{equation}
                             \reduce(
-                                \ntreeruleII{Bind}{
+                                \ntreeruleII{\vbind}{
                                     \treeruleI{
                                         \D_1
                                     }{
@@ -3683,7 +3678,7 @@ If $\wrel{\w}{\P'}{\P}$ and $\wellformedok{\P}{\G}$  then $\wellformedok{\P'}{\G
         
         
                         Let \begin{equation}
-                            \ntreeruleII{Subtype}{
+                            \ntreeruleII{\vsubtype}{
                                 \treeruleI{\D'_1}{\gpetyperelation{v_1}{\M{\e'_1}{A'}}}
                             }{
                             \subeffecttreep{\e_1'}{A'}{\e_1}{A}
@@ -3695,7 +3690,7 @@ If $\wrel{\w}{\P'}{\P}$ and $\wellformedok{\P}{\G}$  then $\wellformedok{\P'}{\G
                         Since $\ewrel{\P}{(i,\x)}{(\G, x: A')}{(\gax)}$ if $A' \subtypep A$, and by $\D_2 = \etyperelation{\P}{(\gax)}{v_2}{\M{\e_2}{B}}$, there also exists a derivation $\D_3$ of $\etyperelation{\P}{(\G, x: A')}{v_2}{\M{\e_2}{B}}$. $\D_3$ is derived from $\D_2$ simply by inserting a (Subtype) rule below all instances of the (Var) rule.
         
                         Let \begin{equation}
-                            \ntreeruleII{Subtype}{
+                            \ntreeruleII{\vsubtype}{
                                 \treeruleI{\D'_3}{\etyperelation{\P}{\G, x: A'}{v_2}{\M{\e'_2}{B'}}}
                             }{
                             \subeffecttreep{\e_1'}{B'}{\e_2}{B}
@@ -3714,8 +3709,8 @@ If $\wrel{\w}{\P'}{\P}$ and $\wellformedok{\P}{\G}$  then $\wellformedok{\P'}{\G
         
                         \begin{equation}
                             \scalebox{.9}{$
-                            \ntreeruleII{Subtype}{
-                                \ntreeruleII{Bind}{
+                            \ntreeruleII{\vsubtype}{
+                                \ntreeruleII{\vbind}{
                                     \treeruleI{
                                         \D'_1
                                     }{
@@ -3794,31 +3789,31 @@ If $\wrel{\w}{\P'}{\P}$ and $\wellformedok{\P}{\G}$  then $\wellformedok{\P'}{\G
                         \end{align*}
                         }}
 
-                \case{Effect-Gen}
+                \case{\vgen}
                 \subparagraph{$\reduce$ definition}
         
                 
                 To find 
                 \begin{equation}
-                    \reduce(\ntreeruleI{Effect-Gen}{\treeruleI{\D_1}{\etyperelation{\P,\a}{\G}{v}{A}}}{\gpetyperelation{\elam{\a}{v}}{\all{\a}{A}}})
+                    \reduce(\ntreeruleI{\vgen}{\treeruleI{\D_1}{\etyperelation{\P,\a}{\G}{v}{A}}}{\gpetyperelation{\elam{\a}{v}}{\all{\a}{A}}})
                 \end{equation}
         
                 Let
                 \begin{equation}
-                    \ntreeruleII{Subtype}{\treeruleI{\D_1'}{\etyperelation{\P,\a}{\G}{v}{A'}}}{ A'\subtypep A}{\etyperelation{\P,\a}{\G}{v}{A}} = \reduce(\D_1)
+                    \ntreeruleII{\vsubtype}{\treeruleI{\D_1'}{\etyperelation{\P,\a}{\G}{v}{A'}}}{ A'\subtypep A}{\etyperelation{\P,\a}{\G}{v}{A}} = \reduce(\D_1)
                 \end{equation}
         
                 in 
         
                 \begin{equation}
-                    \ntreeruleII{Subtype}{
-                        \ntreeruleI{Effect-Gen}{
+                    \ntreeruleII{\vsubtype}{
+                        \ntreeruleI{\vgen}{
                             \treeruleI{\D_1'}{\etyperelation{\P,\a}{\G}{v}{A'}}
                         }{
                             \gpetyperelation{\elam{\a}{v}}{\all{\a}{A'}}
                         }
                     }{ 
-                    \ntreeruleI{Quantification}{A' \subtypepa}{\all{\a}{A'} \subtypep \all{\a}{A}}
+                    \ntreeruleI{\squant}{A' \subtypepa A}{\all{\a}{A'} \subtypep \all{\a}{A}}
                     }{
                         \gpetyperelation{\elam{\a}{v}}{\all{\a}{A}}
                     }
@@ -3834,22 +3829,22 @@ If $\wrel{\w}{\P'}{\P}$ and $\wellformedok{\P}{\G}$  then $\wellformedok{\P'}{\G
                     & = after\qt{By definition}     
                 \end{align*}
         
-                \case{Effect-Spec}
+                \case{\vspec}
                 \subparagraph{$\reduce$ definition}
         
                 
                 To find 
                 \begin{equation}
-                    \reduce(\ntreeruleII{Effect-Spec}{\treeruleI{\D_1}{\gpetyperelation{v}{\all{\a}{A}}}}{\wellformed{\P}{\e}}{\gpetyperelation{\eapp{v}{\e}}{A\ssub{\a}{\e}}})
+                    \reduce(\ntreeruleII{\vspec}{\treeruleI{\D_1}{\gpetyperelation{v}{\all{\a}{A}}}}{\wellformed{\P}{\e}}{\gpetyperelation{\eapp{v}{\e}}{A\ssub{\a}{\e}}})
                 \end{equation}
         
                 Let
         
                 \begin{eqnarray}
-                    \ntreeruleII{Subtype}{
+                    \ntreeruleII{\vsubtype}{
                         \treeruleI{\D_1'}{\gpetyperelation{v}{\all{\a}{A'}}}
                         }{ 
-                        \ntreeruleI{Quantification}{A'\subtypepa A}{\all{\a}{A'}\subtypep\all{\a}{A}}
+                        \ntreeruleI{\squant}{A'\subtypepa A}{\all{\a}{A'}\subtypep\all{\a}{A}}
                     }{
                         \gpetyperelation{v}{\all{\a}{A}}
                     }= \reduce(\D_1)
@@ -3858,8 +3853,8 @@ If $\wrel{\w}{\P'}{\P}$ and $\wellformedok{\P}{\G}$  then $\wellformedok{\P'}{\G
                 In
         
                 \begin{equation}
-                    \ntreeruleII{Subtype}{
-                        \ntreeruleII{E-app}{
+                    \ntreeruleII{\vsubtype}{
+                        \ntreeruleII{\vspec}{
                             \treeruleI{\D_1'}{\gpetyperelation{v}{\all{\a}{A}}}}{\wellformed{\P}{\e}
                         }{\gpetyperelation{\eapp{v}{\e}}{A\ssub{\a}{\e}}}
                     }{
@@ -3934,69 +3929,69 @@ Reduction-based rules
     \begin{framed}
         \[
             \scalebox{0.8}{$
-            \ntreeruleII{Lambda-Beta}{\etyperelation{\P}{\gax}{v_2}{B}}{\gpetyperelation{v_1}{A}}{\gpeberelation{\apply{(\lam{x}{A}{v_1})}{v_2} }{ v_1\ssub{x}{v_2}}{B}}
+            \ntreeruleII{\eqbeta}{\etyperelation{\P}{\gax}{v_2}{B}}{\gpetyperelation{v_1}{A}}{\gpeberelation{\apply{(\lam{x}{A}{v_1})}{v_2} }{ v_1\ssub{x}{v_2}}{B}}
             \quad
-            \ntreeruleI{Lambda-Eta}{\gpetyperelation{v}{\ab}}{\gpeberelation{\lam{x}{A}{(\apply{v}{x}})}{v}{\ab}}
+            \ntreeruleI{\eqeta}{\gpetyperelation{v}{\ab}}{\gpeberelation{\lam{x}{A}{(\apply{v}{x}})}{v}{\ab}}
             $}
         \]
     
         \[\scalebox{0.8}{$
-            \ntreeruleII{Left Unit}{\gpetyperelation{v_1}{A} }{ \etyperelation{\P}{\gax}{v_2}{\meb}}{\gpeberelation{\doin{x}{\return{v_1}}{v_2}}{v_2\ssub{x}{v_1}}{\meb}}
+            \ntreeruleII{\eqleftunit}{\gpetyperelation{v_1}{A} }{ \etyperelation{\P}{\gax}{v_2}{\meb}}{\gpeberelation{\doin{x}{\return{v_1}}{v_2}}{v_2\ssub{x}{v_1}}{\meb}}
             \quad
-            \ntreeruleI{Right Unit}{\gpetyperelation{v}{\mea}}{\gpeberelation{\doin{x}{v}{\return{x}} }{v}{\mea}}
+            \ntreeruleI{\eqrightunit}{\gpetyperelation{v}{\mea}}{\gpeberelation{\doin{x}{v}{\return{x}} }{v}{\mea}}
         $}\]
     
         \[\scalebox{0.8}{$
-            \ntreeruleIII{Associativity}{\gpetyperelation{v_1}{\M{\e_1}{A}} }{\etyperelation{\P}{\gax}{v_2}{\M{\e_2}{B}}}{ \etyperelation{\P}{\gby}{v_3}{\M{\e_3}{C}}}{
+            \ntreeruleIII{\eqassociativity}{\gpetyperelation{v_1}{\M{\e_1}{A}} }{\etyperelation{\P}{\gax}{v_2}{\M{\e_2}{B}}}{ \etyperelation{\P}{\gby}{v_3}{\M{\e_3}{C}}}{
                 \gpeberelation{\doin{x}{v_1}{(\doin{y}{v_2}{v_3})}}{\doin{y}{(\doin{x}{v_1}{v_2})}{v_3}}{\M{\e_1 \dot \e_2 \dot \e_3}{C}}
             }
         $}\]
     
         \[\scalebox{0.8}{$
-            \ntreeruleI{Unit}{\gpetyperelation{v}{\U}}{\gpeberelation{v}{\u}{\U}}
+            \ntreeruleI{\equnitequiv}{\gpetyperelation{v}{\U}}{\gpeberelation{v}{\u}{\U}}
         $}\]
     
         \[\scalebox{0.8}{$
-            \ntreeruleII{If-True}{\gpetyperelation{v_1}{A}}{\gpetyperelation{v_2}{A}}{\gpeberelation{\pifthenelse{A}{\t}{v_1}{v_2}}{v_1}{A}}
+            \ntreeruleII{\eqiftrue}{\gpetyperelation{v_1}{A}}{\gpetyperelation{v_2}{A}}{\gpeberelation{\pifthenelse{A}{\t}{v_1}{v_2}}{v_1}{A}}
             \quad
-            \ntreeruleII{If-False}{\gpetyperelation{v_2}{A}}{\gpetyperelation{v_1}{A}}{\gpeberelation{\pifthenelse{A}{\f}{v_1}{v_2}}{v_2}{A}}    
+            \ntreeruleII{\eqiffalse}{\gpetyperelation{v_2}{A}}{\gpetyperelation{v_1}{A}}{\gpeberelation{\pifthenelse{A}{\f}{v_1}{v_2}}{v_2}{A}}    
         $}\]
     
         \[\scalebox{0.8}{$
-            \ntreeruleII{If-Eta}{\etyperelation{\P}{\G, x: \B}{v_2}{A}}{\gpetyperelation{v_1}{\B}}{\gpeberelation{\pifthenelse{A}{v_1}{v_2\ssub{x}{\t}}{v_2\ssub{x}{\f}}}{v_2\ssub{x}{v_1}}{A}}
+            \ntreeruleII{\eqifeta}{\etyperelation{\P}{\G, x: \B}{v_2}{A}}{\gpetyperelation{v_1}{\B}}{\gpeberelation{\pifthenelse{A}{v_1}{v_2\ssub{x}{\t}}{v_2\ssub{x}{\f}}}{v_2\ssub{x}{v_1}}{A}}
         $}\]
     
         \[\scalebox{0.8}{$
-            \ntreeruleII{Effect-Beta}{\wellformed{\P}{\e}}{\etyperelation{\P, \a}{\G}{v}{A}}{\gpeberelation{\eapp{(\elam{\a}{v}}{\e})}{v\ssub{\a}{\e}}{A\ssub{\a}{\e}}}
+            \ntreeruleII{\eqeffbeta}{\wellformed{\P}{\e}}{\etyperelation{\P, \a}{\G}{v}{A}}{\gpeberelation{\eapp{(\elam{\a}{v}}{\e})}{v\ssub{\a}{\e}}{A\ssub{\a}{\e}}}
             \quad 
-            \\ntreeruleI{Effect-Eta}{\etyperelation{\P}{\G}{v}{\all{\a}{A}}}{\gpeberelation{\elam{\a}{(\eapp{v}{\a})}}{v}{\all{\a}{A}}}
+            \\ntreeruleI{\eqeffeta}{\etyperelation{\P}{\G}{v}{\all{\a}{A}}}{\gpeberelation{\elam{\a}{(\eapp{v}{\a})}}{v}{\all{\a}{A}}}
         $}\]
     \end{framed}
 
 Congruence rules
    \begin{framed}
         \[\scalebox{0.8}{$
-            \ntreeruleI{Effect-Spec}{\eberelation{\P, \a}{\G}{v_1}{v_2}{A}}{\gpeberelation{\elam{\a}{v_1}}{\elam{\a}{v_2}}{\all{\a}{A}}}
+            \ntreeruleI{\eqgen}{\eberelation{\P, \a}{\G}{v_1}{v_2}{A}}{\gpeberelation{\elam{\a}{v_1}}{\elam{\a}{v_2}}{\all{\a}{A}}}
             \quad
-            \ntreeruleII{Effect-Gen}{\gpeberelation{v_1}{v_2}{\all{\a}{A}}}{\wellformed{\P}{\e}}{\gpeberelation{\eapp{v_1}{\e}}{\eapp{v_2}{\e}}{A\ssub{\a}{\e}}}
+            \ntreeruleII{\eqspec}{\gpeberelation{v_1}{v_2}{\all{\a}{A}}}{\wellformed{\P}{\e}}{\gpeberelation{\eapp{v_1}{\e}}{\eapp{v_2}{\e}}{A\ssub{\a}{\e}}}
         $}\]
     
         \[\scalebox{0.8}{$
-            \ntreeruleI{Fn}{\eberelation{\P}{\gax}{v_1}{v_2}{B}}{\gpeberelation{\lam{x}{A}{v_1}}{\lam{x}{A}{v_2}}{\ab}}
+            \ntreeruleI{\eqfun}{\eberelation{\P}{\gax}{v_1}{v_2}{B}}{\gpeberelation{\lam{x}{A}{v_1}}{\lam{x}{A}{v_2}}{\ab}}
             \quad
-            \ntreeruleI{Return}{\gpeberelation{v_1}{v_2}{A}}{\gpeberelation{\return{v_1}}{\return{v_2}}{\moa}}
+            \ntreeruleI{\eqreturn}{\gpeberelation{v_1}{v_2}{A}}{\gpeberelation{\return{v_1}}{\return{v_2}}{\moa}}
         $}\]
     
         \[\scalebox{0.8}{$
-            \ntreeruleII{Apply}{\gpeberelation{v_1}{v_1'}{\ab}}{\gpeberelation{v_2}{v_2'}{A}}{\gpeberelation{\apply{v_1}{v_2}}{\apply{v_1'}{v_2'}}{B}}
+            \ntreeruleII{\eqapply}{\gpeberelation{v_1}{v_1'}{\ab}}{\gpeberelation{v_2}{v_2'}{A}}{\gpeberelation{\apply{v_1}{v_2}}{\apply{v_1'}{v_2'}}{B}}
             \quad   
-            \ntreeruleII{Bind}{\gpeberelation{v_1}{v_1'}{\M{\e_1}{A}} }{\eberelation{\P}{\gax}{v_2}{v_2'}{\M{\e_2}{B}}}{\gpeberelation{\doin{x}{v_1}{v_2}}{\doin{x}{v_1'}{v_2'}}{\M{\e_1 \dot \e_2}{B}}} 
+            \ntreeruleII{\eqbind}{\gpeberelation{v_1}{v_1'}{\M{\e_1}{A}} }{\eberelation{\P}{\gax}{v_2}{v_2'}{\M{\e_2}{B}}}{\gpeberelation{\doin{x}{v_1}{v_2}}{\doin{x}{v_1'}{v_2'}}{\M{\e_1 \dot \e_2}{B}}} 
         $}\]
     
         \[\scalebox{0.8}{$
-            \ntreeruleIII{If}{\gpeberelation{v}{v'}{\B} }{ \gpeberelation{v_1}{v_1'}{A}}{\gpeberelation{v_2}{v_2'}{A}}{\gpeberelation{\pifthenelse{A}{v}{v_1}{v_2}}{\pifthenelse{A}{v'}{v_1'}{v_2'}}{A}}
+            \ntreeruleIII{\eqif}{\gpeberelation{v}{v'}{\B} }{ \gpeberelation{v_1}{v_1'}{A}}{\gpeberelation{v_2}{v_2'}{A}}{\gpeberelation{\pifthenelse{A}{v}{v_1}{v_2}}{\pifthenelse{A}{v'}{v_1'}{v_2'}}{A}}
             \quad    
-            \ntreeruleII{Subtype}{\gpeberelation{v}{v'}{A}}{A \subtypep B}{\gpeberelation{v}{v'}{B}}
+            \ntreeruleII{\eqsubtype}{\gpeberelation{v}{v'}{A}}{A \subtypep B}{\gpeberelation{v}{v'}{B}}
         $}\]
    \end{framed}
 
@@ -4004,13 +3999,13 @@ Congruence rules
 We extend the relation to an equivalence relation as so:
     \begin{framed}
         \[
-            \ntreeruleI{Reflexive}{\gpetyperelation{v}{A}}{\gpeberelation{v}{v}{A}}
+            \ntreeruleI{\eqreflexive}{\gpetyperelation{v}{A}}{\gpeberelation{v}{v}{A}}
             \quad
-            \ntreeruleI{Symmetric}{\gpeberelation{v_1}{v_2}{A}}{\gpeberelation{v_2}{v_1}{A}}
+            \ntreeruleI{\eqsymmetric}{\gpeberelation{v_1}{v_2}{A}}{\gpeberelation{v_2}{v_1}{A}}
         \]
     
         \[
-            \ntreeruleII{Transitive}{\gpeberelation{v_1}{v_2}{A}}{\gpeberelation{v_2}{v_3}{A}}{\gpeberelation{v_1}{v_3}{A}}
+            \ntreeruleII{\eqtransitive}{\gpeberelation{v_1}{v_2}{A}}{\gpeberelation{v_2}{v_3}{A}}{\gpeberelation{v_1}{v_3}{A}}
         \]
     \end{framed}
 
@@ -4027,18 +4022,18 @@ We extend the relation to an equivalence relation as so:
         By induction over equational equivalence relation.
         \subsection{Equivalence Relation}
         The cases over the equivalence relation laws hold by the uniqueness of denotations and the fact that equality over morphisms is an equivalence relation.
-        \case{Reflexive}
+        \case{\eqreflexive}
         Equality is reflexive, so if $\gpetyperelation{v}{A}$ then $\deno{\gpetyperelation{v}{A}}$ is equal to itself.
-        \case{Symmetric}
+        \case{\eqsymmetric}
         By inversion, if $\gpeberelation{v}{v'}{A}$ then $\gpeberelation{v'}{v}{A}$, so by induction $\gdenoequality{v'}{v}{A}$ and hence $\gdenoequality{v}{v'}{A}$
-        \case{Transitive}
+        \case{\eqtransitive}
         There must exist $v_2$ such that $\gpeberelation{v_1}{v_2}{A}$ and $\gpeberelation{v_2}{v_3}{A}$, so by induction,
         $\gdenoequality{v_1}{v_2}{A}$ and $\gdenoequality{v_2}{v_3}{A}$. Hence by transitivity of equality, $\gdenoequality{v_1}{v_3}{A}$
         
         \subsection{Reduction Conversions}
         These cases are typically proved using the properties of a cartesian closed category with a strong graded monad.
         
-        \case{Lambda-Beta}
+        \case{\eqbeta}
             Let $f = \deno{\etyperelation{\P}{\gax}{v_1}{B}}: (\G \times A) \rightarrow B$
         
             Let $g = \deno{\gpetyperelation{v_2}{A}}: \G \rightarrow A$
@@ -4056,7 +4051,7 @@ We extend the relation to an equivalence relation as so:
             \end{align*}
            
         
-        \case{Left Unit}
+        \case{\eqleftunit}
         Let $f = \deno{\etyperelation{\P}{\gax}{v_1}{\meb}}$
         
         Let $g = \deno{\gpetyperelation{v_2}{A}}: \G \rightarrow A$
@@ -4083,7 +4078,7 @@ We extend the relation to an equivalence relation as so:
         
         
         
-        \case{Right Unit}
+        \case{\eqassociativity}
         
         Let $f = \deno{\gpetyperelation{v}{\mea}}$ 
             \begin{align*}
@@ -4095,7 +4090,7 @@ We extend the relation to an equivalence relation as so:
         
         
         
-        \case{Associative}
+        \case{\eqassociativity}
         Let
         \begin{align*}
             f ={}& \deno{\gpetyperelation{v_1}{\M{\e_1}{A}}}\\
@@ -4239,7 +4234,7 @@ We extend the relation to an equivalence relation as so:
         
         %%%%%% END CASE ASSOCIATIVE %%%%%%%
         
-        \case{Lambda-Eta}
+        \case{\eqeta}
         Let 
         \begin{equation}
             f = \deno{\gpetyperelation{v}{\ab}} : \G \rightarrow (B)^{A}
@@ -4266,7 +4261,7 @@ We extend the relation to an equivalence relation as so:
             \deno{\gpetyperelation{\lam{x}{A}{(\apply{v}{x})}}{\ab}} = f =\deno{\gpetyperelation{v}{\ab}}
         \end{equation}
         
-        \case{If-True}
+        \case{\eqiftrue}
         Let
         \begin{align*}
             f = &\deno{\gpetyperelation{v_1}{A}}\\
@@ -4284,7 +4279,7 @@ We extend the relation to an equivalence relation as so:
         \end{align*}
         
         
-        \case{If-False}
+        \case{\eqiffalse}
         Let
         \begin{align*}
             f = &\deno{\gpetyperelation{v_1}{A}}\\
@@ -4301,7 +4296,7 @@ We extend the relation to an equivalence relation as so:
                 & = \deno{\gpetyperelation{v_2}{A}}\\
         \end{align*}
         
-        \case{If-Eta}
+        \case{\eqifeta}
             Let 
             \begin{align*}
                 f & = \deno{\etyperelation{\P}{\G}{v_1}{\B}} \\
@@ -4367,7 +4362,7 @@ We extend the relation to an equivalence relation as so:
             \end{align*}
             }}
         
-            \case{Effect-Beta}
+            \case{\eqeffbeta}
             let 
             \begin{align*}
                 h & = \deno{\typerelation{\P}{\e}{\effect}}
@@ -4392,7 +4387,7 @@ We extend the relation to an equivalence relation as so:
                 &= \deno{\gpetyperelation{v\ssub{\a}{\e}}{A\ssub{\a}{e}}}\qt{By substitution theorem}\\
             \end{align*}
         
-            \case{Effect-Eta}
+            \case{\eqeffeta}
 
             Let \begin{align*}
                 f & = \deno{\gpetyperelation{v}{\all{\a}{A}}}\\
@@ -4439,7 +4434,7 @@ We extend the relation to an equivalence relation as so:
         \subsection{Congruences}
         These cases can be proved fairly mechanically by assuming the preconditions, using induction to prove that the matching pairs of Subexpressions have equal denotations, then constructing the denotations of the expressions using the equal denotations which gives trivially equal denotations.
         
-        \case{Fn}
+        \case{\eqfun}
             By inversion, we have $\eberelation{\P}{\gax}{v_1}{v_2}{B}$
             By induction, we therefore have $\deno{\etyperelation{\P}{\gax}{v_1}{B}} = \deno{\etyperelation{\P}{\gax}{v_2}{B}}$
         
@@ -4454,7 +4449,7 @@ We extend the relation to an equivalence relation as so:
             \end{equation}
         
         
-        \case{Return}
+        \case{\eqreturn}
         By inversion, we have $\gpeberelation{v_1}{v_2}{A}$
         By induction, we therefore have $\deno{\gpetyperelation{v_1}{A}} = \deno{\gpetyperelation{v_2}{A}}$
         
@@ -4469,7 +4464,7 @@ We extend the relation to an equivalence relation as so:
         \end{equation}
         
         
-        \case{Apply}
+        \case{\eqapply}
         By inversion, we have $\gpeberelation{v_1}{v_1'}{\ab}$ and $\gpeberelation{v_2}{v_2'}{A}$
         By induction, we therefore have $\deno{\gpetyperelation{v_1}{\ab}}= \deno{\gpetyperelation{v_1'}{\ab}}$ and $\deno{\gpetyperelation{v_2}{A}} = \deno{\gpetyperelation{v_2'}{A}}$
         
@@ -4487,7 +4482,7 @@ We extend the relation to an equivalence relation as so:
         \end{equation}
         
         
-        \case{Bind}
+        \case{\eqbind}
         By inversion, we have $\gpeberelation{v_1}{v_1'}{\M{e_1}{A}}$ and $\eberelation{\P}{\gax}{v_2}{v_2'}{\M{\e_2}{B}}$
         By induction, we therefore have $\deno{\gpetyperelation{v_1}{\M{e_1}{A}}}= \deno{\gpetyperelation{v_1'}{\M{e_1}{A}}}$ and $\deno{\etyperelation{\P}{\gax}{v_2}{\M{\e_2}{B}}} = \deno{\etyperelation{\P}{\gax}{v_2'}{\M{\e_2}{B}}}$
         
@@ -4505,7 +4500,7 @@ We extend the relation to an equivalence relation as so:
                  & = \deno{\gpetyperelation{\doin{x}{v_1}{v_2}}{\M{\e_1\dot\e_2}{A}}}
         \end{align*}
 
-        \case{If}
+        \case{\eqif}
         By inversion, we have $\gpeberelation{v}{v'}{\B}$, $\gpeberelation{v_1}{v_1'}{A}$ and $\gpeberelation{v_2}{v_2'}{A}$
         By induction, we therefore have $\deno{\gpetyperelation{v}{\B}} = \deno{\gpetyperelation{v'}{\B}}$, $\deno{\gpetyperelation{v_1}{A}}= \deno{\gpetyperelation{v_1'}{A}}$ and $\deno{\etyperelation{\P}{\gax}{v_2}{A}} = \deno{\etyperelation{\P}{\gax}{v_2'}{A}}$
         
@@ -4524,7 +4519,7 @@ We extend the relation to an equivalence relation as so:
                  & = \deno{\gpetyperelation{\pifthenelse{A}{v'}{v_1'}{v_2'}}{A}}
         \end{align*}
 
-        \case{Subtype}
+        \case{\eqsubtype}
         By inversion, we have $\gpeberelation{v_1}{v_2}{A}$, and $A \subtypep B$ 
         By induction, we therefore have $\deno{\gpetyperelation{v_1}{A}} = \deno{\gpetyperelation{v_2}{A}}$
         
@@ -4541,7 +4536,7 @@ We extend the relation to an equivalence relation as so:
                 \deno{\gpetyperelation{v_1}{B}} = g \after f = \deno{\gpetyperelation{v_1}{B}}
         \end{equation}
         
-        \case{Effect-Gen}
+        \case{\eqgen}
         By inversion, we have $\eberelation{\P,\a}{\G}{v_1}{v_2}{A}$. So by induction, $\deno{\etyperelation{\P,\a}{\G}{v_1}{A}} = \deno{\etyperelation{\P,\a}{\G}{v_2}{A}}$
         
         So \begin{align*}
@@ -4550,7 +4545,7 @@ We extend the relation to an equivalence relation as so:
             & = \deno{\gpetyperelation{\elam{\a}{v_2}}{\all{\a}{A}}} 
         \end{align*}
         
-        \case{Effect-Spec}
+        \case{\eqspec}
         
         By inversion, we have $\gpeberelation{v_1}{v_2}{\all{\a}{A}}$ and $\typerelation{\P}{\e}{\effect}$.
         
