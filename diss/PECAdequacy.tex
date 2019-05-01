@@ -368,11 +368,15 @@ By inversion, $\deno{\gpetyperelation{\elam{\a}{v}}{\all{\a}{A}}} = \bar{\deno{\
 \case{Spec}
 Required to prove $\peLogRel{\deno{\gpetyperelation{\eapp{v}{\e}}{A\ssub{\a}{\e}}}\fapply\rho}{A\ssub{\a}{\e}}{(\eapp{v}{\e})\ssi\beequiv\eapp{(v\ssi)}{\e}}$.
 
-By inversion and induction, $\peLogRel{\deno{\gpetyperelation{v}{\all{\a}{A}}}}{\all{\a}{A}}{v\ssi}$. So, $\forall\e. \peLogRel{\pe\fapply(\deno{\gpetyperelation{v}{\all{\a}{A}}}\fapply\rho)}{A\ssub{\a}{\e}}{\eapp{(v\ssi)}{\e}}$
+By inversion and induction, $\peLogRel{\deno{\gpetyperelation{v}{\all{\a}{A}}}}{\all{\a}{A}}{v\ssi}$. So, $$\forall\e. \peLogRel{\pe\fapply(\deno{\gpetyperelation{v}{\all{\a}{A}}}\fapply\rho)}{A\ssub{\a}{\e}}{\eapp{(v\ssi)}{\e}}$$
 
 \begin{align*}
-    \deno{\gpetyperelation{\eapp{}{}}}
+    \deno{\gpetyperelation{\eapp{v}{\e}}{A\ssub{\a}{\e}}}\fapply\rho & = \pr{\Id{}}{\deno{\wellformed{\P}{\e}}}\star(\counit{\wellformed{\P,\b}{A\ssub{\a}{\b}}})\fapply(\deno{\gpetyperelation{v}{\all{\a}{A}}}\fapply(\rho))\\
+    & = \ev\mapsto\pe(\deno{\gpetyperelation{v}{\all{\a}{A}}}\fapply(\rho)\ev)
+    & = \pe\fapply(\deno{\gpetyperelation{v}{\all{\a}{A}}}\fapply\rho)
+    & \peLogRel{}{A\ssub{\a}{\e}}{\eapp{v}{\e}}
 \end{align*}
+
 
 \section{Adequacy}
 \begin{theorem}[Adequacy]
@@ -394,21 +398,21 @@ Equality of denotations implies equational equality.
     By induction on the structure of $G$, making use of the fundamental property \ref{FundProp}.
 
     \case{Boolean}
-    Let $d=\deno{\zptyperelation{v}{\B}}=\deno{\zptyperelation{v}{\B}}\in \{\top, \bot\}$. By the fundamental property, $\peLogRel{d}{\B}{v}$  and $\peLogRel{d}{\B}{v}$.
+    Let $d=\deno{\zptyperelation{v}{\B}}=\deno{\zptyperelation{v}{\B}}\in \{\ev\mapsto \top, \ev\mapsto\bot\}$. By the fundamental property, $\peLogRel{d}{\B}{v}$  and $\peLogRel{d}{\B}{v}$.
 
-    \subcase{$d=\top$}
+    \subcase{$d=\ev\mapsto\top$}
     Then $\zpberelation{v\beequiv\t}{u}{\B}$
 
     
-    \subcase{$d=\bot$}
+    \subcase{$d=\ev\mapsto\bot$}
     Then $\zpberelation{v\beequiv\f}{u}{\B}$
 
     \case{Unit}
-    Let $\singleton=\deno{\zptyperelation{v}{\U}}=\deno{\zptyperelation{v}{\U}}\in \{\singleton\}$. By the fundamental property, $\peLogRel{d}{\U}{v}$  and $\peLogRel{d}{\U}{v}$. Hence $\zpberelation{v\beequiv\u}{u}{\U}$.
+    Let $\singleton=\deno{\zptyperelation{v}{\U}}=\deno{\zptyperelation{v}{\U}}\in \{\ev\mapsto\singleton\}$. By the fundamental property, $\peLogRel{d}{\U}{v}$  and $\peLogRel{d}{\U}{v}$. Hence $\zpberelation{v\beequiv\u}{u}{\U}$.
 
     \case{Effect}
 
-    Let $(n', d) = \deno{\zptyperelation{v}{\M{n}{G}}} = \deno{\zptyperelation{u}{\M{n}{G}}}$. By the fundamental property, $\peLogRel{(n', d)}{\M{n}{G}}{v}$ and $\peLogRel{(n', d)}{\M{n}{G}}{u}$. So there exists $u', v'$ such that $\peLogRel{d'}{G}{u'}$ and $\peLogRel{d'}{G}{u'}$ and:
+    Let $(\ev\mapsto n', \ev\mapsto d) = \deno{\zptyperelation{v}{\M{n}{G}}}\liftp = \deno{\zptyperelation{u}{\M{n}{G}}}\liftp$. By the fundamental property, $\peLogRel{(\ev\mapsto(n', d))}{\M{n}{G}}{v}$ and $\peLogRel{(\ev\mapsto(n', d))}{\M{n}{G}}{u}$. So there exists $u', v'$ such that $\peLogRel{d'}{G}{u'}$ and $\peLogRel{d'}{G}{u'}$ and:
 
     \begin{align*}
         \zpberelation{v&}{\doin{\_}{\put^{n'}}{\return{v'}}}{\M{n}{G}}\\
