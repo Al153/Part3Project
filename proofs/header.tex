@@ -22,8 +22,17 @@
 \usepackage{breqn}
 \usepackage{stmaryrd}
 
+\usepackage{float} % extra options for figure placement
+
+% For drawing boxed
 \usepackage{framed}
+
+% for code fragments + highlighting
 \usepackage{listings}
+
+% For roman numerals
+\usepackage{enumitem}
+
 
 \usepackage{amsthm}
 %Theorems
@@ -331,13 +340,13 @@
 
 % Combinators for building delta-based tree proof terms
 \newcommand{\deltavrule}[4]{
-    \ntreeruleII{Subtype}{\treeruleI{\D}{\typerelation{#1}{#2}{#3}}}{#3 \subtype #4}{\typerelation{#1}{#2}{#4}}}
+    \ntreeruleII{\vsubtype}{\treeruleI{\D}{\typerelation{#1}{#2}{#3}}}{#3 \subtype #4}{\typerelation{#1}{#2}{#4}}}
 
 \newcommand{\deltavruleprime}[4]{
-    \ntreeruleII{Subtype}{\treeruleI{\D'}{\typerelation{#1}{#2}{#3}}}{#3 \subtype #4}{\typerelation{#1}{#2}{#4}}}
+    \ntreeruleII{\vsubtype}{\treeruleI{\D'}{\typerelation{#1}{#2}{#3}}}{#3 \subtype #4}{\typerelation{#1}{#2}{#4}}}
 
 \newcommand{\deltavruleprimeprime}[4]{
-        \ntreeruleII{Subtype}{\treeruleI{\D'}{\typerelation{#1}{#2}{#3}}}{#3 \subtype #4}{\typerelation{#1}{#2}{#4}}}
+        \ntreeruleII{\vsubtype}{\treeruleI{\D'}{\typerelation{#1}{#2}{#3}}}{#3 \subtype #4}{\typerelation{#1}{#2}{#4}}}
     
 \newcommand{\deltacrule}[6]{
             \ntreeruleII{Subeffect}{\treeruleI{\D}{\typerelation{#1}{#2}{\M{#3}{#4}}}}{\subeffecttree{#3}{#4}{#5}{#6}}{\typerelation{#1}{#2}{\M{#5}{#6}}}}
@@ -345,7 +354,7 @@
     \ntreeruleII{Subeffect}{\treeruleI{\D'}{\typerelation{#1}{#2}{\M{#3}{#4}}}}{
     \subeffecttree{#3}{#4}{#5}{#6}}{\typerelation{#1}{#2}{\M{#5}{#6}}}}
 \newcommand{\deltacruleprimeprime}[6]{
-    \ntreeruleII{Subtype}{\treeruleI{\D''}{\typerelation{#1}{#2}{\M{#3}{#4}}}}{
+    \ntreeruleII{\vsubtype}{\treeruleI{\D''}{\typerelation{#1}{#2}{\M{#3}{#4}}}}{
         \subeffecttree{#3}{#4}{#5}{#6}}{\typerelation{#1}{#2}{\M{#5}{#6}}}}
                             
 
@@ -367,10 +376,10 @@
 
 
 % Combinators to build tree proofs
-\newcommand{\truleconst}[0]{\ntreeruleI{Const}{\ok{\G}}{\gtyperelation{\const{A}}{A}}}
-\newcommand{\truleunit}[0]{\ntreeruleI{Unit}{\ok{\G}}{\typerelation{\G}{\u}{\U}}}
-\newcommand{\truletrue}[0]{\ntreeruleI{True}{\ok{\G}}{\typerelation{\G}{\t}{\B}}}
-\newcommand{\trulefalse}[0]{\ntreeruleI{False}{\ok{\G}}{\typerelation{\G}{\f}{\B}}}
+\newcommand{\truleconst}[0]{\ntreeruleI{\vconst}{\ok{\G}}{\gtyperelation{\const{A}}{A}}}
+\newcommand{\truleunit}[0]{\ntreeruleI{\vunit}{\ok{\G}}{\typerelation{\G}{\u}{\U}}}
+\newcommand{\truletrue}[0]{\ntreeruleI{\vtrue}{\ok{\G}}{\typerelation{\G}{\t}{\B}}}
+\newcommand{\trulefalse}[0]{\ntreeruleI{\vfalse}{\ok{\G}}{\typerelation{\G}{\f}{\B}}}
 
 
 \newcommand{\E}[0]{\mathbb{E}}
@@ -460,7 +469,7 @@
 \newcommand{\allII}[0]{\forall_{I'}}
 \newcommand\allIU[0]{\forall_{I\times U}}
 \newcommand\type[0]{\texttt{Type}}
-\newcommand\effect[0]{\texttt{Effect}}
+\newcommand\effect[0]{\texttt{\teffect}}
 \newcommand\ciw[0]{\C(I, W)}
 \newcommand\ciu[0]{\C(I, U)}
 \newcommand\ciuw[0]{\C(I\times U, W)}
@@ -498,12 +507,12 @@
 
 \newcommand\edeltavrule[5]{\deltavrule{#1 \mid #2}{#3}{#4}{#5}}
 
-\newcommand\subeffecttreep[4]{\ntreeruleII{Effect}{
+\newcommand\subeffecttreep[4]{\ntreeruleII{\teffect}{
     #1\subeffectp #3}{#2 \subtypep #4
 }{\M{#1}{
     #2
 }\subtypep\M{#3}{#4}}}
-\newcommand\subeffecttree[4]{\ntreeruleII{Effect}{
+\newcommand\subeffecttree[4]{\ntreeruleII{\teffect}{
     #1\subeffect #3}{#2 \subtype #4
 }{\M{#1}{
     #2
@@ -517,14 +526,14 @@
         \deltavruleprimeprime{#1\mid #2}{#3}{#4}{#5}}
     
 \newcommand{\edeltacrule}[6]{
-            \ntreeruleII{Subtype}{
+            \ntreeruleII{\vsubtype}{
                 \treeruleI{
                     \D
                 }{
                     \typerelation{\P\mid#1}{#2}{\M{#3}{#4}}
                 }
             }{
-                \ntreeruleII{Effect}{
+                \ntreeruleII{\teffect}{
                     #4 \subtypep #6
                     }{
                          #3 \subeffectp #5
@@ -538,14 +547,14 @@
         
 
         \newcommand{\edeltacruleprime}[6]{
-            \ntreeruleII{Subtype}{
+            \ntreeruleII{\vsubtype}{
                 \treeruleI{
                     \D'
                 }{
                     \typerelation{\P\mid #1}{#2}{\M{#3}{#4}}
                 }
             }{
-                \ntreeruleII{Effect}{
+                \ntreeruleII{\teffect}{
                     #4 \subtypep #6
                 }{#3 \subeffectp #5
                 }{
@@ -558,14 +567,14 @@
                    
 
         \newcommand{\edeltacruleprimeprime}[6]{
-            \ntreeruleII{Subtype}{
+            \ntreeruleII{\vsubtype}{
                 \treeruleI{
                     \D''
                 }{
                     \typerelation{\P\mid #1}{#2}{\M{#3}{#4}}
                 }
             }{
-                \ntreeruleII{Effect}{
+                \ntreeruleII{\teffect}{
                     #4 \subtypep #6
                     }{ #3 \subeffectp #5
                 }{
