@@ -1002,7 +1002,7 @@ In this chapter, I  describe the category structure required to interpret an ins
 
 \section{Semantics for EC in an S-Category}\label{SCategoryIntro}
 
-As suggested in Section \ref{LanguageFeatureRequirements}, since EC contains multiple effects, STLC terms, and \texttt{if} expressions, we should be able to interpret its semantics in a cartesian closed category with an appropriate strong graded monad and the co-product $\1 + \1$, which models the type of booleans. With the addition of some extra category structure to handle subtyping, which I explain shortly, it is indeed possible to interpret EC. This Section contains a fairly high-level treatment of the semantics. This is because the concepts introduced are a subset of those required for the semantics of PEC, which I explain in more detail later \todo{ref}. Semantics for similar languages to EC have also been given using an S-category-style construct, such as by Katsumata \cite{Katsumata:2014}. 
+As suggested in Section \ref{LanguageFeatureRequirements}, since EC contains multiple effects, STLC terms, and \texttt{if} expressions, we should be able to interpret its semantics in a cartesian closed category with an appropriate strong graded monad and the co-product $\1 + \1$, which models the type of booleans. With the addition of some extra category structure to handle subtyping, which I explain shortly, it is indeed possible to interpret EC. This section contains a fairly high-level treatment of the semantics. This is because the concepts introduced are a subset of those required for the semantics of PEC, which I explain in more detail later \todo{PECDenotations}. Semantics for similar languages to EC have also been given using an S-category-style construct, such as by Katsumata \cite{Katsumata:2014}. 
 
 In order to model a given instantiation of EC, that is an EC with a collection of effects, constants, and ground types, there should be a collection of objects in the category to represent the ground types. There should also be a \textit{point} morphism (a morphism from the terminal object to the appropriate type) for each constant. In addition to the previously stated requirements, we also require the category, $\C$, to be able to model subtyping. 
 
@@ -1018,7 +1018,7 @@ From this point onwards, I refer to a category that fulfills these properties of
             \item The category has a co-product for the terminal object ($\1 + \1$).
             \item The category has a graded monad indexed by the effect monoid of the EC instance.
             \item The category has an object $\deno{\g}$ for each ground type $\g$ in EC.
-            \item The category has a \textit{point} morphism $\deno{\const{A}}: \1\rightarrow \deno{A}$ for each constant in EC. The object $\deno{A}$ is defined in section \todo{Ref}.
+            \item The category has a \textit{point} morphism $\deno{\const{A}}: \1\rightarrow \deno{A}$ for each constant in EC. The object $\deno{A}$ is defined in section \ref{PECDenotations}.
             \item For each instance of the ground subtyping relation, $A \subtypeg B$, there exists a morphism between the objects representing the ground types $A$ and $B$.
             \item For each instance of $\e_1 \subeffect \e_2$, there should exist a natural transformation $\db{\e_1\subeffect\e_2}: \T{\e_1}{}\rightarrow\T{\e_2}{}$ such that it has interactions with the graded monad as specified in Figures \ref{SubeffectTensorStrength}, \ref{SubeffectBind}.
         \end{enumerate}
@@ -1138,15 +1138,14 @@ Using the adjunction property, we have that: $\bar{f\after\pstar(n)} = \bar{f}\a
 In Figure \ref{RoadMap}, one can see a diagram of the collection of theorems that need to be proved to establish the soundness of a semantics for PEC.
 
 
-The first pair of theorems \todo{ref?} is made up of the effect substitution and weakening theorem on effects. These theorems show that substitutions of effects have a well-behaved and easily defined action upon the denotations of effects. Using these theorems, we can then move on to characterize the action of effect substitutions and effect-environment weakening on the denotations of types and type environments. From this, we can also look at the action of weakening and substituting effect environments on the subtyping relation between types.
+The first pair of theorems (\ref{EffectSubstitutionOnEffects}, \ref{EffectWeakeningOnEffects}) is made up of the effect substitution and weakening theorem on effects. These theorems show that substitutions of effects have a well-behaved and easily defined action upon the denotations of effects. Using these theorems, we can then move on to characterize the action of effect substitutions and effect-environment weakening on the denotations of types and type environments in \todo{Ref}. From this, we can also look at the action of weakening and substituting effect environments on the subtyping relation between types.
 
-The next step in .. \todo{ref?}is to use these substitution theorems to formalise the action of substitution and weakening of the effect environments on terms. This then allows us to find denotations for the weakening of term substitutions and type environment weakening, which set us up to prove the typical weakening and substitution theorems upon term variables and type environments. 
+The next step in .. \todo{ref?} is to use these substitution theorems to formalise the action of substitution and weakening of the effect environments on terms. This then allows us to find denotations for the weakening of term substitutions and type environment weakening, which set us up to prove the typical weakening and substitution theorems upon term variables and type environments. 
 
-Separately, we prove that all derivable denotations for a typing relation instance, $\gpetyperelation{v}{A}$ have the same denotation \todo{ref?}. This is important, since subtyping allows us to find multiple distinct typing derivations for terms, which initially look like they may have distinct denotations. Using a reduction function to transform typing derivations into a unique form, I prove that all typing derivations yield equal denotations.
+Separately, we prove that all derivable denotations for a typing relation instance, $\gpetyperelation{v}{A}$ have the same denotation (Section \ref{UniqueDenotations}). This is important, since subtyping allows us to find multiple distinct typing derivations for terms, which initially look like they may have distinct denotations. Using a reduction function to transform typing derivations into a unique form, I prove that all typing derivations yield equal denotations.
 
 This collection of theorems finally allows us to complete all cases of the equational-equivalence soundness theorem.
 
-\todo{Add references to this}
 \begin{figure}[ht!]
     \begin{center}
         \scalebox{0.8}{
@@ -1154,39 +1153,39 @@ This collection of theorems finally allows us to complete all cases of the equat
             thick,main node/.style={rectangle,fill=blue!20,draw,
             font=\sffamily\small\bfseries,minimum size=15mm}]
         
-            \node[main node,text width=20mm, fill=red] (IndexCategory) {Indexed Category and Adjunction};
-            \node[main node,text width=20mm, fill=red] (MulNaturality) [below of=IndexCategory] {Naturality of Mul Operator};
+            \node[main node,text width=20mm, fill=red] (IndexCategory) {Indexed Category and Adjunction (\ref{PECRequirements})};
+            \node[main node,text width=20mm, fill=red] (MulNaturality) [below of=IndexCategory] {Naturality of Mul Operator (\ref{PECRequirements})};
         
-            \node[main node,text width=20mm, fill=red] (BeckChevalley) [left of=MulNaturality]{Beck-Chevalley Condition};
-            \node[main node,text width=20mm, fill=red](SClosure) [right of=MulNaturality]{Re-indexing Functors are S-Preserving};
+            \node[main node,text width=20mm, fill=red] (BeckChevalley) [left of=MulNaturality]{Beck-Chevalley Condition (\ref{PECRequirements})};
+            \node[main node,text width=20mm, fill=red](SClosure) [right of=MulNaturality]{Re-indexing Functors are S-Preserving (Def. \ref{SPreservingDefinition})};
         
-            \node[main node, text width=20mm](EffectWeakeningEffects) [below left of=MulNaturality]{Effect Weakening on Effects};
+            \node[main node, text width=20mm](EffectWeakeningEffects) [below left of=MulNaturality]{Effect Weakening on Effects (Theorem \ref{EffectWeakeningOnEffects})};
         
-            \node[main node, text width=20mm](EffectSubEffects) [below right of=MulNaturality]{Effect Substitution on Effects};
+            \node[main node, text width=20mm](EffectSubEffects) [below right of=MulNaturality]{Effect Substitution on Effects (Theorem \ref{EffectSubstitutionOnEffects})};
         
-            \node[main node, text width=20mm](EffectWeakeningTypes)[below of=EffectWeakeningEffects]{Effect Weakening on Types};
+            \node[main node, text width=20mm](EffectWeakeningTypes)[below of=EffectWeakeningEffects]{Effect Weakening on Types (Theorem \ref{EffectWeakeningOnTypes})};
         
-            \node[main node, text width=20mm](EffectSubTypes)[below of=EffectSubEffects]{Effect Substitution on Types};
+            \node[main node, text width=20mm](EffectSubTypes)[below of=EffectSubEffects]{Effect Substitution on Types (Theorem \ref{EffectSubstitutionOnTypes})};
         
-            \node[main node, text width=20mm](EffectWeakeningTerms)[below of=EffectWeakeningTypes]{Effect Weakening on Terms};
+            \node[main node, text width=20mm](EffectWeakeningTerms)[below of=EffectWeakeningTypes]{Effect Weakening on Terms (Theorem \ref{EffectWeakeningOnTerms})};
         
-            \node[main node, text width=20mm](EffectSubTerms)[below of=EffectSubTypes]{Effect Substitution on Terms};
+            \node[main node, text width=20mm](EffectSubTerms)[below of=EffectSubTypes]{Effect Substitution on Terms (Theorem \ref{EffectSubstitutionOnTerms})};
         
-            \node[main node, text width=20mm](EffectWeakeningSubTyping)[left of=EffectWeakeningTerms]{Effect Weakening on Subtyping};
+            \node[main node, text width=20mm](EffectWeakeningSubTyping)[left of=EffectWeakeningTerms]{Effect Weakening on Subtyping (Theorem \ref{EffectWeakeningOnSubtyping})};
         
-            \node[main node, text width=20mm](EffectSubSubTyping)[right of=EffectSubTerms]{Effect Substitution on Subtyping};
+            \node[main node, text width=20mm](EffectSubSubTyping)[right of=EffectSubTerms]{Effect Substitution on Subtyping (Theorem \ref{EffectSubstitutionOnSubtyping})};
         
-            \node[main node, text width=20mm](EffectWeakeningWeakening)[below of=EffectWeakeningTerms]{Effect Weakening on Term Weakening};
+            \node[main node, text width=20mm](EffectWeakeningWeakening)[below of=EffectWeakeningTerms]{Effect Weakening on Term Weakening (Theorem \ref{EffectWeakeningOnTermWeakening})};
         
-            \node[main node, text width=20mm](EffectWeakeningSubstitution)[below of=EffectSubTerms]{Effect Weakening on Term Substitution};
+            \node[main node, text width=20mm](EffectWeakeningSubstitution)[below of=EffectSubTerms]{Effect Weakening on Term Substitution (Theorem \ref{EffectWeakeningOnTermSubstitution})};
         
-            \node[main node, text width=20mm](TermWeakening)[below of=EffectWeakeningWeakening]{Term Weakening Theorem};
+            \node[main node, text width=20mm](TermWeakening)[below of=EffectWeakeningWeakening]{Term Weakening Theorem (Theorem \ref{TermWeakeningOnTerms})};
         
-            \node[main node, text width=20mm](TermSubstitution)[below of=EffectWeakeningSubstitution]{Term Substitution Theorem};
+            \node[main node, text width=20mm](TermSubstitution)[below of=EffectWeakeningSubstitution]{Term Substitution Theorem (Theorem \ref{TermSubstitutionOnTerms})};
         
-            \node[main node, text width=20mm](UniqueDenotations)[below left of=TermSubstitution]{Unique Denotations};
+            \node[main node, text width=20mm](UniqueDenotations)[below left of=TermSubstitution]{Unique Denotations (corollary \ref{DenotationsAreUnique})};
         
-            \node[main node, text width=20mm](Soundness)[below of=UniqueDenotations]{Soundness};
+            \node[main node, text width=20mm](Soundness)[below of=UniqueDenotations]{Soundness (Theorem \ref{SOundness})};
         
             \draw [->] (IndexCategory) edge (BeckChevalley) (IndexCategory) edge (MulNaturality) (IndexCategory) edge (SClosure);
             \draw [->] (MulNaturality) edge (EffectWeakeningEffects) (MulNaturality) edge (EffectSubEffects);
@@ -1510,8 +1509,13 @@ We also need to define the property $\a \# \si$. This indicates that $\a$ does n
 
 
 \begin{framed}
-    \begin{theorem}[Effect Substitution on Effects]\label{EffectSubstitutionOnEffects}
-         \todo{ordered list (i)}if $\wellformed{\P}{\e}$ and $\typerelation{\P'}{\si}{\P}$ then $\wellformed{\P'}{\si(\e)}$ \todo{(ii)} writing $\si$ for $\deno{\typerelation{\P'}{\si}{\P}}$,  $\deno{\wellformed{\P'}{\si(\e)}} = \deno{\wellformed{\P}{\e}}\after\si$. 
+    \begin{theorem}[Effect Substitution on Effects]\label{EffectSubstitutionOnEffects} 
+        If $\wellformed{\P}{\e}$ and $\typerelation{\P'}{\si}{\P}$ then: 
+        \begin{enumerate}[label=\roman*.]
+            \item $\wellformed{\P'}{\si(\e)}$
+            \item Writing $\si$ for $\deno{\typerelation{\P'}{\si}{\P}}$,  $\deno{\wellformed{\P'}{\si(\e)}} = \deno{\wellformed{\P}{\e}}\after\si$
+        \end{enumerate}
+          
     \end{theorem}
     
     \begin{proof}
@@ -1560,8 +1564,11 @@ The weakening theorem proceeds similarly.
 
 \begin{framed}
     \begin{theorem}[Effect Weakening on Effects]\label{EffectWeakeningOnEffects}
-       \todo{enumerate parts of theorem.} If $\wellformed{\P}{\e}$ and $\wrelw{\P'}{\P}$ then $\wellformed{\P'}{\w}$ and, writing $\w$ for $\deno{\wrelw{\P'}{\P}}$,  $\deno{\wellformed{\P'}{\e}} = \deno{\wellformed{\P}{\e}}\after\w$.
-    
+       If $\wellformed{\P}{\e}$ and $\wrelw{\P'}{\P}$ then: 
+       \begin{enumerate}[label=\roman*.]
+           \item $\wellformed{\P'}{\w}$
+           \item Writing $\w$ for $\deno{\wrelw{\P'}{\P}}$,  $\deno{\wellformed{\P'}{\e}} = \deno{\wellformed{\P}{\e}}\after\w$.
+       \end{enumerate}    
     \end{theorem}
     
     
@@ -1664,7 +1671,11 @@ Specifically, effect substitutions ($\si$) have the following actions on types, 
 \begin{framed}
     
     \begin{theorem}[Effect Substitution on Types]\label{EffectSubstitutionOnTypes}
-       If $\wellformed{\P}{A}$ and $\typerelation{\P'}{\si}{\P}$, then \todo{enumerate} $\wellformed{\P'}{A\ssi}$ and $\deno{\wellformed{\P'}{A\ssi}} = \si\star\deno{\wellformed{\P}{A}}$.
+       If $\wellformed{\P}{A}$ and $\typerelation{\P'}{\si}{\P}$, then:
+       \begin{enumerate}[label=\roman*.]
+           \item $\wellformed{\P'}{A\ssi}$
+           \item $\deno{\wellformed{\P'}{A\ssi}} = \si\star\deno{\wellformed{\P}{A}}$
+       \end{enumerate}
     \end{theorem}
     
     \begin{proof}
@@ -1698,7 +1709,12 @@ Specifically, effect substitutions ($\si$) have the following actions on types, 
 
 \begin{framed}
     \begin{theorem}[Effect Substitution on Type Environments]\label{EffectSubstitutionOnTypeEnvs}
-         \todo{enumerate} If $\wellformedok{\P}{\G}$, then $\wellformedok{\P'}{\G\ssi}$ and $\deno{\wellformedok{\P'}{\G\ssi}} = \si\star\deno{\wellformedok{\P}{\G}}$.
+        If $\wellformedok{\P}{\G}$, then:
+        \begin{enumerate}[label=\roman*.]
+            \item $\wellformedok{\P'}{\G\ssi}$
+            \item $\deno{\wellformedok{\P'}{\G\ssi}} = \si\star\deno{\wellformedok{\P}{\G}}$.
+        \end{enumerate}
+         
     \end{theorem}
     
     \begin{proof}
@@ -1733,9 +1749,12 @@ The effect-weakening theorem on types and type environments is also very similar
 
 
 \begin{framed}
-    \begin{theorem}[Effect Weakening on Types]\label{EffectWeakeningOnTypes}
-        \todo{Enumerate}    
-        If $\wrelw{\P'}{\P}$ and $\wellformed{\P}{A}$ then $\wellformed{\P'}{A}$ $\deno{\wellformed{\P'}{A}} = \w\star\deno{\wellformed{\P}{A}}$. Furthermore, $\wrelw{\P'}{\P}$ and $\wellformedok{\P}{\G}$ imply $\deno{\wellformedok{\P'}{\G}} = \w\star\deno{\wellformedok{\P}{\G}}$
+    \begin{theorem}[Effect Weakening on Types]\label{EffectWeakeningOnTypes}  
+        If $\wrelw{\P'}{\P}$ and $\wellformed{\P}{A}$ then:
+        \begin{enumerate}[label=\roman*.]
+            \item $\wellformed{\P'}{A}$ $\deno{\wellformed{\P'}{A}} = \w\star\deno{\wellformed{\P}{A}}$
+            \item $\wrelw{\P'}{\P}$ and $\wellformedok{\P}{\G}$ imply $\deno{\wellformedok{\P'}{\G}} = \w\star\deno{\wellformedok{\P}{\G}}$
+        \end{enumerate}        
     \end{theorem}
     
 
@@ -1778,8 +1797,11 @@ Next, we consider the action of weakening and substitution on subtyping relation
 
 \begin{framed}
     \begin{theorem}[Effect Substitution on Subtyping]\label{EffectSubstitutionOnSubtyping}
-        \todo{enumerate}
-        If $A$ is a subtype of $B$ under environment $\P$ ($A \subtypep B$), and $\si$ is a substitution from $\P'$ to $\P$ ($\typerelation{\P'}{\si}{\P}$), then $A\ssi$ is also a subtype of $B\ssi$ under $\P'$ ($A\ssi\subtypepp B\ssi$) and $\deno{A\ssi\subtypepp B\ssi} = \si\star\deno{A\subtypep B}$.
+        If $A$ is a subtype of $B$ under environment $\P$ ($A \subtypep B$), and $\si$ is a substitution from $\P'$ to $\P$ ($\typerelation{\P'}{\si}{\P}$), then:
+        \begin{enumerate}[label=\roman*.]
+            \item $A\ssi$ is also a subtype of $B\ssi$ under $\P'$ ($A\ssi\subtypepp B\ssi$)
+            \item $\deno{A\ssi\subtypepp B\ssi} = \si\star\deno{A\subtypep B}$.
+        \end{enumerate}
     \end{theorem}
 
 
@@ -1817,7 +1839,7 @@ $$\square$$
 Similarly we can form the symmetrical weakening theorem. \todo{More big picture please}
 
 \begin{framed}
-    \begin{theorem}[Effect Weakening on Subtyping]
+    \begin{theorem}[Effect Weakening on Subtyping]\label{EffectWeakeningOnSubtyping}
         If $A \subtypep B$ and $\wrelw{\P'}{\P}$, then $A \subtypepp B$ and $\deno{A\subtypepp B} = \w\star\deno{A\subtypep B}$.
     \end{theorem}
     
@@ -1949,8 +1971,11 @@ Similarly, we can derive the weakening theorem on terms.
 
 \begin{framed}
     \begin{theorem}[Effect Weakening on Terms]\label{EffectWeakeningOnTerms}
-        \todo{enumerate}
-        If $\wrelw{\P'}{\P}$ and $\D$ derives $\gpetyperelation{v}{A}$ then there exists $\D'$ deriving $\etyperelation{\P'}{\G}{v}{A}$ and $\D' = \w\star\D$.
+        If $\wrelw{\P'}{\P}$ and $\D$ derives $\gpetyperelation{v}{A}$ then:
+        \begin{enumerate}[label=\roman*.]
+            \item there exists $\D'$ deriving $\etyperelation{\P'}{\G}{v}{A}$ 
+            \item $\D' = \w\star\D$.
+        \end{enumerate}
     \end{theorem}
     
     \todo{to appendices}
@@ -2105,8 +2130,11 @@ Let us first consider the action of effect weakenings on these morphisms. The we
 
 \begin{framed}
     \begin{theorem}[Effect Weakening on Term Weakening]\label{EffectWeakeningOnTermWeakening}
-        \todo{enumerate}
-        If $\wrel{\w_1}{\P'}{\P}$ and $\pewrel{\w}{\G'}{\G}$ then $\ewrel{\P'}{\w}{\G'}{\G}$ and $\deno{\ewrel{\P'}{\w}{\G'}{\G}} = \w_1\star\deno{\pewrel{\w}{\G'}{\G}}$.
+        If $\wrel{\w_1}{\P'}{\P}$ and $\pewrel{\w}{\G'}{\G}$ then:
+        \begin{enumerate}[label=\roman*.]
+            \item $\ewrel{\P'}{\w}{\G'}{\G}$
+            \item $\deno{\ewrel{\P'}{\w}{\G'}{\G}} = \w_1\star\deno{\pewrel{\w}{\G'}{\G}}$.
+        \end{enumerate} 
     \end{theorem}
     
     \begin{proof}
@@ -2164,8 +2192,12 @@ Secondly, we can state and prove the weakening theorem on term-environment subst
 
 \begin{framed}
     \begin{theorem}[Effect Weakening on Term Substitution]\label{EffectWeakeningOnTermSubstitution}
-        \todo{Enumerate}
-        If $\etyperelation{\P}{\G'}{\si}{\G}$ and $\wrelw{\P'}{\P}$ then $\etyperelation{\P'}{\G'}{\si}{\G}$ and $\deno{\etyperelation{\P'}{\G'}{\si}{\G}} = \w\star\deno{\etyperelation{\P}{\G'}{\si}{\G}}$
+        If $\etyperelation{\P}{\G'}{\si}{\G}$ and $\wrelw{\P'}{\P}$ then:
+        
+        \begin{enumerate}[label=\roman*.]
+            \item $\etyperelation{\P'}{\G'}{\si}{\G}$
+            \item $\deno{\etyperelation{\P'}{\G'}{\si}{\G}} = \w\star\deno{\etyperelation{\P}{\G'}{\si}{\G}}$
+        \end{enumerate}
     \end{theorem}
     
     
@@ -2393,7 +2425,7 @@ The term-substitution theorem is formulated similarly:
 \todo{Concluding remarks on this theorem}
 In this section, I have stated and proved a number of theorems to do with the substitution of effect and term variables within an expression. In particular, these theorems give us a way of manipulating the denotations of terms when the effect-variable and term environments are changed. As a result, these theorems provide us with a set of tools to tackle problems such as soundness and the uniqueness do denotations.
 
-\section{Uniqueness of Denotations}
+\section{Uniqueness of Denotations}\label{UniqueDenotations}
 
 \todo{Make this clear earlier}
 Up until this point we have had to be careful about the implicit typing derivation \todo{Why} for every term denotation $\deno{\gpetyperelation{v}{A}}$. We are now equipped with the tools to prove that all derivations of the same typing relation instance $\gpetyperelation{v}{A}$ induce the same denotation. This allows us to no longer worry about the equality of denotations, which will be helpful in the soundness proof.
