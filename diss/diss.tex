@@ -16,8 +16,7 @@
 
 \maketitle
 
-\todo{E-, T- prepend to rule names}
-
+\todo{Fix usage of rule name macros for \.subeffectree, \.trulecont}
 
 \newcommand{\note}[1]{
     %
@@ -106,11 +105,7 @@ Typically when working with lambda-calculus-based languages, we pick our equatio
 
 An example of an inductive equivalence rule that we might want to be sound with respect to is that of the $\beta$-reduction of lambda terms. It should be the case that the equality defined in Equation \ref{LambdaBeta} below implies that the denotations $\deno{\gtyperelation{\apply{(\lam{x}{A}{v_1})}{v_2}}{B}}$ and $\deno{\gtyperelation{v_1\ssub{x}{v_2}}{B}}$ are equal.
 
-
-\todo{Rename const C -> k}
-\todo{Make types in terms less grey (maybe purple?)
-}
-\todo{Explain colouring}
+\todo{Explain syntax highlighting}
 \begin{align}\label{LambdaBeta}
     \ntreeruleII{Lambda-Beta}{\typerelation{\gax}{v_1}{B}}{\gtyperelation{v_2}{A}}{\gberelation{\apply{(\lam{x}{A}{v_1})}{v_2}}{v_1\ssub{x}{v_2}}{B}}
 \end{align}
@@ -505,7 +500,7 @@ In the \texttt{return} clause, the program makes reference to variables $x$ and 
 \end{figure}
 
 \begin{eqnarray}\label{MonadTypeRules}
-    \ntreeruleI{Return}{\typerelation{\G}{v}{A}}{\typerelation{\G}{\return{v}}{\M{}{A}}} & \ntreeruleII{Bind}{\typerelation{\G}{v_1}{\M{}{A}}}{\typerelation{\gax}{v_2}{\M{}{B}}}{\typerelation{\G}{\doin{x}{v_1}{v_2}}{\M{}{B}}}
+    \ntreeruleI{\vreturn}{\typerelation{\G}{v}{A}}{\typerelation{\G}{\return{v}}{\M{}{A}}} & \ntreeruleII{\vbind}{\typerelation{\G}{v_1}{\M{}{A}}}{\typerelation{\gax}{v_2}{\M{}{B}}}{\typerelation{\G}{\doin{x}{v_1}{v_2}}{\M{}{B}}}
 \end{eqnarray}
 
 For a more precise analysis of languages with multiple effects, we can look into whether there is an algebra on the effects. For example, we might want to express the composite effect of two sequential expressions with different effects. We could follow an expression that might throw an exception with one that accesses mutable state and a third that carries out IO transactions. We would also want some form of \textit{unit} effect for pure expressions which does nothing when composed with other effects. Finally, to make it systematically possible to analyse branched code, such as \textit{if expressions}, some form of subtyping would be useful. This structure is modelled exactly by an appropriate partially ordered monoidal algebra $(E, \dot, \subeffect, \1)$. The set $E$ gives the various effects that can be produced, $\1$ represents the unit effect for pure values, $\dot$ allows us to associatively compose multiple effects and the partial order  $\subeffect$ gives us a subtyping of effects for an intuitive if-statement programming model.
@@ -513,14 +508,14 @@ For a more precise analysis of languages with multiple effects, we can look into
 In order to embed this algebra-based effect analysis in the type system, we can index Moggi's monadic type constructor $\M{}{}$ with the effect $\e$ that is produced when the corresponding expression is evaluated. Furthermore, when we use the \textit{return} operation to lift pure values into the monadic type constructor, the resulting monadic type should have an index of $\1$ indicating that the effect produced is pure. Finally, when we \textit{bind} together effectful expressions, the resulting effect should be the composition of the effects of the subexpressions. Putting together these requirements transforms the type rules in Equation \ref{MonadTypeRules} to the new type rules given in Equation \ref{GradedMonadTypeRules}. By suitably extending the monad laws to account for this new indexing, we find that we require a strong graded monad to model these features using category theory. This construct was first documented in the context of semantics by Katsumata (\cite{Katsumata:2014}).
 
 \begin{eqnarray}\label{GradedMonadTypeRules}
-    \ntreeruleI{Return}{\typerelation{\G}{v}{A}}{\typerelation{\G}{\return{v}}{\moa}} & \ntreeruleII{Bind}{\typerelation{\G}{v_1}{\M{\e_1}{A}}}{\typerelation{\gax}{v_2}{\M{\e_2}{B}}}{\typerelation{\G}{\doin{x}{v_1}{v_2}}{\M{\e_1 \dot \e_2}{B}}}
+    \ntreeruleI{\vreturn}{\typerelation{\G}{v}{A}}{\typerelation{\G}{\return{v}}{\moa}} & \ntreeruleII{\vbind}{\typerelation{\G}{v_1}{\M{\e_1}{A}}}{\typerelation{\gax}{v_2}{\M{\e_2}{B}}}{\typerelation{\G}{\doin{x}{v_1}{v_2}}{\M{\e_1 \dot \e_2}{B}}}
 \end{eqnarray}
 
 
 When we combine an effect system with if-expressions, we come across another, language-level, issue. When programming using the construct, we might want the true and false branches of the expressions to have different effects. For example, one branch of an expression may perform I/O operations, whilst the other has no side effects. Since effect analysis is done by the type system, this means that the two branches have different types. Hence the typical type rule  for if-expressions, as given in Equation \ref{IfTypeRule}, is not applicable. A solution for this is to introduce a notion of subtyping, using a subtyping relation $\subtype$. If $\gtyperelation{v}{A}$ and $A \subtype B$, then $\gtyperelation{v}{B}$. Using the partial order on effects to generate the subtyping relation, we can now unify compatible, though not equal, effects in an if-expression.
 
 \begin{equation}\label{IfTypeRule}
-    \ntreeruleIII{If}{
+    \ntreeruleIII{\vif}{
         \gtyperelation{\texttt{condition}}{\B}
     }{
         \gtyperelation{\texttt{if_true}}{A}
@@ -565,8 +560,8 @@ Polymorphism is a harder concept to explain intuitively. The particular flavour 
 To correctly account for these new terms and types in the type system, we need to ensure that all parameterisations are soundly constructed, in a similar way to how a closed term in the simply typed lambda calculus has no free variables. To do this, we introduce a new $F$-environment $\P$ to complement the term environments $\G$. A term or type is well formed (written $\wellformed{\P}{f}$) only if it only contains $F$ variables in $\P$. An $F$ expression, $f$, is also well formed only if it only contains $F$ variables in $\P$. We can now specify type rules for the generalisation (parameterisation of an expression over an $F$-variable) and specialisation (substituting a parameter for a value) of terms. As seen in Equation \ref{PolymorphismTypeRules}.
 
 \begin{eqnarray}\label{PolymorphismTypeRules}
-    \condtreeruleI{Gen}{\etyperelation{\P, \a}{\G}{v}{A}}{\gpetyperelation{\elam{\a}{v}}{\all{\a}{A}}}{\a\notin\P}& 
-    \ntreeruleII{Spec}{\gpetyperelation{v}{\all{\a}{A}}}{\wellformed{\P}{f}}{\gpetyperelation{\eapp{v}{f}}{A\ssub{\a}{f}}}
+    \condtreeruleI{\vgen}{\etyperelation{\P, \a}{\G}{v}{A}}{\gpetyperelation{\elam{\a}{v}}{\all{\a}{A}}}{\a\notin\P}& 
+    \ntreeruleII{\vspec}{\gpetyperelation{v}{\all{\a}{A}}}{\wellformed{\P}{f}}{\gpetyperelation{\eapp{v}{f}}{A\ssub{\a}{f}}}
 \end{eqnarray}
 
 If we can model the language without the polymorphic terms in Equation \ref{PolymorphismTypeRules}, at each specific $F$ environment, then we can instantiate a collection of categories, each of which models the language at a given $F$ environment. This collection of categories (which we call \textit{fibres}) can be indexed by a base category, the structure of which models the $F$ environments and relationships between them. We can hence construct an indexed category, whereby each $F$ environment in the base category is mapped to the fibre modelling the semantics at the specific environment, and morphisms between $F$ environments correspond to functors between the respective fibres. Figure \ref{IndexDiagram} demonstrates this construction. If we model an $F$ environment $\P, \a$ as a product, then the $\p$ morphism represents removing $\a$ from the environment and the $\pstar$ functor conversely increases the size of the environment. As will be show later in this dissertation, if $\pstar$ has a right adjoint (see Section \ref{WhatsAnAdjunction}), $\forall$, then this adjunction can be used to model generalisation and specialisation of polymorphic terms. This will be explained in the next chapter. 
@@ -837,67 +832,66 @@ As is often the case in similar type systems, a type environment is a snoc list 
 \subsubsection{Well-Formedness Predicates}
 To formalise properties of the type system, it will be useful to have a collection of predicates ensuring that structures in the language are well behaved with respect to their use of effect variables. We write $\a \in \P$ if $\a$ appears in the list represented by $\P$.
 
-\todo{Can define the snoc-list to be well formed so can drop the $\okt$ predicate on effect-variable environments}
 The $\okt$ predicate on effect environments asserts that the effect environment does not contain any duplicated effect variables.
 
 \[
-    \ntreerulez{Nil}{\ok{\nil}}
+    \ntreerulez{\pnil}{\ok{\nil}}
 \quad
-    \condtreeruleI{Extend}{\ok{\P}}{\ok{\P, \a}}{\a\notin \P}
+    \condtreeruleI{\pextend}{\ok{\P}}{\ok{\P, \a}}{\a\notin \P}
 \]
 
 Using this, we can define the well-formedness relation on effects, $\wellformed{\P}{\e}$. In short, this relation ensures that effects only reference variables that are in the effect environment. This is equivalent to saying that $\wellformed{\P}{\e}$ means that $\e\in E_\P$.
 
 \[
-    \ntreeruleI{Ground}{\ok{\P}}{\wellformed{\P}{e}}
+    \ntreeruleI{\eground}{\ok{\P}}{\wellformed{\P}{e}}
     \quad
-    \ntreeruleI{Var}{\ok{\P,\a}}{\wellformed{\P,\a}{\a}}
+    \ntreeruleI{\evar}{\ok{\P,\a}}{\wellformed{\P,\a}{\a}}
     \quad
-    \condtreeruleI{Weaken}{\wellformed{\P}{\a}}{\wellformed{\P,\b}{\a}}{\a\neq\b, \b\notin\P}
+    \condtreeruleI{\eweaken}{\wellformed{\P}{\a}}{\wellformed{\P,\b}{\a}}{\a\neq\b, \b\notin\P}
     \quad
-    \ntreeruleII{Compose}{\wellformed{\P}{\e_1}}{\wellformed{\P}{\e_2}}{\wellformed{\P}{\e_1\dot\e_2}}
+    \ntreeruleII{\ecompose}{\wellformed{\P}{\e_1}}{\wellformed{\P}{\e_2}}{\wellformed{\P}{\e_1\dot\e_2}}
 \]
 
 The well-formedness of effects can be used to a similar well-typed-relation on types, $\wellformed{\P}{A}$, which asserts that all effects in the type are well formed.
 
 \[
-    \ntreeruleI{Ground}{\ok{\P}}{\wellformed{\P}{\g}}
+    \ntreeruleI{\tground}{\ok{\P}}{\wellformed{\P}{\g}}
     \quad
-    \ntreeruleII{Fn}{\wellformed{\P}{A}}{\wellformed{\P}{B}}{\wellformed{\P}{\ab}}
+    \ntreeruleII{\tfun}{\wellformed{\P}{A}}{\wellformed{\P}{B}}{\wellformed{\P}{\ab}}
     \quad
-    \ntreeruleII{Effect}{\wellformed{\P}{A}}{\wellformed{\P}{\e}}{\wellformed{\P}{\mea}}
+    \ntreeruleII{\teffect}{\wellformed{\P}{A}}{\wellformed{\P}{\e}}{\wellformed{\P}{\mea}}
     \quad
-    \ntreeruleI{Quantification}{\wellformed{\P,\a}{A}}{\wellformed{\P}{\all{\a}{A}}}
+    \ntreeruleI{\tquant}{\wellformed{\P,\a}{A}}{\wellformed{\P}{\all{\a}{A}}}
 \]
 
 Finally, we can derive the a well-formedness of type environments,   $\oke{\P}{\G}$, which ensures that all types in the environment are well formed.
 
 \[
-    \ntreerulez{Nil}{\oke{\P}{\nil}}
+    \ntreerulez{\envnil}{\oke{\P}{\nil}}
     \quad
-    \condtreeruleI{Extend}{\oke{\P}{\G}\s\s \wellformed{\P}{A}}{\oke{\P}{\gax}}{x\notin\dom{\G}}
+    \condtreeruleI{\envextend}{\oke{\P}{\G}\s\s \wellformed{\P}{A}}{\oke{\P}{\gax}}{x\notin\dom{\G}}
 \]
 
 \subsubsection{Subtyping}
 
 We assume that the set of ground types ($\g$) has a subtyping partial order relation $\subtype_{\ground}$. This subtyping relationship could be the trivial partial order, which only includes $A\subtypeg B$ if $A = B$, or could be a more interesting relation. As this relationship is a partial order, it is antisymmetric, transitive and reflexive.
     \[
-        \ntreerulez{Reflexive}{A \subtype_{\ground} A}
+        \ntreerulez{\sreflexive}{A \subtype_{\ground} A}
         \quad
-        \ntreeruleII{Transitive}{A \subtype_{\ground} B}{B \subtype_{\ground} C}{A \subtype_{\ground} C}
+        \ntreeruleII{\stransitive}{A \subtype_{\ground} B}{B \subtype_{\ground} C}{A \subtype_{\ground} C}
     \]
 
 Using this ground type relation, we can then construct a subtyping relation between pairs of types $A, B$ with respect to an effect environment $\P$.
 
 \[
     \scalebox{0.85}{$
-    \ntreeruleI{Ground}{A \subtype_{\ground} B}{A \subtypep B}
+    \ntreeruleI{\sground}{A \subtype_{\ground} B}{A \subtypep B}
     \quad
-    \ntreeruleII{Fn}{A \subtypep A'}{B' \subtypep B }{\fntype{A'}{B'} \subtypep \ab}
+    \ntreeruleII{\sfun}{A \subtypep A'}{B' \subtypep B }{\fntype{A'}{B'} \subtypep \ab}
     \quad
-    \condtreeruleI{Quantification}{A\subtypep A'}{\all{\a}{A}\subtypepa\all{\a}{A'}}{\a\notin\P}
+    \condtreeruleI{\squant}{A\subtypep A'}{\all{\a}{A}\subtypepa\all{\a}{A'}}{\a\notin\P}
     \quad
-    \ntreeruleII{Effect}{A\subtypep B}{ \e_1\subeffectp\e_2}{\M{\e_1}{A}\subtypep\M{\e_2}{B}}
+    \ntreeruleII{\seffect}{A\subtypep B}{ \e_1\subeffectp\e_2}{\M{\e_1}{A}\subtypep\M{\e_2}{B}}
     $}
 \]
 
@@ -909,45 +903,45 @@ We define a fairly standard set of type rules on the language.
 
 \[
     \scalebox{0.85}{$
-    \ntreeruleII{Const}{\oke{\P}{\G}}{\wellformed{\P}{A}}{\gpetyperelation{\const{A}}{A}} 
+    \ntreeruleII{\vconst}{\oke{\P}{\G}}{\wellformed{\P}{A}}{\gpetyperelation{\const{A}}{A}} 
     \quad
-    \ntreeruleI{Unit}{\oke{\P}{\G}}{\gpetyperelation{\u}{\U}} 
+    \ntreeruleI{\vunit}{\oke{\P}{\G}}{\gpetyperelation{\u}{\U}} 
     \quad
-    \ntreeruleI{True}{\oke{\P}{\G}}{\gpetyperelation{\t}{\B}}
+    \ntreeruleI{\vtrue}{\oke{\P}{\G}}{\gpetyperelation{\t}{\B}}
     \quad
-    \ntreeruleI{False}{\oke{\P}{\G}}{\gpetyperelation{\f}{\B}}
+    \ntreeruleI{\vfalse}{\oke{\P}{\G}}{\gpetyperelation{\f}{\B}}
     $}
 \]
 \[
     \scalebox{0.85}{$
-\ntreeruleI{Var}{\oke{\P}{\gax}}{\etyperelation{\P}{\gax}{x}{A}}
+\ntreeruleI{\vvar}{\oke{\P}{\gax}}{\etyperelation{\P}{\gax}{x}{A}}
 \quad
-\condtreeruleII{Weaken}{\etyperelation{\P}{\G}{x}{A}}{\wellformed{\P}{B}}{\etyperelation{\P}{\gby}{x}{A}}{x \neq y, y\notin\dom{\G}}
+\condtreeruleII{\vweaken}{\etyperelation{\P}{\G}{x}{A}}{\wellformed{\P}{B}}{\etyperelation{\P}{\gby}{x}{A}}{x \neq y, y\notin\dom{\G}}
 \quad
-\ntreeruleI{Fn}{\etyperelation{\P}{\gax}{v}{B}}{\etyperelation{\P}{\G}{\lam{x}{A}{v}}{\ab}}
+\ntreeruleI{\vfun}{\etyperelation{\P}{\gax}{v}{B}}{\etyperelation{\P}{\G}{\lam{x}{A}{v}}{\ab}}
 $}
 \]
 \[
     \scalebox{0.85}{$
-    \ntreeruleII{Subtype}{\etyperelation{\P}{\G}{v}{A}}{A \subtypep B}{\etyperelation{\P}{\G}{v}{B}}
+    \ntreeruleII{\vsubtype}{\etyperelation{\P}{\G}{v}{A}}{A \subtypep B}{\etyperelation{\P}{\G}{v}{B}}
     \quad
-    \ntreeruleI{Effect-Gen}{\etyperelation{\P,\a}{\G}{v}{A}}{\gpetyperelation{\elam{\a}{v}}{\all{\a}{A}}}
+    \ntreeruleI{\vgen}{\etyperelation{\P,\a}{\G}{v}{A}}{\gpetyperelation{\elam{\a}{v}}{\all{\a}{A}}}
     \quad
-    \ntreeruleII{Effect-Spec}{\gpetyperelation{v}{\all{\a}A}}{\wellformed{\P}{\e}}{\gpetyperelation{\eapp{v}{\e}}{A\ssub{\a}{\e}}}
+    \ntreeruleII{\vspec}{\gpetyperelation{v}{\all{\a}A}}{\wellformed{\P}{\e}}{\gpetyperelation{\eapp{v}{\e}}{A\ssub{\a}{\e}}}
     $}
 \]
 \[
     \scalebox{0.85}{$
-    \ntreeruleI{Return}{\gpetyperelation{v}{A}}{\gpetyperelation{\return{v}}{\moa}}
+    \ntreeruleI{\vreturn}{\gpetyperelation{v}{A}}{\gpetyperelation{\return{v}}{\moa}}
     \quad
-    \ntreeruleII{Apply}{\gpetyperelation{v_1}{\ab}}{\gpetyperelation{v_2}{A}}{\gpetyperelation{\apply{v_1}{v_2}}{B}}
+    \ntreeruleII{\vapply}{\gpetyperelation{v_1}{\ab}}{\gpetyperelation{v_2}{A}}{\gpetyperelation{\apply{v_1}{v_2}}{B}}
     $}
 \]
 \[
     \scalebox{0.85}{$
-    \ntreeruleIII{If}{\gpetyperelation{v}{\B} }{ \gpetyperelation{v_1}{A}}{\gpetyperelation{v_2}{A}}{\gpetyperelation{\pifthenelse{A}{V}{v_1}{v_2}}{A}}
+    \ntreeruleIII{\vif}{\gpetyperelation{v}{\B} }{ \gpetyperelation{v_1}{A}}{\gpetyperelation{v_2}{A}}{\gpetyperelation{\pifthenelse{A}{V}{v_1}{v_2}}{A}}
     \quad
-    \ntreeruleII{Bind}{\gpetyperelation{v_1}{\M{\e_1}{A}}}{\etyperelation{\P}{\gax}{v_2}{\M{\e_2}{B}}}{\gpetyperelation{\doin{x}{v_1}{v_2}}{\M{\e_1 \dot \e_2}{B}}}
+    \ntreeruleII{\vbind}{\gpetyperelation{v_1}{\M{\e_1}{A}}}{\etyperelation{\P}{\gax}{v_2}{\M{\e_2}{B}}}{\gpetyperelation{\doin{x}{v_1}{v_2}}{\M{\e_1 \dot \e_2}{B}}}
     $}
 \]
 
@@ -959,7 +953,7 @@ $}
 \begin{proof}
     If $\oke{\P}{\gax}$ then by inverting (See Figure \ref{InversionPrinciple}) the $\okt$ rule, we have $\oke{\P}{\G}$ 
 
-    Only the type rule \textit{(Weaken)} adds terms to the environment from its preconditions to its postcondition and it does so in an $\okt$ preserving way. Any type derivation tree has at least one leaf. All leaves are axioms which require $\oke{\P}{\G}$. All non-axiom derivations preserve the $\okt$ property.
+    Only the type rule (\textit{\envextend}) adds terms to the environment from its preconditions to its postcondition and it does so in an $\okt$ preserving way. Any type derivation tree has at least one leaf. All leaves are axioms which require $\oke{\P}{\G}$. All non-axiom derivations preserve the $\okt$ property.
     $$\square$$
 \end{proof}
 
@@ -970,12 +964,11 @@ $}
 \begin{proof}
     We prove each of the implications separately, but an over-arching theme of this proof is that the leaf rules of any $\wellformed{\P}{\texttt{Consequence}}$ derivation tree require $\ok{\P}$ and that any modifications to the effect environment in the assumptions to the effect environment in the consequence of a rule preserve the $\okt$ relation. Hence, using induction and inversion, we can show that the effect environment is always well formed in any complete derivation tree.
 
-    \todo{Prefix these rule names}
-    Firstly in the case of the well-formedness relation $\wellformed{\P}{\e}$, the only leaf rules are the (\textit{Ground}) and (\textit{Var}) rules. By inversion, if $\wellformed{\P}{e}$ or $\wellformed{\P, \a}{\a}$ then $\ok{\P}$ or $\ok{\P, \a}$ respectively. Next, by inversion on the (\textit{Compose}) rule, if $\wellformed{\P}{\e_1\dot\e_2}$ then $\wellformed{\P}{\e_1}$, so by induction $\ok{\P}$. Finally, the weakening rule preserves the $\okt$ property of the effect environment, so $\wellformed{\P, \b}{\a} \implies \wellformed{\P}{\a} \implies \ok{\P} \implies \ok{(\P, \b)}$.
+    Firstly in the case of the well-formedness relation $\wellformed{\P}{\e}$, the only leaf rules are the (\textit{\eground}) and (\textit{\evar}) rules. By inversion, if $\wellformed{\P}{e}$ or $\wellformed{\P, \a}{\a}$ then $\ok{\P}$ or $\ok{\P, \a}$ respectively. Next, by inversion on the (\textit{\ecompose}) rule, if $\wellformed{\P}{\e_1\dot\e_2}$ then $\wellformed{\P}{\e_1}$, so by induction $\ok{\P}$. Finally, the weakening rule preserves the $\okt$ property of the effect environment, so $\wellformed{\P, \b}{\a} \implies \wellformed{\P}{\a} \implies \ok{\P} \implies \ok{(\P, \b)}$.
 
-    Secondly, in the case of the well formedness relation on types, the only leaf rule is (\textit{Ground}). If $\wellformed{\P}{\g}$, then by inversion, $\ok{\P}$. Similarly to the (\textit{Compose}) rule for effects, the (\textit{Fn}) rule's preconditions have the same effect-environment, so $\ok{\P}$ holds by inversion and induction. By inversion on the (\textit{Effect}) rule, $\wellformed{\P}{\e}$ so $\ok{\P}$. Finally the (\textit{Quantification}) rule preserves $\okt$ in a similar way to the (\textit{Weaken}) rule above.
+    Secondly, in the case of the well formedness relation on types, the only leaf rule is (\textit{\tground}). If $\wellformed{\P}{\g}$, then by inversion, $\ok{\P}$. Similarly to the (\textit{\ecompose}) rule for effects, the (\textit{\tfun}) rule's preconditions have the same effect-environment, so $\ok{\P}$ holds by inversion and induction. By inversion on the (\textit{\teffect}) rule, $\wellformed{\P}{\e}$ so $\ok{\P}$. Finally the (\textit{\tquant}) rule preserves $\okt$ in a similar way to the (\textit{\eweaken}) rule above.
 
-    Finally, if $\oke{\P}{\gax}$ then, by inversion, $\wellformed{\P}{A}$  and $\oke{\P}{\G}$. Since $\G$ is finite, $\oke{\P}{\nil}$. By inversion of the \textit{(Nil)} rule, $\ok{\P}$.
+    Finally, if $\oke{\P}{\gax}$ then, by inversion, $\wellformed{\P}{A}$  and $\oke{\P}{\G}$. Since $\G$ is finite, $\oke{\P}{\nil}$. By inversion of the (\textit{\envnil}) rule, $\ok{\P}$.
 \end{proof}
 
 
@@ -986,10 +979,10 @@ $}
 
         In proofs involving assumptions with multiple inductive rules, a useful property is that of inversion. This allows us to case split over the inductive rule that generated the assumption and can allow us to infer the structure of the term.
 
-        For example, consider a theorem which assumes $\gpetyperelation{v}{B}$, then we can case split over the type rules. If $\gpetyperelation{v}{B}$ was generated by the (Apply) rule (\ref{InversionExample}), then by inspecting the rule, we can infer that there exist two subterms $\gpetyperelation{v_1}{\ab}$, $\gpetyperelation{v_2}{A}$ such that $v = \apply{v_1}{v_2}$. 
+        For example, consider a theorem which assumes $\gpetyperelation{v}{B}$, then we can case split over the type rules. If $\gpetyperelation{v}{B}$ was generated by the (\textit{\vapply}) rule (\ref{InversionExample}), then by inspecting the rule, we can infer that there exist two subterms $\gpetyperelation{v_1}{\ab}$, $\gpetyperelation{v_2}{A}$ such that $v = \apply{v_1}{v_2}$. 
 
         \begin{equation}\label{InversionExample}
-            \ntreeruleII{Apply}{\gpetyperelation{v_1}{\ab}}{\gpetyperelation{v_2}{A}}{\gpetyperelation{\apply{v_1}{v_2}}{B}}
+            \ntreeruleII{\vapply}{\gpetyperelation{v_1}{\ab}}{\gpetyperelation{v_2}{A}}{\gpetyperelation{\apply{v_1}{v_2}}{B}}
         \end{equation}
         Then we might use the inferred subexpressions $v_1, v_2$ to prove the theorem in this case.
     \end{framed}
@@ -1203,7 +1196,7 @@ This collection of theorems finally allows us to complete all cases of the equat
           \end{tikzpicture}
     }
     \end{center}
-\caption{A road map of the proof dependencies. Assumptions in red, theorems in blue}
+\caption{A road map of the proof dependencies. Assumptions are in red, theorems in blue.}
 \label{RoadMap}
 \end{figure}
 
@@ -1287,70 +1280,70 @@ This finally gives us the ability to express the denotations of well-typed terms
     \footnotesize
     \begin{framed}
         \[
-            \ntreeruleI{Unit}{\wellformedok{\P}{\G}}{\deno{\etyperelation{\P}{\G}{\u}{\U}} = \term{\G} : \G \rightarrow \1}
+            \ntreeruleI{\vunit}{\wellformedok{\P}{\G}}{\deno{\etyperelation{\P}{\G}{\u}{\U}} = \term{\G} : \G \rightarrow \1}
             \quad
-            \ntreeruleI{Const}{\wellformedok{\P}{\G}}{\deno{\etyperelation{\P}{\G}{\const{A}}{A}} = \deno{\const{A}} \after \term{\G} : \G \rightarrow \deno{A}}
+            \ntreeruleI{\vconst}{\wellformedok{\P}{\G}}{\deno{\etyperelation{\P}{\G}{\const{A}}{A}} = \deno{\const{A}} \after \term{\G} : \G \rightarrow \deno{A}}
         \]
         \\
         \\        
         \[
-            \ntreeruleI{True}{\wellformedok{\P}{\G}}{\deno{\etyperelation{\P}{\G}{\t}{\B}} = \inl \after \term{\G} : \G \rightarrow \deno{\B} = \1+\1}
+            \ntreeruleI{\vtrue}{\wellformedok{\P}{\G}}{\deno{\etyperelation{\P}{\G}{\t}{\B}} = \inl \after \term{\G} : \G \rightarrow \deno{\B} = \1+\1}
         \]
         \\
         \\
         \[
-            \ntreeruleI{False}{\wellformedok{\P}{\G}}{\deno{\etyperelation{\P}{\G}{\f}{\B}} = \inr \after \term{\G} : \G \rightarrow \deno{\B} = \1+\1}
+            \ntreeruleI{\vfalse}{\wellformedok{\P}{\G}}{\deno{\etyperelation{\P}{\G}{\f}{\B}} = \inr \after \term{\G} : \G \rightarrow \deno{\B} = \1+\1}
         \]
         \\
         \\        
         \[
-            \ntreeruleI{Var}{\wellformedok{\P}{\G}}{\deno{\etyperelation{\P}{\gax}{x}{A}} = \pp: \G \times A \rightarrow A}
+            \ntreeruleI{\vvar}{\wellformedok{\P}{\G}}{\deno{\etyperelation{\P}{\gax}{x}{A}} = \pp: \G \times A \rightarrow A}
             \quad    
-            \ntreeruleI{Weaken}{f = \deno{\gpetyperelation{x}{A}}: \G \rightarrow A}{\deno{\etyperelation{\P}{\gby}{x}{A}} = f \after \p: \G \times B \rightarrow A}
+            \ntreeruleI{\vweaken}{f = \deno{\gpetyperelation{x}{A}}: \G \rightarrow A}{\deno{\etyperelation{\P}{\gby}{x}{A}} = f \after \p: \G \times B \rightarrow A}
         \]
         \\
         \\        
         \[
-            \ntreeruleI{Fn}{f = \deno{\etyperelation{\P}{\gax}{v}{B}} : \G \times A \rightarrow B}{\deno{\etyperelation{\P}{\G}{\lam{x}{A}{v}}{\ab}} = \cur{f} : \G \rightarrow (B)^A}
+            \ntreeruleI{\vfun}{f = \deno{\etyperelation{\P}{\gax}{v}{B}} : \G \times A \rightarrow B}{\deno{\etyperelation{\P}{\G}{\lam{x}{A}{v}}{\ab}} = \cur{f} : \G \rightarrow (B)^A}
         \]
         \\
         \\        
         \[
-            \ntreeruleII{Subtype}{f = \deno{\etyperelation{\P}{\G}{v}{A}} : \G \rightarrow A}{g = \deno{A \subtypep B}}{\deno{\etyperelation{\P}{\G}{v}{B}} = g \after f : \G \rightarrow B}
+            \ntreeruleII{\vsubtype}{f = \deno{\etyperelation{\P}{\G}{v}{A}} : \G \rightarrow A}{g = \deno{A \subtypep B}}{\deno{\etyperelation{\P}{\G}{v}{B}} = g \after f : \G \rightarrow B}
             \quad 
-            \ntreeruleI{Return}{f = \deno{\etyperelation{\P}{\G}{v}{A}}}{\deno{\etyperelation{\P}{\G}{\return{v}}{\moa}} = \point{A} \after f}   
+            \ntreeruleI{\vreturn}{f = \deno{\etyperelation{\P}{\G}{v}{A}}}{\deno{\etyperelation{\P}{\G}{\return{v}}{\moa}} = \point{A} \after f}   
         \]
         \\
         \\        
         \[
-            \ntreeruleIII{If}{f = \deno{\etyperelation{\P}{\G}{v}{\B}}: \G\rightarrow\1+\1}{g = \deno{\etyperelation{\P}{\G}{v_1}{\mea}}}{ h = \deno{\etyperelation{\P}{\G}{v_2}{\mea}}}{\deno{{\etyperelation{\P}{\G}{\ifthenelse{\e}{A}{v}{v_1}{v_2}}{\mea}}} = \app\after((\fld{\cur{g\after\pp}}{\cur{h\after\pp}}\after f)\times \idg)\after \diag{\G} : \G \rightarrow \tea}    
+            \ntreeruleIII{\vif}{f = \deno{\etyperelation{\P}{\G}{v}{\B}}: \G\rightarrow\1+\1}{g = \deno{\etyperelation{\P}{\G}{v_1}{\mea}}}{ h = \deno{\etyperelation{\P}{\G}{v_2}{\mea}}}{\deno{{\etyperelation{\P}{\G}{\ifthenelse{\e}{A}{v}{v_1}{v_2}}{\mea}}} = \app\after((\fld{\cur{g\after\pp}}{\cur{h\after\pp}}\after f)\times \idg)\after \diag{\G} : \G \rightarrow \tea}    
         \]
         \\
         \\
         \[
-            \ntreeruleII{Bind}{f = \deno{\etyperelation{\P}{\G}{v_1}{\M{\e_1}{A}} : \G \rightarrow \T{\e_1}{A}}}{{ g = \deno{\etyperelation{\P}{\gax}{v_2}{\M{\e_2}{B}}}}: \G \times A \rightarrow \T{\e_2}{B}}{\deno{\etyperelation{\P}{\G}{\doin{x}{v_1}{v_2}}{\M{\e_1 \dot \e_2}{B}}} = \bind{\e_1}{\e_2}{B} \after \T{\e_1}{g} \after \tstrength{\G}{A}{\e_1} \after \pr{\idg}{f}: \G \rightarrow \T{\e_1 \dot \e_2}{B}}  
-        \]
-        \\
-        \\        
-        \[
-            \ntreeruleII{Apply}{f = \deno{\gpetyperelation{v_1}{\ab}}: \G \rightarrow (B)^{A}}{g=\deno{\gpetyperelation{v_2}{A}}: \G \rightarrow A}{\deno{\gpetyperelation{\apply{v_1}{v_2}}{B}}= \app\after\pr{f}{g}: \G \rightarrow B }
+            \ntreeruleII{\vbind}{f = \deno{\etyperelation{\P}{\G}{v_1}{\M{\e_1}{A}} : \G \rightarrow \T{\e_1}{A}}}{{ g = \deno{\etyperelation{\P}{\gax}{v_2}{\M{\e_2}{B}}}}: \G \times A \rightarrow \T{\e_2}{B}}{\deno{\etyperelation{\P}{\G}{\doin{x}{v_1}{v_2}}{\M{\e_1 \dot \e_2}{B}}} = \bind{\e_1}{\e_2}{B} \after \T{\e_1}{g} \after \tstrength{\G}{A}{\e_1} \after \pr{\idg}{f}: \G \rightarrow \T{\e_1 \dot \e_2}{B}}  
         \]
         \\
         \\        
         \[
-            \ntreeruleI{Effect-Gen}{f = \deno{\etyperelation{\P,\a}{\G}{v}{A}}: \ciuw(\G, A)}{\deno{\gpetyperelation{\elam{\a}{A}}{\all{\e}{A}}} = \bar{f}: \C(I)(\G, \allI(A))}    
+            \ntreeruleII{\vapply}{f = \deno{\gpetyperelation{v_1}{\ab}}: \G \rightarrow (B)^{A}}{g=\deno{\gpetyperelation{v_2}{A}}: \G \rightarrow A}{\deno{\gpetyperelation{\apply{v_1}{v_2}}{B}}= \app\after\pr{f}{g}: \G \rightarrow B }
+        \]
+        \\
+        \\        
+        \[
+            \ntreeruleI{\vgen}{f = \deno{\etyperelation{\P,\a}{\G}{v}{A}}: \ciuw(\G, A)}{\deno{\gpetyperelation{\elam{\a}{A}}{\all{\e}{A}}} = \bar{f}: \C(I)(\G, \allI(A))}    
         \] 
         \\
         \\
         \begin{equation}\label{EffectApplication}
-            \ntreeruleII{Effect-Spec}{g=\deno{\gpetyperelation{v}{\all{\a}{A}}}: \C(I)(\G, \allI(A))}{ h = \deno{\typerelation{\P}{\e}{\effect}}: \ciu}{\deno{\gpetyperelation{\eapp{v}{\e}}{A\ssub{\a}{\e}}} = \pr{\Id{I}}{h}\star(\counit{\deno{\typerelation{\P,\b}{A\ssub{\a}{\b}}{\type}}})\after g: \C(I)(\G, A\ssub{\a}{\e})}
+            \ntreeruleII{\vspec}{g=\deno{\gpetyperelation{v}{\all{\a}{A}}}: \C(I)(\G, \allI(A))}{ h = \deno{\typerelation{\P}{\e}{\effect}}: \ciu}{\deno{\gpetyperelation{\eapp{v}{\e}}{A\ssub{\a}{\e}}} = \pr{\Id{I}}{h}\star(\counit{\deno{\typerelation{\P,\b}{A\ssub{\a}{\b}}{\type}}})\after g: \C(I)(\G, A\ssub{\a}{\e})}
         \end{equation}                
     \end{framed}
     \caption{The denotations of terms in PEC}
     \label{TermDenotations}
 \end{figure}
 
-The least intuitive of these denotations is that of effect application (specialisation) in Equation \ref{EffectApplication}. As explained later in Section \ref{SubsAndWeakening} the re-indexing functor represents application of the substitution $\ssub{\b}{\e}$. By doing type analysis on the co-unit morphism $ \counit{\deno{\typerelation{\P,\b}{A\ssub{\a}{\b}}{\type}}}$, as in Figure \ref{CoUnitType}  we can see that before the application of the substitution, the co-unit natural transformation takes a quantified type to a substituted type under an extended effect environment. By applying the substitution re-indexing functor in Figure \ref{ReIndexedCoUnitType}, we substitute $\e$ for the extra effect variable, $\b$. In the case of the quantified type, as $\b$ is not used, the substitution has no effect, but in the case of the substituted type, the substitutions compose to yield the substitution $\ssub{\a}{\e}$. This composes with the expression denotation $g$ to give the applied denotation in Figure \ref{EffectSpecComp}.
+The least intuitive of these denotations is that of effect-application (\textit{\vspec}) in Equation \ref{EffectApplication}. As explained later in Section \ref{SubsAndWeakening} the re-indexing functor represents application of the substitution $\ssub{\b}{\e}$. By doing type analysis on the co-unit morphism $ \counit{\deno{\typerelation{\P,\b}{A\ssub{\a}{\b}}{\type}}}$, as in Figure \ref{CoUnitType}  we can see that before the application of the substitution, the co-unit natural transformation takes a quantified type to a substituted type under an extended effect environment. By applying the substitution re-indexing functor in Figure \ref{ReIndexedCoUnitType}, we substitute $\e$ for the extra effect variable, $\b$. In the case of the quantified type, as $\b$ is not used, the substitution has no effect, but in the case of the substituted type, the substitutions compose to yield the substitution $\ssub{\a}{\e}$. This composes with the expression denotation $g$ to give the applied denotation in Figure \ref{EffectSpecComp}.
 
 
 \begin{figure}
@@ -1414,11 +1407,11 @@ In this dissertation, substitutions and weakenings come in two flavours: weakeni
 The first family of theorems is that of weakening and substitution of the effect environment. Weakenings are a relation between effect environments $\wrel{\w}{\P'}{\P}$, that are defined as so:
 
 \[
-    \ntreeruleI{Id}{\ok{\P}}{\wrel{\i}{\P}{\P}}
+    \ntreeruleI{\eid}{\ok{\P}}{\wrel{\i}{\P}{\P}}
     \quad
-    \condtreeruleI{Project}{\wrel{\w}{\P'}{\P}}{\wrel{\w\pi}{(\P', \a)}{\P}}{\a\notin\P'}
+    \condtreeruleI{\eproject}{\wrel{\w}{\P'}{\P}}{\wrel{\w\pi}{(\P', \a)}{\P}}{\a\notin\P'}
     \quad
-    \condtreeruleI{Extend}{\wrel{\w}{\P'}{\P}}{\wrel{\w\x}{(\P', \a)}{(\P, \a)}}{\a\notin\P'}
+    \condtreeruleI{\eextend}{\wrel{\w}{\P'}{\P}}{\wrel{\w\x}{(\P', \a)}{(\P, \a)}}{\a\notin\P'}
 \]
 
 We can define the denotation of an effect-environment weakening as a morphism in the base category: $\deno{\wrelw{\P'}{\P}}: I' \rightarrow I$. The denotations are defined as follows:
@@ -1443,9 +1436,9 @@ Substitutions are also an inductively defined relation between effect environmen
 The substitution relation matches substitutions to the environments it operates between. The relation instance $\typerelation{\P'}{\si}{\P}$ means that $\si$ is a substitution from $\P'$ to $\P$. It is defined inductively using the following rules.
 
 \[
-    \ntreeruleI{Nil}{\ok{\P'}}{\typerelation{\P'}{\nil}{\nil}}
+    \ntreeruleI{Ni\esubnil}{\ok{\P'}}{\typerelation{\P'}{\nil}{\nil}}
     \quad\quad
-    \condtreeruleII{Extend}{\typerelation{\P'}{\si}{\P}}{\wellformed{\P'}{\e}}{\typerelation{\P'}{\si, \a \setto\e}{(\P, \a)}}{\a\notin\P}
+    \condtreeruleII{\esubextend}{\typerelation{\P'}{\si}{\P}}{\wellformed{\P'}{\e}}{\typerelation{\P'}{\si, \a \setto\e}{(\P, \a)}}{\a\notin\P}
 \]
 
 The denotation of an effect-environment substitutions, $\deno{\typerelation{\P'}{\si}{\P}}$, is a morphism $I' \rightarrow I$ in the base category. These denotations are defined inductively as so:
@@ -1500,8 +1493,7 @@ We also need to define the property $\a \# \si$. This indicates that $\a$ does n
 \begin{proof}
     The proof of this depends on the naturality of $\Mul_I$ and inversion to narrow down case splitting on the structure of the effect environments.
 
-    \case{Ground}
-    \todo{Annotate ground with t-, e-}
+    \case{\eground}
     \todo{Add references to deno definition}
     This case holds due to the terminal morphism being unique. Hence, pre-composing it with another morphism yields the terminal morphism.
 
@@ -1511,7 +1503,7 @@ We also need to define the property $\a \# \si$. This indicates that $\a$ does n
         & = \deno{\typerelation{\P'}{e}{\type}}\\
     \end{align*}
 
-\case{Var}
+\case{\evar}
 
 Since the structure of the substitution $\si$ depends on the structure of $\P$, we can perform inversion to infer the denotation of $\si$.
 
@@ -1522,7 +1514,7 @@ Since the structure of the substitution $\si$ depends on the structure of $\P$, 
 \end{align*}
 
 
-\case{Compose}
+\case{\ecompose}
 
 We make use of the naturality of $\Mul_I$ and induction upon the subterms.
 \begin{align*}
@@ -1548,7 +1540,7 @@ The weakening theorem proceeds similarly.
 \begin{proof}
     This proof also depends on the naturality of $\Mul_I$ and case splitting on the structure of $\w$. It is harder to use inversion on the structure of $\w$, since the structure of $\w$ does not depend as strongly on the structure of $\P$. I present here the cases for variables.
 
-    \case{Var}
+    \case{\evar}
     We do a case split on $\w$.
     \subcase{$\w = \i$}
     Then $\P' = \P$ and $\w = \Id{I}$. So the theorem holds trivially.
@@ -1574,7 +1566,7 @@ The weakening theorem proceeds similarly.
         &= \deno{\typerelation{\P'}{\a}{\effect}}
     \end{align*}
     
-    \case{Weaken}
+    \case{\eweaken}
     \begin{equation}
         \deno{\typerelation{\P,\b}{\a}{\effect}}\after\w = \deno{\typerelation{\P}{\a}{\effect}}\after\p\after\w
     \end{equation}
@@ -1645,7 +1637,7 @@ Specifically, effect substitutions ($\si$) have the following actions on types, 
    By the fact that $\si\star$ is S-preserving and the Beck-Chevalley Condition.
    \todo{Justify why these cases}
 
-    \case{Effect}
+    \case{\teffect}
     This case makes use of the fact that $\si\star$ is S-preserving. Specifically the property upon the graded monad functor $\T{}{}$: $\si\star(\T{f}{A}) = \T{f\after\si}{(\si\star A)}$.
 
 
@@ -1654,7 +1646,7 @@ Specifically, effect substitutions ($\si$) have the following actions on types, 
         &= \T{\deno{\typerelation{\P}{\e}{\effect}}\after\si}{\si\star(\deno{\typerelation{\P}{A}{\type}})}\\
         & = \deno{\typerelation{\P'}{(\mea)\ssi}{\type}}
     \end{align*}
-    \case{Quantification}
+    \case{\tquant}
     This case makes use of the Beck-Chevalley condition and the fact that $\deno{\typerelation{(\P', \a)}{(\si, \a\setto\a)}{(\P, \a)}} = \si\times\Id{U}$, which we can induct upon.
         \begin{align*}
             \si\star\deno{\typerelation{\P}{\all{\a}A}{\type}} & = \si\star(\allI(\deno{\typerelation{\P,\a}{A}{\type}}))\\
@@ -1673,7 +1665,7 @@ Specifically, effect substitutions ($\si$) have the following actions on types, 
 \begin{proof}
     By induction on the derivation of $\deno{\wellformedok{\P}{\G}}$ whilst making use of the S-preserving property of the re-indexing functor.
 
-    \case{Nil}
+    \case{\envnil}
     We make use of the fact that an S-preserving functor preserves the terminal object.
     \begin{align*}
         \si\star\deno{\wellformedok{\P}{\nil}} &=\si\star\1\\
@@ -1682,7 +1674,7 @@ Specifically, effect substitutions ($\si$) have the following actions on types, 
         &= \deno{\wellformedok{\P'}{\nil\ssi}}\\
     \end{align*}
     
-    \case{Extend}
+    \case{\envextend}
     The S-preserving property means that $\si\star(A \times B) = (\si\star A)\times (\si\star B)$.
     \begin{align*}
        \si\star\deno{\wellformedok{\P}{\gax}} &= \si\star(\deno{\wellformedok{\P}{\G}} \times \deno{\typerelation{\P}{A}{\type}}) \\
@@ -1709,7 +1701,7 @@ The effect-weakening theorem on types and type environments is also very similar
 \begin{proof}
    In a similar fashion \todo{to?}, inducting over the derivation of $\deno{\typerelation{\P}{A}{\type}}$, we make use of the Beck-Chevalley condition and the S-preserving property of $\si\star$.
 
-    \case{Quantification}
+    \case{\tquant}
         This case uses the Beck-Chevalley condition and the fact that $\deno{\wrel{\w\x}{(\P', \a)}{(\P,\a)}} = \w\times \Id{U}$. This property is used in conjunction with induction to change the environment from $(\P, \a)$ to $(\P', \a)$.
 
         \begin{align*}
@@ -1720,7 +1712,7 @@ The effect-weakening theorem on types and type environments is also very similar
             & = \deno{\typerelation{\P'}{\all{\a}{A}}{\type}}\\
         \end{align*}
     
-    \case{Fn}
+    \case{\tfun}
     This case makes use of the S-preserving property that $\w\star$ preserves exponentials. Specifically $\w\star(B^A) = (\w\star B)^{(\w\star A)}$.
     \begin{align*}
         \w\star\deno{\typerelation{\P}{\ab}{\type}} &= \w\star(\deno{\typerelation{\P}{B}{\type}}^{\deno{\typerelation{\P}{A}{\type}}})\\
@@ -1730,7 +1722,7 @@ The effect-weakening theorem on types and type environments is also very similar
     \end{align*}
 
     
-    The proof for type environments follows the same steps as effect-substitution proof.
+    The proof for type environments follows the same steps as the effect-substitution proof.
 
     $$\square$$
 \end{proof}
@@ -1748,7 +1740,7 @@ Next, we consider the action of weakening and substitution on subtyping relation
     By rule induction over the definition of the subtype relation, making use of S-preserving property and the effect-substitution theorem on types.
 
 
-\case{Ground}
+\case{\sground}
 This case holds by the property of the S-preserving property of $\si\star$ that $\si\star$ preserves the ground-type subtyping denotation.
 
 \begin{align*}
@@ -1757,7 +1749,7 @@ This case holds by the property of the S-preserving property of $\si\star$ that 
 
 
 
-\case{Fn}
+\case{\sfun}
 
 This case holds by several S-preserving properties of $\si\star$. $\si\star$ preserves the exponential morphisms: $\si\star(\cur{f}) = \cur{\si\star(f)}$ and $\si\star(\app) = \app$. $\si\star$ should also preserve the product morphisms: $\si\star(\p) = \p$, $\si\star(\pp) = \pp$ and $\si\star\pr{f}{g} = \pr{\si\star f}{\si\star g}$. Hence $\si\star(f \times g) = (\si\star f \times \si\star g)$.
 
@@ -1814,13 +1806,13 @@ The substitution theorem is expressed as so:
 \begin{proof}
     This proof makes use of the previous effect-substitution theorems \todo{reference?}, and the adjunction of quantification and the re-indexing functor of projection, $\pstar$.
 
-    \case{Effect-Gen}
+    \case{\vgen}
 
 This case makes use of the naturality condition \ref{NaturalityCondition} and simple reductions. 
 If $\D$ derives $\gpetyperelation{\elam{\a}{v}}{\all{\a}{A}}$ then by inversion, there exists $\D_1$ deriving  $\etyperelation{\P,\a}{\G}{v}{A}$ such that $\D = \bar{\D_1}$. By the extension lemma, we can pick $\a\notin\P'\wedge\a\notin\P$ so that we have: $\typerelation{(\P',\a)}{(\si, \a\setto\a)}{(\P,\a)}$. By induction, there exists $\D_1'$ deriving $\etyperelation{(\P', \a)}{\G\sub{\si, \a\setto\a}}{v\sub{\si,\a\setto\a}}{A\sub{\si, \a\setto\a}}$, which we can simplify to $\etyperelation{\P',\a}{\G\ssi}{v\ssi}{A\ssi}$ since $\a$ does not occur in $\P$ or $\P'$. Hence $\etyperelation{\P'}{\G\ssi}{v\ssi}{(\all{\a}{A})\ssi}$ by the tree given in Equation \ref{EffectSubTermsEffectLambda} ($\D'$).
 
 \begin{equation}\label{EffectSubTermsEffectLambda}
-    \D' = \ntreeruleI{Effect-Gen}{\treeruleI{\D_1'}{\etyperelation{\P',\a}{\G\ssi}{v\ssi}{A\ssi}}}{\etyperelation{\P'}{\G\ssi}{v\ssi}{(\all{\a}{A})\ssi}}
+    \D' = \ntreeruleI{\vgen}{\treeruleI{\D_1'}{\etyperelation{\P',\a}{\G\ssi}{v\ssi}{A\ssi}}}{\etyperelation{\P'}{\G\ssi}{v\ssi}{(\all{\a}{A})\ssi}}
 \end{equation}
 
 It is also the case that:
@@ -1837,13 +1829,13 @@ So
     & = \D'
 \end{align*}
 
-\case{Effect-Spec}
+\case{\vspec}
 
 This is a more complex case, as it makes use of several naturality properties and the adjunction $\pstar\dashv\allI$. By inversion, if $\D$ derives $\gpetyperelation{\eapp{v}{\e}}{A\ssub{\a}{\e}}$ then there exists $\D_1$ deriving $\gpetyperelation{v}{\all{\a}{A}}$ and $h = \deno{\typerelation{\P}{\e}{\effect}}$ such that $\D$ is derived from $\D_1$ and $h$ as in equations \ref{EffectSubTermsEffAppTree} and \ref{EffectSubTermsEffAppDeno}.
 
 
 \begin{equation}\label{EffectSubTermsEffAppTree}
-    \D = \ntreeruleII{Effect-Spec}{\treeruleI{\D_1}{\gpetyperelation{v}{\all{\a}{A}}}}{\treeruleI{h}{\typerelation{\P}{\e}{\effect}}}{\gpetyperelation{\eapp{v}{\e}}{A\ssub{\a}{\e}}}
+    \D = \ntreeruleII{\vspec}{\treeruleI{\D_1}{\gpetyperelation{v}{\all{\a}{A}}}}{\treeruleI{h}{\typerelation{\P}{\e}{\effect}}}{\gpetyperelation{\eapp{v}{\e}}{A\ssub{\a}{\e}}}
 \end{equation}
 \begin{equation}\label{EffectSubTermsEffAppDeno}
     \D = \pr{\Id{\G}}{h}\star(\e_{\deno{\typerelation{\P,\b}{A\ssub{\a}{\b}}{\type}}})\after\D_1
@@ -1854,7 +1846,7 @@ So by induction and effect-substitution preserving well-formedness of effects, w
 
 \begin{equation}
     \label{EffectSubTermsEffAppNewTree}
-    \D' = \ntreeruleII{Effect-Spec}{
+    \D' = \ntreeruleII{\vspec}{
     \treeruleI{\D_1'}{\etyperelation{\P'}{\G\ssi}{v\ssi}{(\all{\a}{A})\ssi}}
     }{
     \wellformed{\P'}{\si(\e)}
@@ -1913,12 +1905,12 @@ Similarly, we can derive the weakening theorem on terms.
     This theorem is proved in a similar fashion to the substitution theorem, and many of its cases are the same.
 
 
-    \case{Subtype}
+    \case{\vsubtype}
     If $\D$ derives $\gpetyperelation{v}{B}$ then, by inversion, there exists $\D_1$ deriving $\gpetyperelation{v}{A}$, such that $ \D = \deno{A\subtypep B}\after \D_1$, as shown in Equation \ref{EffectWeakenTermsSubtype}.
 
     \begin{equation}
         \label{EffectWeakenTermsSubtype}
-        \D = \ntreeruleII{Subtype}{\treeruleI{\D_1}{\gpetyperelation{v}{A}}}{ A \subtypep B}{\gpetyperelation{v}{B}}
+        \D = \ntreeruleII{\vsubtype}{\treeruleI{\D_1}{\gpetyperelation{v}{A}}}{ A \subtypep B}{\gpetyperelation{v}{B}}
     \end{equation}
 
     By induction there exists $\D_1'$ deriving $\etyperelation{\P'}{\G}{v}{A}$, so we can construct $\D'$ using the subtyping rule in Equation \ref{EffectWeakenTermsSubtypeNew}.
@@ -1926,7 +1918,7 @@ Similarly, we can derive the weakening theorem on terms.
 
     \begin{equation}
         \label{EffectWeakenTermsSubtypeNew}
-        \D' = \ntreeruleII{Subtype}{\treeruleI{\D_1'}{\etyperelation{\P'}{\G}{v}{A}}}{A \subtypep B}{\etyperelation{\P'}{\G}{v}{B}}
+        \D' = \ntreeruleII{\vsubtype}{\treeruleI{\D_1'}{\etyperelation{\P'}{\G}{v}{A}}}{A \subtypep B}{\etyperelation{\P'}{\G}{v}{B}}
     \end{equation}
 
     \begin{align*}
@@ -1935,7 +1927,7 @@ Similarly, we can derive the weakening theorem on terms.
         & = \D'
     \end{align*}
     
-    \case{Fn}
+    \case{\vfun}
     This case holds by induction and the S-preserving property of $\w\star$.
 
     If $\D$ derives $\gpetyperelation{\lam{x}{A}{v}}{\ab}$ then by inversion there exists $\D_1$ deriving $\etyperelation{\P}{\gax}{v}{B}$ such that $\D$ and its denotation can be defined as in equations \ref{EffWeakenTermsLambdaTree} and \ref{EffWeakenTermsLambdaDeno}
@@ -1943,7 +1935,7 @@ Similarly, we can derive the weakening theorem on terms.
 
     \begin{equation}
         \label{EffWeakenTermsLambdaTree}
-        \D = \ntreeruleI{Fn}{
+        \D = \ntreeruleI{\vfun}{
             \treeruleI{\D_1}{\etyperelation{\P}{\gax}{v}{B}}
         }{\gpetyperelation{\lam{x}{A}{v}}{\ab}}
     \end{equation}
@@ -1957,7 +1949,7 @@ Similarly, we can derive the weakening theorem on terms.
 
     \begin{equation}
         \label{EffWeakenTermsLambdaTreeNew}
-        \D' = \ntreeruleI{Fn}{
+        \D' = \ntreeruleI{\vfun}{
             \treeruleI{\D_1'}{\etyperelation{\P'}{\gax}{v}{B}}
         }{\etyperelation{\P'}{\G}{\lam{x}{A}{v}}{\ab}}
     \end{equation}
@@ -1987,13 +1979,13 @@ Now we are at a point to start considering weakenings and substitution of the te
 
 
 \[
-    \ntreeruleI{Id}{\wellformedok{\P}{\G}}{\pewrel{\i}{\G}{\G}}
+    \ntreeruleI{\tid}{\wellformedok{\P}{\G}}{\pewrel{\i}{\G}{\G}}
     \quad  
-    \condtreeruleII{Project}{\pewrel{\w}{\G'}{\G}}{\typerelation{\P}{A}{\type}}{\pewrel{\w \pi}{\G, x: A}{\G}}{x \notin \dom{\G'}}
+    \condtreeruleII{\tproject}{\pewrel{\w}{\G'}{\G}}{\typerelation{\P}{A}{\type}}{\pewrel{\w \pi}{\G, x: A}{\G}}{x \notin \dom{\G'}}
 \]
 
 \[
-    \condtreeruleII{Extend}{\pewrel{\w}{\G'}{\G}}{ A \subtype B}{\pewrel{\w \x}{\G', x: A}{\G, x: B}}{x \notin \dom{\G'}}
+    \condtreeruleII{\textend}{\pewrel{\w}{\G'}{\G}}{ A \subtype B}{\pewrel{\w \x}{\G', x: A}{\G, x: B}}{x \notin \dom{\G'}}
 \]
 
 The denotation of such a weakening is a morphism within the fibre category derived from the effect-variable \todo{Effect environment or effect-variable environment?} environment: $\deno{\pewrel{\w}{\G'}{\G}}: \G' \rightarrow \G \in \C(I)$. These denotations are defined as so:
@@ -2013,9 +2005,9 @@ Type-environment substitutions are also derived inductively with respect to an e
 
 
 \[
-    \ntreeruleI{Nil}{\wellformedok{\P}{\G'}}{\etyperelation{\P}{\G'}{\nil}{\nil}}
+    \ntreeruleI{\tsubnil}{\wellformedok{\P}{\G'}}{\etyperelation{\P}{\G'}{\nil}{\nil}}
     \quad
-    \condtreeruleII{Extend}{
+    \condtreeruleII{\tsubextend}{
         \etyperelation{\P}{\G'}{\si}{\G}
     }{
         \etyperelation{\P}{\G'}{v}{A}
@@ -2064,7 +2056,7 @@ Let us first consider the action of effect weakenings on these morphisms. The we
 \begin{proof}
     By induction on the derivation of $\w$. making use of weakening on types, type environments, and subtyping.
 
-    \case{Id}
+    \case{\tid}
     Then $\w = \i$, so its denotation is $\w = \Id{\G_I}$
     
     So
@@ -2072,11 +2064,11 @@ Let us first consider the action of effect weakenings on these morphisms. The we
       \w_1\star(\Id{\G_I}) = \Id{\G_{I'}} = \deno{\ewrel{\P'}{\i}{\G}{\G}}  
     \end{equation}
     
-    \case{Project}
+    \case{\tproject}
     Then $\w = \w'\pi$
     
     \begin{equation}
-        \ntreeruleI{Project}{\ewrel{\P}{\w'}{\G'}{\G}}{\ewrel{\P}{\w\pi}{\G',x:A}{\G}}
+        \ntreeruleI{\tproject}{\ewrel{\P}{\w'}{\G'}{\G}}{\ewrel{\P}{\w\pi}{\G',x:A}{\G}}
     \end{equation}
     
     So $\w = \w'\after\p$
@@ -2089,11 +2081,11 @@ Let us first consider the action of effect weakenings on these morphisms. The we
         & = \deno{\ewrel{\P'}{\w}{(\G', x:A)}{\G}}
     \end{align*}
     
-    \case{Extend}
+    \case{\textend}
     Then $\w = \w'\x$
     
     \begin{equation}
-        \ntreeruleII{Extend}{\ewrel{\P}{\w'}{\G'}{\G}}{A\subtypep B}{\ewrel{\P}{\w\x}{(\G',x:A)}{(\G, x:B)}}
+        \ntreeruleII{\textend}{\ewrel{\P}{\w'}{\G'}{\G}}{A\subtypep B}{\ewrel{\P}{\w\x}{(\G',x:A)}{(\G, x:B)}}
     \end{equation}
     
     So $\w = \w'\times\deno{A\subtypep B}$
@@ -2121,10 +2113,10 @@ Secondly, we can state and prove the weakening theorem on term-environment subst
 \begin{proof}
     By induction on the definition of $\si$, making use of the weakening on terms, types, and type environments.
 
-    \case{Nil}
+    \case{\tsubnil}
     Then $\si = \term{\G'_{I}}$, so $\w\star(\si) = \term{\G'_{I'}} = \deno{\etyperelation{\P'}{\G'}{\si}{\G}}$
     
-    \case{Extend}
+    \case{\tsubextend}
     Then $\si = (\si',x\setto v)$
     
     \begin{align*}
@@ -2150,10 +2142,10 @@ As with effect substitutions, it is useful to define a couple of special substit
 By inspection, these also have simple denotations, similar to those seen in the case of effect substitutions (Equation \ref{SpecialSubsDenotations}).
 
 \begin{align*}
-    \deno{\etyperelation{\P}{\G}{\Id{\G}}{\G}}: & \G\rightarrow\G\\
-    \deno{\etyperelation{\P}{\G}{\Id{\G}}{\G}} = &  \idg\\
-    \deno{\etyperelation{\P}{\G}{\ssub{x}{v}}{\gax}}: & \G\rightarrow \G\times A\\
-    \deno{\etyperelation{\P}{\G}{\ssub{x}{v}}{\gax}} = & \pr{\idg}{\deno{\gpetyperelation{v}{A}}}
+    \deno{\etyperelation{\P}{\G}{\Id{\G}}{\G}}:\quad & \G\rightarrow\G\\
+    \deno{\etyperelation{\P}{\G}{\Id{\G}}{\G}} =\quad &  \idg\\
+    \deno{\etyperelation{\P}{\G}{\ssub{x}{v}}{\gax}}:\quad & \G\rightarrow \G\times A\\
+    \deno{\etyperelation{\P}{\G}{\ssub{x}{v}}{\gax}} =\quad & \pr{\idg}{\deno{\gpetyperelation{v}{A}}}
 \end{align*}
 
 Furthermore, it will be useful to have an analogue of the extension lemma for term substitutions.
@@ -2181,19 +2173,19 @@ The term-weakening theorem is as so:
 \begin{proof}
     By induction on the derivation of $\D$. Making use of the weakening of effect environments on term weakenings.
 
-\case{Effect-Gen}
+\case{\vgen}
 This case makes use of the effect weakening of term weakenings.
 
 If $\D$ derives $\gpetyperelation{\elam{\a}{v}}{\all{\a}{A}}$, then by inversion, we have $\D_1$ such that:
 
 \begin{equation}
-    \D = \ntreeruleI{Effect-Gen}{\treeruleI{\D_1}{\etyperelation{\P,\a}{\G}{v}{A}}}{\gpetyperelation{\elam{\a}{v}}{\all{\e}{A}}}
+    \D = \ntreeruleI{\vgen}{\treeruleI{\D_1}{\etyperelation{\P,\a}{\G}{v}{A}}}{\gpetyperelation{\elam{\a}{v}}{\all{\e}{A}}}
 \end{equation}
 
 By induction, we derive $\D_1'$ such that it completes the tree in Equation \ref{TermWeakELamOne}. By induction, its denotation can be related to that of $\D_1$, as in Equation \ref{EffWeakELamDenoOne}. Hence we can show that the denotation of $\D$ is preserved in Equation \ref{EffWeakELamDenoResult}.
 
 \begin{equation}\label{TermWeakELamOne}
-    \D' = \ntreeruleI{Effect-Gen}{\treeruleI{\D_1'}{\etyperelation{\P,\a}{\G'}{v}{A}}}{\etyperelation{\P}{\G'}{(\elam{\a}{v})}{\all{\e}{A}}}
+    \D' = \ntreeruleI{\vgen}{\treeruleI{\D_1'}{\etyperelation{\P,\a}{\G'}{v}{A}}}{\etyperelation{\P}{\G'}{(\elam{\a}{v})}{\all{\e}{A}}}
 \end{equation}
 
 \begin{align*}
@@ -2210,12 +2202,12 @@ By induction, we derive $\D_1'$ such that it completes the tree in Equation \ref
 \end{align*}
 
 
-\case{Bind}
+\case{\vbind}
 This case makes use of the properties \todo{where?} of an S-category, specifically the tensor strength on the graded monad. By inversion, we have derivations $\D_1, \D_2$ such that:
 
 
 \begin{equation}
-    \D = \ntreeruleII{Bind}{
+    \D = \ntreeruleII{\vbind}{
         \treeruleI{\D_1}{\etyperelation{\P}{\G}{v_1}{\M{\E_1}{A}}}
     }{
         \treeruleI{\D_2}{\etyperelation{\P}{\G,x: A}{v_2}{\M{\e_2}{B}}}
@@ -2227,7 +2219,7 @@ This case makes use of the properties \todo{where?} of an S-category, specifical
 If $\ewrel{\P}{\w}{\G'}{\G}$ then $\ewrel{\P}{\w\x}{\G',x:A}{\gax}$, so by induction, we can derive $\D_1'$, $\D_2'$ such that:
 
 \begin{equation}
-    \D' = \ntreeruleII{Bind}{
+    \D' = \ntreeruleII{\vbind}{
         \treeruleI{\D_1'}{\etyperelation{\P}{\G'}{v_1}{\M{\e_1}{A}}}
     }{
         \treeruleI{\D_2'}{\etyperelation{\P}{\G',x: A}{v_2}{\M{\e_2}{B}}}
@@ -2246,15 +2238,15 @@ This preserves denotations:
     & = \D \qt{By definition}
 \end{align*}
 
-\case{Return}
+\case{\vreturn}
     We have the sub-derivation $\D_1$ such that
     \begin{equation}
-        \D = \ntreeruleI{Return}{\treeruleI{\D_1}{\gpetyperelation{v}{A}}}{\gpetyperelation{\return{v}}{\moa}}
+        \D = \ntreeruleI{\vreturn}{\treeruleI{\D_1}{\gpetyperelation{v}{A}}}{\gpetyperelation{\return{v}}{\moa}}
     \end{equation}
 
     Hence, by induction, with $\ewrel{\P}{\w}{\G'}{\G}$, we find the derivation $\D_1'$ such that:
     \begin{equation}
-        \D' = \ntreeruleI{Return}{\treeruleI{\D_1'}{\etyperelation{\P}{\G'}{v}{A}}}{\etyperelation{\P}{\G'}{\return{v}}{\moa}}
+        \D' = \ntreeruleI{\vreturn}{\treeruleI{\D_1'}{\etyperelation{\P}{\G'}{v}{A}}}{\etyperelation{\P}{\G'}{\return{v}}{\moa}}
     \end{equation}
 
     This preserves denotations:
@@ -2282,10 +2274,10 @@ The term-substitution theorem is formulated similarly:
 
 
 
-\case{Weaken}
+\case{\vweaken}
 
 \begin{equation} \label{TermSubsWeakenRule}
-    \ntreeruleI{Weaken}{\treeruleI{\D_1}{\etyperelation{\P}{\G''}{x}{A}}}{\etyperelation{\P}{\G'',y: B}{x}{A}}
+    \ntreeruleI{\vweaken}{\treeruleI{\D_1}{\etyperelation{\P}{\G''}{x}{A}}}{\etyperelation{\P}{\G'',y: B}{x}{A}}
 \end{equation}
 
 By inversion, $\G = \G', y:B$ and we have $\D_1$ deriving the tree in Equation \ref{TermSubsWeakenRule}. In addition, by inversion of the well-formedness of $\etyperelation{\P}{\G'}{\si}{\G}$, we can decompose $\si$ into $(\si', y\setto v)$. Here $\si'$ satisfies $\etyperelation{\P}{\G'}{\si'}{\G''}$, and the denotation of $\si$ depends on that of $\si'$: $\deno{\etyperelation{\P}{\G'}{\si}{\G}} = \pr{\deno{\etyperelation{\P}{\G'}{\si'}{\G''}}}{\deno{\etyperelation{\P}{\G'}{v}{B}}}$. Hence by induction on $\D_1$ we have $\D_1'$ deriving $(\etyperelation{\P}{\G'}{x\ssi}{A})$. So we can take $\D'$ to be $\D_1'$.
@@ -2300,18 +2292,18 @@ Hence
 \end{align*}
 
 
-\case{Fn}
+\case{\vfun}
 
 By inversion, we have $\D_1$ such that the derivation tree in Equation \ref{TermSubLambda} holds. By induction on $(\gax)$ and $\D_1$ we have $\D_1'$ deriving $\etyperelation{\P}{\G', x:A}{(v\ssi)}{B}$. Also by induction, and making use of the extension lemma, we can derive the denotation of $\D_1'$  from $\D_1$: $\D_1' = \D_1\after(\si\times\Id{A})$. Furthermore, $\D_1'$ allows us to construct the derivation $\D'$, in Equation \ref{TermSubLambdaPrime}.
 \begin{equation}\label{TermSubLambda}
-    \D = \ntreeruleI{Fn}{
+    \D = \ntreeruleI{\vfun}{
         \treeruleI{D_1}{\etyperelation{\P}{\G, x:A}{v}{B}}
     }{\etyperelation{\P}{\G}{\lam{x}{A}{v}}{\ab}}
 \end{equation}
 
 
 \begin{equation}\label{TermSubLambdaPrime}
-    \D' = \ntreeruleI{Fn}{
+    \D' = \ntreeruleI{\vfun}{
         \treeruleI{\D_1'}{\etyperelation{\P}{\G', x:A}{(v\ssi)}{B}}
     }{\etyperelation{\P}{\G}{(\lam{x}{A}{v})\ssi}{\ab}}
 \end{equation}
@@ -2351,7 +2343,7 @@ In particular a reduced typing derivation is one where subtyping rule only occur
 \begin{proof}
     This proof proceeds by induction on the term structure, making use of the unique derivations of the subterms to show that a reduced derivation of the whole term must also be unique. There are no cases for subtyping, as it is not a syntactic feature. 
 
-    \case{Bind} This case makes use of the weakening theorem on term environment. Let the trees in equations \ref{UniqueBindOne}, \ref{UniqueBindTwo} be the respective unique reduced type derivations of the subterms. By weakening, $\ewrel{\P}{\i\x}{(\G, x:A)}{(\G, x: A')}$ so if there's a derivation of $\etyperelation{\P}{(\G, x:A')}{v_2}{B}$, there's also one of $\etyperelation{\P}{\gax}{v_2}{B}$ (equation \ref{UniqueBindThree}). 
+    \case{\vbind} This case makes use of the weakening theorem on term environment. Let the trees in equations \ref{UniqueBindOne}, \ref{UniqueBindTwo} be the respective unique reduced type derivations of the subterms. By weakening, $\ewrel{\P}{\i\x}{(\G, x:A)}{(\G, x: A')}$ so if there's a derivation of $\etyperelation{\P}{(\G, x:A')}{v_2}{B}$, there's also one of $\etyperelation{\P}{\gax}{v_2}{B}$ (equation \ref{UniqueBindThree}). 
 
     \begin{equation}\label{UniqueBindOne}
         \edeltacrule{\G}{v_1}{\e_1}{A}{\e_1'}{A'}
@@ -2369,8 +2361,8 @@ In particular a reduced typing derivation is one where subtyping rule only occur
 
     \begin{equation}\label{UniqueBindResult}
         \resizebox{.9\hsize}{!}{
-        \ntreeruleII{Subtype}{
-            \ntreeruleII{Bind}{
+        \ntreeruleII{\vsubtype}{
+            \ntreeruleII{\vbind}{
                 \treeruleI{\D}{\gpetyperelation{v_1}{\M{\e_1}{A}}}
             }{
                 \treeruleI{\D''}{\etyperelation{\P}{\G, x:A}{v_2}{\M{\e_2}{B}}}
@@ -2385,12 +2377,12 @@ In particular a reduced typing derivation is one where subtyping rule only occur
     }
     \end{equation}
 
-    \case{Effect-Gen}
+    \case{\vgen}
     If Equation \ref{ApplyUniqueOne} is the unique reduced derivation of $\etyperelation{\P,\a}{\G}{v}{B}$, then the unique reduced derivation of $\gpetyperelation{\elam{\a}{A}}{\all{\a}{B}}$ is shown in Equation \ref{ApplyUniqueResult}.
 
     \begin{equation}\label{ApplyUniqueResult}
-        \ntreeruleII{Subtype}{
-            \ntreeruleI{Effect-Gen}{
+        \ntreeruleII{\vsubtype}{
+            \ntreeruleI{\vgen}{
                 \treeruleI{\D}{\etyperelation{\P,\a}{\G}{v}{A}}
             }{
                 \gpetyperelation{\elam{\a}{v}}{\all{\a}{A}}
@@ -2403,7 +2395,7 @@ In particular a reduced typing derivation is one where subtyping rule only occur
     \end{equation}
 
     \begin{eqnarray}\label{ApplyUniqueOne}
-        \ntreeruleII{Subtype}{
+        \ntreeruleII{\vsubtype}{
             \treeruleI{\D}{\etyperelation{\P,\a}{\G}{v}{A}}
         }{
             A\subtypepa B
@@ -2419,12 +2411,12 @@ The $\reduce$ function maps each derivation to its reduced equivalent. It does t
 
 \begin{figure}
     \begin{framed}
-        \case{Apply}
-    To find the reduction of a tree ending in (\textit{Apply}) as seen in Equation \ref{ApplyBeforeReduction}, we pattern match on the reductions of the subtrees to find trees $\D_1'$, $\D_2'$, as seen in equations \ref{ApplyReductionOne} and \ref{ApplyReductionTwo}. These trees allow us to build a reduced derivation tree as in Equation \ref{ApplyAfterReduction}.
+        \case{\vapply}
+    To find the reduction of a tree ending in (\textit{\vapply}) as seen in Equation \ref{ApplyBeforeReduction}, we pattern match on the reductions of the subtrees to find trees $\D_1'$, $\D_2'$, as seen in equations \ref{ApplyReductionOne} and \ref{ApplyReductionTwo}. These trees allow us to build a reduced derivation tree as in Equation \ref{ApplyAfterReduction}.
 
     \begin{equation}\label{ApplyBeforeReduction}
         \scalebox{.8}{$
-        \reduce(\ntreeruleII{Apply}{
+        \reduce(\ntreeruleII{\vapply}{
             \treeruleI{\D_1}{
                 \gpetyperelation{v_1}{\ab}
             }
@@ -2440,7 +2432,7 @@ The $\reduce$ function maps each derivation to its reduced equivalent. It does t
 
     \begin{equation}\label{ApplyReductionOne}
         \scalebox{.8}{$
-            \ntreeruleII{Subtype}{
+            \ntreeruleII{\vsubtype}{
                 \treeruleI{\D'_1}{\gpetyperelation{v_1}{\fntype{A'}{B'}}}
             }{
                 \fntype{A'}{B'}\subtypep\fntype{A}{B}
@@ -2452,7 +2444,7 @@ The $\reduce$ function maps each derivation to its reduced equivalent. It does t
 
     \begin{equation}\label{ApplyReductionTwo}
         \scalebox{.8}{$
-        \ntreeruleII{Subtype}{
+        \ntreeruleII{\vsubtype}{
             \treeruleI{\D'_2}{\gpetyperelation{v}{A'}}
         }{
             A'\subtypep A
@@ -2465,15 +2457,15 @@ The $\reduce$ function maps each derivation to its reduced equivalent. It does t
 
     \begin{equation}\label{ApplyAfterReduction}
         \scalebox{.8}{$
-        \ntreeruleII{Subtype}{
-            \ntreeruleII{Apply}{
+        \ntreeruleII{\vsubtype}{
+            \ntreeruleII{\vapply}{
                 \treeruleI{
                     \D'_1
                 }{
                     \gpetyperelation{v_1}{\fntype{A'}{B'}}
                 }
             }{
-                \ntreeruleII{Subtype}{
+                \ntreeruleII{\vsubtype}{
                     \treeruleI{\D'_2}{\gpetyperelation{v_2}{A''}}
                 }{
                     A'' \subtypep A \subtypep A'
@@ -2492,13 +2484,13 @@ The $\reduce$ function maps each derivation to its reduced equivalent. It does t
     \end{equation}
 
 
-    \case{Bind}
+    \case{\vbind}
 
-    To find the reduction of a tree ending in a use of the (\textit{Bind}) rule as seen in Equation \ref{BindBeforeReduction}, we first reduce the left-most subtree, $\D_1$ to find $\D_1'$, as seen in Equation \ref{BindReductionOne}.
+    To find the reduction of a tree ending in a use of the (\textit{\vbind}) rule as seen in Equation \ref{BindBeforeReduction}, we first reduce the left-most subtree, $\D_1$ to find $\D_1'$, as seen in Equation \ref{BindReductionOne}.
     \begin{equation}\label{BindBeforeReduction}
         \scalebox{.8}{$
         \reduce(
-            \ntreeruleII{Bind}{
+            \ntreeruleII{\vbind}{
                 \treeruleI{
                     \D_1
                 }{
@@ -2520,7 +2512,7 @@ The $\reduce$ function maps each derivation to its reduced equivalent. It does t
 
     \begin{equation}\label{BindReductionOne}
         \scalebox{.8}{$
-        \ntreeruleII{Subtype}{
+        \ntreeruleII{\vsubtype}{
             \treeruleI{\D'_1}{\gpetyperelation{v_1}{\M{\e'_1}{A'}}}
         }{
         \subeffecttreep{\e_1'}{A'}{\e_1}{A}
@@ -2530,11 +2522,11 @@ The $\reduce$ function maps each derivation to its reduced equivalent. It does t
         $}
     \end{equation}
 
-    Since $\ewrel{\P}{(i,\x)}{(\G, x: A')}{(\gax)}$ if $A' \subtypep A$, and because $\D_2$ derives $\etyperelation{\P}{(\gax)}{v_2}{\M{\e_2}{B}}$, there also exists a derivation $\D_3$ of $\etyperelation{\P}{(\G, x: A')}{v_2}{\M{\e_2}{B}}$. $\D_3$ is derived from $\D_2$ simply by inserting a (\textit{Subtype}) rule below all instances of the (\textit{Var}) rule. Then we can reduce $\D_3$ to find $\D_3'$ in \ref{BindReductionThree}.
+    Since $\ewrel{\P}{(i,\x)}{(\G, x: A')}{(\gax)}$ if $A' \subtypep A$, and because $\D_2$ derives $\etyperelation{\P}{(\gax)}{v_2}{\M{\e_2}{B}}$, there also exists a derivation $\D_3$ of $\etyperelation{\P}{(\G, x: A')}{v_2}{\M{\e_2}{B}}$. $\D_3$ is derived from $\D_2$ simply by inserting a (\textit{\vsubtype}) rule below all instances of the (\textit{\vvar}) rule. Then we can reduce $\D_3$ to find $\D_3'$ in \ref{BindReductionThree}.
 
     \begin{equation}\label{BindReductionThree}
         \scalebox{.8}{$
-        \ntreeruleII{Subtype}{
+        \ntreeruleII{\vsubtype}{
             \treeruleI{\D'_3}{\etyperelation{\P}{\G, x: A'}{v_2}{\M{\e'_2}{B'}}}
         }{
         \subeffecttreep{\e_1'}{B'}{\e_2}{B}
@@ -2550,10 +2542,10 @@ The $\reduce$ function maps each derivation to its reduced equivalent. It does t
 
     \begin{equation}
         \scalebox{0.8}{$
-        \ntreeruleII{Subtype}{
+        \ntreeruleII{\vsubtype}{
             subeffecttreep{\e_1'\dot\e_2'}{B'}{\e_1\dot\e_2}{B}
         }{
-            \ntreeruleII{Bind}{
+            \ntreeruleII{\vbind}{
                 \treeruleI{
                     \D'_1
                 }{
@@ -2586,7 +2578,7 @@ The $\reduce$ function maps each derivation to its reduced equivalent. It does t
 
 \begin{proof}
     We proceed by induction over the structure of $\D$, making use of the substitution and weakening theorems. We make use of the the definition of the $\reduce$ function as defined in Figure \ref{ReduceFunctionCases}. We also use the definitions of $\D_1, \D_2 ...$ from the same figure.    
-    \case{Apply}
+    \case{\vapply}
     This case makes use of the fact that composing subtyping morphisms gives the transitive subtyping morphism. Let us define some short-hands.
         \begin{align*}
             f & = \deno{A\subtypep A'}: A\rightarrow A' \\
@@ -2611,7 +2603,7 @@ The $\reduce$ function maps each derivation to its reduced equivalent. It does t
             & = \D'\qt{By defintion}
         \end{align*}
         
-    \case{Bind}
+    \case{\vbind}
 
     This is a long case that makes use of the term-environment weakening theorem on terms.
 
@@ -2673,8 +2665,8 @@ The $\reduce$ function maps each derivation to its reduced equivalent. It does t
 
 \begin{figure}[h!]
 \begin{equation}
-    \ntreeruleI{Fn}{
-        \ntreeruleII{Subtype}{
+    \ntreeruleI{\vfun}{
+        \ntreeruleII{\vsubtype}{
             \etyperelation{\P}{\gax}{v}{B}
         }{
             B \subtypep B'
@@ -2685,8 +2677,8 @@ The $\reduce$ function maps each derivation to its reduced equivalent. It does t
 \end{equation}
 
 \begin{equation}
-    \ntreeruleII{Subtype}{ 
-           \ntreeruleI{Fn}{
+    \ntreeruleII{\vsubtype}{ 
+           \ntreeruleI{\vfun}{
             \etyperelation{\P}{\gax}{v}{B}
     }{\gpetyperelation{\lam{x}{A}{v}}{\fntype{A}{B}}}
     }{ \ab \subtype \fntype{A}{B'}}
@@ -2706,42 +2698,42 @@ The equational equivalence relation is a rule-based relation with three main fla
     \begin{framed}
         \[
             \scalebox{0.8}{$
-            \ntreeruleII{Lambda-Beta}{\etyperelation{\P}{\gax}{v_2}{B}}{\gpetyperelation{v_1}{A}}{\gpeberelation{\apply{(\lam{x}{A}{v_1})}{v_2} }{ v_1\ssub{x}{v_2}}{B}}
+            \ntreeruleII{\eqbeta}{\etyperelation{\P}{\gax}{v_2}{B}}{\gpetyperelation{v_1}{A}}{\gpeberelation{\apply{(\lam{x}{A}{v_1})}{v_2} }{ v_1\ssub{x}{v_2}}{B}}
             \quad
-            \ntreeruleI{Lambda-Eta}{\gpetyperelation{v}{\ab}}{\gpeberelation{\lam{x}{A}{(\apply{v}{x}})}{v}{\ab}}
+            \ntreeruleI{\eqeta}{\gpetyperelation{v}{\ab}}{\gpeberelation{\lam{x}{A}{(\apply{v}{x}})}{v}{\ab}}
             $}
         \]
     
         \[\scalebox{0.8}{$
-            \ntreeruleII{Left Unit}{\gpetyperelation{v_1}{A} }{ \etyperelation{\P}{\gax}{v_2}{\meb}}{\gpeberelation{\doin{x}{\return{v_1}}{v_2}}{v_2\ssub{x}{v_1}}{\meb}}
+            \ntreeruleII{\eqleftunit}{\gpetyperelation{v_1}{A} }{ \etyperelation{\P}{\gax}{v_2}{\meb}}{\gpeberelation{\doin{x}{\return{v_1}}{v_2}}{v_2\ssub{x}{v_1}}{\meb}}
             \quad
-            \ntreeruleI{Right Unit}{\gpetyperelation{v}{\mea}}{\gpeberelation{\doin{x}{v}{\return{x}} }{v}{\mea}}
+            \ntreeruleI{\eqrightunit}{\gpetyperelation{v}{\mea}}{\gpeberelation{\doin{x}{v}{\return{x}} }{v}{\mea}}
         $}\]
     
         \[\scalebox{0.8}{$
-            \ntreeruleIII{Associativity}{\gpetyperelation{v_1}{\M{\e_1}{A}} }{\etyperelation{\P}{\gax}{v_2}{\M{\e_2}{B}}}{ \etyperelation{\P}{\gby}{v_3}{\M{\e_3}{C}}}{
+            \ntreeruleIII{\eqassociativity}{\gpetyperelation{v_1}{\M{\e_1}{A}} }{\etyperelation{\P}{\gax}{v_2}{\M{\e_2}{B}}}{ \etyperelation{\P}{\gby}{v_3}{\M{\e_3}{C}}}{
                 \gpeberelation{\doin{x}{v_1}{(\doin{y}{v_2}{v_3})}}{\doin{y}{(\doin{x}{v_1}{v_2})}{v_3}}{\M{\e_1 \dot \e_2 \dot \e_3}{C}}
             }
         $}\]
     
         \[\scalebox{0.8}{$
-            \ntreeruleI{Unit}{\gpetyperelation{v}{\U}}{\gpeberelation{v}{\u}{\U}}
+            \ntreeruleI{\equnitequiv}{\gpetyperelation{v}{\U}}{\gpeberelation{v}{\u}{\U}}
         $}\]
     
         \[\scalebox{0.8}{$
-            \ntreeruleII{If-True}{\gpetyperelation{v_1}{A}}{\gpetyperelation{v_2}{A}}{\gpeberelation{\pifthenelse{A}{\t}{v_1}{v_2}}{v_1}{A}}
+            \ntreeruleII{\eqiftrue}{\gpetyperelation{v_1}{A}}{\gpetyperelation{v_2}{A}}{\gpeberelation{\pifthenelse{A}{\t}{v_1}{v_2}}{v_1}{A}}
             \quad
-            \ntreeruleII{If-False}{\gpetyperelation{v_2}{A}}{\gpetyperelation{v_1}{A}}{\gpeberelation{\pifthenelse{A}{\f}{v_1}{v_2}}{v_2}{A}}    
+            \ntreeruleII{\eqiffalse}{\gpetyperelation{v_2}{A}}{\gpetyperelation{v_1}{A}}{\gpeberelation{\pifthenelse{A}{\f}{v_1}{v_2}}{v_2}{A}}    
         $}\]
     
         \[\scalebox{0.8}{$
-            \ntreeruleII{If-Eta}{\etyperelation{\P}{\G, x: \B}{v_2}{A}}{\gpetyperelation{v_1}{\B}}{\gpeberelation{\pifthenelse{A}{v_1}{v_2\ssub{x}{\t}}{v_2\ssub{x}{\f}}}{v_2\ssub{x}{v_1}}{A}}
+            \ntreeruleII{\eqifeta}{\etyperelation{\P}{\G, x: \B}{v_2}{A}}{\gpetyperelation{v_1}{\B}}{\gpeberelation{\pifthenelse{A}{v_1}{v_2\ssub{x}{\t}}{v_2\ssub{x}{\f}}}{v_2\ssub{x}{v_1}}{A}}
         $}\]
     
         \[\scalebox{0.8}{$
-            \ntreeruleII{Effect-Beta}{\wellformed{\P}{\e}}{\etyperelation{\P, \a}{\G}{v}{A}}{\gpeberelation{\eapp{(\elam{\a}{v}}{\e})}{v\ssub{\a}{\e}}{A\ssub{\a}{\e}}}
+            \ntreeruleII{\eqeffbeta}{\wellformed{\P}{\e}}{\etyperelation{\P, \a}{\G}{v}{A}}{\gpeberelation{\eapp{(\elam{\a}{v}}{\e})}{v\ssub{\a}{\e}}{A\ssub{\a}{\e}}}
             \quad 
-            \ntreeruleI{Effect-Eta}{\etyperelation{\P}{\G}{v}{\all{\a}{A}}}{\gpeberelation{\elam{\a}{(\eapp{v}{\a})}}{v}{\all{\a}{A}}}
+            \ntreeruleI{\eqeffeta}{\etyperelation{\P}{\G}{v}{\all{\a}{A}}}{\gpeberelation{\elam{\a}{(\eapp{v}{\a})}}{v}{\all{\a}{A}}}
         $}\]
     \end{framed}
     \caption{The reduction rules for PEC}
@@ -2751,27 +2743,27 @@ The equational equivalence relation is a rule-based relation with three main fla
 \begin{figure}[ht!]
    \begin{framed}
         \[\scalebox{0.8}{$
-            \ntreeruleI{Effect-Gen}{\eberelation{\P, \a}{\G}{v_1}{v_2}{A}}{\gpeberelation{\elam{\a}{v_1}}{\elam{\a}{v_2}}{\all{\a}{A}}}
+            \ntreeruleI{\eqgen}{\eberelation{\P, \a}{\G}{v_1}{v_2}{A}}{\gpeberelation{\elam{\a}{v_1}}{\elam{\a}{v_2}}{\all{\a}{A}}}
             \quad
-            \ntreeruleII{Effect-Spec}{\gpeberelation{v_1}{v_2}{\all{\a}{A}}}{\wellformed{\P}{\e}}{\gpeberelation{\eapp{v_1}{\e}}{\eapp{v_2}{\e}}{A\ssub{\a}{\e}}}
+            \ntreeruleII{\eqspec}{\gpeberelation{v_1}{v_2}{\all{\a}{A}}}{\wellformed{\P}{\e}}{\gpeberelation{\eapp{v_1}{\e}}{\eapp{v_2}{\e}}{A\ssub{\a}{\e}}}
         $}\]
     
         \[\scalebox{0.8}{$
-            \ntreeruleI{Fn}{\eberelation{\P}{\gax}{v_1}{v_2}{B}}{\gpeberelation{\lam{x}{A}{v_1}}{\lam{x}{A}{v_2}}{\ab}}
+            \ntreeruleI{\eqfun}{\eberelation{\P}{\gax}{v_1}{v_2}{B}}{\gpeberelation{\lam{x}{A}{v_1}}{\lam{x}{A}{v_2}}{\ab}}
             \quad
-            \ntreeruleI{Return}{\gpeberelation{v_1}{v_2}{A}}{\gpeberelation{\return{v_1}}{\return{v_2}}{\moa}}
+            \ntreeruleI{\eqreturn}{\gpeberelation{v_1}{v_2}{A}}{\gpeberelation{\return{v_1}}{\return{v_2}}{\moa}}
         $}\]
     
         \[\scalebox{0.8}{$
-            \ntreeruleII{Apply}{\gpeberelation{v_1}{v_1'}{\ab}}{\gpeberelation{v_2}{v_2'}{A}}{\gpeberelation{\apply{v_1}{v_2}}{\apply{v_1'}{v_2'}}{B}}
+            \ntreeruleII{\eqapply}{\gpeberelation{v_1}{v_1'}{\ab}}{\gpeberelation{v_2}{v_2'}{A}}{\gpeberelation{\apply{v_1}{v_2}}{\apply{v_1'}{v_2'}}{B}}
             \quad   
-            \ntreeruleII{Bind}{\gpeberelation{v_1}{v_1'}{\M{\e_1}{A}} }{\eberelation{\P}{\gax}{v_2}{v_2'}{\M{\e_2}{B}}}{\gpeberelation{\doin{x}{v_1}{v_2}}{\doin{x}{v_1'}{v_2'}}{\M{\e_1 \dot \e_2}{B}}} 
+            \ntreeruleII{\eqbind}{\gpeberelation{v_1}{v_1'}{\M{\e_1}{A}} }{\eberelation{\P}{\gax}{v_2}{v_2'}{\M{\e_2}{B}}}{\gpeberelation{\doin{x}{v_1}{v_2}}{\doin{x}{v_1'}{v_2'}}{\M{\e_1 \dot \e_2}{B}}} 
         $}\]
     
         \[\scalebox{0.8}{$
-            \ntreeruleIII{If}{\gpeberelation{v}{v'}{\B} }{ \gpeberelation{v_1}{v_1'}{A}}{\gpeberelation{v_2}{v_2'}{A}}{\gpeberelation{\pifthenelse{A}{v}{v_1}{v_2}}{\pifthenelse{A}{v'}{v_1'}{v_2'}}{A}}
+            \ntreeruleIII{\eqif}{\gpeberelation{v}{v'}{\B} }{ \gpeberelation{v_1}{v_1'}{A}}{\gpeberelation{v_2}{v_2'}{A}}{\gpeberelation{\pifthenelse{A}{v}{v_1}{v_2}}{\pifthenelse{A}{v'}{v_1'}{v_2'}}{A}}
             \quad    
-            \ntreeruleII{Subtype}{\gpeberelation{v}{v'}{A}}{A \subtypep B}{\gpeberelation{v}{v'}{B}}
+            \ntreeruleII{\eqsubtype}{\gpeberelation{v}{v'}{A}}{A \subtypep B}{\gpeberelation{v}{v'}{B}}
         $}\]
    \end{framed}
     \caption{The congruence rules for PEC}
@@ -2782,13 +2774,13 @@ The equational equivalence relation is a rule-based relation with three main fla
     
     \begin{framed}
         \[
-            \ntreeruleI{Reflexive}{\gpetyperelation{v}{A}}{\gpeberelation{v}{v}{A}}
+            \ntreeruleI{\eqreflexive}{\gpetyperelation{v}{A}}{\gpeberelation{v}{v}{A}}
             \quad
-            \ntreeruleI{Symmetric}{\gpeberelation{v_1}{v_2}{A}}{\gpeberelation{v_2}{v_1}{A}}
+            \ntreeruleI{\eqsymmetric}{\gpeberelation{v_1}{v_2}{A}}{\gpeberelation{v_2}{v_1}{A}}
         \]
     
         \[
-            \ntreeruleII{Transitive}{\gpeberelation{v_1}{v_2}{A}}{\gpeberelation{v_2}{v_3}{A}}{\gpeberelation{v_1}{v_3}{A}}
+            \ntreeruleII{\eqtransitive}{\gpeberelation{v_1}{v_2}{A}}{\gpeberelation{v_2}{v_3}{A}}{\gpeberelation{v_1}{v_3}{A}}
         \]
     \end{framed}
     \caption{Rules expanding the reduction and congruence relation to an equivalence relation}
@@ -2810,7 +2802,7 @@ Now we can state the soundness theorem.
 
     I have omitted the congruence cases here as they hold through simple application of the inductive hypothesis on subterms. This occurs because this denotational semantics is compositional, meaning that denotations of terms are defined entirely in terms of the denotations of their subexpression. Similarly, the equivalence relation cases hold simply because equality on morphisms is an equivalence relation by definition. I do however, give a selection of the reduction cases to demonstrate the necessity of the S-category requirements.
 
-\case{Right Unit}
+\case{\eqrightunit}
 This case makes use of the right-unit monad law. Let $f = \deno{\gpetyperelation{v}{\mea}}$.
     \begin{equation}
     \begin{split}
@@ -2821,7 +2813,7 @@ This case makes use of the right-unit monad law. Let $f = \deno{\gpetyperelation
     \end{split}
 \end{equation}
 
-\case{If-True}
+\case{\eqiftrue}
 This case makes use of the co-product diagram on $\1 + \1$. Let $f = \deno{\gpetyperelation{v_1}{A}}$  and  $g = \deno{\gpetyperelation{v_2}{A}}$. Then we can simplify the denotation of the whole expression.
 
 \begin{equation}
@@ -2835,7 +2827,7 @@ This case makes use of the co-product diagram on $\1 + \1$. Let $f = \deno{\gpet
     \end{split}
 \end{equation}
 
-\case{Effect-Beta}
+\case{\eqeffbeta}
 This case makes use of the adjunction properties of $\allI, \pstar$. Let  $h = \deno{\typerelation{\P}{\e}{\effect}}$, $f = \deno{\etyperelation{\P,\a}{\G}{v}{A}}$, and $A = \deno{\typerelation{\P,\a}{A\ssub{\a}{\a}}{\type}}$. Then we can find the sub-term denotation $\deno{\gpetyperelation{\elam{\a}{v}}{\all{\a}{A}}} = \bar{f}$, which allows us to express the denotation of the whole expression.
 
 \begin{align*}
@@ -2846,7 +2838,7 @@ This case makes use of the adjunction properties of $\allI, \pstar$. Let  $h = \
     &= \deno{\gpetyperelation{v\ssub{\a}{\e}}{A\ssub{\a}{e}}}\qt{By substitution theorem}\\
 \end{align*}
 
-\case{Effect-Eta}
+\case{\eqeffeta}
     Let $f  = \deno{\gpetyperelation{v}{\all{\a}{A}}}$, and $A  = \deno{\typerelation{\P,\a}{A}{\type}}$. We can now express the denotation of the entire expression.
 
     \begin{align*}

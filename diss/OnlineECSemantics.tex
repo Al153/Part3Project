@@ -3,7 +3,6 @@
 
 \begin{document}
 
-
 \abstract
 This document contains a terse explanation of the semantics of the Effect Calculus in an S-Category.
 
@@ -38,16 +37,16 @@ The effects should form a monotonous, partially-ordered monoid $(E, \dot, \1, \s
 \subsection{Subtyping}
     There exists a subtyping partial-order relation $\subtype_{\ground}$ over ground types that is:
     \begin{itemize}
-        \item $\ntreerulez{Reflexive}{A \subtype_{\ground} A}$
-        \item $\ntreeruleII{Transitive}{A \subtype_{\ground} B }{ B \subtype_{\ground} C}{A \subtype_{\ground} C}$
+        \item $\ntreerulez{\sreflexive}{A \subtype_{\ground} A}$
+        \item $\ntreeruleII{\stransitive}{A \subtype_{\ground} B }{ B \subtype_{\ground} C}{A \subtype_{\ground} C}$
     \end{itemize}
 
     We extend this relation with the function subtyping rule to yield the full subtyping relation $\subtype$
 
     \begin{itemize}
-        \item $\ntreeruleI{Ground}{A \subtype_{\ground} B}{A \subtype B}$
-        \item $\ntreeruleII{Fn}{A \subtype A' }{ B' \subtype B }{\fntype{A'}{B'} \subtype \ab}$
-        \item $\ntreeruleII{Effect}{A\subtype A'}{\e\subeffect\e'}{\mea\subtype\M{\e'}{A'}}$
+        \item $\ntreeruleI{\sground}{A \subtype_{\ground} B}{A \subtype B}$
+        \item $\ntreeruleII{\sfun}{A \subtype A' }{ B' \subtype B }{\fntype{A'}{B'} \subtype \ab}$
+        \item $\ntreeruleII{\seffect}{A\subtype A'}{\e\subeffect\e'}{\mea\subtype\M{\e'}{A'}}$
     \end{itemize}
 \subsection{Type Environments}
 An environment, $G \gens \nil \mid \gax$ 
@@ -58,8 +57,8 @@ An environment, $G \gens \nil \mid \gax$
 \end{itemize}
 \paragraph{$\okt$ Predicate}
 \begin{itemize}
-    \item $\ntreerulez{Nil}{\ok{\nil}}$
-    \item $\ntreeruleII{Var}{\ok{\G} }{ x\notin \dom{\G}}{\ok{\gax}}$
+    \item $\ntreerulez{\envnil}{\ok{\nil}}$
+    \item $\ntreeruleII{\envextend}{\ok{\G} }{ x\notin \dom{\G}}{\ok{\gax}}$
 \end{itemize}
 
 
@@ -71,14 +70,14 @@ An environment, $G \gens \nil \mid \gax$
     \item $\truleunit$
     \item $\truletrue$
     \item $\trulefalse$
-    \item $\ntreeruleI{Var}{\ok{\gax}}{\typerelation{\gax}{x}{A}}$
-    \item $\condtreeruleI{Weaken}{\typerelation{\G}{x}{A}}{\typerelation{\gby}{x}{A}}{x \neq y}$
-    \item $\ntreeruleI{Fn}{\typerelation{\gax}{v}{B}}{\typerelation{\G}{\lam{x}{A}{v}}{\ab}}$
-    \item $\ntreeruleII{Sub}{\typerelation{\G}{v}{A}}{ A \subtype B}{\typerelation{\G}{v}{B}}$
-    \item $\ntreeruleI{Return}{\typerelation{\G}{v}{A}}{\typerelation{\G}{\return{v}}{\moa}}$
-    \item $\ntreeruleII{Apply}{\typerelation{\G}{v_1}{\ab}}{\typerelation{\G}{v_2}{A}}{\typerelation{\G}{\apply{v_1}{v_2}}{B}}$
-    \item $\ntreeruleIII{If}{\typerelation{\G}{v}{\B} }{ \typerelation{\G}{v_1}{ A}}{\typerelation{\G}{v_2}{ A}}{\typerelation{\G}{\pifthenelse{A}{V}{v_1}{v_2}}{ A}}$
-    \item $\ntreeruleII{Do}{\typerelation{\G}{v_1}{\M{\e_1}{A}} }{ \typerelation{\gax}{v_2}{\M{\e_2}{B}}}{\typerelation{\G}{\doin{x}{v_1}{v_2}}{\M{\e_1 \dot \e_2}{B}}}$
+    \item $\ntreeruleI{\vvar}{\ok{\gax}}{\typerelation{\gax}{x}{A}}$
+    \item $\condtreeruleI{\vweaken}{\typerelation{\G}{x}{A}}{\typerelation{\gby}{x}{A}}{x \neq y}$
+    \item $\ntreeruleI{\vfun}{\typerelation{\gax}{v}{B}}{\typerelation{\G}{\lam{x}{A}{v}}{\ab}}$
+    \item $\ntreeruleII{\vsubtype}{\typerelation{\G}{v}{A}}{ A \subtype B}{\typerelation{\G}{v}{B}}$
+    \item $\ntreeruleI{\vreturn}{\typerelation{\G}{v}{A}}{\typerelation{\G}{\return{v}}{\moa}}$
+    \item $\ntreeruleII{\vapply}{\typerelation{\G}{v_1}{\ab}}{\typerelation{\G}{v_2}{A}}{\typerelation{\G}{\apply{v_1}{v_2}}{B}}$
+    \item $\ntreeruleIII{\vif}{\typerelation{\G}{v}{\B} }{ \typerelation{\G}{v_1}{ A}}{\typerelation{\G}{v_2}{ A}}{\typerelation{\G}{\pifthenelse{A}{V}{v_1}{v_2}}{ A}}$
+    \item $\ntreeruleII{\vbind}{\typerelation{\G}{v_1}{\M{\e_1}{A}} }{ \typerelation{\gax}{v_2}{\M{\e_2}{B}}}{\typerelation{\G}{\doin{x}{v_1}{v_2}}{\M{\e_1 \dot \e_2}{B}}}$
 \end{itemize}
 
 \subsection{Ok Lemma}
@@ -91,7 +90,7 @@ An environment, $G \gens \nil \mid \gax$
 \begin{framed}
     \begin{proof}
         If $\ok{\gax}$ then by inversion $\ok{\G}$
-        Only the type rule \texttt{Weaken} adds terms to the environment from its preconditions to its post-condition and it does so in an $\okt$ preserving way. Any type derivation tree has at least one leaf. All leaves are axioms which require $\ok{\G}$. And all non-axiom derivations preserve the $\okt$ property.
+        Only the type rule \textit{\vweaken} adds terms to the environment from its preconditions to its post-condition and it does so in an $\okt$ preserving way. Any type derivation tree has at least one leaf. All leaves are axioms which require $\ok{\G}$. And all non-axiom derivations preserve the $\okt$ property.
     \end{proof}
 \end{framed}
 
@@ -155,34 +154,34 @@ Denotations are defined recursively over the typing derivation of a term. Hence,
 
 \subsection{Denotation of Terms}
 \begin{itemize}
-    \item $\ntreeruleI{Unit}{\ok{\G}}{\deno{\typerelation{\G}{\u}{\U}} = \term{\G} : \G \rightarrow \1}$
+    \item $\ntreeruleI{\vunit}{\ok{\G}}{\deno{\typerelation{\G}{\u}{\U}} = \term{\G} : \G \rightarrow \1}$
         
-    \item $\ntreeruleI{Const}{\ok{\G}}{\deno{\typerelation{\G}{\const{A}}{A}} = \deno{\const{A}} \after \term{\G} : \G \rightarrow A}$
+    \item $\ntreeruleI{\vconst}{\ok{\G}}{\deno{\typerelation{\G}{\const{A}}{A}} = \deno{\const{A}} \after \term{\G} : \G \rightarrow A}$
          
-    \item $\ntreeruleI{True}{\ok{\G}}{\deno{\typerelation{\G}{\t}{\B}} = \inl \after \term{\G} : \G \rightarrow \deno{\B} = \1+\1}$
+    \item $\ntreeruleI{\vtrue}{\ok{\G}}{\deno{\typerelation{\G}{\t}{\B}} = \inl \after \term{\G} : \G \rightarrow \deno{\B} = \1+\1}$
         
-    \item $\ntreeruleI{False}{\ok{\G}}{\deno{\typerelation{\G}{\f}{\B}} = \inr \after \term{\G} : \G \rightarrow \deno{\B} = \1+\1}$
+    \item $\ntreeruleI{\vfalse}{\ok{\G}}{\deno{\typerelation{\G}{\f}{\B}} = \inr \after \term{\G} : \G \rightarrow \deno{\B} = \1+\1}$
         
-    \item $\ntreeruleI{Var}{\ok{\G}}{\deno{\typerelation{\gax}{x}{A}} = \pp: \G \times A \rightarrow A}$
-    \item $\ntreeruleI{Weaken}{f = \deno{\gtyperelation{x}{A}}: \G \rightarrow A}{\deno{\typerelation{\gby}{x}{A}} = f \after \p: \G \times B \rightarrow A}$
-    \item $\ntreeruleI{Fn}{f = \deno{\typerelation{\gax}{v}{B}} : \G \times A \rightarrow B}{\deno{\typerelation{\G}{\lam{x}{A}{v}}{A \rightarrow B}} = \cur{f} : \G \rightarrow (B)^A}$
+    \item $\ntreeruleI{\vvar}{\ok{\G}}{\deno{\typerelation{\gax}{x}{A}} = \pp: \G \times A \rightarrow A}$
+    \item $\ntreeruleI{\vweaken}{f = \deno{\gtyperelation{x}{A}}: \G \rightarrow A}{\deno{\typerelation{\gby}{x}{A}} = f \after \p: \G \times B \rightarrow A}$
+    \item $\ntreeruleI{\vfun}{f = \deno{\typerelation{\gax}{v}{B}} : \G \times A \rightarrow B}{\deno{\typerelation{\G}{\lam{x}{A}{v}}{A \rightarrow B}} = \cur{f} : \G \rightarrow (B)^A}$
     
-    \item $\ntreeruleII{Subtype}{f = \deno{\typerelation{\G}{v}{A}} : \G \rightarrow A}{ g = \deno{A \subtype B}}{\deno{\typerelation{\G}{v}{B}} = g \after f : \G \rightarrow B}$
+    \item $\ntreeruleII{\vsubtype}{f = \deno{\typerelation{\G}{v}{A}} : \G \rightarrow A}{ g = \deno{A \subtype B}}{\deno{\typerelation{\G}{v}{B}} = g \after f : \G \rightarrow B}$
   
-    \item $\ntreeruleI{Return}{f = \deno{\typerelation{\G}{v}{A}}}{\deno{\typerelation{\G}{\return{v}}{\moa}} = \point{A} \after f}$
+    \item $\ntreeruleI{\vreturn}{f = \deno{\typerelation{\G}{v}{A}}}{\deno{\typerelation{\G}{\return{v}}{\moa}} = \point{A} \after f}$
         
  
-    \item $\ntreeruleIII{If}{f = \deno{\typerelation{\G}{v}{\B}}: \G\rightarrow\1+\1 }{ g = \deno{\typerelation{\G}{v_1}{ A}}}{ h = \deno{\typerelation{\G}{v_2}{ A}}}{\deno{{\typerelation{\G}{\pifthenelse{A}{v}{v_1}{v_2}}{ A}}} = \app\after((\fld{\cur{g\after\pp}}{\cur{h\after\pp}}\after f)\times \idg)\after \diag{\G} : \G \rightarrow A}$
+    \item $\ntreeruleIII{\vif}{f = \deno{\typerelation{\G}{v}{\B}}: \G\rightarrow\1+\1 }{ g = \deno{\typerelation{\G}{v_1}{ A}}}{ h = \deno{\typerelation{\G}{v_2}{ A}}}{\deno{{\typerelation{\G}{\pifthenelse{A}{v}{v_1}{v_2}}{ A}}} = \app\after((\fld{\cur{g\after\pp}}{\cur{h\after\pp}}\after f)\times \idg)\after \diag{\G} : \G \rightarrow A}$
         
-    \item $\ntreeruleII{Bind}{f = \deno{\typerelation{\G}{v_1}{\M{\e_1}{A}} : \G \rightarrow \T{\e_1}{A}}}{{ g = \deno{\typerelation{\gax}{v_2}{\M{\e_2}{B}}}}: \G \times A \rightarrow \T{\e_2}{B}}{\deno{\typerelation{\G}{\doin{x}{v_1}{v_2}}{\M{\e_1 \dot \e_2}{B}}} = \bind{\e_1}{\e_2}{B} \after \T{\e_1}{g} \after \tstrength{\G}{A}{\e_1} \after \pr{\idg}{f}: \G \rightarrow \T{\e_1 \dot \e_2}{B}}$ 
+    \item $\ntreeruleII{\vbind}{f = \deno{\typerelation{\G}{v_1}{\M{\e_1}{A}} : \G \rightarrow \T{\e_1}{A}}}{{ g = \deno{\typerelation{\gax}{v_2}{\M{\e_2}{B}}}}: \G \times A \rightarrow \T{\e_2}{B}}{\deno{\typerelation{\G}{\doin{x}{v_1}{v_2}}{\M{\e_1 \dot \e_2}{B}}} = \bind{\e_1}{\e_2}{B} \after \T{\e_1}{g} \after \tstrength{\G}{A}{\e_1} \after \pr{\idg}{f}: \G \rightarrow \T{\e_1 \dot \e_2}{B}}$ 
     
-    \item $\ntreeruleII{Apply}{f = \deno{\gtyperelation{v_1}{\ab}}: \G \rightarrow (B)^{A} }{ g=\deno{\gtyperelation{v_2}{A}}: \G \rightarrow A}{\deno{\gtyperelation{\apply{v_1}{v_2}}{B}}= \app\after\pr{f}{g}: \G \rightarrow B }$
+    \item $\ntreeruleII{\vapply}{f = \deno{\gtyperelation{v_1}{\ab}}: \G \rightarrow (B)^{A} }{ g=\deno{\gtyperelation{v_2}{A}}: \G \rightarrow A}{\deno{\gtyperelation{\apply{v_1}{v_2}}{B}}= \app\after\pr{f}{g}: \G \rightarrow B }$
 \end{itemize}  
 
 \chapter{Unique Denotations}
  
 \section{Reduced Type Derivation}
-A reduced type derivation is one where instances of the subtype rule must, and may only, occur at the root or directly above an \textbf{If}, or \textbf{Apply} rule.
+A reduced type derivation is one where instances of the subtype rule must, and may only, occur at the root or directly above an \textit{\vif}, or \textit{\vapply} rule.
 
 In this section, I shall prove that there is at most one reduced derivation of $\gtyperelation{v}{A}$. Secondly, I shall present a function for generating reduced derivations from arbitrary typing derivations, in a way that does not change the denotations. These imply that all typing derivations of a type-relation have the same denotation.
 
@@ -204,7 +203,7 @@ In this section, I shall prove that there is at most one reduced derivation of $
         Then the unique reduced derivation of $\gtyperelation{x}{A}$ is, if $A' \subtype A$, as below:
         
         \begin{equation}
-            \ntreeruleII{Subtype}{\ntreeruleI{Var}{\ok{\G', x: A'}}{\typerelation{\G,x: A'}{x}{A'}}}{ A' \subtype A}{\typerelation{\G', x: A'}{x}{A}}
+            \ntreeruleII{\vsubtype}{\ntreeruleI{\vvar}{\ok{\G', x: A'}}{\typerelation{\G,x: A'}{x}{A'}}}{ A' \subtype A}{\typerelation{\G', x: A'}{x}{A}}
         \end{equation}
         
         \case{$\G = \G', y: B$} with $y \neq x$.
@@ -221,8 +220,8 @@ In this section, I shall prove that there is at most one reduced derivation of $
         
         
         \begin{equation}
-            \ntreeruleII{Subtype}{
-                \ntreeruleI{Weaken}{
+            \ntreeruleII{\vsubtype}{
+                \ntreeruleI{\vweaken}{
                     \treeruleI{\D}{\typerelation{\G, x: A'}{x}{A'}}
                 }{\gtyperelation{x}{A'}}   
             }{ A' \subtype A
@@ -234,18 +233,18 @@ In this section, I shall prove that there is at most one reduced derivation of $
         
         
         $$
-            \ntreeruleII{Subtype}{\truleconst}{ A \subtype B}{\gtyperelation{\const{A}}{B}}
+            \ntreeruleII{\vsubtype}{\truleconst}{ A \subtype B}{\gtyperelation{\const{A}}{B}}
         $$
         
         If $A = B$, then the subtype relation is the identity subtype ($A \subtype A$).
         
-        \case{Fn}
+        \case{\vfun}
         The reduced derivation of $\gtyperelation{\lam{x}{A}{v}}{\fntype{A'}{B'}}$ is:
         
         
         $$
-        \ntreeruleII{Subtype}
-        {\ntreeruleI{Fn}{\treeruleI{\D}{\typerelation{\gax}{v}{B}}}
+        \ntreeruleII{\vsubtype}
+        {\ntreeruleI{\vfun}{\treeruleI{\D}{\typerelation{\gax}{v}{B}}}
         {
             \gtyperelation{\lam{x}{A}{B}}{\ab}}
             }{
@@ -257,16 +256,16 @@ In this section, I shall prove that there is at most one reduced derivation of $
         
         Where 
         \begin{equation}
-            \ntreeruleII{SubEffect}{\treeruleI{\D}{\typerelation{\gax}{v}{B}}}{ B\subtype B'}{\typerelation{\gax}{v}{B'}}
+            \ntreeruleII{\vsubtype}{\treeruleI{\D}{\typerelation{\gax}{v}{B}}}{ B\subtype B'}{\typerelation{\gax}{v}{B'}}
         \end{equation}
         is the reduced derivation of $\typerelation{\gax}{v}{\M{\e'}{B}}$ if it exists.
         
-        \case{Return}
+        \case{\vreturn}
         The reduced denotation of $\gtyperelation{\return{v}}{\meb}$ is 
         $$
-            \ntreeruleII{Subtype}
+            \ntreeruleII{\vsubtype}
             {
-                \ntreeruleI{Return}
+                \ntreeruleI{\vreturn}
                 {\treeruleI{\D}{\gtyperelation{v}{A}}}
                 {\gtyperelation{\return{v}}{\moa}}
                 }{
@@ -277,7 +276,7 @@ In this section, I shall prove that there is at most one reduced derivation of $
         
         Where $$\deltavrule{\G}{v}{A}{B}$$ is the reduced derivation of $\gtyperelation{v}{B}$
         
-        \case{Apply}
+        \case{\vapply}
         If 
         $$
             \deltavrule{\G}{v_1}{\ab}{\fntype{A'}{B'}}
@@ -292,13 +291,13 @@ In this section, I shall prove that there is at most one reduced derivation of $
         Then we can construct the reduced derivation of $\gtyperelation{\apply{v_1}{v_2}}{B'}$ as
         
         $$
-            \ntreeruleII{Subtype}{
-                \ntreeruleII{Apply}{
+            \ntreeruleII{\vsubtype}{
+                \ntreeruleII{\vapply}{
                     \treeruleI{\D}{
                         \gtyperelation{v_1}{\ab}
                     }
                     }{
-                    \ntreeruleII{Subtype}{
+                    \ntreeruleII{\vsubtype}{
                         \treeruleI{\D'}{
                             \gtyperelation{v}{A''}
                         } }{ A'' \subtype A
@@ -313,7 +312,7 @@ In this section, I shall prove that there is at most one reduced derivation of $
                 \gtyperelation{\apply{v_1}{v_2}}{B'}
             }
         $$
-        \case{If}
+        \case{\vif}
         Let
         
         \begin{equation}
@@ -334,8 +333,8 @@ In this section, I shall prove that there is at most one reduced derivation of $
                 
         \begin{equation}
         \scalebox{.8}{$
-            \ntreeruleII{Subtype}{
-                \ntreeruleIII{If}{
+            \ntreeruleII{\vsubtype}{
+                \ntreeruleIII{\vif}{
                     \scalebox{.5}{$\deltavrule{\G}{v}{B}{\B}$}
                 }{
                     \scalebox{.5}{$\deltacruleprime{\G}{v_1}{\e'}{A'}{\e}{A}$}
@@ -352,7 +351,7 @@ In this section, I shall prove that there is at most one reduced derivation of $
                 $}
         \end{equation}
         
-        \case{Bind}
+        \case{\vbind}
         
         Let 
         
@@ -377,8 +376,8 @@ In this section, I shall prove that there is at most one reduced derivation of $
         Hence the reduced type derivation of $\gtyperelation{\doin{x}{v_1}{v_2}}{\M{\e_1'\dot\e_2'}{B'}}$ is the following:
         
         \begin{equation}
-            \ntreeruleII{Subtype} {\scalebox{0.5}{$
-                \ntreeruleII{Bind}{
+            \ntreeruleII{\vsubtype} {\scalebox{0.5}{$
+                \ntreeruleII{\vbind}{
                     \scalebox{0.8}{$
                     \deltacrule{\G}{v_1}{\e_1}{A}{\e_1'}{A'}
                     $}}{\scalebox{0.8}{$
@@ -415,29 +414,29 @@ In this section, I shall prove that there is at most one reduced derivation of $
         
                 $\reduce(\truleconst) = \truleconst$
         
-                \case{Var}
+                \case{\vvar}
                 \begin{equation}
-                    \reduce(\ntreeruleI{Var}{\ok{\G}}{\typerelation{\gax}{x}{A}}) =  \ntreeruleI{Var}{\ok{\G}}{\typerelation{\gax}{x}{A}}
+                    \reduce(\ntreeruleI{\vvar}{\ok{\G}}{\typerelation{\gax}{x}{A}}) =  \ntreeruleI{\vvar}{\ok{\G}}{\typerelation{\gax}{x}{A}}
                 \end{equation}
         
                 Preserves denotation trivially.
         
-                \case{Weaken}
+                \case{\vweaken}
                 \subparagraph{$\reduce$ definition}
                 To find:
                 \begin{equation}
-                    \reduce(\ntreeruleI{Weaken}{\treeruleI{\D}{\gtyperelation{x}{A}}}{\typerelation{\gby}{x}{A}})
+                    \reduce(\ntreeruleI{\vweaken}{\treeruleI{\D}{\gtyperelation{x}{A}}}{\typerelation{\gby}{x}{A}})
                 \end{equation}
         
                 Let 
                 \begin{equation}\label{WeakenDeltaReduction}
-                    \ntreeruleII{Subtype}{\treeruleI{\D'}{\gtyperelation{x}{A}}}{ A'\subtype A}{\gtyperelation{x}{A}} = \reduce(\D)
+                    \ntreeruleII{\vsubtype}{\treeruleI{\D'}{\gtyperelation{x}{A}}}{ A'\subtype A}{\gtyperelation{x}{A}} = \reduce(\D)
                 \end{equation}
         
                 In 
                 \begin{equation}
-                    \ntreeruleII{Subtype}{
-                    \ntreeruleI{Weaken}{
+                    \ntreeruleII{\vsubtype}{
+                    \ntreeruleI{\vweaken}{
                         \treeruleI{\D'}{\gtyperelation{x}{A'}}
                     } {
                         \typerelation{\gby}{x}{A'}
@@ -450,13 +449,13 @@ In this section, I shall prove that there is at most one reduced derivation of $
                 \subparagraph{Preserves Denotation}
                 Using the construction of denotations, we can find the denotation of the original derivation to be:
                 \begin{equation}
-                    \deno{\ntreeruleI{Weaken}{\treeruleI{\D}{\gtyperelation{x}{A}}}{\typerelation{\gby}{x}{A}}} = \D \after \p
+                    \deno{\ntreeruleI{\vweaken}{\treeruleI{\D}{\gtyperelation{x}{A}}}{\typerelation{\gby}{x}{A}}} = \D \after \p
                 \end{equation}
         
                 Similarly, the denotation of the reduced denotation is:
                 \begin{equation}
-                    \deno{\ntreeruleII{Subtype}{
-                        \ntreeruleI{Weaken}{
+                    \deno{\ntreeruleII{\vsubtype}{
+                        \ntreeruleI{\vweaken}{
                             \treeruleI{\D'}{\gtyperelation{x}{A'}}
                         } {
                             \typerelation{\gby}{x}{A'}
@@ -475,12 +474,12 @@ In this section, I shall prove that there is at most one reduced derivation of $
         
                 So the denotations of the un-reduced and reduced derivations are equal.
         
-                \case{Fn}
+                \case{\vfun}
                 \subparagraph{$\reduce$ definition}
                     To find:
                 
                     \begin{equation}
-                        \reduce(\ntreeruleI{Fn}{
+                        \reduce(\ntreeruleI{\vfun}{
                             \treeruleI{\D}{\typerelation{\gax}{v}{\M{\e_2}{B}}}
                         }{\gtyperelation{\lam{x}{A}{v}}{\ab}})
                     \end{equation}
@@ -488,7 +487,7 @@ In this section, I shall prove that there is at most one reduced derivation of $
                     Let 
         
                     \begin{equation}
-                        \ntreeruleII{Subtype}{
+                        \ntreeruleII{\vsubtype}{
                             \treeruleI{\D'}{\typerelation{\gax}{v}{B'}}
                             }{B\subtype B'}{
                             \typerelation{\gax}{v}{B}
@@ -498,8 +497,8 @@ In this section, I shall prove that there is at most one reduced derivation of $
                     In
         
                     \begin{equation}
-                        \ntreeruleII{Subtype}{
-                            \ntreeruleI{Fn}{
+                        \ntreeruleII{\vsubtype}{
+                            \ntreeruleI{\vfun}{
                                 \D'
                             }{
                                 \typerelation{\gax}{v}{\M{\e_1}{B'}}
@@ -527,21 +526,21 @@ In this section, I shall prove that there is at most one reduced derivation of $
                                 & = after \qt{By definition}\\
                     \end{align*}
         
-                \case{Subtype}
+                \case{\vsubtype}
                 \subparagraph{$\reduce$ definition}
                 To find:
                 \begin{equation}
-                    \reduce(\ntreeruleII{Subtype}{\treeruleI{\D}{\gtyperelation{v}{A}}}{ A \subtype B}{\gtyperelation{v}{B}})
+                    \reduce(\ntreeruleII{\vsubtype}{\treeruleI{\D}{\gtyperelation{v}{A}}}{ A \subtype B}{\gtyperelation{v}{B}})
                 \end{equation}
         
                 Let 
                 \begin{equation}\label{SubtypeDeltaReduction}
-                    \ntreeruleII{Subtype}{\treeruleI{\D'}{\gtyperelation{x}{A}}}{ A'\subtype A}{\gtyperelation{x}{A}} = \reduce(\D)
+                    \ntreeruleII{\vsubtype}{\treeruleI{\D'}{\gtyperelation{x}{A}}}{ A'\subtype A}{\gtyperelation{x}{A}} = \reduce(\D)
                 \end{equation}
         
                 In 
                 \begin{equation}
-                    \ntreeruleII{Subtype}{
+                    \ntreeruleII{\vsubtype}{
                         \treeruleI{\D'}{\gtyperelation{v}{A'}}
                     }{
                     A' \subtype A \subtype B
@@ -556,12 +555,12 @@ In this section, I shall prove that there is at most one reduced derivation of $
                         & = after \\
                     \end{align*}
             
-                \case{Return}
+                \case{\vreturn}
                 \subparagraph{$\reduce$ definition}
                 To find:
                 
                     \begin{equation}
-                        \reduce(\ntreeruleI{Return}{
+                        \reduce(\ntreeruleI{\vreturn}{
                             \treeruleI{\D}{\gtyperelation{v}{A}}
                         }{\gtyperelation{\return{v}}{\moa}})
                     \end{equation}
@@ -569,7 +568,7 @@ In this section, I shall prove that there is at most one reduced derivation of $
                     Let 
         
                     \begin{equation}
-                        \ntreeruleII{Subtype}{
+                        \ntreeruleII{\vsubtype}{
                             \treeruleI{\D'}{\gtyperelation{v}{A'}}
                             }{
                             A' \subtype A
@@ -581,8 +580,8 @@ In this section, I shall prove that there is at most one reduced derivation of $
                     In
         
                     \begin{equation}
-                        \ntreeruleII{Subtype}{
-                            \ntreeruleI{Return}{
+                        \ntreeruleII{\vsubtype}{
+                            \ntreeruleI{\vreturn}{
                                 \D'
                             }{
                                 \gtyperelation{v}{A'}
@@ -602,11 +601,11 @@ In this section, I shall prove that there is at most one reduced derivation of $
                         &{}=\deno{\1\subeffect\1}_{A} \after \T{\1}{\deno{A'\subtype A}}\after\point{A'}\after\D'\qt{Since $\deno{\1\subeffect\1}$ is the identity Nat-Trans }\\
                         &{}=after\qt{By definition}\\
                     \end{align*}
-                \case{Apply}
+                \case{\vapply}
                 \subparagraph{$\reduce$ definition}
                 To find:
                 \begin{equation}
-                    \reduce(\ntreeruleII{Apply}{
+                    \reduce(\ntreeruleII{\vapply}{
                         \treeruleI{\D_1}{
                             \gtyperelation{v_1}{\ab}
                         }
@@ -621,14 +620,14 @@ In this section, I shall prove that there is at most one reduced derivation of $
         
                 Let
                 \begin{align*}
-                    \ntreeruleII{Subtype}{
+                    \ntreeruleII{\vsubtype}{
                         \treeruleI{\D'_1}{\gtyperelation{v_1}{\fntype{A'}{B'}}}
                         }{
                         \fntype{A'}{B'}\subtype\ab
                     }{
                         \gtyperelation{v_1}{\ab}
                     } & = \reduce(\D_1)\\
-                    \ntreeruleII{Subtype}{
+                    \ntreeruleII{\vsubtype}{
                         \treeruleI{\D'_2}{\gtyperelation{v}{A'}}
                         }{
                         A'\subtype A
@@ -639,15 +638,15 @@ In this section, I shall prove that there is at most one reduced derivation of $
         
                 In
                 \begin{equation}
-                    \ntreeruleII{Subtype}{
-                        \ntreeruleII{Apply}{
+                    \ntreeruleII{\vsubtype}{
+                        \ntreeruleII{\vapply}{
                             \treeruleI{
                                 \D'_1
                             }{
                                 \gtyperelation{v_1}{\fntype{A'}{B'}}
                             }
                         }{
-                            \ntreeruleII{Subtype}{
+                            \ntreeruleII{\vsubtype}{
                                 \treeruleI{\D'_2}{\gtyperelation{v_2}{A''}}
                                 }{
                                 A'' \subtype A \subtype A'
@@ -688,12 +687,12 @@ In this section, I shall prove that there is at most one reduced derivation of $
                         & = h_B\after\T{\e'}{g}\after\app\after\pr{\D'_1}{f\after f'\after \D'_2}\\
                         & = after\qt{By defintion}
                     \end{align*}
-                \case{If}
+                \case{\vif}
                
                 \subparagraph{$\reduce$ definition}
                 \begin{equation}
                     \scalebox{.95}{%
-                        \reduce(\ntreeruleIII{If}{
+                        \reduce(\ntreeruleIII{\vif}{
                             \treeruleI{\D_1}{\gtyperelation{v}{\B}}
                             }{
                             \treeruleI{\D_2}{\gtyperelation{v_1}{ A}}
@@ -701,7 +700,7 @@ In this section, I shall prove that there is at most one reduced derivation of $
                             \treeruleI{\D_3}{\gtyperelation{v_2}{ A}}
                         }{
                             \gtyperelation{\pifthenelse{A}{v}{v_1}{v_2}}{ A}
-                        }) = \ntreeruleIII{If}{
+                        }) = \ntreeruleIII{\vif}{
                             \treeruleI{\reduce(\D_1)}{\gtyperelation{v}{\B}}
                             }{
                             \treeruleI{\reduce(\D_2)}{\gtyperelation{v_1}{ A}}
@@ -718,13 +717,13 @@ In this section, I shall prove that there is at most one reduced derivation of $
                     Since calling $\reduce{}$ on the sub-derivations preserves their denotations, this definition trivially preserves the denotation of the derivation.
         
         
-                    \case{Bind}
+                    \case{\vbind}
                     \subparagraph{$\reduce$ definition}
         
                     To find
                     \begin{equation}
                         \reduce(
-                            \ntreeruleII{Bind}{
+                            \ntreeruleII{\vbind}{
                                 \treeruleI{
                                     \D_1
                                 }{
@@ -743,7 +742,7 @@ In this section, I shall prove that there is at most one reduced derivation of $
                     \end{equation}
         
                     Let \begin{equation}
-                        \ntreeruleII{Subtype}{
+                        \ntreeruleII{\vsubtype}{
                             \treeruleI{\D'_1}{\gtyperelation{v_1}{\M{\e'_1}{A'}}}
                         }{
                             \subeffecttree{\e_1'}{A'}{\e_1}{A}
@@ -755,7 +754,7 @@ In this section, I shall prove that there is at most one reduced derivation of $
                     Since $\wrel{i,\x}{\G, x: A'}{\gax}$ if $A' \subtype A$, and by $\D_2$, $\typerelation{(\gax)}{v_2}{\M{\e_2}{B}}$, there also exists a derivation $\D_3$ of $\typerelation{(\G, x: A')}{v_2}{\M{\e_2}{B}}$. $\D_3$ is derived from $\D_2$ simply by inserting a (Subtype) rule below all instances of the (Var) rule.
         
                     Let \begin{equation}
-                        \ntreeruleII{Subtype}{
+                        \ntreeruleII{\vsubtype}{
                             \treeruleI{\D'_3}{\typerelation{\G, x: A'}{v_2}{\M{\e'_2}{B'}}}
                         }{
                             \subeffecttree{\e_2'}{B'}{\e_2}{B}
@@ -773,8 +772,8 @@ In this section, I shall prove that there is at most one reduced derivation of $
         
         
                     \begin{equation}
-                        \ntreeruleII{Subtype}{
-                            \ntreeruleII{Bind}{
+                        \ntreeruleII{\vsubtype}{
+                            \ntreeruleII{\vbind}{
                                 \treeruleI{
                                     \D'_1
                                 }{
@@ -864,9 +863,9 @@ We define the ternary weakening relation $\wrel{w}{\G'}{\G}$ using the following
 
 
 \begin{itemize}
-    \item $\ntreeruleI{Id}{\ok{\G}}{\wrel{\i}{\G}{\G}}$
-    \item $\ntreeruleII{Project}{\wrel{\w}{\G'}{\G}}{ x \notin \dom{\G'}}{\wrel{\w \pi}{\G, x: A}{\G}}$
-    \item $\ntreeruleIII{Extend}{\wrel{\w}{\G'}{\G}}{ x \notin \dom{\G'}}{ A \subtype B}{\wrel{w \x}{\G', x: A}{\G, x: B}}$
+    \item $\ntreeruleI{\tid}{\ok{\G}}{\wrel{\i}{\G}{\G}}$
+    \item $\ntreeruleII{\tproject}{\wrel{\w}{\G'}{\G}}{ x \notin \dom{\G'}}{\wrel{\w \pi}{\G, x: A}{\G}}$
+    \item $\ntreeruleIII{\textend}{\wrel{\w}{\G'}{\G}}{ x \notin \dom{\G'}}{ A \subtype B}{\wrel{w \x}{\G', x: A}{\G, x: B}}$
 \end{itemize}
 
 \subsection{Weakening Denotations}
@@ -879,9 +878,9 @@ The denotation of a weakening relation is defined as follows:
 \begin{itemize}
     \item $\deno{\wrel{\i}{\G}{\G}} = \idg: \G \rightarrow \G$
     
-    \item $\ntreeruleI{Project}{f = \deno{\wrel{\w}{\G'}{\G}}: \G' \rightarrow \G}{\deno{\wrel{\w \pi}{\G, x: A}{\G}} = f\after \p: \G'\times A \rightarrow \G}$
+    \item $\ntreeruleI{\tproject}{f = \deno{\wrel{\w}{\G'}{\G}}: \G' \rightarrow \G}{\deno{\wrel{\w \pi}{\G, x: A}{\G}} = f\after \p: \G'\times A \rightarrow \G}$
     
-    \item $\ntreeruleII{Extend}{f = \deno{\wrel{\w}{\G'}{\G}}: \G' \rightarrow \G }{ g = \deno{A \subtype B}: A \rightarrow B}{\deno{\wrel{w \x}{\G', x: A}{\G, x: B}} = (f\times g): (\G\times A)\rightarrow(\G\times B)}$
+    \item $\ntreeruleII{\textend}{f = \deno{\wrel{\w}{\G'}{\G}}: \G' \rightarrow \G }{ g = \deno{A \subtype B}: A \rightarrow B}{\deno{\wrel{w \x}{\G', x: A}{\G, x: B}} = (f\times g): (\G\times A)\rightarrow(\G\times B)}$
 \end{itemize}
 
 \section{Weakening Theorems}
@@ -894,11 +893,11 @@ The denotation of a weakening relation is defined as follows:
 
 \begin{framed}
     \begin{proof}
-        \case{Id}
+        \case{\tid}
         Then $\G' = \G$ and so $\dom{\G'} = \dom{\G}$.
-        \case{Project}
+        \case{\tproject}
         By inversion and induction, $\dom{\G}\subseteq\dom{\G'}\subseteq\dom{\G'\cup\left\{x\right\}}$
-        \case{Extend}
+        \case{\textend}
         By inversion and induction, $\dom{\G}\subseteq\dom{\G'}$ so 
         $$\dom{\gax} = \dom{\G}\cup\left\{x\right\} \subseteq\dom{\G'}\cup\left\{x\right\} = \dom{\G',x:A}$$
     \end{proof}
@@ -914,20 +913,20 @@ The denotation of a weakening relation is defined as follows:
 \begin{framed}
     \begin{proof}
         
-        \case{Id}
-        $$\ntreeruleI{Id}{\ok{\G}}{\wrel{\i}{\G}{\G}}$$
+        \case{\tid}
+        $$\ntreeruleI{\tid}{\ok{\G}}{\wrel{\i}{\G}{\G}}$$
         
         By inversion, $\ok{\G}$.
         
-        \case{Project}
-        $$\ntreeruleII{Project}{\wrel{\w}{\G'}{\G}}{ x \notin \dom{\G'}}{\wrel{\w \pi}{\G, x: A}{\G}}$$
+        \case{\tproject}
+        $$\ntreeruleII{\tproject}{\wrel{\w}{\G'}{\G}}{ x \notin \dom{\G'}}{\wrel{\w \pi}{\G, x: A}{\G}}$$
         
         By inversion, $\wrel{\w}{\G'}{\G}$ and $x\notin \dom{\G'}$.
         
         Hence by induction $\ok{\G'}$, $\ok{\G}$. Since $x\notin\dom{\G'}$, we have $\ok{\G', x:A}$.
         
-        \case{Extend}
-        $\ntreeruleIII{Extend}{\wrel{\w}{\G'}{\G}}{ x \notin \dom{\G'}}{ A \subtype B}{\wrel{w \x}{\G', x: A}{\G, x: B}}$, 
+        \case{\textend}
+        $\ntreeruleIII{\textend}{\wrel{\w}{\G'}{\G}}{ x \notin \dom{\G'}}{ A \subtype B}{\wrel{w \x}{\G', x: A}{\G, x: B}}$, 
         
         By inversion, we have 
         
@@ -967,7 +966,7 @@ The denotation of a weakening relation is defined as follows:
         We induct over the structure of typing derivations of $\gtyperelation{v}{A}$, assuming $\wrel{\w}{\G'}{\G}$ holds. In each case, we construct the new derivation $\D'$ from the derivation $\D$ giving $\gtyperelation{v}{A}$ and show that $\D\after\deno{\wrel{\w}{\G'}{\G}} = \D'$
         
         \subsection{Variable Terms}
-        \case{Var and Weaken}
+        \case{\vvar, \vweaken}
             We case split on the weakening $\w$.
             \subparagraph{If $\w = \i$}
             Then $\G' = \G$, and so $\typerelation{\G'}{x}{A}$ holds and the derivation $\D'$ is the same as $\D$
@@ -983,7 +982,7 @@ The denotation of a weakening relation is defined as follows:
             
             , and hence by the weaken rule, we have 
             \begin{equation}
-                \ntreeruleI{Weaken}{\typerelation{\G''}{x}{A}}{\typerelation{\G'', x':A' }{x}{A}}
+                \ntreeruleI{\vweaken}{\typerelation{\G''}{x}{A}}{\typerelation{\G'', x':A' }{x}{A}}
             \end{equation}
         
             This preserves denotations:
@@ -1008,8 +1007,8 @@ The denotation of a weakening relation is defined as follows:
             Then we derive the new derivation, $\D'$ as so:
         
             \begin{equation}
-                \ntreeruleII{Subtype}{
-                    \ntreeruleI{Var}{ }{\typerelation{\G''', x: B}{x}{B}}
+                \ntreeruleII{\vsubtype}{
+                    \ntreeruleI{\vvar}{ }{\typerelation{\G''', x: B}{x}{B}}
                     }{
                     B \subtype A
                 }{
@@ -1028,7 +1027,7 @@ The denotation of a weakening relation is defined as follows:
             \case{$x \neq x'$}
             Then 
             \begin{equation}
-                \D = \ntreeruleI{Weaken}{\treeruleI{\D_1}{\typerelation{\G''}{x}{A}}}{\gtyperelation{x}{A}}
+                \D = \ntreeruleI{\vweaken}{\treeruleI{\D_1}{\typerelation{\G''}{x}{A}}}{\gtyperelation{x}{A}}
             \end{equation}
         
             By induction with $\wrel{\w}{\G'''}{\G''}$,
@@ -1037,7 +1036,7 @@ The denotation of a weakening relation is defined as follows:
             We have the weakened derivation:
         
             \begin{equation}
-                \D' = \ntreeruleI{Weaken}{\treeruleI{\D_1'}{\typerelation{\G'''}{x}{A}}}{\typerelation{\G'}{x}{A}}
+                \D' = \ntreeruleI{\vweaken}{\treeruleI{\D_1'}{\typerelation{\G'''}{x}{A}}}{\typerelation{\G'}{x}{A}}
             \end{equation}
         
             This preserves denotations:
@@ -1057,7 +1056,7 @@ The denotation of a weakening relation is defined as follows:
         From this point onwards, since we no-longer case split over the weakening relations, we write the denotation $\deno{\wrel{\w}{\G'}{\G'}}$, simply as $\w$.
         
         
-        \case{Constant}
+        \case{\vconst}
         The constant typing rules, $\u$, $\t$, $\f$, $\const{A}$, all proceed by the same logic. Hence I shall only prove the theorems for the case $\const{A}$.
         
         \begin{equation}
@@ -1069,7 +1068,7 @@ The denotation of a weakening relation is defined as follows:
         Hence
         
         \begin{equation}
-            \ntreeruleI{Const}{\ok{\G'}}{\typerelation{\G'}{\const{A}}{A}}
+            \ntreeruleI{\vconst}{\ok{\G'}}{\typerelation{\G'}{\const{A}}{A}}
         \end{equation}
         Holds.
         
@@ -1083,11 +1082,11 @@ The denotation of a weakening relation is defined as follows:
         \end{align*}
         
         
-        \case{Fn}
+        \case{\vfun}
         By inversion, we have a derivation $\D_1$ giving
         
         \begin{equation}
-            \D = \ntreeruleI{Fn}{
+            \D = \ntreeruleI{\vfun}{
                 \treeruleI{\D_1}{\typerelation{\gax}{v}{B}}
             }{\gtyperelation{\lam{x}{A}{v}}{\ab}}
         \end{equation}
@@ -1101,7 +1100,7 @@ The denotation of a weakening relation is defined as follows:
         Hence, by induction, using $\wrel{\w\x}{(\G,x:  A)}{(\gax)}$, we derive $\D_1'$:
         
         \begin{equation}
-            \D' = \ntreeruleI{Fn}{
+            \D' = \ntreeruleI{\vfun}{
                 \treeruleI{\D_1'}{\typerelation{\G',x: A}{v}{B}}
             }{\typerelation{\G',x: A}{\lam{x}{A}{v}}{\ab}}
         \end{equation}
@@ -1117,10 +1116,10 @@ The denotation of a weakening relation is defined as follows:
         \end{align*}
         
         
-        \case{Subtyping}
+        \case{\vsubtype}
         
         \begin{equation}
-            \ntreeruleII{Subtype}{\gtyperelation{v}{A}}{ A\subtype B}{\gtyperelation{v}{B}}
+            \ntreeruleII{\vsubtype}{\gtyperelation{v}{A}}{ A\subtype B}{\gtyperelation{v}{B}}
         \end{equation}
         
         by inversion, we have a derivation $\D_1$
@@ -1130,7 +1129,7 @@ The denotation of a weakening relation is defined as follows:
         
         So by induction, we have a derivation $\D_1'$ such that:
         \begin{equation}
-            \ntreeruleII{Subtype}{\treeruleI{\D_1'}{\typerelation{\G'}{v}{a}}}{ A \subtype B}{\typerelation{\G'}{v}{B}}
+            \ntreeruleII{\vsubtype}{\treeruleI{\D_1'}{\typerelation{\G'}{v}{a}}}{ A \subtype B}{\typerelation{\G'}{v}{B}}
         \end{equation}
         
         This preserves denotations:
@@ -1141,15 +1140,15 @@ The denotation of a weakening relation is defined as follows:
             & = \D\after\w \qt{By Definition}\\
         \end{align*}
         
-        \case{Return}
+        \case{\vreturn}
         We have the sub-derivation $\D_1$ such that
         \begin{equation}
-            \D = \ntreeruleI{Return}{\treeruleI{\D_1}{\gtyperelation{v}{A}}}{\gtyperelation{\return{v}}{\moa}}
+            \D = \ntreeruleI{\vreturn}{\treeruleI{\D_1}{\gtyperelation{v}{A}}}{\gtyperelation{\return{v}}{\moa}}
         \end{equation}
         
         Hence, by induction, with $\wrel{\w}{\G'}{\G}$, we find the derivation $\D_1'$ such that:
         \begin{equation}
-            \D' = \ntreeruleI{Return}{\treeruleI{\D_1'}{\typerelation{\G'}{v}{A}}}{\typerelation{\G'}{\return{v}}{\moa}}
+            \D' = \ntreeruleI{\vreturn}{\treeruleI{\D_1'}{\typerelation{\G'}{v}{A}}}{\typerelation{\G'}{\return{v}}{\moa}}
         \end{equation}
         
         This preserves denotations:
@@ -1160,12 +1159,12 @@ The denotation of a weakening relation is defined as follows:
                 & = \D\after\w\qt{By Definition}
         \end{align*}
         
-        \case{Apply}
+        \case{\vapply}
             By inversion, we have derivations $\D_1$, $\D_2$ such that
         
             \begin{equation}
                 \D = 
-                \ntreeruleII{Apply}{
+                \ntreeruleII{\vapply}{
                     \treeruleI{\D_1}{\gtyperelation{v_1}{\ab}}
                     }{
                     \treeruleI{\D_2}{\gtyperelation{v_2}{A}}
@@ -1179,7 +1178,7 @@ The denotation of a weakening relation is defined as follows:
             
             \begin{equation}
                 \D' = 
-                \ntreeruleII{Apply}{
+                \ntreeruleII{\vapply}{
                     \treeruleI{\D_1'}{\typerelation{\G'}{v_1}{\ab}}
                     }{
                     \treeruleI{\D_2'}{\typerelation{\G'}{v_2}{A}}
@@ -1196,12 +1195,12 @@ The denotation of a weakening relation is defined as follows:
                 &= \app\after\pr{\D_1}{\D_2}\after\w\\
                 &= \D\after\w\qt{By Definition}
             \end{align*}
-        \case{If}
+        \case{\vif}
         By inversion, we have the sub-derivations $\D_1,\D_2,\D_3$, such that:
         
         
         \begin{equation}
-            \D = \ntreeruleIII{If}{
+            \D = \ntreeruleIII{\vif}{
                 \treeruleI{\D_1}{\typerelation{\G}{v}{\B}}
                 }{
                 \treeruleI{\D_2}{\typerelation{\G}{v_1}{ A}}
@@ -1215,7 +1214,7 @@ The denotation of a weakening relation is defined as follows:
         By induction, this gives us the sub-derivations $\D_1', \D_2', \D_3'$ such that
         
         \begin{equation}
-            \D' = \ntreeruleIII{If}{
+            \D' = \ntreeruleIII{\vif}{
                 \treeruleI{\D_1'}{\typerelation{\G'}{v}{\B}}
                 }{
                 \treeruleI{\D_2'}{\typerelation{\G'}{v_1}{ A}}
@@ -1264,12 +1263,12 @@ The denotation of a weakening relation is defined as follows:
         }}
         
         
-        \case{Bind}
+        \case{\vbind}
         By inversion, we have derivations $\D_1, \D_2$ such that:
         
         
         \begin{equation}
-            \D = \ntreeruleII{Bind}{
+            \D = \ntreeruleII{\vbind}{
                 \treeruleI{\D_1}{\typerelation{\G}{v_1}{\M{\E_1}{A}}}
                 }{
                 \treeruleI{\D_2}{\typerelation{\G,x: A}{v_2}{\M{\e_2}{B}}}
@@ -1281,7 +1280,7 @@ The denotation of a weakening relation is defined as follows:
         If $\wrel{\w}{\G'}{\G}$ then $\wrel{\w\x}{\G',x:A}{\gax}$, so by induction, we can derive $\D_1'$, $\D_2'$ such that:
         
         \begin{equation}
-            \D' = \ntreeruleII{Bind}{
+            \D' = \ntreeruleII{\vbind}{
                 \treeruleI{\D_1'}{\typerelation{\G'}{v_1}{\M{\E_1}{A}}}
                 }{
                 \treeruleI{\D_2'}{\typerelation{\G',x: A}{v_2}{\M{\e_2}{B}}}
@@ -1349,7 +1348,7 @@ Define the relation $$\typerelation{\G'}{\si}{\G}$$ by:
 
 \begin{itemize}
     \item $\ntreeruleI{Nil}{\ok{\G'}}{\typerelation{\G'}{\nil}{\nil}}$
-    \item $\ntreeruleIII{Extend}{
+    \item $\ntreeruleIII{\textend}{
         \typerelation{\G'}{\si}{\G}
         }{
         x\notin\dom{\G}
@@ -1374,7 +1373,7 @@ Define the relation $$\typerelation{\G'}{\si}{\G}$$ by:
     If $\typerelation{\G'}{\si}{\G}$ then $x \notin (\dom{\G} \cup \dom{\G''})$ implies $\typerelation{(\G', x: A)}{(\si, x \setto x)}{(\gax)}$.
     This occurs since $\wrel{\i\pi}{\G',x: A}{\G'}$, so by property \ref{SubPropTwo}, 
     $\typerelation{\G', x: A}{\si}{\G}$.
-    In addition, $\typerelation{\G', x: A}{x}{A}$ trivially, so by the rule \textbf{Extend}, wellformedness holds for
+    In addition, $\typerelation{\G', x: A}{x}{A}$ trivially, so by the rule \textit{\textend}, wellformedness holds for
     \begin{equation}
         \typerelation{(\G', x:A)}{(\si, x\setto x)}{(\gax)}
     \end{equation}
@@ -1401,7 +1400,7 @@ We have the following non-trivial property of substitution:
         
         Assuming $\typerelation{\G'}{\si}{\G}$, we induct over the typing relation, proving $\gtyperelation{v}{A}\rightarrow\typerelation{\G'}{v}{A}$
         
-            \case{Var}
+            \case{\vvar}
                 By inversion $\G = (\G'', x:A)$
                 So \begin{equation}
                     \typerelation{\G'',x:A}{x}{A}
@@ -1420,11 +1419,11 @@ We have the following non-trivial property of substitution:
         
                 holds.
                 
-            \case{Weaken}
+            \case{\vweaken}
                 By inversion, $\G = \G'', y: B, x \neq y$, and there exists $\D$ such that
         
                 \begin{equation}
-                    \ntreeruleI{Weaken}{\treeruleI{\D}{\typerelation{\G''}{x}{A}}}{\typerelation{\G'', y: B}{x}{A}}
+                    \ntreeruleI{\vweaken}{\treeruleI{\D}{\typerelation{\G''}{x}{A}}}{\typerelation{\G'', y: B}{x}{A}}
                 \end{equation}
         
             
@@ -1446,11 +1445,11 @@ We have the following non-trivial property of substitution:
                 \begin{equation}
                     \typerelation{\G'}{x\sub{\si}}{A}
                 \end{equation}
-        \case{Fn}
+        \case{\vfun}
             By inversion, there exists $\D$ such that:
         
             \begin{equation}
-                \ntreeruleI{Fn}{
+                \ntreeruleI{\vfun}{
                     \treeruleI{\D}{\typerelation{\G, x:A }{v}{B}}
                 }{\typerelation{\G}{\lam{x}{A}{v}}{\ab}}
             \end{equation}
@@ -1464,13 +1463,13 @@ We have the following non-trivial property of substitution:
             So by induction using $\si, x\setto x$, we have $\D'$ such that:
         
             \begin{equation}
-                \ntreeruleI{Fn}{
+                \ntreeruleI{\vfun}{
                     \treeruleI{\D'}{\typerelation{\G', x:A }{v\sub{\si, x\setto v}}{B}}
                 }{\typerelation{\G}{\lam{x}{A}{v\sub{\si, x\setto{x}}}}{\ab}}
             \end{equation} 
             Since $\lam{x}{A}{(v\sub{\si, x\setto{x}})} = {\lam{x}{A}({v\ssi})} = (\lam{x}{A}{v})\ssi$, we have a typing derivation for $\typerelation{\G'}{(\lam{x}{A}{v})\ssi}{\ab}$.
         
-        \case{Constants}
+        \case{\vconst}
             We use the same logic for all constants, $\u,\t,\f,\const{A}$:
         
             $\typerelation{\G}{\si}{\G} \Rightarrow \ok{\G'}$ and:
@@ -1480,29 +1479,29 @@ We have the following non-trivial property of substitution:
             \end{equation}
         
             So \begin{equation}
-                \ntreeruleI{Const}{\ok{\G'}}{\typerelation{\G'}{\const{A}}{A}}
+                \ntreeruleI{\vconst}{\ok{\G'}}{\typerelation{\G'}{\const{A}}{A}}
             \end{equation}
         
-        \case{Return}
+        \case{\vreturn}
             By inversion, we have $\D_1$ such that:
         
             \begin{equation}
-                \ntreeruleI{Return}{\treeruleI{\D_1}{\typerelation{\G}{v}{A}}}{\typerelation{\G}{\return{v}}{\moa}}
+                \ntreeruleI{\vreturn}{\treeruleI{\D_1}{\typerelation{\G}{v}{A}}}{\typerelation{\G}{\return{v}}{\moa}}
             \end{equation}
         
             By induction, we have $\D_1'$ such that
         
             \begin{equation}
-                \ntreeruleI{Return}{\treeruleI{\D'_1}{\typerelation{\G'}{v\ssi}{A}}}{\typerelation{\G'}{\return{(v\ssi)}}{\moa}}
+                \ntreeruleI{\vreturn}{\treeruleI{\D'_1}{\typerelation{\G'}{v\ssi}{A}}}{\typerelation{\G'}{\return{(v\ssi)}}{\moa}}
             \end{equation}
         
             Since $(\return{v})\ssi = \return{(v\ssi)}$, the type derivation above holds for $\typerelation{\G'}{(\return{v})\ssi}{\moa}$.
         
-        \case{Apply}
+        \case{\vapply}
             By inversion, we have $\D_1$, $\D_2$ such that:
         
             \begin{equation}
-                \ntreeruleII{Apply}{
+                \ntreeruleII{\vapply}{
                     \treeruleI{\D_1}{\typerelation{\G}{v_1}{\ab}}
                     }{
                     \treeruleI{\D_2}{\typerelation{\G}{v_2}{A}}
@@ -1512,7 +1511,7 @@ We have the following non-trivial property of substitution:
             By induction on $\D_1, \D_2$, we have $\D_1',\D_2'$ such that
         
             \begin{equation}
-                \ntreeruleII{Apply}{
+                \ntreeruleII{\vapply}{
                     \treeruleI{\D'_1}{\typerelation{\G'}{v_1\ssi}{\ab}}
                     }{
                     \treeruleI{\D_2'}{\typerelation{\G'}{v_2\ssi}{A}}
@@ -1520,11 +1519,11 @@ We have the following non-trivial property of substitution:
             \end{equation}
         
             Since $(\apply{v_1}{v_2})\ssi = \apply{(v_1\ssi)}{(v_2\ssi)}$, we the above derivation holds for $\typerelation{\G'}{(\apply{v_1}{v_2})\ssi}{B}$
-        \case{If}
+        \case{\vif}
             By inversion, we have $\D_1,\D_2,\D_3$ such that:
         
             \begin{equation}
-                \ntreeruleIII{If}{
+                \ntreeruleIII{\vif}{
                     \treeruleI{\D_1}{\typerelation{\G}{v}{\B}}
                     }{
                     \treeruleI{\D_2}{\typerelation{\G}{v_1}{ A}}
@@ -1539,7 +1538,7 @@ We have the following non-trivial property of substitution:
             $\D_1', \D_2',\D_3'$ such that:
             
             \begin{equation}
-                \ntreeruleIII{If}{
+                \ntreeruleIII{\vif}{
                     \treeruleI{\D_1'}{\typerelation{\G'}{v\ssi}{\B}}
                     }{
                     \treeruleI{\D_2'}{\typerelation{\G'}{v_1\ssi}{ A}}
@@ -1552,10 +1551,10 @@ We have the following non-trivial property of substitution:
         
             Since $(\pifthenelse{A}{v}{v_1}{v_2})\ssi = \pifthenelse{A}{(v\ssi)}{(v_1\ssi)}{(v_2\ssi)}$ The derivation above holds for $\typerelation{\G'}{(\pifthenelse{A}{v}{v_1}{v_2})\ssi}{ A}$
         
-        \case{Bind}
+        \case{\vbind}
             By inversion, there exist $\D_1, \D_2$ such that:
             \begin{equation}
-                \ntreeruleII{Bind}{
+                \ntreeruleII{\vbind}{
                     \treeruleI{\D_1}{\typerelation{\G}{v_1}{\M{\e_1}{A}}}
                     }{
                     \treeruleI{\D_2}{\typerelation{\G, x:A}{v_2}{\M{\e_2}{B}}}
@@ -1565,7 +1564,7 @@ We have the following non-trivial property of substitution:
             Using alpha-equivalence, we pick $x\notin(\dom{\G}\cup\dom{\G'})$. Hence by property \ref{SubPropThree}, $$\typerelation{(\G, x: A)}{(\si, x\setto x)}{(\gax)}$$
             By induction on $\D_1, \D_2$, we have $\D_1', \D_2'$ such that:
             \begin{equation}
-                \ntreeruleII{Bind}{
+                \ntreeruleII{\vbind}{
                     \treeruleI{\D_1'}{\typerelation{\G'}{v_1\ssi}{\M{\e_1}{A}}}
                     }{
                     \treeruleI{\D_2}{\typerelation{\G', x:A}{v_2\sub{\si, x\setto x}}{\M{\e_2}{B}}}
@@ -1573,16 +1572,16 @@ We have the following non-trivial property of substitution:
             \end{equation}
         
             Since $(\doin{x}{v_1}{v_2})\ssi = \doin{x}{(v_1\ssi)}{(v_2\ssi)} = \doin{x}{(v_1\ssi)}{(v_2\sub{\si, x\setto x})}$, the above derivation holds for $\typerelation{\G'}{(\doin{x}{v_1}{v_2})\ssi}{\M{\e_1\dot\e_2}{B}}$
-        \case{Subtype}
+        \case{\vsubtype}
             By inversion, there exists $\D$ such that
             \begin{equation}
-                \ntreeruleII{subtype}{\treeruleI{\D}{\typerelation{\G}{v}{A}}}{ A\subtype B}{\typerelation{\G}{v}{B}}
+                \ntreeruleII{\vsubtype}{\treeruleI{\D}{\typerelation{\G}{v}{A}}}{ A\subtype B}{\typerelation{\G}{v}{B}}
             \end{equation}
         
             By induction on $\D$ we derive $\D'$ such that:
         
             \begin{equation}
-                \ntreeruleII{subtype}{\treeruleI{\D'}{\typerelation{\G'}{v\ssi}{A}}}{ A\subtype B}{\typerelation{\G}{v\ssi}{B}}
+                \ntreeruleII{\vsubtype}{\treeruleI{\D'}{\typerelation{\G'}{v\ssi}{A}}}{ A\subtype B}{\typerelation{\G}{v\ssi}{B}}
             \end{equation}
         
     \end{proof}
@@ -1665,10 +1664,10 @@ We have the following non-trivial property of substitution:
         This is proved by induction over the derivation of $\typerelation{\G}{v}{A}$.
         We shall use $\si$ to denote $\deno{\typerelation{\G'}{\si}{\G}}$ where it is clear from the context.
         
-        \case{Var}
+        \case{\vvar}
         By inversion $\G = \G'', x:A$
         \begin{equation}
-            \ntreeruleI{Var}{\ok{\G}}{\typerelation{\G'', x:A}{x}{A}}
+            \ntreeruleI{\vvar}{\ok{\G}}{\typerelation{\G'', x:A}{x}{A}}
         \end{equation}
         By inversion, $\si = \si', x\setto v$ and $\typerelation{\G'}{v}{A}$.
         
@@ -1682,12 +1681,12 @@ We have the following non-trivial property of substitution:
             \D\after\si &= \pp\after\pr{\si'}{\D'}\qt{By definition}\\
             &= \D'\qt{By product property}
         \end{align*}
-        \case{Weaken}
+        \case{\vweaken}
         By inversion, $\G = \G', y:B$ and $\si = \si', y\setto v$
         and we have $\D_1$ deriving:
         
         \begin{equation}
-            \ntreeruleI{Weaken}{\treeruleI{\D_1}{\typerelation{\G''}{x}{A}}}{\typerelation{\G'',y: B}{x}{A}}
+            \ntreeruleI{\vweaken}{\treeruleI{\D_1}{\typerelation{\G''}{x}{A}}}{\typerelation{\G'',y: B}{x}{A}}
         \end{equation}
         
         Also by inversion of the wellformedness of $\typerelation{\G'}{\si}{\G}$, we have $\typerelation{\G'}{\si'}{\G''}$ and 
@@ -1713,7 +1712,7 @@ We have the following non-trivial property of substitution:
                 & = \D\after\si\qt{By defintion.}
         \end{align*}
         
-        \case{Constants}
+        \case{\vconst}
         The logic for all constant terms ($\t,\f,\u\const{A}$) is the same.
         Let
         \begin{equation}
@@ -1724,18 +1723,18 @@ We have the following non-trivial property of substitution:
                 & = c\after\term{G}\after\si\qt{Terminal property}\\
                 & = \D\after\si\qt{By definition}
         \end{align*}
-        \case{Fn}
+        \case{\vfun}
         
         By inversion, we have $\D_1$ such that
         \begin{equation}
-            \D = \ntreeruleI{Fn}{
+            \D = \ntreeruleI{\vfun}{
                 \treeruleI{\D_1}{\typerelation{\G, x:A}{v}{B}}
             }{\typerelation{\G}{\lam{x}{A}{v}}{\ab}}
         \end{equation}
         
         By induction of $\D_1$ we have $\D_1'$ such that
         \begin{equation}
-            \D' = \ntreeruleI{Fn}{
+            \D' = \ntreeruleI{\vfun}{
                 \treeruleI{\D_1'}{\typerelation{\G', x:A}{(v\ssi)}{B}}
             }{\typerelation{\G}{(\lam{x}{A}{v})\ssi}{\ab}}
         \end{equation}
@@ -1752,17 +1751,17 @@ We have the following non-trivial property of substitution:
                 & = \cur{\D_1}\after\si\qt{By the exponential property (Uniqueness)}\\
                 &= \D\after\si\qt{By Definition}\\
         \end{align*}
-        \case{Subtype}
+        \case{\vsubtype}
         By inversion, there exists derivation $\D_1$ such that:
         
         \begin{equation}
-            \D = \ntreeruleII{Subtype}{\treeruleI{\D_1}{\typerelation{\G}{v}{A}}}{ A\subtype B}{\typerelation{\G}{v}{B}}
+            \D = \ntreeruleII{\vsubtype}{\treeruleI{\D_1}{\typerelation{\G}{v}{A}}}{ A\subtype B}{\typerelation{\G}{v}{B}}
         \end{equation}
         
         By induction on $\D_1$, we find $\D_1'$ such that $\D_1' = \D_1\after\si$ and:
         
         \begin{equation}
-            \D' = \ntreeruleII{Subtype}{\treeruleI{\D_1'}{\typerelation{\G'}{v\ssi}{A}}}{ A\subtype B}{\typerelation{\G'}{v\ssi}{B}}
+            \D' = \ntreeruleII{\vsubtype}{\treeruleI{\D_1'}{\typerelation{\G'}{v\ssi}{A}}}{ A\subtype B}{\typerelation{\G'}{v\ssi}{B}}
         \end{equation}
         
         Hence,
@@ -1773,17 +1772,17 @@ We have the following non-trivial property of substitution:
                 &= \D\after\si\qt{By definition}\\
         \end{align*}
         
-        \case{Return}
+        \case{\vreturn}
         
         By inversion, we have $\D_1$ such that:
         \begin{equation}
-            \D = \ntreeruleI{Return}{\treeruleI{\D_1}{\typerelation{\G}{v}{A}}}{\typerelation{\G}{\return{v}}{\moa}}
+            \D = \ntreeruleI{\vreturn}{\treeruleI{\D_1}{\typerelation{\G}{v}{A}}}{\typerelation{\G}{\return{v}}{\moa}}
         \end{equation}
         
         By induction on $\D_1$, we find $\D_1'$ such that $\D_1' = \D_1\after\si$ and:
         
         \begin{equation}
-            \D' = \ntreeruleI{Return}{\treeruleI{\D_1'}{\typerelation{\G'}{v\ssi}{A}}}{\typerelation{\G'}{(\return{v})\ssi}{\moa}}
+            \D' = \ntreeruleI{\vreturn}{\treeruleI{\D_1'}{\typerelation{\G'}{v\ssi}{A}}}{\typerelation{\G'}{(\return{v})\ssi}{\moa}}
         \end{equation}
         
         Hence,
@@ -1793,10 +1792,10 @@ We have the following non-trivial property of substitution:
             & = \point{A}\after\D_1\after\si\qt{By induction}\\
             & = \D\after\si\qt{By Definition}\\
         \end{align*}
-        \case{Apply}
+        \case{\vapply}
         By inversion, we find $\D_1, \D_2$ such that
         \begin{equation}
-            \D = \ntreeruleII{Apply}{\treeruleI{\D_1}{\typerelation{\G}{v_1}{\ab}}}{\treeruleI{\D_2}{\typerelation{\G}{v_2}{A}}}{\typerelation{\G}{\apply{v_1}{v_2}}{B}}
+            \D = \ntreeruleII{\vapply}{\treeruleI{\D_1}{\typerelation{\G}{v_1}{\ab}}}{\treeruleI{\D_2}{\typerelation{\G}{v_2}{A}}}{\typerelation{\G}{\apply{v_1}{v_2}}{B}}
         \end{equation}
         
         By induction we find $\D_1', \D_2'$ such that 
@@ -1807,7 +1806,7 @@ We have the following non-trivial property of substitution:
         
         And
         \begin{equation}
-            \D' = \ntreeruleII{Apply}{\treeruleI{\D_1'}{\typerelation{\G'}{v_1\ssi}{\ab}}}{\treeruleI{\D_2'}{\typerelation{\G'}{v_2\ssi}{A}}}{\typerelation{\G'}{(\apply{v_1}{v_2})\ssi}{B}}
+            \D' = \ntreeruleII{\vapply}{\treeruleI{\D_1'}{\typerelation{\G'}{v_1\ssi}{\ab}}}{\treeruleI{\D_2'}{\typerelation{\G'}{v_2\ssi}{A}}}{\typerelation{\G'}{(\apply{v_1}{v_2})\ssi}{B}}
         \end{equation}
         
         Hence
@@ -1818,12 +1817,12 @@ We have the following non-trivial property of substitution:
                 & = \D\after\si\qt{By Definition}\\
         \end{align*}
         
-        \case{If}
+        \case{\vif}
         
         
         By inversion, we find $\D_1, \D_2, \D_3$ such that
         \begin{equation}
-            \D = \ntreeruleIII{If}{\treeruleI{\D_1}{\typerelation{\G}{v}{\B}}}{\treeruleI{\D_2}{\typerelation{\G}{v_1}{ A}}}{\treeruleI{\D_3}{\typerelation{\G}{v_2}{ A}}}{\typerelation{\G}{\pifthenelse{A}{v}{v_1}{v_2}}{ A}}
+            \D = \ntreeruleIII{\vif}{\treeruleI{\D_1}{\typerelation{\G}{v}{\B}}}{\treeruleI{\D_2}{\typerelation{\G}{v_1}{ A}}}{\treeruleI{\D_3}{\typerelation{\G}{v_2}{ A}}}{\typerelation{\G}{\pifthenelse{A}{v}{v_1}{v_2}}{ A}}
         \end{equation}
         
         By induction we find $\D_1', \D_2', \D_3'$ such that 
@@ -1835,7 +1834,7 @@ We have the following non-trivial property of substitution:
         
         And
         \begin{equation}
-            \D' = \ntreeruleIII{If}{\treeruleI{\D_1'}{\typerelation{\G'}{v\ssi}{\B}}}{\treeruleI{\D_2'}{\typerelation{\G'}{v_1\ssi}{ A}}}{\treeruleI{\D_3'}{\typerelation{\G'}{v_2\ssi}{ A}}}{\typerelation{\G'}{(\pifthenelse{A}{v}{v_1}{v_2})\ssi}{ A}}
+            \D' = \ntreeruleIII{\vif}{\treeruleI{\D_1'}{\typerelation{\G'}{v\ssi}{\B}}}{\treeruleI{\D_2'}{\typerelation{\G'}{v_1\ssi}{ A}}}{\treeruleI{\D_3'}{\typerelation{\G'}{v_2\ssi}{ A}}}{\typerelation{\G'}{(\pifthenelse{A}{v}{v_1}{v_2})\ssi}{ A}}
         \end{equation}
         
         Since $\si: \G' \rightarrow \G$, \\
@@ -1869,12 +1868,12 @@ We have the following non-trivial property of substitution:
         }}
         
         
-        \case{Bind}
+        \case{\vbind}
         
         By inversion, we have $\D_1, \D_2$ such that:
         
         \begin{equation}
-            \D = \ntreeruleII{Bind}{
+            \D = \ntreeruleII{\vbind}{
                 \treeruleI{\D_1}{\typerelation{\G}{v_1}{\M{\e_1}{A}}}
                 }{
                 \treeruleI{\D_2}{\typerelation{\G, x:A }{v_2}{\M{\e_2}{B}}}
@@ -1905,7 +1904,7 @@ We have the following non-trivial property of substitution:
         And:
         
         \begin{equation}
-            \D' = \ntreeruleII{Bind}{
+            \D' = \ntreeruleII{\vbind}{
                 \treeruleI{\D_1'}{\typerelation{\G'}{v_1\ssi}{\M{\e_1}{A}}}
                 }{
                 \treeruleI{\D_2'}{\typerelation{\G', x:A }{v_1\ssi}{\M{\e_2}{B}}}
@@ -2000,15 +1999,15 @@ And $v_1\ssub{x}{v} = v_1\sub{I_{\G}, x\setto{v}}$
 \section{Equational Equivalence}
 \subsection{Reduction Conversions}
 \begin{itemize}
-    \item $\ntreeruleII{Lambda-Beta}{\typerelation{\gax}{v_1}{B}}{\gtyperelation{v_2}{A}}{\gberelation{\apply{(\lam{x}{A}{v_1})}{v_2} }{ v_1\ssub{x}{v_2}}{B}}$
+    \item $\ntreeruleII{\eqbeta}{\typerelation{\gax}{v_1}{B}}{\gtyperelation{v_2}{A}}{\gberelation{\apply{(\lam{x}{A}{v_1})}{v_2} }{ v_1\ssub{x}{v_2}}{B}}$
     
-    \item $\ntreeruleI{Lambda-Eta}{\gtyperelation{v}{\ab}}{\gberelation{\lam{x}{A}{(\apply{v}{x}})}{v}{\ab}}$
+    \item $\ntreeruleI{\eqeta}{\gtyperelation{v}{\ab}}{\gberelation{\lam{x}{A}{(\apply{v}{x}})}{v}{\ab}}$
  
 
-    \item $\ntreeruleII{Left Unit}{\gtyperelation{v_1}{A}}{\typerelation{\gax}{v_2}{\meb}}{\gberelation{\doin{x}{\return{v_1}}{v_2}}{v_2\ssub{x}{v_1}}{\meb}}$
+    \item $\ntreeruleII{\eqleftunit}{\gtyperelation{v_1}{A}}{\typerelation{\gax}{v_2}{\meb}}{\gberelation{\doin{x}{\return{v_1}}{v_2}}{v_2\ssub{x}{v_1}}{\meb}}$
     
-    \item $\ntreeruleI{Right Unit}{\gtyperelation{v}{\mea}}{\gberelation{\doin{x}{v}{\return{x}} }{v}{\mea}}$
-    \item $\ntreeruleIII{Associativity}{
+    \item $\ntreeruleI{\eqrightunit}{\gtyperelation{v}{\mea}}{\gberelation{\doin{x}{v}{\return{x}} }{v}{\mea}}$
+    \item $\ntreeruleIII{\eqassociativity}{
             \gtyperelation{v_1}{\M{\e_1}{A}} 
         }{
             \typerelation{\gax}{v_2}{\M{\e_2}{B}}
@@ -2018,33 +2017,33 @@ And $v_1\ssub{x}{v} = v_1\sub{I_{\G}, x\setto{v}}$
         \gberelation{\doin{x}{v_1}{(\doin{y}{v_2}{v_3})}}{\doin{y}{(\doin{x}{v_1}{v_2})}{v_3}}{\M{\e_1 \dot \e_2 \dot \e_3}{C}}
     }$
 
-    \item $\ntreeruleI{Unit}{\gtyperelation{v}{\U}}{\gberelation{v}{\u}{\U}}$
+    \item $\ntreeruleI{\equnitequiv}{\gtyperelation{v}{\U}}{\gberelation{v}{\u}{\U}}$
 
-    \item $\ntreeruleII{If-True}{\gtyperelation{v_1}{ A}}{\gtyperelation{v_2}{ A}}{\gberelation{\pifthenelse{A}{\t}{v_1}{v_2}}{v_1}{ A}}$
+    \item $\ntreeruleII{\eqiftrue}{\gtyperelation{v_1}{ A}}{\gtyperelation{v_2}{ A}}{\gberelation{\pifthenelse{A}{\t}{v_1}{v_2}}{v_1}{ A}}$
     
-    \item $\ntreeruleII{If-False}{\gtyperelation{v_2}{ A}}{\gtyperelation{v_1}{ A}}{\gberelation{\pifthenelse{A}{\f}{v_1}{v_2}}{v_2}{ A}}$
+    \item $\ntreeruleII{\eqiffalse}{\gtyperelation{v_2}{ A}}{\gtyperelation{v_1}{ A}}{\gberelation{\pifthenelse{A}{\f}{v_1}{v_2}}{v_2}{ A}}$
     
-    \item $\ntreeruleII{If-Eta}{\typerelation{\G, x: \B}{v_1}{ A}}{\gtyperelation{v_2}{\B}}{\gberelation{\pifthenelse{A}{v_2}{v_1\ssub{x}{\t}}{v_1\ssub{x}{\f}}}{v_1\ssub{x}{v_2}}{ A}}$
+    \item $\ntreeruleII{\eqifeta}{\typerelation{\G, x: \B}{v_1}{ A}}{\gtyperelation{v_2}{\B}}{\gberelation{\pifthenelse{A}{v_2}{v_1\ssub{x}{\t}}{v_1\ssub{x}{\f}}}{v_1\ssub{x}{v_2}}{ A}}$
     
 \end{itemize}
 \subsection{Equivalence Relation}
 \begin{itemize}
-    \item $\ntreeruleI{Reflexive}{\gtyperelation{v}{A}}{\gberelation{v}{v}{A}}$
-    \item $\ntreeruleI{Symmetric}{\gberelation{v_1}{v_2}{A}}{\gberelation{v_2}{v_1}{A}}$
-    \item $\ntreeruleII{Transitive}{\gberelation{v_1}{v_2}{A}}{\gberelation{v_2}{v_3}{A}}{\gberelation{v_1}{v_3}{A}}$
+    \item $\ntreeruleI{\eqreflexive}{\gtyperelation{v}{A}}{\gberelation{v}{v}{A}}$
+    \item $\ntreeruleI{\eqsymmetric}{\gberelation{v_1}{v_2}{A}}{\gberelation{v_2}{v_1}{A}}$
+    \item $\ntreeruleII{\eqtransitive}{\gberelation{v_1}{v_2}{A}}{\gberelation{v_2}{v_3}{A}}{\gberelation{v_1}{v_3}{A}}$
 \end{itemize}
 \subsection{Congruences}
 \begin{itemize}
-    \item $\ntreeruleI{Fn}{\berelation{\gax}{v_1}{v_2}{B}}{\gberelation{\lam{x}{A}{v_1}}{\lam{x}{A}{v_2}}{\ab}}$
+    \item $\ntreeruleI{\eqfun}{\berelation{\gax}{v_1}{v_2}{B}}{\gberelation{\lam{x}{A}{v_1}}{\lam{x}{A}{v_2}}{\ab}}$
     
-    \item $\ntreeruleI{Return}{\gberelation{v_1}{v_2}{A}}{\gberelation{\return{v_1}}{\return{v_2}}{\moa}}$
+    \item $\ntreeruleI{\eqreturn}{\gberelation{v_1}{v_2}{A}}{\gberelation{\return{v_1}}{\return{v_2}}{\moa}}$
     
-    \item $\ntreeruleII{Apply}{\gberelation{v_1}{v_1'}{\ab}}{\gberelation{v_2}{v_2'}{A}}{\gberelation{\apply{v_1}{v_2}}{\apply{v_1'}{v_2'}}{B}}$
+    \item $\ntreeruleII{\eqapply}{\gberelation{v_1}{v_1'}{\ab}}{\gberelation{v_2}{v_2'}{A}}{\gberelation{\apply{v_1}{v_2}}{\apply{v_1'}{v_2'}}{B}}$
     
-    \item $\ntreeruleII{Bind}{\gberelation{v_1}{v_1'}{\M{\e_1}{A}}}{\berelation{\gax}{v_2}{v_2'}{\M{\e_2}{B}}}{\gberelation{\doin{x}{v_1}{v_2}}{\doin{c}{v_1'}{v_2'}}{\M{\e_1 \dot \e_2}{B}}}$
+    \item $\ntreeruleII{\eqbind}{\gberelation{v_1}{v_1'}{\M{\e_1}{A}}}{\berelation{\gax}{v_2}{v_2'}{\M{\e_2}{B}}}{\gberelation{\doin{x}{v_1}{v_2}}{\doin{c}{v_1'}{v_2'}}{\M{\e_1 \dot \e_2}{B}}}$
     
-    \item $\ntreeruleIII{If}{\gberelation{v}{v'}{\B} }{\gberelation{v_1}{v_1'}{ A}}{\gberelation{v_2}{v_2'}{ A}}{\gberelation{\pifthenelse{A}{v}{v_1}{v_2}}{\pifthenelse{A}{v}{v_1'}{v_2'}}{ A}}$
-    \item $\ntreeruleII{Subtype}{\gberelation{v}{v'}{A} }{ A \subtype B}{\gberelation{v}{v'}{B}}$
+    \item $\ntreeruleIII{\eqif}{\gberelation{v}{v'}{\B} }{\gberelation{v_1}{v_1'}{ A}}{\gberelation{v_2}{v_2'}{ A}}{\gberelation{\pifthenelse{A}{v}{v_1}{v_2}}{\pifthenelse{A}{v}{v_1'}{v_2'}}{ A}}$
+    \item $\ntreeruleII{\eqsubtype}{\gberelation{v}{v'}{A} }{ A \subtype B}{\gberelation{v}{v'}{B}}$
 \end{itemize}
 \section{Equational Equivalence Implies Both Sides Have the Same Type}
 
@@ -2058,22 +2057,22 @@ And $v_1\ssub{x}{v} = v_1\sub{I_{\G}, x\setto{v}}$
     \begin{proof}
         
         \subsection{Equivalence Relations}
-        \case{Reflexive}
+        \case{\eqreflexive}
         By inversion we have a derivation of $\gtyperelation{v}{A}$.
         
-        \case{Symmetric}
+        \case{\eqsymmetric}
         By inversion $\gberelation{v'}{v}{A}$. Hence by induction, derivations of $\gtyperelation{v'}{A}$ and $\gtyperelation{v}{A}$ are given.
         
-        \case{Transitive}
+        \case{\eqtransitive}
         By inversion, there exists $v_2$ such that $\gberelation{v_1}{v_2}{A}$ and $\gberelation{v_2}{v_3}{A}$.
         Hence by induction, we have derivations of $\gtyperelation{v_1}{A}$ and $\gtyperelation{v_3}{A}$
         
         \subsection{Reduction Conversions}
         
-        \case{Fn}
+        \case{\vfun}
             By inversion, we have $\typerelation{\gax}{v}{B}$ and $\gtyperelation{v}{A}$. Hence by the typing rules, we have:
-            $$\ntreeruleII{Apply}{
-                \ntreeruleI{Fn}{\typerelation{\gax }{v_1}{B}}{\gtyperelation{\lam{x}{A}{v_1}}{\ab}}
+            $$\ntreeruleII{\vapply}{
+                \ntreeruleI{\vfun}{\typerelation{\gax }{v_1}{B}}{\gtyperelation{\lam{x}{A}{v_1}}{\ab}}
             }{
                 \gtyperelation{v_2}{A}
             }{\gtyperelation{\apply{(\lam{x}{A}{v_1})}{v_2}}{B}}$$
@@ -2083,14 +2082,14 @@ And $v_1\ssub{x}{v} = v_1\sub{I_{\G}, x\setto{v}}$
         
         
         
-            \case{Left Unit}
+            \case{\eqleftunit}
             By inversion, we have $\gtyperelation{v_1}{A}$ and $\typerelation{\gax }{v_2}{B}$
         
             Hence we have:
         
         
             \begin{equation}
-                \ntreeruleII{Bind}{\ntreeruleI{Return}{\gtyperelation{v_1}{A}}{\gtyperelation{\return{v_1}}{\moa}}}{\typerelation{\gax}{v_2}{\meb}}{\gtyperelation{\doin{x}{\return{v_1}}{v_2}}{\M{\1\dot\e}{B} = \meb}}
+                \ntreeruleII{\vbind}{\ntreeruleI{\vreturn}{\gtyperelation{v_1}{A}}{\gtyperelation{\return{v_1}}{\moa}}}{\typerelation{\gax}{v_2}{\meb}}{\gtyperelation{\doin{x}{\return{v_1}}{v_2}}{\M{\1\dot\e}{B} = \meb}}
             \end{equation}
         
             And by the substitution typing theorem \ref{SubsTyping} we have: 
@@ -2098,19 +2097,19 @@ And $v_1\ssub{x}{v} = v_1\sub{I_{\G}, x\setto{v}}$
             \begin{equation}
                 \gtyperelation{v_2\ssub{x}{v_1}}{\meb}
             \end{equation}
-            \case{Right Unit}
+            \case{\eqrightunit}
             By inversion, we have $\gtyperelation{v}{\mea}$.
         
             Hence we have:
         
             \begin{equation}
-                \ntreeruleII{Bind}{
+                \ntreeruleII{\vbind}{
                     \gtyperelation{v}{\mea}
                 }{
-                    \ntreeruleI{Return}{\ntreeruleI{Var}{\ok{\G}}{\typerelation{\gax}{x}{A}}}{\typerelation{\gax}{\return{v}}{\moa}}
+                    \ntreeruleI{\vreturn}{\ntreeruleI{\vvar}{\ok{\G}}{\typerelation{\gax}{x}{A}}}{\typerelation{\gax}{\return{v}}{\moa}}
                 }{\gtyperelation{\doin{x}{v}{\return{x}}}{\M{\e\dot\1}{A} = \mea}}
             \end{equation}
-            \case{Associativity}
+            \case{\eqassociativity}
             By inversion, we have $\gtyperelation{v_1}{\M{\e_1}{A}}$, $\typerelation{\gax}{v_2}{\M{\e_2}{B}}$, and $\typerelation{\gby}{v_3}{\M{\e_3}{C}}$.
         
            
@@ -2121,10 +2120,10 @@ And $v_1\ssub{x}{v} = v_1\sub{I_{\G}, x\setto{v}}$
         
             Hence we can construct the type derivations:
             \begin{equation} 
-                \ntreeruleII{Bind}{
+                \ntreeruleII{\vbind}{
                     \gtyperelation{v_1}{\M{\e_1}{A}}
                 }{
-                    \ntreeruleII{Bind}{
+                    \ntreeruleII{\vbind}{
                         \typerelation{\gax}{v_2}{\M{\e_2}{B}}
                     }{
                         \typerelation{\gax, y: B}{v_3}{\M{\e_3}{C}}
@@ -2145,8 +2144,8 @@ And $v_1\ssub{x}{v} = v_1\sub{I_{\G}, x\setto{v}}$
             and 
         
             \begin{equation}
-                \ntreeruleII{Bind}{
-                    \ntreeruleII{Bind}{
+                \ntreeruleII{\vbind}{
+                    \ntreeruleII{\vbind}{
                         \gtyperelation{v_1}{\M{\e_1}{A}}
                     }{
                         \typerelation{\gax}{v_2}{\M{\e_2}{B}}
@@ -2160,18 +2159,18 @@ And $v_1\ssub{x}{v} = v_1\sub{I_{\G}, x\setto{v}}$
                 }
             \end{equation}
         
-            \case{Eta}
+            \case{\eqeta}
             By inversion, we have $\gtyperelation{v}{\ab}$
         
             By weakening, we have $\wrel{\i\pi}{(\gax)}{\G}$
             Hence, we have
         
             \begin{equation}
-                \ntreeruleI{Fn}{
-                    \ntreeruleII{App}{
+                \ntreeruleI{\vfun}{
+                    \ntreeruleII{\vapply}{
                         \typerelation{(\gax)}{x}{A}
                     }{
-                        \ntreeruleII{weakening}{
+                        \ntreeruleII{\vweaken}{
                             \gtyperelation{v}{\ab}
                         }{
                             \wrel{\i\pi}{\gax}{\G}
@@ -2184,12 +2183,12 @@ And $v_1\ssub{x}{v} = v_1\sub{I_{\G}, x\setto{v}}$
                 }{\gtyperelation{\lam{x}{A}{(\apply{v}{x})}}{\ab}}
             \end{equation}
         
-            \case{If-True}
+            \case{\eqiftrue}
                 By inversion, we have $\gtyperelation{v_1}{ A}$, $\gtyperelation{v_2}{ A}$. Hence by the typing ok lemma \ref{OkLemma}, we have $\ok{\G}$ so $\gtyperelation{\t}{\B}$ by the axiom typing rule.
         
                 Hence 
                 \begin{equation}
-                        \ntreeruleIII{If}{
+                        \ntreeruleIII{\vif}{
                             \gtyperelation{\t}{\B}
                         }{
                             \gtyperelation{v_1}{ A}
@@ -2199,12 +2198,12 @@ And $v_1\ssub{x}{v} = v_1\sub{I_{\G}, x\setto{v}}$
                             \gtyperelation{\pifthenelse{A}{\t}{v_1}{v_2}}{ A}
                         }
                 \end{equation}
-            \case{If-False}
+            \case{\eqiffalse}
             As above,
         
             Hence 
             \begin{equation}
-                \ntreeruleIII{If}{
+                \ntreeruleIII{\vif}{
                     \gtyperelation{\f}{\B}
                 }{
                     \gtyperelation{v_1}{ A}
@@ -2215,7 +2214,7 @@ And $v_1\ssub{x}{v} = v_1\sub{I_{\G}, x\setto{v}}$
                 }
         \end{equation}
         
-        \case{If-Eta}
+        \case{\eqifeta}
             By inversion, we have:
             \begin{equation}
                 \gtyperelation{v_2}{\B}
@@ -2232,7 +2231,7 @@ And $v_1\ssub{x}{v} = v_1\sub{I_{\G}, x\setto{v}}$
             Hence by the substitution theorem, we have:
         
             \begin{equation}
-                \ntreeruleIII{If}{
+                \ntreeruleIII{\vif}{
                     \gtyperelation{v_2}{\B}
                 }{
                     \gtyperelation{v_1\ssub{x}{\t}}{ A}
@@ -2252,7 +2251,7 @@ And $v_1\ssub{x}{v} = v_1\sub{I_{\G}, x\setto{v}}$
             \subsection{Congruences}
         Each congruence rule corresponds exactly to a type derivation rule. To convert to a type derivation, convert all preconditions, then use the equivalent type derivation rule.
         
-        \case{Fn}
+        \case{\eqfun}
             By inversion, $\berelation{\gax}{v_1}{v_2}{B}$. Hence by induction $\typerelation{\gax}{v_1}{B}$, and $\typerelation{\gax}{v_2}{B}$.
         
             So 
@@ -2266,13 +2265,13 @@ And $v_1\ssub{x}{v} = v_1\sub{I_{\G}, x\setto{v}}$
             \end{equation}
         
             Hold.
-        \case{Return}
+        \case{\eqreturn}
             By inversion, $\gberelation{v_1}{v_2}{A}$, so by induction $$\gtyperelation{v_1}{A}$$ and $$\gtyperelation{v_2}{A}$$
         
             Hence we have $$\gtyperelation{\return{v_1}}{\moa}$$
             and
             $$\gtyperelation{\return{v_2}}{\moa}$$
-        \case{Apply}
+        \case{\eqapply}
         
             By inversion, we have $\gberelation{v_1}{v_1'}{\ab}$ and $\gberelation{v_2}{v_2'}{A}$. Hence we have by induction $\gtyperelation{v_1}{\ab}$, $\gtyperelation{v_2}{A}$, $\gtyperelation{v_1'}{\ab}$, and $\gtyperelation{v_2'}{A}$.
         
@@ -2289,7 +2288,7 @@ And $v_1\ssub{x}{v} = v_1\sub{I_{\G}, x\setto{v}}$
                 \gtyperelation{\apply{v_1'}{v_2'}}{B}
             \end{equation}
         
-        \case{Bind}
+        \case{\eqbind}
             By inversion, we have:
             $\gberelation{v_1}{v_1'}{\M{\e_1}{A}}$ and
             $\berelation{\gax}{v_2}{v_2'}{\M{\e_2}{B}}$.
@@ -2308,7 +2307,7 @@ And $v_1\ssub{x}{v} = v_1\sub{I_{\G}, x\setto{v}}$
             \begin{equation}
                 \gtyperelation{\doin{x}{v_1'}{v_2'}}{\M{\e_1\dot\e_2}{A}}
             \end{equation}
-        \case{If}
+        \case{\eqif}
         By inversion, we have:
         $\gberelation{v}{v'}{\B}$,
         $\gberelation{v_1}{v_1'}{ A}$, and
@@ -2335,7 +2334,7 @@ And $v_1\ssub{x}{v} = v_1\sub{I_{\G}, x\setto{v}}$
             \gtyperelation{\pifthenelse{A}{v}{v_1'}{v_2'}}{ A}
         \end{equation}
         Hold.
-        \case{Subtype}
+        \case{\eqsubtype}
         
         By inversion, we have $A \subtype B$ and $\gberelation{v}{v'}{A}$. By induction, we therefore have $\gtyperelation{v}{A}$ and $\gtyperelation{v'}{A}$.
         
@@ -2366,18 +2365,18 @@ And $v_1\ssub{x}{v} = v_1\sub{I_{\G}, x\setto{v}}$
         By induction over Beta-eta equivalence relation.
         \subsection{Equivalence Relation}
         The cases over the equivalence relation laws hold by the uniqueness of denotations and the fact that equality over morphisms is an equivalence relation.
-        \case{Reflexive}
+        \case{\eqreflexive}
         Equality is reflexive, so if $\gtyperelation{v}{A}$ then $\deno{\gtyperelation{v}{A}}$ is equal to itself.
-        \case{Symmetric}
+        \case{\eqsymmetric}
         By inversion, if $\gberelation{v}{v'}{A}$ then $\gberelation{v'}{v}{A}$, so by induction $\gdenoequality{v'}{v}{A}$ and hence $\gdenoequality{v}{v'}{A}$
-        \case{Transitive}
+        \case{\eqtransitive}
         There must exist $v_2$ such that $\gberelation{v_1}{v_2}{A}$ and $\gberelation{v_2}{v_3}{A}$, so by induction,
         $\gdenoequality{v_1}{v_2}{A}$ and $\gdenoequality{v_2}{v_3}{A}$. Hence by transitivity of equality, $\gdenoequality{v_1}{v_3}{A}$
         
         \subsection{Reduction Conversions}
         These cases are typically proved using the properties of a cartesian closed category with a strong graded monad.
         
-        \case{Fn}
+        \case{\eqbeta}
             Let $f = \deno{\typerelation{\gax}{v_1}{B}}: (\G \times A) \rightarrow B$
         
             Let $g = \deno{\gtyperelation{v_2}{A}}: \G \rightarrow A$
@@ -2397,7 +2396,7 @@ And $v_1\ssub{x}{v} = v_1\sub{I_{\G}, x\setto{v}}$
             \end{equation}
            
         
-        \case{Left Unit}
+        \case{\eqleftunit}
         Let $f = \deno{\typerelation{\gax}{v_2}{\meb}}$
         
         Let $g = \deno{\gtyperelation{v_1}{A}}: \G \rightarrow A$
@@ -2422,7 +2421,7 @@ And $v_1\ssub{x}{v} = v_1\sub{I_{\G}, x\setto{v}}$
         
         
         
-        \case{Right Unit}
+        \case{\eqrightunit}
         
         Let $f = \deno{\gtyperelation{v}{\mea}}$ 
             \begin{equation}
@@ -2436,7 +2435,7 @@ And $v_1\ssub{x}{v} = v_1\sub{I_{\G}, x\setto{v}}$
         
         
         
-        \case{Associative}
+        \case{\eqassociativity}
         Let
         \begin{align*}
             f ={}& \deno{\gtyperelation{v_1}{\M{\e_1}{A}}}\\
@@ -2570,7 +2569,7 @@ And $v_1\ssub{x}{v} = v_1\sub{I_{\G}, x\setto{v}}$
         
         %%%%%% END CASE ASSOCIATIVE %%%%%%%
         
-        \case{Eta}
+        \case{\eqeta}
         Let 
         \begin{equation}
             f = \deno{\gtyperelation{v}{\ab}} : \G \rightarrow (B)^{A}
@@ -2597,7 +2596,7 @@ And $v_1\ssub{x}{v} = v_1\sub{I_{\G}, x\setto{v}}$
             \deno{\gtyperelation{\lam{x}{A}{(\apply{v}{x})}}{\ab}} = f =\deno{\gtyperelation{v}{\ab}}
         \end{equation}
         
-        \case{If-True}
+        \case{\eqiftrue}
         Let
         \begin{align*}
             f = &\deno{\gtyperelation{v_1}{ A}}\\
@@ -2617,7 +2616,7 @@ And $v_1\ssub{x}{v} = v_1\sub{I_{\G}, x\setto{v}}$
         \end{equation}
         
         
-        \case{If-False}
+        \case{\eqiffalse}
         Let
         \begin{align*}
             f = &\deno{\gtyperelation{v_1}{ A}}\\
@@ -2707,7 +2706,7 @@ And $v_1\ssub{x}{v} = v_1\sub{I_{\G}, x\setto{v}}$
         \subsection{Congruences}
         These cases can be proved fairly mechanically by assuming the preconditions, using induction to prove that the matching pairs of subexpressions have equal denotations, then constructing the denotations of the expressions using the equal denotations which gives trivially equal denotations.
         
-        \case{Fn}
+        \case{\eqfun}
             By inversion, we have $\berelation{\gax}{v_1}{v_2}{B}$
             By induction, we therefore have $\deno{\typerelation{\gax}{v_1}{B}} = \deno{\typerelation{\gax}{v_2}{B}}$
         
@@ -2722,7 +2721,7 @@ And $v_1\ssub{x}{v} = v_1\sub{I_{\G}, x\setto{v}}$
             \end{equation}
         
         
-        \case{Return}
+        \case{\eqreturn}
         By inversion, we have $\gberelation{v_1}{v_2}{A}$
         By induction, we therefore have $\deno{\gtyperelation{v_1}{A}} = \deno{\gtyperelation{v_2}{A}}$
         
@@ -2737,7 +2736,7 @@ And $v_1\ssub{x}{v} = v_1\sub{I_{\G}, x\setto{v}}$
         \end{equation}
         
         
-        \case{Apply}
+        \case{\eqapply}
         By inversion, we have $\gberelation{v_1}{v_1'}{\ab}$ and $\gberelation{v_2}{v_2'}{A}$
         By induction, we therefore have $\deno{\gtyperelation{v_1}{\ab}}= \deno{\gtyperelation{v_1'}{\ab}}$ and $\deno{\gtyperelation{v_2}{A}} = \deno{\gtyperelation{v_2'}{A}}$
         
@@ -2755,7 +2754,7 @@ And $v_1\ssub{x}{v} = v_1\sub{I_{\G}, x\setto{v}}$
         \end{equation}
         
         
-        \case{Bind}
+        \case{\eqbind}
         By inversion, we have $\gberelation{v_1}{v_1'}{\M{\e_1}{A}}$ and $\berelation{\gax}{v_2}{v_2'}{\M{\e_2}{B}}$
         By induction, we therefore have $\deno{\gtyperelation{v_1}{\M{\e_1}{A}}}= \deno{\gtyperelation{v_1'}{\M{\e_1}{A}}}$ and $\deno{\typerelation{\gax}{v_2}{\M{\e_1}{A}}} = \deno{\typerelation{\gax}{v_2'}{\M{\e_2}{B}}}$
         
@@ -2774,7 +2773,7 @@ And $v_1\ssub{x}{v} = v_1\sub{I_{\G}, x\setto{v}}$
                  & = \deno{\gtyperelation{\doin{x}{v_1}{v_2}}{\M{\e_1\dot\e_2}{A}}}
             \end{split}
         \end{equation}
-        \case{If}
+        \case{\eqif}
         By inversion, we have $\gberelation{v}{v'}{\B}$, $\gberelation{v_1}{v_1'}{\M{\e_1}{A}}$ and $\gberelation{v_2}{v_2'}{\M{\e_2}{B}}$
         By induction, we therefore have $\deno{\gtyperelation{v}{\B}} = \deno{\gtyperelation{v'}{B}}$, $\deno{\gtyperelation{v_1}{ A}}= \deno{\gtyperelation{v_1'}{ A}}$ and $\deno{\typerelation{\gax}{v_2}{\M{\e_2}{B}}} = \deno{\typerelation{\gax}{v_2'}{\M{\e_2}{B}}}$
         
@@ -2794,7 +2793,7 @@ And $v_1\ssub{x}{v} = v_1\sub{I_{\G}, x\setto{v}}$
                  & = \deno{\gtyperelation{\doin{x}{v_1}{v_2}}{\M{\e_1\dot\e_2}{A}}}
             \end{split}
         \end{equation}
-        \case{Subtype}
+        \case{\eqsubtype}
         By inversion, we have $\gberelation{v_1}{v_2}{A}$, and $A \subtype B$ 
         By induction, we therefore have $\deno{\gtyperelation{v_1}{A}} = \deno{\gtyperelation{v_2}{A}}$
         

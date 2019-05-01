@@ -2,7 +2,11 @@
 \input{../proofs/header.tex}
 
 
+
+
 \begin{document}
+
+
 \chapter{Adequacy of a Model of the Effect Calculus}
     \section{Instantiation of the Effect Calculus}
     Let us instantiate the effect calculus to be a language in which one can write programs which can create an output signal. The effect system of EC is then used to count an upper bound on the number of outputs that a program can make. This language shall be called $\ecput$
@@ -149,10 +153,10 @@ $\deno{\ztyperelation{\put^n}{\M{n}{\U}}} = (n, \singleton)$
 \begin{proof}
     By induction on the derivation of $A\subtype B$.
 
-    \case{Ground}
+    \case{\sground}
         $A\subtype B\implies A = B$, since ground subtyping is the identity relation.
 
-    \case{Fun}
+    \case{\sfun}
         $A\subtype B\implies A = \fntype{A_1}{A_2}, B = \fntype{B_1}{B_2}$ where $B_1\subtype A_1$ and $A_2\subtype B_2$.
 
         By the definition of the $\relates_{\ab}$ relation, $\logRel{d}{\ab}{v} \Leftrightarrow (\forall e, u. \logRel{e}{A}{u}\implies \logRel{d(e)}{B}{\apply{v}{u}})$.
@@ -166,7 +170,7 @@ $\deno{\ztyperelation{\put^n}{\M{n}{\U}}} = (n, \singleton)$
         \end{align}
 
         As required.
-    \case{Effect}
+    \case{\seffect}
 
     $\M{n_1}{A_1} \subtype \M{n_2}{A_2} \implies n_1\leq n_2, A_1\subtype A_2$
 
@@ -207,7 +211,7 @@ Let $\relates_\G \in \deno{\G}\times \ecputG$ mean:
     \end{align}
 
 
-    \case{Subtype}
+    \case{\vsubtype}
 
     \begin{equation}
         \deno{\gtyperelation{v}{B}}\rho = \logRel{\deno{\gtyperelation{v}{A}}}{A}{v\ssi}
@@ -215,7 +219,7 @@ Let $\relates_\G \in \deno{\G}\times \ecputG$ mean:
 
     Since $A\subtype B \wedge \logRel{d}{A}{v} \implies \logRel{d}{B}{v}$, we have that $\logRel{\deno{\gtyperelation{v}{B}}}{B}{v\ssi}$.
 
-    \case{Fn}
+    \case{\vfun}
 
     For all $\logRel{d}{A}{u}$, 
     \begin{align}
@@ -232,7 +236,7 @@ Let $\relates_\G \in \deno{\G}\times \ecputG$ mean:
     \end{align}
 \end{proof}
 
-\case{Apply}
+\case{\vapply}
 \begin{equation}
     \deno{\gtyperelation{\apply{v}{u}}{B}}\rho = (\deno{\gtyperelation{v}{\ab}}\rho)(\deno{\gtyperelation{u}{A}}\rho)
 \end{equation}
@@ -243,7 +247,7 @@ By induction $\logRel{\deno{\gtyperelation{v}{\ab}}\rho}{\ab}{v\ssi}$ and $\logR
     \deno{\gtyperelation{\apply{v}{u}}{B}}\rho =\logRel{(\deno{\gtyperelation{v}{\ab}}\rho)(\deno{\gtyperelation{u}{A}}\rho)}{B}{\apply{(v\ssi)}{(u\ssi)}\beequiv (\apply{v}{u})\ssi}
 \end{align}
 
-\case{Return}
+\case{\vreturn}
 
 \begin{equation}
     \deno{\gtyperelation{v}{\M{0}{A}}}\rho = (0, \deno{\gtyperelation{v}{A}}\rho)
@@ -257,7 +261,7 @@ By induction, $\logRel{\deno{\gtyperelation{v}{A}}}{A}{v\ssi}$, so by picking $v
 
 So $\logRel{\deno{\gtyperelation{\return{v}}{\M{0}{A}}}}{\M{0}{A}\rho}{(\return{v})\ssi}$
 
-\case{Bind}
+\case{\vbind}
 
 By inversion, $\deno{\gtyperelation{\doin{x}{v}{u}}{\M{m+n}{B}}}\rho = (m'+n', d_u)$, where $(n', d_u) = \deno{\typerelation{\gax}{u}{\mnb}}(\rho[x\mapsto d_v])$, and $(n', d_v) = \deno{\gtyperelation{v}{\mma}}\rho$.
 
@@ -278,7 +282,7 @@ Hence,
 So $\logRel{\deno{\gtyperelation{\doin{x}{v}{u}}{\M{m+n}{B}}}\rho}{\M{m+n}{B}}{(\doin{x}{v}{u})\ssi}$.
 
 
-\case{If}
+\case{\vif}
 
 By inversion, $\deno{\gtyperelation{\pifthenelse{A}{b}{v_1}{v_2}}{A}}\rho = \begin{cases}
     \deno{\gtyperelation{v_1}{A}}\rho \qt{If }\deno{\gtyperelation{b}{\B}}\rho = \top\\
@@ -336,7 +340,7 @@ Equality of denotations implies equational equality.
     \case{Unit}
     Let $\singleton=\deno{\ztyperelation{v}{\U}}=\deno{\ztyperelation{v}{\U}}\in \{\singleton\}$. By the fundamental property, $\logRel{d}{\U}{v}$  and $\logRel{d}{\U}{v}$. Hence $\zberelation{v\beequiv\u}{u}{\U}$.
 
-    \case{Effect}
+    \case{\teffect}
 
     Let $(n', d) = \deno{\ztyperelation{v}{\M{n}{G}}} = \deno{\ztyperelation{u}{\M{n}{G}}}$. By the fundamental property, $\logRel{(n', d)}{\M{n}{G}}{v}$ and $\logRel{(n', d)}{\M{n}{G}}{u}$. So there exists $u', v'$ such that $\logRel{d'}{G}{u'}$ and $\logRel{d'}{G}{u'}$ and:
 

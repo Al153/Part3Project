@@ -61,16 +61,153 @@
 \newcommand\needsRef[1]{\textbf{Reference Needed: (#1)}}
 \newcommand\fixLayout[1]{\textbf{Fix Layout: #1}}
 
+
+%% Rule Names
+% Prefixes
+\newcommand{\tprefix}[0]{T-}
+\newcommand{\eprefix}[0]{E-}
+\newcommand{\sprefix}[0]{S-}
+\newcommand\equationalprefix[0]{Eq-}
+\newcommand\envprefix[0]{Env-}
+\newcommand\pprefix[0]{\eprefix\envprefix}
+
+\newcommand\subprefix[0]{Sb-}
+\newcommand\weakenprefix[0]{Wk-}
+
+% Base  rule names
+\newcommand\basenil[0]{Nil}
+\newcommand\baseextend[0]{Extend}
+
+\newcommand{\baseground}[0]{Ground}
+\newcommand{\baseweaken}[0]{Weaken}
+\newcommand{\basevar}[0]{Var}
+\newcommand\basefn[0]{Fn}
+\newcommand\baseeffect[0]{Effect}
+\newcommand\basequant[0]{Quantification}
+
+
+\newcommand\baseunit[0]{Unit}
+\newcommand\basetrue[0]{True}
+\newcommand\basefalse[0]{False}
+\newcommand\baseconst[0]{Const}
+\newcommand\basesubtype[0]{Subtype}
+\newcommand\basegen[0]{Effect-Gen}
+\newcommand\basespec[0]{Effect-Spec}
+\newcommand\basereturn[0]{Return}
+\newcommand\baseapply[0]{Apply}
+\newcommand\baseif[0]{If}
+\newcommand\basebind[0]{Bind}
+
+\newcommand\basetransitive[0]{Transitive}
+\newcommand\basereflexive[0]{Reflexive}
+
+\newcommand{\baseid}[0]{Id}
+\newcommand\baseproject[0]{Project}
+
+% Effect Weakening Rule Names
+\newcommand{\eid}[0]{\eprefix\baseid}
+\newcommand{\eproject}[0]{\eprefix\baseproject}
+\newcommand{\eextend}[0]{\eprefix\baseextend}
+
+% Term Weakening Rule Names
+\newcommand{\tid}[0]{\tprefix\baseid}
+\newcommand{\tproject}[0]{\tprefix\baseproject}
+\newcommand{\textend}[0]{\tprefix\baseextend}
+
+% Effect Substitution Rule Names
+\newcommand\esubnil[0]{\eprefix\basenil}
+\newcommand\esubextend[0]{\eprefix\baseextend}
+
+% Term Substitution Rule Names
+
+\newcommand\tsubnil[0]{\tprefix\basenil}
+\newcommand\tsubextend[0]{\tprefix\baseextend}
+
+% Type environment Rule Names
+\newcommand\envnil[0]{\envprefix\basenil}
+\newcommand\envextend[0]{\envprefix\baseextend}
+% Effect Environment rule names
+\newcommand\pnil[0]{\pprefix\basenil}
+\newcommand\pextend[0]{\pprefix\baseextend}
+% Equational equality rule names
+\newcommand{\eqbeta}[0]{\equationalprefix Lambda-Beta}
+\newcommand{\eqeta}[0]{\equationalprefix Lambda-Eta}
+\newcommand{\eqeffbeta}[0]{\equationalprefix Effect-Beta}
+\newcommand{\eqeffeta}[0]{\equationalprefix Effect-Eta}
+\newcommand\eqleftunit[0]{\equationalprefix Left-Unit}
+\newcommand\eqrightunit[0]{\equationalprefix Right-Unit}
+\newcommand\equnitequiv[0]{\equationalprefix Unit}
+\newcommand\eqiftrue[0]{\equationalprefix If-True}
+\newcommand\eqiffalse[0]{\equationalprefix If-False}
+\newcommand\eqifeta[0]{\equationalprefix If-Eta}
+\newcommand\eqassociativity[0]{\equationalprefix Associativity}
+
+\newcommand{\eqreflexive}[0]{\equationalprefix\basereflexive}
+\newcommand\eqtransitive[0]{\equationalprefix\basetransitive}
+\newcommand\eqsymmetric[0]{\equationalprefix Symmetric}
+
+\newcommand\equnit[0]{\equationalprefix\baseunit}
+\newcommand\eqtrue[0]{\equationalprefix\basetrue}
+\newcommand\eqfalse[0]{\equationalprefix\basefalse}
+\newcommand\eqconst[0]{\equationalprefix\baseconst}
+\newcommand{\eqvar}[0]{\equationalprefix\basevar}
+\newcommand\eqweaken[0]{\equationalprefix\baseweaken}
+\newcommand\eqfun[0]{\equationalprefix\basefn}
+\newcommand\eqsubtype[0]{\equationalprefix\basesubtype}
+\newcommand\eqgen[0]{\equationalprefix\basegen}
+\newcommand\eqspec[0]{\equationalprefix\basespec}
+\newcommand\eqreturn[0]{\equationalprefix\basereturn}
+\newcommand\eqapply[0]{\equationalprefix\baseapply}
+\newcommand\eqif[0]{\equationalprefix\baseif}
+\newcommand\eqbind[0]{\equationalprefix\basebind}
+
+% Term rule names
+\newcommand\vunit[0]{\baseunit}
+\newcommand\vtrue[0]{\basetrue}
+\newcommand\vfalse[0]{\basefalse}
+\newcommand\vconst[0]{\baseconst}
+\newcommand{\vvar}[0]{\basevar}
+\newcommand\vweaken[0]{\baseweaken}
+\newcommand\vfun[0]{\basefn}
+\newcommand\vsubtype[0]{\basesubtype}
+\newcommand\vgen[0]{\basegen}
+\newcommand\vspec[0]{\basespec}
+\newcommand\vreturn[0]{\basereturn}
+\newcommand\vapply[0]{\baseapply}
+\newcommand\vif[0]{\baseif}
+\newcommand\vbind[0]{\basebind}
+
+%Effect rule names
+\newcommand\eground[0]{\eprefix\baseground}
+\newcommand\evar[0]{\eprefix\basevar}
+\newcommand\eweaken[0]{\eprefix\baseweaken}
+\newcommand\ecompose[0]{\eprefix Compose}
+
+% Type rule names
+\newcommand{\tground}[0]{\tprefix\baseground}
+\newcommand{\tfun}[0]{\tprefix\basefn}
+\newcommand{\teffect}[0]{\tprefix\baseeffect}
+\newcommand{\tquant}[0]{\tprefix\basequant}
+
+% Subtyping rule names
+\newcommand{\stransitive}[0]{\sprefix\basetransitive}
+\newcommand{\sreflexive}[0]{\sprefix\basereflexive}
+\newcommand{\sground}[0]{\sprefix\baseground}
+\newcommand{\sfun}[0]{\sprefix\basefn}
+\newcommand{\seffect}[0]{\sprefix\baseeffect}
+\newcommand{\squant}[0]{\sprefix\basequant}
+
+
 \newcommand{\s}{\;}
 \newcommand{\doin}[3]{\texttt{do}\s #1 \leftarrow #2 \s\texttt{in}\s #3\s}
 \newcommand\apply[2]{#1\s#2}
-\newcommand{\pifthenelse}[4]{\texttt{if}_{\textcolor{grey}{#1}}\s#2\s \texttt{then}\s #3 \s\texttt{else} \s#4\s}
+\newcommand{\pifthenelse}[4]{\texttt{if}_{\textcolor{purple}{#1}}\s#2\s \texttt{then}\s #3 \s\texttt{else} \s#4\s}
 \newcommand\ifthenelse[5]{\pifthenelse{#1, #2}{#3}{#4}{#5}}
-\newcommand\const[1]{\texttt{C}^{\color{grey} #1}}
+\newcommand\const[1]{\texttt{k}^{\color{purple} #1}}
 \newcommand\return[1]{\texttt{return} \s#1\s}
 
 
-\newcommand\lam[3]{\lambda #1 \colon {\color{grey}#2}. #3\s}
+\newcommand\lam[3]{\lambda #1 \colon {\color{purple}#2}. #3\s}
 \renewcommand\u[0]{\texttt{()}}
 \newcommand{\U}[0]{\texttt{Unit}}
 \renewcommand\t[0]{\texttt{true}}
