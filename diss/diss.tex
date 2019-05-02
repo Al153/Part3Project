@@ -16,8 +16,6 @@
 
 \maketitle
 
-\todo{Fix usage of rule name macros for \.subeffectree, \.trulecont}
-
 \newcommand{\note}[1]{
     %
 }
@@ -29,8 +27,13 @@
         - Changed definition of S-Category
         - changed "Required Category Structure"
 
-        - Framed all theorems + neatened definitions of theorems
+        - Framed all theorems + neatened definitions of theorems, added more references
+        - Improved prose-to-maths ratio of substitution+weakening sections.
+        - More boxification
 }
+\todo{Type env vs term env?}
+\todo{Use squares or don't use squares.}
+\todo{Effect environment or effect-variable environment?}
 
 \abstract
 To date, there has been limited work on the semantics of languages with polymorphic effect systems. The application, by Moggi \cite{MoggiMonads}, of strong monads to modelling the semantics of effects has become a mainstream concept in functional programming languages. The usage of monads was made more precise by Katsumata (\cite{Katsumata:2014}) using a graded monad to model languages with a range of independent and dependent effects at an operational level. Separately, a categorical semantics for parametric polymorphism in types was first published by Reynolds \cite{PLCSemantics} allowing a denotational analysis of languages including type parameters. There has been some work on polymorphism over the exception effect (which paper). However, there has been no work to date on the denotational semantics of languages with general parametric polymorphism over effects.
@@ -99,6 +102,13 @@ When we specify a denotational semantics of a language in category theory, we lo
 
 Furthermore, assuming the language has a type system with a typing relation of the form $\gtyperelation{v}{A}$, meaning ``in environment $\G$, language term $v$ has type $A$'', instances of the typing relation should be mapped to morphisms between the relevant objects in $\C$.
 
+\begin{framed}
+    \begin{aside}[Syntax highlighting]
+        In this dissertation, I have made use of some simple syntax highlighting in order to make some relations easier to parse by eye. There is not a specific meaning attached to each colour, but as a guide: green indicates an assumption, blue a conclusion, and type annotations within terms are purple. For example: $\typerelation{\texttt{Assumption}}{\lam{x}{A}{\texttt{term}}}{\texttt{Type}}$.
+    \end{aside}
+     
+\end{framed}
+
 \begin{align*}
     \gtyperelation{v}{A} & \mapsto \C(\deno{\G}, \deno{A}) 
 \end{align*}
@@ -109,7 +119,6 @@ Typically when working with lambda-calculus-based languages, we pick our equatio
 
 An example of an inductive equivalence rule that we might want to be sound with respect to is that of the $\beta$-reduction of lambda terms. It should be the case that the equality defined in Equation \ref{LambdaBeta} below implies that the denotations $\deno{\gtyperelation{\apply{(\lam{x}{A}{v_1})}{v_2}}{B}}$ and $\deno{\gtyperelation{v_1\ssub{x}{v_2}}{B}}$ are equal.
 
-\todo{Explain syntax highlighting}
 \begin{align}\label{LambdaBeta}
     \ntreeruleII{Lambda-Beta}{\typerelation{\gax}{v_1}{B}}{\gtyperelation{v_2}{A}}{\gberelation{\apply{(\lam{x}{A}{v_1})}{v_2}}{v_1\ssub{x}{v_2}}{B}}
 \end{align}
@@ -121,12 +130,12 @@ In this dissertation, I introduce an effect-polymorphic language, describe a sem
 
 
 
-In this chapter I first introduce the required category theory to understand the rest of the dissertation. In addition, I explain briefly how the particular category-theoretic structures can be used to model particular features of various programming languages, such as the simply typed lambda calculus and system F. Following this, I proceed to introduce the monadic, effectful language used in the rest of the dissertation, known from now on as the Effect Calculus (EC). In the final Section, I extend the EC with polymorphic syntax to yield Polymorphic Effect Calculus (PEC).
+In this chapter I first introduce the required category theory to understand the rest of the dissertation. In addition, I explain briefly how the particular category-theoretic structures can be used to model particular features of various programming languages, such as the simply typed lambda calculus and system F. Following this, I proceed to introduce the monadic, effectful language used in the rest of the dissertation, known from now on as the Effect Calculus (EC). In the final section, I extend the EC with polymorphic syntax to yield Polymorphic Effect Calculus (PEC).
 
 \section{Required Category Theory}\label{CategoryTheoryRequirements}
 
 
-Before going further, it is necessary to assert a common level of category theory knowledge. This Section is not intended as a tutorial but to jog the memory of the reader, and briefly introduce some new concepts. For a more detailed treatment of these concepts, please see \cite{maclane:71}.
+Before going further, it is necessary to assert a common level of category theory knowledge. This section is not intended as a tutorial but to jog the memory of the reader, and briefly introduce some new concepts. For a more detailed treatment of these concepts, please see \cite{maclane:71}.
 
 \subsection{Cartesian Closed Category}\label{CCC}
 A category is \textit{cartesian closed} if it has a terminal object, products for all pairs of objects, and exponentials. These concepts will be explained below.
@@ -540,7 +549,7 @@ When we combine an effect system with if-expressions, we come across another, la
 
 To model subtyping, we need a way to convert morphisms $\deno{\gtyperelation{v}{A}}: \G\rightarrow A$ to $\deno{\gtyperelation{v}{B}}:\G\rightarrow B$ when $A\subtype B$. This can be done if for each instance of $A\subtype B$, we have a there is morphism $\deno{A\subtype B}: A \rightarrow B$. These morphisms should respect the transitivity and reflexivity of the subtyping relation, meaning that $\deno{B\subtype C}\after\deno{A\subtype B} = \deno{A\subtype C}$ and $\deno{A\subtype A} = \Id{A}$.
 
-Polymorphism is a harder concept to explain intuitively. The particular flavour of polymorphism that this dissertation discusses is System-F-style parametric polymorphism. For a given type-system feature $G$, such as types, effects, type constructors, or some other language specific feature, we can add parametric polymorphism over $G$ by allowing instances of $F$ to be replaced by $G$ variables and \todo{fix this so it's a bit more sensicle} introducing certain type expressions to modify the types. For example, let us look at system F \cite{SystemFIntroduction}. System F has polymorphism over types. This means that we can replace a type expression with a type variable parameter. We also need to be able to syntactically generalise over type parameters and to be able to specify a particular type parameter's value. This requires us to extend the syntax of the simply typed lambda calculus with the appropriate specialisation and generalisation terms as well as parameterised types, as seen in Figure \ref{SystemFTermsTypes}.
+Polymorphism is a harder concept to explain intuitively. The particular flavour of polymorphism that this dissertation discusses is System-F-style parametric polymorphism. For a given type-system feature $G$, such as types, effects, type constructors, or some other language specific feature, we can add parametric polymorphism over $G$ by allowing $G$ variables to occur in expressions and introducing expression terms to indicate when these $G$ variables are introduced and when they are eliminated. For example, let us look at system F \cite{SystemFIntroduction}. System F has polymorphism over types. This means that we can replace a type expression with a type variable parameter. We also need to be able to syntactically generalise over type parameters and to be able to specify a particular type parameter's value. This requires us to extend the syntax of the simply typed lambda calculus with the appropriate specialisation and generalisation terms as well as parameterised types, as seen in Figure \ref{SystemFTermsTypes}.
 
 \begin{figure}
     \begin{framed}
@@ -561,11 +570,11 @@ Polymorphism is a harder concept to explain intuitively. The particular flavour 
     \label{SystemFTermsTypes}
 \end{figure}
 
-To correctly account for these new terms and types in the type system, we need to ensure that all parameterisations are soundly constructed, in a similar way to how a closed term in the simply typed lambda calculus has no free variables. To do this, we introduce a new $F$-environment $\P$ to complement the term environments $\G$. A term or type is well formed (written $\wellformed{\P}{f}$) only if it only contains $F$ variables in $\P$. An $F$ expression, $f$, is also well formed only if it only contains $F$ variables in $\P$. We can now specify type rules for the generalisation (parameterisation of an expression over an $F$-variable) and specialisation (substituting a parameter for a value) of terms. As seen in Equation \ref{PolymorphismTypeRules}.
+To correctly account for these new terms and types in the type system, we need to ensure that all parameterisations are soundly constructed, in a similar way to how a closed term in the simply typed lambda calculus has no free variables. To do this, we introduce a new $F$-environment $\P$ to complement the term environments $\G$. A term or type is well formed (written $\wellformedF{\P}{f}$) only if it only contains $F$ variables in $\P$. An $F$ expression, $f$, is also well formed only if it only contains $F$ variables in $\P$. We can now specify type rules for the generalisation (parameterisation of an expression over an $F$-variable) and specialisation (substituting a parameter for a value) of terms. As seen in Equation \ref{PolymorphismTypeRules}.
 
 \begin{eqnarray}\label{PolymorphismTypeRules}
     \condtreeruleI{\vgen}{\etyperelation{\P, \a}{\G}{v}{A}}{\gpetyperelation{\elam{\a}{v}}{\all{\a}{A}}}{\a\notin\P}& 
-    \ntreeruleII{\vspec}{\gpetyperelation{v}{\all{\a}{A}}}{\wellformed{\P}{f}}{\gpetyperelation{\eapp{v}{f}}{A\ssub{\a}{f}}}
+    \ntreeruleII{\vspec}{\gpetyperelation{v}{\all{\a}{A}}}{\wellformedF{\P}{f}}{\gpetyperelation{\eapp{v}{f}}{A\ssub{\a}{f}}}
 \end{eqnarray}
 
 If we can model the language without the polymorphic terms in Equation \ref{PolymorphismTypeRules}, at each specific $F$ environment, then we can instantiate a collection of categories, each of which models the language at a given $F$ environment. This collection of categories (which we call \textit{fibres}) can be indexed by a base category, the structure of which models the $F$ environments and relationships between them. We can hence construct an indexed category, whereby each $F$ environment in the base category is mapped to the fibre modelling the semantics at the specific environment, and morphisms between $F$ environments correspond to functors between the respective fibres. Figure \ref{IndexDiagram} demonstrates this construction. If we model an $F$ environment $\P, \a$ as a product, then the $\p$ morphism represents removing $\a$ from the environment and the $\pstar$ functor conversely increases the size of the environment. As will be show later in this dissertation, if $\pstar$ has a right adjoint (see Section \ref{WhatsAnAdjunction}), $\forall$, then this adjunction can be used to model generalisation and specialisation of polymorphic terms. This will be explained in the next chapter. 
@@ -844,28 +853,28 @@ The $\okt$ predicate on effect environments asserts that the effect environment 
     \condtreeruleI{\pextend}{\ok{\P}}{\ok{\P, \a}}{\a\notin \P}
 \]
 
-Using this, we can define the well-formedness relation on effects, $\wellformed{\P}{\e}$. In short, this relation ensures that effects only reference variables that are in the effect environment. This is equivalent to saying that $\wellformed{\P}{\e}$ means that $\e\in E_\P$.
+Using this, we can define the well-formedness relation on effects, $\wellformedeffect{\P}{\e}$. In short, this relation ensures that effects only reference variables that are in the effect environment. This is equivalent to saying that $\wellformedeffect{\P}{\e}$ means that $\e\in E_\P$.
 
 \[
-    \ntreeruleI{\eground}{\ok{\P}}{\wellformed{\P}{e}}
+    \ntreeruleI{\eground}{\ok{\P}}{\wellformedeffect{\P}{e}}
     \quad
-    \ntreeruleI{\evar}{\ok{\P,\a}}{\wellformed{\P,\a}{\a}}
+    \ntreeruleI{\evar}{\ok{\P,\a}}{\wellformedeffect{\P,\a}{\a}}
     \quad
-    \condtreeruleI{\eweaken}{\wellformed{\P}{\a}}{\wellformed{\P,\b}{\a}}{\a\neq\b, \b\notin\P}
+    \condtreeruleI{\eweaken}{\wellformedeffect{\P}{\a}}{\wellformedeffect{\P,\b}{\a}}{\a\neq\b, \b\notin\P}
     \quad
-    \ntreeruleII{\ecompose}{\wellformed{\P}{\e_1}}{\wellformed{\P}{\e_2}}{\wellformed{\P}{\e_1\dot\e_2}}
+    \ntreeruleII{\ecompose}{\wellformedeffect{\P}{\e_1}}{\wellformedeffect{\P}{\e_2}}{\wellformedeffect{\P}{\e_1\dot\e_2}}
 \]
 
-The well-formedness of effects can be used to a similar well-typed-relation on types, $\wellformed{\P}{A}$, which asserts that all effects in the type are well formed.
+The well-formedness of effects can be used to a similar well-typed-relation on types, $\wellformedtype{\P}{A}$, which asserts that all effects in the type are well formed.
 
 \[
-    \ntreeruleI{\tground}{\ok{\P}}{\wellformed{\P}{\g}}
+    \ntreeruleI{\tground}{\ok{\P}}{\wellformedtype{\P}{\g}}
     \quad
-    \ntreeruleII{\tfun}{\wellformed{\P}{A}}{\wellformed{\P}{B}}{\wellformed{\P}{\ab}}
+    \ntreeruleII{\tfun}{\wellformedtype{\P}{A}}{\wellformedtype{\P}{B}}{\wellformedtype{\P}{\ab}}
     \quad
-    \ntreeruleII{\teffect}{\wellformed{\P}{A}}{\wellformed{\P}{\e}}{\wellformed{\P}{\mea}}
+    \ntreeruleII{\teffect}{\wellformedtype{\P}{A}}{\wellformedeffect{\P}{\e}}{\wellformedtype{\P}{\mea}}
     \quad
-    \ntreeruleI{\tquant}{\wellformed{\P,\a}{A}}{\wellformed{\P}{\all{\a}{A}}}
+    \ntreeruleI{\tquant}{\wellformedtype{\P,\a}{A}}{\wellformedtype{\P}{\all{\a}{A}}}
 \]
 
 Finally, we can derive the a well-formedness of type environments,   $\oke{\P}{\G}$, which ensures that all types in the environment are well formed.
@@ -873,7 +882,7 @@ Finally, we can derive the a well-formedness of type environments,   $\oke{\P}{\
 \[
     \ntreerulez{\envnil}{\oke{\P}{\nil}}
     \quad
-    \condtreeruleI{\envextend}{\oke{\P}{\G}\s\s \wellformed{\P}{A}}{\oke{\P}{\gax}}{x\notin\dom{\G}}
+    \condtreeruleI{\envextend}{\oke{\P}{\G}\s\s \wellformedtype{\P}{A}}{\oke{\P}{\gax}}{x\notin\dom{\G}}
 \]
 
 \subsubsection{Subtyping}
@@ -899,7 +908,7 @@ Using this ground type relation, we can then construct a subtyping relation betw
     $}
 \]
 
-Since the ground subtyping and subeffecting relations are partial orders, it is fairly simple to prove by induction that the new relation is also a partial order. By induction, it is also easy to prove that if $A \subtypep B$ and $\wellformed{\P}{A}$ then $\wellformed{\P}{B}$. This last property comes about because the subeffecting relation $\subeffectp$ only holds between effects in $E_\P$, which are well formed by definition.
+Since the ground subtyping and subeffecting relations are partial orders, it is fairly simple to prove by induction that the new relation is also a partial order. By induction, it is also easy to prove that if $A \subtypep B$ and $\wellformedtype{\P}{A}$ then $\wellformedtype{\P}{B}$. This last property comes about because the subeffecting relation $\subeffectp$ only holds between effects in $E_\P$, which are well formed by definition.
 
 
 \subsubsection{Type Rules}
@@ -907,7 +916,7 @@ We define a fairly standard set of type rules on the language.
 
 \[
     \scalebox{0.85}{$
-    \ntreeruleII{\vconst}{\oke{\P}{\G}}{\wellformed{\P}{A}}{\gpetyperelation{\const{A}}{A}} 
+    \ntreeruleII{\vconst}{\oke{\P}{\G}}{\wellformedtype{\P}{A}}{\gpetyperelation{\const{A}}{A}} 
     \quad
     \ntreeruleI{\vunit}{\oke{\P}{\G}}{\gpetyperelation{\u}{\U}} 
     \quad
@@ -920,7 +929,7 @@ We define a fairly standard set of type rules on the language.
     \scalebox{0.85}{$
 \ntreeruleI{\vvar}{\oke{\P}{\gax}}{\etyperelation{\P}{\gax}{x}{A}}
 \quad
-\condtreeruleII{\vweaken}{\etyperelation{\P}{\G}{x}{A}}{\wellformed{\P}{B}}{\etyperelation{\P}{\gby}{x}{A}}{x \neq y, y\notin\dom{\G}}
+\condtreeruleII{\vweaken}{\etyperelation{\P}{\G}{x}{A}}{\wellformedtype{\P}{B}}{\etyperelation{\P}{\gby}{x}{A}}{x \neq y, y\notin\dom{\G}}
 \quad
 \ntreeruleI{\vfun}{\etyperelation{\P}{\gax}{v}{B}}{\etyperelation{\P}{\G}{\lam{x}{A}{v}}{\ab}}
 $}
@@ -931,7 +940,7 @@ $}
     \quad
     \ntreeruleI{\vgen}{\etyperelation{\P,\a}{\G}{v}{A}}{\gpetyperelation{\elam{\a}{v}}{\all{\a}{A}}}
     \quad
-    \ntreeruleII{\vspec}{\gpetyperelation{v}{\all{\a}A}}{\wellformed{\P}{\e}}{\gpetyperelation{\eapp{v}{\e}}{A\ssub{\a}{\e}}}
+    \ntreeruleII{\vspec}{\gpetyperelation{v}{\all{\a}A}}{\wellformedeffect{\P}{\e}}{\gpetyperelation{\eapp{v}{\e}}{A\ssub{\a}{\e}}}
     $}
 \]
 \[
@@ -962,17 +971,17 @@ $}
 \end{proof}
 
 \begin{lemma}[Ok Lemma on Effect Environments]
-    A second group of lemmas is that each of the judgments  $\wellformed{\P}{\e}$, $\wellformed{\P}{A}$, and $\oke{\P}{\G}$ implies $\ok{\P}$.
+    A second group of lemmas is that each of the judgments  $\wellformedeffect{\P}{\e}$, $\wellformedtype{\P}{A}$, and $\oke{\P}{\G}$ implies $\ok{\P}$.
 \end{lemma}
 
 \begin{proof}
-    We prove each of the implications separately, but an over-arching theme of this proof is that the leaf rules of any $\wellformed{\P}{\texttt{Consequence}}$ derivation tree require $\ok{\P}$ and that any modifications to the effect environment in the assumptions to the effect environment in the consequence of a rule preserve the $\okt$ relation. Hence, using induction and inversion, we can show that the effect environment is always well formed in any complete derivation tree.
+    We prove each of the implications separately, but an over-arching theme of this proof is that the leaf rules of any $\wellformedtype{\P}{\texttt{Consequence}}$ derivation tree require $\ok{\P}$ and that any modifications to the effect environment in the assumptions to the effect environment in the consequence of a rule preserve the $\okt$ relation. Hence, using induction and inversion, we can show that the effect environment is always well formed in any complete derivation tree.
 
-    Firstly in the case of the well-formedness relation $\wellformed{\P}{\e}$, the only leaf rules are the (\textit{\eground}) and (\textit{\evar}) rules. By inversion, if $\wellformed{\P}{e}$ or $\wellformed{\P, \a}{\a}$ then $\ok{\P}$ or $\ok{\P, \a}$ respectively. Next, by inversion on the (\textit{\ecompose}) rule, if $\wellformed{\P}{\e_1\dot\e_2}$ then $\wellformed{\P}{\e_1}$, so by induction $\ok{\P}$. Finally, the weakening rule preserves the $\okt$ property of the effect environment, so $\wellformed{\P, \b}{\a} \implies \wellformed{\P}{\a} \implies \ok{\P} \implies \ok{(\P, \b)}$.
+    Firstly in the case of the well-formedness relation $\wellformedeffect{\P}{\e}$, the only leaf rules are the (\textit{\eground}) and (\textit{\evar}) rules. By inversion, if $\wellformedeffect{\P}{e}$ or $\wellformedeffect{\P, \a}{\a}$ then $\ok{\P}$ or $\ok{\P, \a}$ respectively. Next, by inversion on the (\textit{\ecompose}) rule, if $\wellformedeffect{\P}{\e_1\dot\e_2}$ then $\wellformedeffect{\P}{\e_1}$, so by induction $\ok{\P}$. Finally, the weakening rule preserves the $\okt$ property of the effect environment, so $\wellformedeffect{\P, \b}{\a} \implies \wellformedeffect{\P}{\a} \implies \ok{\P} \implies \ok{(\P, \b)}$.
 
-    Secondly, in the case of the well formedness relation on types, the only leaf rule is (\textit{\tground}). If $\wellformed{\P}{\g}$, then by inversion, $\ok{\P}$. Similarly to the (\textit{\ecompose}) rule for effects, the (\textit{\tfun}) rule's preconditions have the same effect-environment, so $\ok{\P}$ holds by inversion and induction. By inversion on the (\textit{\teffect}) rule, $\wellformed{\P}{\e}$ so $\ok{\P}$. Finally the (\textit{\tquant}) rule preserves $\okt$ in a similar way to the (\textit{\eweaken}) rule above.
+    Secondly, in the case of the well formedness relation on types, the only leaf rule is (\textit{\tground}). If $\wellformedtype{\P}{\g}$, then by inversion, $\ok{\P}$. Similarly to the (\textit{\ecompose}) rule for effects, the (\textit{\tfun}) rule's preconditions have the same effect-environment, so $\ok{\P}$ holds by inversion and induction. By inversion on the (\textit{\teffect}) rule, $\wellformedeffect{\P}{\e}$ so $\ok{\P}$. Finally the (\textit{\tquant}) rule preserves $\okt$ in a similar way to the (\textit{\eweaken}) rule above.
 
-    Finally, if $\oke{\P}{\gax}$ then, by inversion, $\wellformed{\P}{A}$  and $\oke{\P}{\G}$. Since $\G$ is finite, $\oke{\P}{\nil}$. By inversion of the (\textit{\envnil}) rule, $\ok{\P}$.
+    Finally, if $\oke{\P}{\gax}$ then, by inversion, $\wellformedtype{\P}{A}$  and $\oke{\P}{\G}$. Since $\G$ is finite, $\oke{\P}{\nil}$. By inversion of the (\textit{\envnil}) rule, $\ok{\P}$.
 \end{proof}
 
 
@@ -1002,7 +1011,7 @@ In this chapter, I  describe the category structure required to interpret an ins
 
 \section{Semantics for EC in an S-Category}\label{SCategoryIntro}
 
-As suggested in Section \ref{LanguageFeatureRequirements}, since EC contains multiple effects, STLC terms, and \texttt{if} expressions, we should be able to interpret its semantics in a cartesian closed category with an appropriate strong graded monad and the co-product $\1 + \1$, which models the type of booleans. With the addition of some extra category structure to handle subtyping, which I explain shortly, it is indeed possible to interpret EC. This section contains a fairly high-level treatment of the semantics. This is because the concepts introduced are a subset of those required for the semantics of PEC, which I explain in more detail later \todo{PECDenotations}. Semantics for similar languages to EC have also been given using an S-category-style construct, such as by Katsumata \cite{Katsumata:2014}. 
+As suggested in Section \ref{LanguageFeatureRequirements}, since EC contains multiple effects, STLC terms, and \texttt{if} expressions, we should be able to interpret its semantics in a cartesian closed category with an appropriate strong graded monad and the co-product $\1 + \1$, which models the type of booleans. With the addition of some extra category structure to handle subtyping, which I explain shortly, it is indeed possible to interpret EC. This section contains a fairly high-level treatment of the semantics. This is because the concepts introduced are a subset of those required for the semantics of PEC, which I explain in more detail later \ref{PECDenotations}. Semantics for similar languages to EC have also been given using an S-category-style construct, such as by Katsumata \cite{Katsumata:2014}. 
 
 In order to model a given instantiation of EC, that is an EC with a collection of effects, constants, and ground types, there should be a collection of objects in the category to represent the ground types. There should also be a \textit{point} morphism (a morphism from the terminal object to the appropriate type) for each constant. In addition to the previously stated requirements, we also require the category, $\C$, to be able to model subtyping. 
 
@@ -1075,11 +1084,11 @@ In order to model the polymorphism of PEC, we need to now look at an indexed cat
 
 \begin{framed}
     \begin{definition}[S-Preserving Functor]\label{SPreservingDefinition}
-        A functor $F$ preserves the properties of S-categories if it preserves each of the features within an S-category (Definition \ref{SCategoryDefinition}).  For example $F(A\times B) = (FA)\times (FB)$. For a full list of properties that an S-preserving functor should preserve, please see appendix \ref{AppendixReindexingFunctors}.
+        A functor $F$ preserves the properties of S-categories if it preserves each of the features within an S-category (Definition \ref{SCategoryDefinition}).  For example $F(A\times B) = (FA)\times (FB)$. For a full list of properties that an S-preserving functor should preserve, please see Appendix \ref{AppendixReindexingFunctors}.
     \end{definition}
 \end{framed}
 
-The essential idea from this point on is that we have defined several relations of the form $\wellformed{\texttt{Env}}{\texttt{Conclusion}}$, such as the typing relation $\gpetyperelation{v}{A}$, and the well-formedness relation on effects $\wellformed{\P}{\e}$. Each instance of such a relation has a denotation that is an object or morphism in a category. For example, $\deno{\typerelation{\P}{\e}{\effect}}$ is a morphism in the base category, $\deno{\typerelation{\P}{A}{\type}}$ is an object in the fibre (S-category) induced by $\P$, and $\deno{\gpetyperelation{v}{A}}$ is morphism between the objects which denote $\G$ and $A$ in the fibre induced by $\P$.
+The essential idea from this point on is that we have defined several relations of the form $\wellformed{\texttt{Env}}{\texttt{Conclusion}}$, such as the typing relation $\gpetyperelation{v}{A}$, and the well-formedness relation on effects $\wellformedeffect{\P}{\e}$. Each instance of such a relation has a denotation that is an object or morphism in a category. For example, $\deno{\typerelation{\P}{\e}{\effect}}$ is a morphism in the base category, $\deno{\typerelation{\P}{A}{\type}}$ is an object in the fibre (S-category) induced by $\P$, and $\deno{\gpetyperelation{v}{A}}$ is morphism between the objects which denote $\G$ and $A$ in the fibre induced by $\P$.
 
 In order to form denotations of effects, $\e$, which are well formed with respect to an effect environment, we need specific objects to exist in the base category $\C$. Firstly, there should exist an object, $U$, indicating the kind of effects. To denote effect variable environments, which are lists of effect variables, we need finite products on $U$, that is $\C$ should have a terminal object, $\1$ and binary products. We can form finite products as so: $U^0 = \1$ and $U^{n+1} = U^n\times U$. From now on, I use $I$ to mean $U^n$ for some $n$. Hence, the base category $\C$ should contain $\1$, $U$ and finite products of $U$.
 
@@ -1138,15 +1147,15 @@ Using the adjunction property, we have that: $\bar{f\after\pstar(n)} = \bar{f}\a
 In Figure \ref{RoadMap}, one can see a diagram of the collection of theorems that need to be proved to establish the soundness of a semantics for PEC.
 
 
-The first pair of theorems (\ref{EffectSubstitutionOnEffects}, \ref{EffectWeakeningOnEffects}) is made up of the effect substitution and weakening theorem on effects. These theorems show that substitutions of effects have a well-behaved and easily defined action upon the denotations of effects. Using these theorems, we can then move on to characterize the action of effect substitutions and effect-environment weakening on the denotations of types and type environments in \todo{Ref}. From this, we can also look at the action of weakening and substituting effect environments on the subtyping relation between types.
+The first pair of theorems (\ref{EffectSubstitutionOnEffects}, \ref{EffectWeakeningOnEffects}) is made up of the effect substitution and weakening theorem on effects. These theorems show that substitutions of effects have a well-behaved and easily defined action upon the denotations of effects. Using these theorems, we can then move on to characterize the action of effect substitutions and effect-environment weakening on the denotations of types and type environments in Theorems \ref{EffectSubstitutionOnTypes}, \ref{EffectSubstitutionOnTypeEnvs}, and \ref{EffectWeakeningOnTypes}. From this, we can also look at the action of weakening and substituting effect environments on the subtyping relation between types in Theorems \ref{EffectSubstitutionOnSubtyping}, \ref{EffectWeakeningOnSubtyping}.
 
-The next step in .. \todo{ref?} is to use these substitution theorems to formalise the action of substitution and weakening of the effect environments on terms. This then allows us to find denotations for the weakening of term substitutions and type environment weakening, which set us up to prove the typical weakening and substitution theorems upon term variables and type environments. 
+The next step is to use these substitution theorems to formalise the action of substitution and weakening of the effect environments on terms in Theorems \ref{EffectSubstitutionOnTerms}, \ref{EffectWeakeningOnTerms}. This then allows us to find denotations for the weakening of term substitutions and type environment weakening, which set us up to prove the typical weakening and substitution theorems upon term variables and type environments in Theorems \ref{TermSubstitutionOnTerms}, \ref{TermWeakeningOnTerms}. 
 
 Separately, we prove that all derivable denotations for a typing relation instance, $\gpetyperelation{v}{A}$ have the same denotation (Section \ref{UniqueDenotations}). This is important, since subtyping allows us to find multiple distinct typing derivations for terms, which initially look like they may have distinct denotations. Using a reduction function to transform typing derivations into a unique form, I prove that all typing derivations yield equal denotations.
 
 This collection of theorems finally allows us to complete all cases of the equational-equivalence soundness theorem.
 
-\begin{figure}[ht!]
+\begin{figure}[H]
     \begin{center}
         \scalebox{0.8}{
         \begin{tikzpicture}[->,>=stealth',shorten >=1pt,auto,node distance=3cm,
@@ -1234,9 +1243,11 @@ We are now equipped to define the denotations of structures in the language. Fir
 Hence, the denotation of an  effect-variable environment $\P$ is given by a finite product on $U$ of width $n$ where $n$ is the length of $\P$. In order to de-clutter the notation used going forwards, inheriting from Crole (\cite{crole_1994}), I write $I$ as shorthand for $\deno{\P}$.  
 
 
-As stated earlier, the denotation of a well-formed effect is a morphism $\deno{\typerelation{\P}{\e}{\effect}}: I \rightarrow U$ in $\C$.
-
-\[
+As stated earlier, the denotation of a well-formed effect is a morphism $\deno{\typerelation{\P}{\e}{\effect}}: I \rightarrow U$ in $\C$. The denotations for effects are shown in Figure \ref{EffectDenotations}
+\begin{figure}[H]
+    \centering
+    \begin{framed}
+        \[
     \deno{\typerelation{\P}{e}{\effect}} = \deno{\e} \after \term{I}: I\rightarrow U
     \quad\quad
     \deno{\typerelation{\P,\a}{\a}{\effect}} = \pp: I\times U \rightarrow U
@@ -1245,14 +1256,20 @@ As stated earlier, the denotation of a well-formed effect is a morphism $\deno{\
 \]\[
     \deno{\typerelation{\P}{\e_1\dot \e_2}{\effect}} = \Mul_I(\deno{\typerelation{\P}{\e_2}{\effect}},\deno{\typerelation{\P}{\e_1}{\effect}}): I \rightarrow U
 \]
+    \end{framed}
+    \caption{The denotations of effects in the base category}
+    \label{EffectDenotations}
+\end{figure}
 
-\todo{The above gets broken up + awkward page break - check}
 
-Using these denotations, we are now equipped to define the denotations of types. As stated above, types that are well formed in $\P$ are denoted by objects in the fibre category $\C(I)$ given by the denotation of $\P$.
+Using these denotations, we are now equipped to define the denotations of types. As stated above, types that are well formed in $\P$ are denoted by objects in the fibre category $\C(I)$ given by the denotation of $\P$. These type denotations are given in Figure \ref{TypeDenotations}
  
 Since the fibre category $\C(I)$ is an S-category, it has objects for all ground types, a terminal object, graded monad $\T{}{}$, exponentials, products, and co-product over $\1+\1$.
 
-\todo{Figurify? + boxify?}
+\begin{figure}[H]
+    \centering
+    \begin{framed}
+        
 \todo{These are inconsistently spaced}
 \[
     \deno{\typerelation{\P}{\U}{\type}} = \1
@@ -1273,18 +1290,35 @@ Since the fibre category $\C(I)$ is an S-category, it has objects for all ground
 \]
 
 
-By using the terminal objects and products present in each fibre, we can now derive denotations of type environments. $\deno{\oke{\P}{\G}}$ should be an object in the fibre $\C(I)$ induced by $\P$ .
-\todo{Figurify? + boxify?}
-\[
-    \deno{\wellformedok{\P}{\nil}} = \1
-    \quad\quad
-    \deno{\wellformedok{\P}{\gax}} = (\deno{\wellformedok{\P}{\G}} \times \deno{\typerelation{\P}{A}{\type}})
-\]
+    \end{framed}
+    \caption{The denotations of type expressions within the appropriate fibre.}
+    \label{TypeDenotations}
+\end{figure}
 
-Another construction that is important is the denotation of subtyping. For each instance of the subtyping relation in $\P$, $A\subtypep B$, there exists a denotation in the fibre induced by $\P$. $\deno{A\subtypep B} \in\C(I)(A, B)$. Since the fibres are S-categories, the ground instances of the subtyping relation exist in each fibre anyway. In addition, for each instance of the subeffect relation $\e_1\subeffectp \e_2$ each fibre contains the natural transformation $\dsep{\e_1}{\e_2}: \T{\e_1}{}\rightarrow \T{\e_2}{}$ 
+By using the terminal objects and products present in each fibre, we can now derive denotations of type environments. $\deno{\oke{\P}{\G}}$ should be an object in the fibre $\C(I)$ induced by $\P$. Specific denotations are given in Figure \ref{TypeEnvDenotations}
 
-\todo{These aren't very readable}
-\todo{Figurify? + boxify?}
+\begin{figure}[H]
+    \centering
+    \begin{framed}
+        \[
+            \deno{\wellformedok{\P}{\nil}} = \1
+            \quad\quad
+            \deno{\wellformedok{\P}{\gax}} = (\deno{\wellformedok{\P}{\G}} \times \deno{\typerelation{\P}{A}{\type}})
+        \]  
+    \end{framed}
+
+    \caption{Denotations of type environments within the appropriate fibre}
+    \label{TypeEnvDenotations}
+\end{figure}
+
+
+Another construction that is important is the denotation of subtyping. For each instance of the subtyping relation in $\P$, $A\subtypep B$, there exists a denotation in the fibre induced by $\P$. $\deno{A\subtypep B} \in\C(I)(A, B)$. Since the fibres are S-categories, the ground instances of the subtyping relation exist in each fibre anyway. In addition, for each instance of the subeffect relation $\e_1\subeffectp \e_2$ each fibre contains the natural transformation $\dsep{\e_1}{\e_2}: \T{\e_1}{}\rightarrow \T{\e_2}{}$. Specific subtyping denotations are given in Figure \ref{SubtypingDenotations}.
+
+\begin{figure}[H]
+    \centering
+    \begin{framed}
+        
+        \todo{These aren't very readable}
 \[
     \deno{\g_1\subtypep \g_2} = \deno{\g_1\subtypeg \g_2}
     \quad
@@ -1296,10 +1330,16 @@ Another construction that is important is the denotation of subtyping. For each 
     \quad    
     \deno{\all{\a}{A}\subtypep\all{\a}{B}} = \allI{\deno{A\subtypepa B}}
 \]
+    \end{framed}
+    
+    \caption{The denotations of subtyping relations}
+    \label{SubtypingDenotations}
+\end{figure}
 
-This finally gives us the ability to express the denotations of well-typed terms in an effect environment, $\P$ as morphisms in the fibre induced by $\P$, $\C(I)$.  Writing $\G_I$ and $A_I$ for $\deno{\wellformedok{\P}{\G}}$ and $\deno{\typerelation{\P}{A}{\type}}$, we can derive $\deno{\gpetyperelation{v}{A}}$ as a morphism in $\C(I)(\G_I, A_I)$. Since each fibre is an S-category, for each constant, $\const{A}$, there exists $\deno{\const{A}}: \1 \rightarrow A_I$ in $\C(I)$. These denotations can be seen in Figure \ref{TermDenotations}
 
-\begin{figure}
+This finally gives us the ability to express the denotations of well-typed terms in an effect environment, $\P$ as morphisms in the fibre induced by $\P$, $\C(I)$.  Writing $\G_I$ and $A_I$ for $\deno{\wellformedok{\P}{\G}}$ and $\deno{\typerelation{\P}{A}{\type}}$, we can derive $\deno{\gpetyperelation{v}{A}}$ as a morphism in $\C(I)(\G_I, A_I)$. Since each fibre is an S-category, for each constant, $\const{A}$, there exists $\deno{\const{A}}: \1 \rightarrow A_I$ in $\C(I)$. These denotations can be seen in Figure \ref{TermDenotations}.
+
+\begin{figure}[H]
     \footnotesize
     \begin{framed}
         \[
@@ -1369,7 +1409,7 @@ This finally gives us the ability to express the denotations of well-typed terms
 The least intuitive of these denotations is that of effect-application (\textit{\vspec}) in Equation \ref{EffectApplication}. As explained later in Section \ref{SubsAndWeakening} the re-indexing functor represents application of the substitution $\ssub{\b}{\e}$. By doing type analysis on the co-unit morphism $ \counit{\deno{\typerelation{\P,\b}{A\ssub{\a}{\b}}{\type}}}$, as in Figure \ref{CoUnitType}  we can see that before the application of the substitution, the co-unit natural transformation takes a quantified type to a substituted type under an extended effect environment. By applying the substitution re-indexing functor in Figure \ref{ReIndexedCoUnitType}, we substitute $\e$ for the extra effect variable, $\b$. In the case of the quantified type, as $\b$ is not used, the substitution has no effect, but in the case of the substituted type, the substitutions compose to yield the substitution $\ssub{\a}{\e}$. This composes with the expression denotation $g$ to give the applied denotation in Figure \ref{EffectSpecComp}.
 
 
-\begin{figure}
+\begin{figure}[H]
     \begin{framed}
         \begin{align*}
             \counit{\deno{\typerelation{\P,\b}{A\ssub{\a}{\b}}{\type}}} & = \widehat{\Id{\allI(\deno{\typerelation{\P,\b}       {A\ssub{\a}{\b}}{\type}})}} \\ 
@@ -1383,7 +1423,7 @@ The least intuitive of these denotations is that of effect-application (\textit{
     \label{CoUnitType}
 \end{figure}
 
-\begin{figure}
+\begin{figure}[H]
     \begin{framed}
         \begin{align*}
             \pr{\Id{I}}{h}\star(\counit{\deno{\typerelation{\P,\b}{A\ssub{\a}{\b}}{\type}}}) & : \quad \deno{\typerelation{\P}{\all{\a}{A}}{\type}} \rightarrow \deno{\typerelation{\P}{A\ssub{\a}{\b}\ssub{\b}{\e}}{\type}}\\
@@ -1396,7 +1436,7 @@ The least intuitive of these denotations is that of effect-application (\textit{
 
 
  
-\begin{figure}
+\begin{figure}[H]
     \begin{framed}
         \centering
         \begin{tikzcd}
@@ -1416,9 +1456,10 @@ The least intuitive of these denotations is that of effect-application (\textit{
 
 \section{Effect Substitution and Weakening Theorems}\label{SubsAndWeakening}
 
-In this Section, I introduce and prove a series of utility theorems, which will help us prove cases in future theorems. These weakening and substitution theorems are concerned with a change in environment of typing derivations and their associated denotations. If $\gpetyperelation{v}{A}$, then it should be the case that $\etyperelation{\P}{\gax}{v}{A}$ if $x$ is fresh in $\G$. We also want to know what happens to the denotation when we change the type environment in this way. In this Section, I introduce the tools for manipulating the type and effect environments in this way.
 
-Substitutions and weakenings are two distinct ways of manipulating an effect or term environments. Weakening acts as a kind of subtyping of the environment. If we insert fresh variables into an environment, then any expression that was typeable under the previous environment should also be typeable under the the new environment. This change of environment should also have a predictable effect on the denotations of any expressions to which it is applied.
+In this section, I introduce and prove a series of utility theorems which will help us prove cases in future theorems. These weakening and substitution theorems are concerned with a change in environment of typing derivations and their associated denotations. If $\gpetyperelation{v}{A}$, then it should be the case that $\etyperelation{\P}{\gax}{v}{A}$ if $x$ is fresh in $\G$. We also want to know what happens to the denotation when we change the type environment. In this section, I introduce the tools for manipulating the type and effect environments in this fashion.
+
+Substitutions and weakenings are two distinct ways of manipulating effect or term environments. Weakening acts as a kind of subtyping of the environment. If we insert fresh variables into an environment, then any expression that was typeable under the previous environment should also be typeable under the the new environment. This change of environment should also have a predictable effect on the denotations of any expressions to which it is applied.
 
 Substitution considers what happens when we simultaneously replace all variables in one expression, that is typeable under an environment, with expressions that are well formed under another environment. The resulting substituted expression should be typeable under the new environment, and the denotation of the new expression should be composed from the denotation of the old relation and the denotations of the expressions that replace the variables. 
 
@@ -1426,6 +1467,13 @@ As we go on, I define and state the denotations of specific substitutions and we
 
 In this dissertation, substitutions and weakenings come in two flavours: weakening and substitution of the effect-variable environment and weakening and substitution of the term environments. For each of these there is a family of theorems defining the effects of the applying a substitution and weakening to the various language structures and their denotations, such as well-formedness and typing relations.
 
+\begin{framed}
+    \begin{aside}[Weakening Proofs]
+        The structure of weakening theorems and their proofs are often rather similar to their respective substitution theorem. In these cases, I have placed the example cases of the weakening proof in Appendix \ref{WeakeningProofs}.
+    \end{aside}
+\end{framed}
+
+\subsection{Substitution and Weakening on Effects}\label{SectionEffectSubstitution}
 
 The first family of theorems is that of weakening and substitution of the effect environment. Weakenings are a relation between effect environments $\wrel{\w}{\P'}{\P}$, that are defined as so:
 
@@ -1456,12 +1504,12 @@ Substitutions are also an inductively defined relation between effect environmen
     \si \gens \nil \mid \si, \a \setto \e    
 \]
 
-The substitution relation matches substitutions to the environments it operates between. The relation instance $\typerelation{\P'}{\si}{\P}$ means that $\si$ is a substitution from $\P'$ to $\P$. It is defined inductively using the following rules.
+The substitution relation matches substitutions to the environments it operates between. The relation instance $\typerelation{\P'}{\si}{\P}$ means that $\si$ is a substitution from $\P$ to $\P'$. It is defined inductively using the following rules.
 
 \[
-    \ntreeruleI{Ni\esubnil}{\ok{\P'}}{\typerelation{\P'}{\nil}{\nil}}
+    \ntreeruleI{\esubnil}{\ok{\P'}}{\typerelation{\P'}{\nil}{\nil}}
     \quad\quad
-    \condtreeruleII{\esubextend}{\typerelation{\P'}{\si}{\P}}{\wellformed{\P'}{\e}}{\typerelation{\P'}{\si, \a \setto\e}{(\P, \a)}}{\a\notin\P}
+    \condtreeruleII{\esubextend}{\typerelation{\P'}{\si}{\P}}{\wellformedeffect{\P'}{\e}}{\typerelation{\P'}{(\si, \a \setto\e)}{(\P, \a)}}{\a\notin\P}
 \]
 
 The denotation of an effect-environment substitutions, $\deno{\typerelation{\P'}{\si}{\P}}$, is a morphism $I' \rightarrow I$ in the base category. These denotations are defined inductively as so:
@@ -1472,6 +1520,7 @@ The denotation of an effect-environment substitutions, $\deno{\typerelation{\P'}
     \deno{\typerelation{\P'}{(\si, \a\setto\e)}{\P,\a}} = \pr{\deno{\typerelation{\P'}{\si}{\P}}}{\deno{\typerelation{\P}{\e}{\effect}}}: \C(I', I\times U)
 \]
 
+\todo{Reorder action and denotation, put in figures to improve space?}
 We can also define the action of substitutions on effects.
 
 \begin{align*}
@@ -1499,21 +1548,25 @@ By inspection, we can find the denotations of these special-case substitutions t
 \end{align}
 
 
-These substitutions will form a useful shorthand later. 
-\todo{lift this property into a definition block}
-We also need to define the property $\a \# \si$. This indicates that $\a$ does not occur in the domain or any of the substitution expression of $\si$. Finally, it will be useful to examine how the substitutions generated by extending the effect environment, such as in the case of polymorphic types, relate to the original substitution.
+These substitutions will form a useful shorthand later. Finally, it will be useful to examine how the substitutions generated by extending the effect environment, such as in the case of polymorphic types, relate to the original substitution.
 
-\todo{Boxify theorems}
+
+\begin{framed}
+    \begin{definition}[Freshness]\label{EffectFreshness}
+      We define $\a \# \si$ to mean that $\a$ does not occur in the domain or any of the substitution expression of $\si$.
+    \end{definition}
+\end{framed}
+
 \todo{More prose + signposting}
 
 
 
 \begin{framed}
     \begin{theorem}[Effect Substitution on Effects]\label{EffectSubstitutionOnEffects} 
-        If $\wellformed{\P}{\e}$ and $\typerelation{\P'}{\si}{\P}$ then: 
+        If $\wellformedeffect{\P}{\e}$ and $\typerelation{\P'}{\si}{\P}$ then: 
         \begin{enumerate}[label=\roman*.]
-            \item $\wellformed{\P'}{\si(\e)}$
-            \item Writing $\si$ for $\deno{\typerelation{\P'}{\si}{\P}}$,  $\deno{\wellformed{\P'}{\si(\e)}} = \deno{\wellformed{\P}{\e}}\after\si$
+            \item $\wellformedeffect{\P'}{\si(\e)}$
+            \item Writing $\si$ for $\deno{\typerelation{\P'}{\si}{\P}}$,  $\deno{\wellformedeffect{\P'}{\si(\e)}} = \deno{\wellformedeffect{\P}{\e}}\after\si$
         \end{enumerate}
           
     \end{theorem}
@@ -1560,80 +1613,17 @@ We also need to define the property $\a \# \si$. This indicates that $\a$ does n
 
 The weakening theorem proceeds similarly.
 
-\todo{Move weakening versions of the proofs to appendices?}
-
 \begin{framed}
     \begin{theorem}[Effect Weakening on Effects]\label{EffectWeakeningOnEffects}
-       If $\wellformed{\P}{\e}$ and $\wrelw{\P'}{\P}$ then: 
+       If $\wellformedeffect{\P}{\e}$ and $\wrelw{\P'}{\P}$ then: 
        \begin{enumerate}[label=\roman*.]
-           \item $\wellformed{\P'}{\w}$
-           \item Writing $\w$ for $\deno{\wrelw{\P'}{\P}}$,  $\deno{\wellformed{\P'}{\e}} = \deno{\wellformed{\P}{\e}}\after\w$.
+           \item $\wellformedeffect{\P'}{\e}$
+           \item Writing $\w$ for $\deno{\wrelw{\P'}{\P}}$,  $\deno{\wellformedeffect{\P'}{\e}} = \deno{\wellformedeffect{\P}{\e}}\after\w$.
        \end{enumerate}    
     \end{theorem}
     
-    
     \begin{proof}
-        This proof also depends on the naturality of $\Mul_I$ and case splitting on the structure of $\w$. It is harder to use inversion on the structure of $\w$, since the structure of $\w$ does not depend as strongly on the structure of $\P$. I present here the cases for variables.
-    
-        \case{\evar}
-        We do a case split on $\w$.
-        \subcase{$\w = \i$}
-        Then $\P' = \P$ and $\w = \Id{I}$. So the theorem holds trivially.
-        \subcase{$\w = \w'\x$}
-        Then by the definition of its denotation:    
-        \begin{align*}
-            \deno{\typerelation{\P,\a}{\a}{\effect}}\after\w &= \pp\after(\w'\times \Id{U}) \\
-            & = \pp\\
-            & = \deno{\typerelation{\P',\a}{\a}{\effect}}
-        \end{align*}
-        
-        \subcase{$\w = \w'\pi$}
-        Then \begin{equation}
-            \deno{\typerelation{\P,\a}{\a}{\effect}} = \pp\after\w'\after\p
-        \end{equation}
-        
-        Here $\P' = \P,\b$ and $\wrel{\w'}{\P''}{\P}$.
-        
-        So\begin{align*}
-            \pp\after\w' & = \deno{\typerelation{\P''}{\a}{\effect}}
-            \\
-            \pp\after\w'\after\p & =\deno{\typerelation{\P'',\b}{\a}{\effect}}\\
-            &= \deno{\typerelation{\P'}{\a}{\effect}}
-        \end{align*}
-        
-        \case{\eweaken}
-        \begin{equation}
-            \deno{\typerelation{\P,\b}{\a}{\effect}}\after\w = \deno{\typerelation{\P}{\a}{\effect}}\after\p\after\w
-        \end{equation}
-        
-        Similarly, we perform a case split on structure of $\w$:
-        
-        \subcase{$\w=\i$}
-        Then $\P' = \P,\b$ so $\w=\Id{I}$
-        So $\deno{\typerelation{\P,\b}{\a}{\effect}}\after\w = \deno{\typerelation{\P'}{\a}{\effect}}$
-        
-        \subcase{$\w=\w'\p$}
-        Then $\P' = (\P'',\g)$ and $\w=\w'\after\p$
-        Here $\wrel{\w'}{\P''}{\P,\b}$.
-        So
-        \begin{align*}
-            \deno{\typerelation{\P,\b}{\a}{\effect}}\after\w & = \deno{\typerelation{\P,\b}{\a}{\effect}}\after\w'\after\p\\
-            & = {\typerelation{\P''}{\a}{\effect}}\after\p\\
-            & = {\typerelation{\P'',\g}{\a}{\effect}}\\
-            & = {\typerelation{\P'}{\a}{\effect}}\\
-        \end{align*}
-        
-        \subcase{$\w=\w'\x$}
-        Then $\P'=\P'',\b$ and $\wrel{\w'}{\P''}{\P}$
-        
-        So \begin{align*}
-            \deno{\typerelation{\P,\b}{\a}{\effect}}\after\w &= \deno{\typerelation{\P}{\a}{\effect}}\after\p\after(\w'\times\Id{U})\\
-            &=\deno{\typerelation{\P}{\a}{\effect}}\after\w'\after\p\\
-            & = \deno{\typerelation{\P''}{\a}{\effect}}\after\p\\
-            & = \deno{\typerelation{\P'}{\a}{\effect}}\\
-        \end{align*}
-    
-        $$\square$$
+        This proof also depends on the naturality of $\Mul_I$ and case splitting on the structure of $\w$.  Some cases can be found in Appendix \ref{AppendixEffectWeakeningOnEffects}
     \end{proof}
 \end{framed}
 
@@ -1650,11 +1640,11 @@ The weakening theorem proceeds similarly.
 \end{framed}
 
 
-
-We can now move on to state and prove the weakening and substitution theorems on types, subtyping, and type environments. The general structure of these theorems, as well as the term-based theorems later, is that when we want to quantify the action of a morphism $\theta: I' \rightarrow I$ between objects in the base category on structure in the fibres $\C(I)$, we should simply apply the associated re-indexing functor $\theta\star: \C(I) \rightarrow \C(I')$ to the structure. The proof of the soundness of this operation is driven by the fact that the re-indexing functor is S-preserving.
+\subsection{Substitution and Weakening on Typing}
+We can now move on to state and prove the weakening and substitution theorems on types, subtyping, and type environments. The general structure of these theorems, as well as the term-based theorems later, is that when we want to quantify the action of a morphism $\theta: I' \rightarrow I$ between objects in the base category on structure in the fibres $\C(I)$, we should simply apply the associated re-indexing functor (As defined in Section \ref{PECRequirements}) $\theta\star: \C(I) \rightarrow \C(I')$ to the structure. The proof of the soundness of this operation is driven by the fact that the re-indexing functor is S-preserving.
 
 Specifically, effect substitutions ($\si$) have the following actions on types, and type-environments:
-
+\todo{Box + minipage-ify to put these next to each other}
 \begin{align*}
     \g\sub{\si} &= \g \\
     (\fntype{A}{B})\sub{\si} &= \fntype{(A\sub{\si})}{(B\sub{\si})} \\
@@ -1669,18 +1659,16 @@ Specifically, effect substitutions ($\si$) have the following actions on types, 
 
 
 \begin{framed}
-    
     \begin{theorem}[Effect Substitution on Types]\label{EffectSubstitutionOnTypes}
-       If $\wellformed{\P}{A}$ and $\typerelation{\P'}{\si}{\P}$, then:
+       If $\wellformedtype{\P}{A}$ and $\typerelation{\P'}{\si}{\P}$, then:
        \begin{enumerate}[label=\roman*.]
-           \item $\wellformed{\P'}{A\ssi}$
-           \item $\deno{\wellformed{\P'}{A\ssi}} = \si\star\deno{\wellformed{\P}{A}}$
+           \item $\wellformedtype{\P'}{A\ssi}$
+           \item $\deno{\wellformedtype{\P'}{A\ssi}} = \si\star\deno{\wellformedtype{\P}{A}}$
        \end{enumerate}
     \end{theorem}
     
     \begin{proof}
-       By the fact that $\si\star$ is S-preserving and the Beck-Chevalley Condition.
-       \todo{Justify why these cases}
+       By induction on the derivation of $\deno{\wellformedtype{\P}{A}}$ and the fact that $\si\star$ is S-preserving. These specific cases show the dependencies on Theorem \ref{EffectSubstitutionOnEffects}, the Beck-Chevalley condition and the extension lemma (Lemma \ref{ExtensionLemmaOnEffectSubstitutions}).
     
         \case{\teffect}
         This case makes use of the fact that $\si\star$ is S-preserving. Specifically the property upon the graded monad functor $\T{}{}$: $\si\star(\T{f}{A}) = \T{f\after\si}{(\si\star A)}$.
@@ -1689,8 +1677,10 @@ Specifically, effect substitutions ($\si$) have the following actions on types, 
         \begin{align*}
             \si\star\deno{\typerelation{\P}{\mea}{\type}} & =  \si\star(\T{\deno{\typerelation{\P}{\e}{\effect}}}{\deno{\typerelation{\P}{A}{\type}}})\\
             &= \T{\deno{\typerelation{\P}{\e}{\effect}}\after\si}{\si\star(\deno{\typerelation{\P}{A}{\type}})}\\
+            & = \T{\deno{\wellformedeffect{\P'}{\si(\e)}}}{\deno{\wellformedtype{\P'}{A\ssi}}}\\
             & = \deno{\typerelation{\P'}{(\mea)\ssi}{\type}}
         \end{align*}
+        
         \case{\tquant}
         This case makes use of the Beck-Chevalley condition and the fact that $\deno{\typerelation{(\P', \a)}{(\si, \a\setto\a)}{(\P, \a)}} = \si\times\Id{U}$, which we can induct upon.
             \begin{align*}
@@ -1704,8 +1694,7 @@ Specifically, effect substitutions ($\si$) have the following actions on types, 
     \end{proof}
 \end{framed}
 
-\todo{"Similarly, the effect-substitution theorem on type environments is that"}
-
+Similarly, we can extend the effect-substitution theorem to type environments.
 
 \begin{framed}
     \begin{theorem}[Effect Substitution on Type Environments]\label{EffectSubstitutionOnTypeEnvs}
@@ -1744,55 +1733,29 @@ Specifically, effect substitutions ($\si$) have the following actions on types, 
     
 \end{framed}
 
-The effect-weakening theorem on types and type environments is also very similar.
-
-
+The effect-weakening theorem on types and type environments is formulated analogously.
 
 \begin{framed}
-    \begin{theorem}[Effect Weakening on Types]\label{EffectWeakeningOnTypes}  
-        If $\wrelw{\P'}{\P}$ and $\wellformed{\P}{A}$ then:
+    \begin{theorem}[Effect Weakening on Types and Type Environments]\label{EffectWeakeningOnTypes}  
+        If $\wrelw{\P'}{\P}$ and $\wellformedtype{\P}{A}$ then:
         \begin{enumerate}[label=\roman*.]
-            \item $\wellformed{\P'}{A}$ $\deno{\wellformed{\P'}{A}} = \w\star\deno{\wellformed{\P}{A}}$
+            \item $\wellformedtype{\P'}{A}$ $\deno{\wellformedtype{\P'}{A}} = \w\star\deno{\wellformedtype{\P}{A}}$
             \item $\wrelw{\P'}{\P}$ and $\wellformedok{\P}{\G}$ imply $\deno{\wellformedok{\P'}{\G}} = \w\star\deno{\wellformedok{\P}{\G}}$
         \end{enumerate}        
     \end{theorem}
     
 
-
-\todo{Move proof to appendices}
 \begin{proof}
-   In a similar fashion \todo{to?}, inducting over the derivation of $\deno{\typerelation{\P}{A}{\type}}$, we make use of the Beck-Chevalley condition and the S-preserving property of $\si\star$.
-
-    \case{\tquant}
-        This case uses the Beck-Chevalley condition and the fact that $\deno{\wrel{\w\x}{(\P', \a)}{(\P,\a)}} = \w\times \Id{U}$. This property is used in conjunction with induction to change the environment from $(\P, \a)$ to $(\P', \a)$.
-
-        \begin{align*}
-            \w\star\deno{\typerelation{\P}{\all{\a}A}{\type}} & = \w\star(\allI(\deno{\typerelation{\P,\a}{A}{\type}}))\\
-            & = \allI((\w\times\Id{U})\star\deno{\typerelation{\P,\a}{A}{\type}})\qt{By Beck-Chevalley}\\
-            & = \allI(\deno{\typerelation{\P',\a}{A}{\type}})\qt{By induction}\\
-            & = \allI(\deno{\typerelation{\P',\a}{A}{\type}})\\
-            & = \deno{\typerelation{\P'}{\all{\a}{A}}{\type}}\\
-        \end{align*}
-    
-    \case{\tfun}
-    This case makes use of the S-preserving property that $\w\star$ preserves exponentials. Specifically $\w\star(B^A) = (\w\star B)^{(\w\star A)}$.
-    \begin{align*}
-        \w\star\deno{\typerelation{\P}{\ab}{\type}} &= \w\star(\deno{\typerelation{\P}{B}{\type}}^{\deno{\typerelation{\P}{A}{\type}}})\\
-        &=\w\star(\deno{\typerelation{\P}{B}{\type}})^{\w\star(\deno{\typerelation{\P}{A}{\type}})}\\
-        & = \deno{\typerelation{\P'}{B}{\type}}^{\deno{\typerelation{\P'}{A}{\type}}}\\
-        & = \deno{\typerelation{\P'}{\ab}{\type}}\\
-    \end{align*}
-
-    
-    The proof for type environments follows the same steps as the effect-substitution proof.
-
+    The proof for types proceeds in a similar fashion the proof of effect substitution on types (Theorem \ref{EffectSubstitutionOnTypes}). That is, by inducting over the derivation of $\deno{\typerelation{\P}{A}{\type}}$, and making use of the Beck-Chevalley condition and the S-preserving property of $\w\star$.
+   
+    The proof for type environments follows the same steps as the effect-substitution proof (Theorem \ref{EffectSubstitutionOnTypeEnvs}).
     $$\square$$
 \end{proof}
 \end{framed}
 
-\todo{Add some big picture explaination}
-\todo{More subsectioning?}
-Next, we consider the action of weakening and substitution on subtyping relations. 
+The above theorems confirm that to model the action of  an effect weakening or substitution on the denotation of a type or type environment, we simply apply the suitable re-indexing functor to the denotation object of the type.
+
+Next, we consider the action of weakening and substitution on subtyping relations. The denotations of the subtyping relations, given in Figure \ref{SubtypingDenotations}, are morphisms as opposed to objects. However, the action of substitution and weakening can still be achieved by applying the appropriate re-indexing functor.
 
 
 \begin{framed}
@@ -1836,7 +1799,7 @@ $$\square$$
 \end{proof}
 \end{framed}
 
-Similarly we can form the symmetrical weakening theorem. \todo{More big picture please}
+Similarly we can form the symmetrical weakening theorem.
 
 \begin{framed}
     \begin{theorem}[Effect Weakening on Subtyping]\label{EffectWeakeningOnSubtyping}
@@ -1844,15 +1807,16 @@ Similarly we can form the symmetrical weakening theorem. \todo{More big picture 
     \end{theorem}
     
     
-    
     \begin{proof}
         The cases hold the same as in the corresponding substitution theorem.
-    
         $$\square$$
     \end{proof}
 \end{framed}
 
-We are now at a point to define and prove the effect weakening and substitution theorems on terms. Following the intuition above that changes of index object should be modelled by applying the re-indexing functor to the morphisms denoting the terms, we can construct the theorems. Firstly, we must define the operation of effect substitutions on terms.
+These subtyping theorems complete our understanding of how the type system is affected by the application of substitutions and weakenings.
+
+\subsection{Effect Substitution and Weakening on Terms}
+Now that we have defined the action of effect substitutions on all other components of the PEC type system, we are now at a point to define and prove the effect weakening and substitution theorems on terms. Following the intuition above that changes of index object should be modelled by applying the re-indexing functor to the morphisms denoting the terms, we can construct the theorems. Firstly, we must define the operation of effect substitutions on terms.
 
 \begin{align*}
     x\ssi & = x \\
@@ -1865,7 +1829,7 @@ We are now at a point to define and prove the effect weakening and substitution 
     (\eapp{v}{\e})\ssi & = \eapp{(v\ssi)}{\si(\e)}\\
 \end{align*}
 
-The substitution theorem is expressed as so:
+We can now formulate the substitution theorem on terms. We need to be more careful when dealing with denotations of terms. Due to subtyping, typing relations on terms may have multiple derivations. As denotations are defined inductively on these derivations, each denotation carries around an implicit derivation. In the next section, I prove that all derivations for a given type relation yield equal denotations. However, for now, we need to take more care to refer to the derivation. In the theorems in this section, I use the symbol $\D$ to indicate both a typing relation derivation and its denotation.
 
 
 \begin{framed}
@@ -1875,7 +1839,7 @@ The substitution theorem is expressed as so:
     
     
     \begin{proof}
-        This proof makes use of the previous effect-substitution theorems \todo{reference?}, and the adjunction of quantification and the re-indexing functor of projection, $\pstar$.
+        This proof makes use of the previous effect-substitution theorems in section \ref{SubsAndWeakening}, and the adjunction of quantification and the re-indexing functor of projection, $\pstar$.
     
         \case{\vgen}
     
@@ -1912,7 +1876,7 @@ The substitution theorem is expressed as so:
         \D = \pr{\Id{\G}}{h}\star(\e_{\deno{\typerelation{\P,\b}{A\ssub{\a}{\b}}{\type}}})\after\D_1
     \end{equation}
     
-    So by induction and effect-substitution preserving well-formedness of effects, we have $\D_1'$ deriving $\etyperelation{\P'}{\G\ssi}{v\ssi}{(\all{\a}{A})\ssi}$ and $\wellformed{\P'}{\si(\e)}$. Using the Effect-Spec type rule, we can construct $\D'$ deriving $\etyperelation{\P'}{\G\ssi}{\eapp{(v\ssi)}{(\si(\e))}}{A\ssi\ssub{\a}{\si(\e)}}$ from $\D_1'$, as in Equation \ref{EffectSubTermsEffAppNewTree}. Since $\a\#\si$, we can commute the applications of substitution. As a result, $\D'$ also derives $\etyperelation{\P'}{\G\ssi}{(\eapp{v}{\e})\ssi}{A\ssub{\a}{\e}\ssi}$.
+    So by induction and effect-substitution preserving well-formedness of effects, we have $\D_1'$ deriving $\etyperelation{\P'}{\G\ssi}{v\ssi}{(\all{\a}{A})\ssi}$ and $\wellformedeffect{\P'}{\si(\e)}$. Using the Effect-Spec type rule, we can construct $\D'$ deriving $\etyperelation{\P'}{\G\ssi}{\eapp{(v\ssi)}{(\si(\e))}}{A\ssi\ssub{\a}{\si(\e)}}$ from $\D_1'$, as in Equation \ref{EffectSubTermsEffAppNewTree}. Since $\a\#\si$, we can commute the applications of substitution. As a result, $\D'$ also derives $\etyperelation{\P'}{\G\ssi}{(\eapp{v}{\e})\ssi}{A\ssub{\a}{\e}\ssi}$.
     
     
     \begin{equation}
@@ -1920,7 +1884,7 @@ The substitution theorem is expressed as so:
         \D' = \ntreeruleII{\vspec}{
         \treeruleI{\D_1'}{\etyperelation{\P'}{\G\ssi}{v\ssi}{(\all{\a}{A})\ssi}}
         }{
-        \wellformed{\P'}{\si(\e)}
+        \wellformedeffect{\P'}{\si(\e)}
         }{\etyperelation{\P'}{\G\ssi}{\eapp{(v\ssi)}{(\si(\e))}}{A\ssi\ssub{\a}{\si(\e)}}}
     \end{equation}
     
@@ -1978,85 +1942,18 @@ Similarly, we can derive the weakening theorem on terms.
         \end{enumerate}
     \end{theorem}
     
-    \todo{to appendices}
     \begin{proof}
-        This theorem is proved in a similar fashion to the substitution theorem, and many of its cases are the same.
-    
-    
-        \case{\vsubtype}
-        If $\D$ derives $\gpetyperelation{v}{B}$ then, by inversion, there exists $\D_1$ deriving $\gpetyperelation{v}{A}$, such that $ \D = \deno{A\subtypep B}\after \D_1$, as shown in Equation \ref{EffectWeakenTermsSubtype}.
-    
-        \begin{equation}
-            \label{EffectWeakenTermsSubtype}
-            \D = \ntreeruleII{\vsubtype}{\treeruleI{\D_1}{\gpetyperelation{v}{A}}}{ A \subtypep B}{\gpetyperelation{v}{B}}
-        \end{equation}
-    
-        By induction there exists $\D_1'$ deriving $\etyperelation{\P'}{\G}{v}{A}$, so we can construct $\D'$ using the subtyping rule in Equation \ref{EffectWeakenTermsSubtypeNew}.
-        So, using the weakening of the subtyping morphism, we can derive the denotation of $\D'$.
-    
-        \begin{equation}
-            \label{EffectWeakenTermsSubtypeNew}
-            \D' = \ntreeruleII{\vsubtype}{\treeruleI{\D_1'}{\etyperelation{\P'}{\G}{v}{A}}}{A \subtypep B}{\etyperelation{\P'}{\G}{v}{B}}
-        \end{equation}
-    
-        \begin{align*}
-            \w\star(\D) & = \w\star{\deno{A\subtypep B}}\after\w\star\D_1 \\
-            & = \deno{A\subtypepp B}\after\D_1'\qt{By induction}\\
-            & = \D'
-        \end{align*}
-        
-        \case{\vfun}
-        This case holds by induction and the S-preserving property of $\w\star$.
-    
-        If $\D$ derives $\gpetyperelation{\lam{x}{A}{v}}{\ab}$ then by inversion there exists $\D_1$ deriving $\etyperelation{\P}{\gax}{v}{B}$ such that $\D$ and its denotation can be defined as in equations \ref{EffWeakenTermsLambdaTree} and \ref{EffWeakenTermsLambdaDeno}
-        
-    
-        \begin{equation}
-            \label{EffWeakenTermsLambdaTree}
-            \D = \ntreeruleI{\vfun}{
-                \treeruleI{\D_1}{\etyperelation{\P}{\gax}{v}{B}}
-            }{\gpetyperelation{\lam{x}{A}{v}}{\ab}}
-        \end{equation}
-    
-    
-        \begin{equation}\label{EffWeakenTermsLambdaDeno}
-            \D = \cur{\D_1}\\
-        \end{equation}
-    
-        By induction, there exists $\D_1'$ deriving $\etyperelation{\P'}{\gax}{v}{B}$ with denotation $\D_1' = \w\star(\D_1)$. Using S-preserving property, we can derive $\D'$ and its denotation, seen in equations \ref{EffWeakenTermsLambdaTreeNew} and \ref{EffWeakenTermsLambdaDenoNew}.
-    
-        \begin{equation}
-            \label{EffWeakenTermsLambdaTreeNew}
-            \D' = \ntreeruleI{\vfun}{
-                \treeruleI{\D_1'}{\etyperelation{\P'}{\gax}{v}{B}}
-            }{\etyperelation{\P'}{\G}{\lam{x}{A}{v}}{\ab}}
-        \end{equation}
-    
-    
-        \begin{equation}\label{EffWeakenTermsLambdaDenoNew}
-            \D' = \cur{\D_1'}\\
-        \end{equation}
-    
-        Using S-closure, we can show that $\D' = \w\star(\D)$.
-    
-        \begin{align*}
-            \w\star(\D) & = \w\star(\cur{\D_1})\\
-            & = \cur{\w\star(\D_1)}\qt{By S-preserving property}\\
-            & = \cur{\D_1'}\qt{By induction}\\
-            & = \D'
-        \end{align*}
-    
-        $$\square$$
-    
+        This theorem is proved in a similar fashion to the effect substitution theorem (Theorem \ref{EffectSubstitutionOnTerms}) and many of its cases are the same. Some cases of this proof can be found in Appendix \ref{AppendixEffectWeakeningOnTerms}.
     \end{proof}
-    
 \end{framed}
 
+This concludes our treatment of effect-environment substitution and weakening.
 
+\subsection{Term Substitution and Weakening}
 
-Now we are at a point to start considering weakenings and substitution of the term environments \todo{Why?}. \todo{Better linkage + big picture here} Type environment weakenings are inductively defined with respect to an effect environment.
+Having analysed the manipulation of the effect environment, we are now at a point to start considering weakenings and substitution of the term environments. Type environment weakenings are inductively defined with respect to an effect environment.
 
-
+\todo{Box+Figurify}
 \[
     \ntreeruleI{\tid}{\wellformedok{\P}{\G}}{\pewrel{\i}{\G}{\G}}
     \quad  
@@ -2067,9 +1964,10 @@ Now we are at a point to start considering weakenings and substitution of the te
     \condtreeruleII{\textend}{\pewrel{\w}{\G'}{\G}}{ A \subtype B}{\pewrel{\w \x}{\G', x: A}{\G, x: B}}{x \notin \dom{\G'}}
 \]
 
-The denotation of such a weakening is a morphism within the fibre category derived from the effect-variable \todo{Effect environment or effect-variable environment?} environment: $\deno{\pewrel{\w}{\G'}{\G}}: \G' \rightarrow \G \in \C(I)$. These denotations are defined as so:
+The denotation of such a weakening is a morphism within the fibre category derived from the effect-variable environment: $\deno{\pewrel{\w}{\G'}{\G}}: \G' \rightarrow \G \in \C(I)$. These denotations are defined as so:
 
 \todo{Format better}
+\todo{Box+Figurify}
 \[
     \deno{\pewrel{\i}{\G}{\G}} = \idg: \G \rightarrow \G \in \C(I)
     \quad
@@ -2080,9 +1978,12 @@ The denotation of such a weakening is a morphism within the fibre category deriv
     \deno{\pewrel{\w\x}{\G', x: A}{\G, x: B}} = \deno{\pewrel{\w}{\G'}{\G}}\times \deno{A\subtypep B}: \G'\times A \rightarrow \G\times B
 \]
 
-Type-environment substitutions are also derived inductively with respect to an effect environment.
+Similarly to the definition of effect-environment substitutions (Section \ref{SectionEffectSubstitution}), type-environment substitutions are also snoc-lists derived inductively with respect to an effect environment.
 
-
+\todo{Boxify+Format}
+\[
+\si\gens\nil\mid\si,x\setto v    
+\]
 \[
     \ntreeruleI{\tsubnil}{\wellformedok{\P}{\G'}}{\etyperelation{\P}{\G'}{\nil}{\nil}}
     \quad
@@ -2095,19 +1996,12 @@ Type-environment substitutions are also derived inductively with respect to an e
     }{x \notin \dom{\G'}}
 \]
 
-\todo{Put the action of substitutions here}
 
-Denotations of type-environment substitutions are morphisms in the appropriate fibre category: $\deno{\etyperelation{\P}{\G'}{\si}{\G}}: \G' \rightarrow \G \in \C(I)$ and are defined as so:
+We also need to explain the action of these term substitutions on terms. We define the action of applying a substitution $\si$  on term $v$ as $v\ssi$. 
 
-\[
-    \scalebox{0.9}{$
-    \deno{\etyperelation{\P}{\G'}{\nil}{\nil}} = \term{\G'}: \G' \rightarrow \1
-    \quad
-    \deno{\etyperelation{\P}{\G'}{(\si, x \setto v)}{\gax}} = \pr{\deno{\etyperelation{\P}{\G'}{\G}}}{\deno{\etyperelation{\P}{\G'}{v}{A}}}: \G' \rightarrow \G\times \1
-    $}
-\]
-
-We also need to explain the action of these term substitutions on terms. We define the action of applying a substitution $\si$  on term $v$ as $v\ssi$. The property $x\#\si$ indicates tha x does not occur in the domain of $\si$ or as a free variable in any of its substituted terms.
+\begin{definition}[Freshness]
+    We write $x\#\si$ to indicate that x does not occur in the domain of $\si$ or as a free variable in any of its substituted terms.
+\end{definition}
 
 \begin{align*}
     x\sub{\nil} & = x \\
@@ -2122,7 +2016,19 @@ We also need to explain the action of these term substitutions on terms. We defi
     (\eapp{v}{\e})\ssi & = \eapp{(v\ssi)}{\e}\\
 \end{align*}
 
-In order to prove the quantification case of term-environment weakening and substitution theorems on terms, as can be seen in the road map in Figure \ref{RoadMap}, it will be necessary to be able to weaken the effect environment on term-environment weakenings and substitutions
+Denotations of type-environment substitutions are morphisms in the appropriate fibre category: $\deno{\etyperelation{\P}{\G'}{\si}{\G}}: \G' \rightarrow \G \in \C(I)$ and are defined as so:
+
+\todo{Figure + boxify}
+
+\[
+    \scalebox{0.9}{$
+    \deno{\etyperelation{\P}{\G'}{\nil}{\nil}} = \term{\G'}: \G' \rightarrow \1
+    \quad
+    \deno{\etyperelation{\P}{\G'}{(\si, x \setto v)}{\gax}} = \pr{\deno{\etyperelation{\P}{\G'}{\G}}}{\deno{\etyperelation{\P}{\G'}{v}{A}}}: \G' \rightarrow \G\times \1
+    $}
+\]
+
+In order to prove the quantification case of term-environment weakening and substitution theorems on terms, as can be seen in the road map in Figure \ref{RoadMap}, it will be necessary to be able to weaken the effect environment on term-environment weakenings and substitutions.
 
 Let us first consider the action of effect weakenings on these morphisms. The weakening theorem on term-environment weakenings is as so:
 
@@ -2224,6 +2130,7 @@ Secondly, we can state and prove the weakening theorem on term-environment subst
 
 As with effect substitutions, it is useful to define a couple of special substitutions and lemmas on term substitutions. Firstly, we define the identity and single substitutions in an equivalent way.
 
+\todo{Figure-ify and put next to denotations}
 \begin{align*}
     \etyperelation{\P}{\G}{&\Id{\G}}{\G}\\
     \Id{\nil} & = \nil\\
@@ -2254,113 +2161,8 @@ Furthermore, it will be useful to have an analogue of the extension lemma for te
     \end{proof}
 \end{framed}
 
-\todo{Make  road map more visible + big picture}
-Now we can move onto the term substitution and weakening theorems. These theorems are the final step before we prove that derivations of the same typing-relation instance have the same denotation and then move onto soundness. They demonstrate that the can model the action of applying well-formed type-environment changes by pre-composing the morphisms to be acted on with a morphism modelling the change in environment.
 
-
-\todo{Move this proof to the appendices}
-The term-weakening theorem is as so: 
-
-
-\begin{framed}
-    \begin{theorem}[Term Weakening]\label{TermWeakeningOnTerms}
-        If $\pewrel{\w}{\G'}{\G}$ and $\D$ is a derivation of $\gpetyperelation{v}{A}$ then we can derive $\D'$, a derivation of $\etyperelation{\P}{\G'}{v}{A}$ with denotation $\D' = \D\after\w$.
-    \end{theorem}
-    
-    \begin{proof}
-        By induction on the derivation of $\D$. Making use of the weakening of effect environments on term weakenings.
-    
-    \case{\vgen}
-    This case makes use of the effect weakening of term weakenings.
-    
-    If $\D$ derives $\gpetyperelation{\elam{\a}{v}}{\all{\a}{A}}$, then by inversion, we have $\D_1$ such that:
-    
-    \begin{equation}
-        \D = \ntreeruleI{\vgen}{\treeruleI{\D_1}{\etyperelation{\P,\a}{\G}{v}{A}}}{\gpetyperelation{\elam{\a}{v}}{\all{\e}{A}}}
-    \end{equation}
-    
-    By induction, we derive $\D_1'$ such that it completes the tree in Equation \ref{TermWeakELamOne}. By induction, its denotation can be related to that of $\D_1$, as in Equation \ref{EffWeakELamDenoOne}. Hence we can show that the denotation of $\D$ is preserved in Equation \ref{EffWeakELamDenoResult}.
-    
-    \begin{equation}\label{TermWeakELamOne}
-        \D' = \ntreeruleI{\vgen}{\treeruleI{\D_1'}{\etyperelation{\P,\a}{\G'}{v}{A}}}{\etyperelation{\P}{\G'}{(\elam{\a}{v})}{\all{\e}{A}}}
-    \end{equation}
-    
-    \begin{align*}
-        \D_1' & = \D_1\after\deno{\ewrel{\P,\a}{\w}{\G'}{\G}}\\
-        & = \D_1\after\deno{\wrel{\i\pi}{\P,a}{\P}}\star(\w) \numberthis\label{EffWeakELamDenoOne}\\
-        & = \D_1\after\pstar(\w)
-    \end{align*}
-    
-    \begin{align*}
-        \D\after\w & = \bar{\D_1}\after\w\\
-        & = \bar{\D_1\after\pstar(\w)}\\
-        & = \bar{\D_1'}\numberthis\label{EffWeakELamDenoResult}\\
-        & = \D'
-    \end{align*}
-    
-    
-    \case{\vbind}
-    This case makes use of the properties \todo{where?} of an S-category, specifically the tensor strength on the graded monad. By inversion, we have derivations $\D_1, \D_2$ such that:
-    
-    
-    \begin{equation}
-        \D = \ntreeruleII{\vbind}{
-            \treeruleI{\D_1}{\etyperelation{\P}{\G}{v_1}{\M{\E_1}{A}}}
-        }{
-            \treeruleI{\D_2}{\etyperelation{\P}{\G,x: A}{v_2}{\M{\e_2}{B}}}
-        }{
-            \etyperelation{\P}{\G}{\doin{x}{v_1}{v_2}}{\M{\e_1\dot\e_2}{B}}
-        }
-    \end{equation}
-    
-    If $\ewrel{\P}{\w}{\G'}{\G}$ then $\ewrel{\P}{\w\x}{\G',x:A}{\gax}$, so by induction, we can derive $\D_1'$, $\D_2'$ such that:
-    
-    \begin{equation}
-        \D' = \ntreeruleII{\vbind}{
-            \treeruleI{\D_1'}{\etyperelation{\P}{\G'}{v_1}{\M{\e_1}{A}}}
-        }{
-            \treeruleI{\D_2'}{\etyperelation{\P}{\G',x: A}{v_2}{\M{\e_2}{B}}}
-        }{
-            \etyperelation{\P}{\G'}{\doin{x}{v_1}{v_2}}{\M{\e_1\dot\e_2}{B}}
-        }
-    \end{equation}
-    
-    This preserves denotations:
-    
-    \begin{align*}
-        \D' & = \bind{\e_1}{\e_2}{B}\after\T{\e_1}{\D_2'}\after\tstrength{\e_1}{\G'}{A}\after\pr{\Id{G'}}{\D_1'}\qt{By definition}\\
-        & = \bind{\e_1}{\e_2}{B}\after\T{\e_1}{(\D_2\after(\w\times\Id{A}))}\after\tstrength{\e_1}{\G'}{A}\after\pr{\Id{G'}}{\D_1\after\w}\qt{By induction on $\D_1', \D_2'$}\\
-        & = \bind{\e_1}{\e_2}{B}\after\T{\e_1}{\D_2}\after\tstrength{\e_1}{\G}{A}\after\pr{\w}{\D_1\after\w}\qt{By tensor strength}\\
-        & = \bind{\e_1}{\e_2}{B}\after\T{\e_1}{\D_2}\after\tstrength{\e_1}{\G}{A}\after\pr{\idg}{\D_1}\after\w\qt{By product property}\\
-        & = \D \qt{By definition}
-    \end{align*}
-    
-    \case{\vreturn}
-        We have the sub-derivation $\D_1$ such that
-        \begin{equation}
-            \D = \ntreeruleI{\vreturn}{\treeruleI{\D_1}{\gpetyperelation{v}{A}}}{\gpetyperelation{\return{v}}{\moa}}
-        \end{equation}
-    
-        Hence, by induction, with $\ewrel{\P}{\w}{\G'}{\G}$, we find the derivation $\D_1'$ such that:
-        \begin{equation}
-            \D' = \ntreeruleI{\vreturn}{\treeruleI{\D_1'}{\etyperelation{\P}{\G'}{v}{A}}}{\etyperelation{\P}{\G'}{\return{v}}{\moa}}
-        \end{equation}
-    
-        This preserves denotations:
-    
-        \begin{align*}
-            \D' & = \point{A}\after\D_1' \qt{By definition}\\
-                & = \point{A}\after\D_1\after\w\qt{By induction of $\D_1, \D_1'$}\\
-                & = \D\after\w\qt{By Definition}
-        \end{align*}
-    
-        $$\square$$
-    \end{proof}
-    
-\end{framed}
-
-
-The term-substitution theorem is formulated similarly: 
+Finally, we can move on to the term substitution and weakening theorems. These theorems are the final step before we prove that derivations of the same typing-relation instance have the same denotation and then move onto soundness. They demonstrate that we can model the action of applying well-formed type-environment changes by pre-composing the morphisms to be acted on with a morphism modelling the change in environment. The term-substitution theorem is formulated as so: 
 
 \begin{framed}
     \begin{theorem}[Term Substitution]\label{TermSubstitutionOnTerms}
@@ -2370,8 +2172,6 @@ The term-substitution theorem is formulated similarly:
     
     \begin{proof}
         This proof proceeds by induction on the derivation $\D$ similarly to the term weakening theorem and making use of weakening of term substitutions.
-    
-    
     
     \case{\vweaken}
     
@@ -2421,13 +2221,27 @@ The term-substitution theorem is formulated similarly:
     \end{proof}
 \end{framed}
 
+The term-weakening theorem is formulated similarly. 
 
-\todo{Concluding remarks on this theorem}
+\begin{framed}
+    \begin{theorem}[Term Weakening]\label{TermWeakeningOnTerms}
+        If $\pewrel{\w}{\G'}{\G}$ and $\D$ is a derivation of $\gpetyperelation{v}{A}$ then we can derive $\D'$, a derivation of $\etyperelation{\P}{\G'}{v}{A}$ with denotation $\D' = \D\after\w$.
+    \end{theorem}
+    
+    \begin{proof}
+        By induction on the derivation of $\D$. Making use of the weakening of effect environments on term weakenings in the case of (\textit{\vgen}). Some cases can be found in Appendix \ref{AppendixTermWeakeningTheorem}
+    \end{proof}
+    
+\end{framed}
+
+
+
+
+\subsection{Summary}
 In this section, I have stated and proved a number of theorems to do with the substitution of effect and term variables within an expression. In particular, these theorems give us a way of manipulating the denotations of terms when the effect-variable and term environments are changed. As a result, these theorems provide us with a set of tools to tackle problems such as soundness and the uniqueness do denotations.
 
 \section{Uniqueness of Denotations}\label{UniqueDenotations}
 
-\todo{Make this clear earlier}
 Up until this point we have had to be careful about the implicit typing derivation \todo{Why} for every term denotation $\deno{\gpetyperelation{v}{A}}$. We are now equipped with the tools to prove that all derivations of the same typing relation instance $\gpetyperelation{v}{A}$ induce the same denotation. This allows us to no longer worry about the equality of denotations, which will be helpful in the soundness proof.
 
 To prove that all typing denotations have the same denotation, I first introduce the concept of a \textit{reduced} typing derivation that is unique to each term and type in each term environments. Next, I present a function, $\reduce$, which recursively maps  typing derivations to their reduced equivalent. I also prove that this function preserves the denotation of the derivations. That is $\deno{\gpetyperelation{v}{A}} = \deno{\reduce(\gpetyperelation{v}{A})}$. Hence, we can conclude, since all derivations for a typing relation instance reduce to the same unique typing derivation, and that the reduction function preserves the denotations, that all derivations of a typing derivation have the same denotation.
@@ -2848,7 +2662,7 @@ The equational equivalence relation is a rule-based relation with three main fla
         $}\]
     
         \[\scalebox{0.8}{$
-            \ntreeruleII{\eqeffbeta}{\wellformed{\P}{\e}}{\etyperelation{\P, \a}{\G}{v}{A}}{\gpeberelation{\eapp{(\elam{\a}{v}}{\e})}{v\ssub{\a}{\e}}{A\ssub{\a}{\e}}}
+            \ntreeruleII{\eqeffbeta}{\wellformedeffect{\P}{\e}}{\etyperelation{\P, \a}{\G}{v}{A}}{\gpeberelation{\eapp{(\elam{\a}{v}}{\e})}{v\ssub{\a}{\e}}{A\ssub{\a}{\e}}}
             \quad 
             \ntreeruleI{\eqeffeta}{\etyperelation{\P}{\G}{v}{\all{\a}{A}}}{\gpeberelation{\elam{\a}{(\eapp{v}{\a})}}{v}{\all{\a}{A}}}
         $}\]
@@ -2862,7 +2676,7 @@ The equational equivalence relation is a rule-based relation with three main fla
         \[\scalebox{0.8}{$
             \ntreeruleI{\eqgen}{\eberelation{\P, \a}{\G}{v_1}{v_2}{A}}{\gpeberelation{\elam{\a}{v_1}}{\elam{\a}{v_2}}{\all{\a}{A}}}
             \quad
-            \ntreeruleII{\eqspec}{\gpeberelation{v_1}{v_2}{\all{\a}{A}}}{\wellformed{\P}{\e}}{\gpeberelation{\eapp{v_1}{\e}}{\eapp{v_2}{\e}}{A\ssub{\a}{\e}}}
+            \ntreeruleII{\eqspec}{\gpeberelation{v_1}{v_2}{\all{\a}{A}}}{\wellformedeffect{\P}{\e}}{\gpeberelation{\eapp{v_1}{\e}}{\eapp{v_2}{\e}}{A\ssub{\a}{\e}}}
         $}\]
     
         \[\scalebox{0.8}{$
@@ -3010,7 +2824,7 @@ This completes the proof of soundness for this semantics.
 
 \chapter{Constructing a Model of PEC}
 
-Now we have proved that an appropriate categorical structure can model PEC, it remains to explicitly construct such an indexed category. There exist $\set$-based models for the semantics of many effectful languages with a graded monad, such as a certain instantiations of the Effect Calculus \cite{Katsumata:2014}. More specifically, it is possible to treat $\set$ as an S-category. Hence, I use a $\set$ based S-category as a starting point. In this Section, I  demonstrate how to construct an strictly indexed S-category, which can model the PEC, from such an S-category.
+Now we have proved that an appropriate categorical structure can model PEC, it remains to explicitly construct such an indexed category. There exist $\set$-based models for the semantics of many effectful languages with a graded monad, such as a certain instantiations of the Effect Calculus \cite{Katsumata:2014}. More specifically, it is possible to treat $\set$ as an S-category. Hence, I use a $\set$ based S-category as a starting point. In this section, I  demonstrate how to construct an strictly indexed S-category, which can model the PEC, from such an S-category.
 
 Suppose we have an S-category structure derived from $\set$ which models an instance of EC. That is, there is a graded monad $\Tz{}{}, \bindmu^0, \pointz{}, \strengtht^0$ on $\set$, and there exist subtyping functions $\deno{A\subtypeg B}: A \rightarrow B$ for each instance of the ground subtyping relation, and natural transformations $\deno{\e_1 \subeffectz \e_2}: \Tz{\e_1}{} \rightarrow \Tz{\e_2}{}$ for each instance of the subeffecting relation. Furthermore, $\set$ is cartesian closed and has co-products for all pairs of objects. Since this structure is a model for the EC, it is graded by the partially ordered monoid on ground effects: $(E, \subeffectz, \1, \dot)$. I have marked each of these instances of S-category structure with $0$ to indicate that they occur in the fibre induced by the empty effect-variable environment.
 
@@ -3030,7 +2844,7 @@ We also need to define the base category. We choose this to be $\Eff$, a subcate
     E^{n+1} &= E^n \times E
 \end{align*}
 
-Morphisms $E^n \rightarrow E$ in $\Eff$ are monotone functions taking $n$ ground-effect parameters and returning a ground effect. The ground effects ranged over by $e$ are represented by point functions $e: \1 \rightarrow E$, so the denotation of a ground effect $e$ is the constant valued function $\deno{\typerelation{\P}{e}{\effect}} = \ev \mapsto e$. We also need to define a monoidal operation $\Mul_n: \Eff(E^n, E) \times \Eff(E^n, E) \rightarrow \Eff(E^n, E)$ that is natural as described in Section \ref{PECRequirements}. A natural \todo{Better word?} choice for $\Mul_n$ and proof of the naturality property is shown in Figure \ref{MulDefinition}.
+Morphisms $E^n \rightarrow E$ in $\Eff$ are monotone functions taking $n$ ground-effect parameters and returning a ground effect. The ground effects ranged over by $e$ are represented by point functions $e: \1 \rightarrow E$, so the denotation of a ground effect $e$ is the constant valued function $\deno{\typerelation{\P}{e}{\effect}} = \ev \mapsto e$. We also need to define a monoidal operation $\Mul_n: \Eff(E^n, E) \times \Eff(E^n, E) \rightarrow \Eff(E^n, E)$ that is natural as described in Section \ref{PECRequirements}. A logical choice for $\Mul_n$ and proof of the naturality property is shown in Figure \ref{MulDefinition}.
 
 \begin{figure}
     \centering
@@ -3053,7 +2867,7 @@ Morphisms $E^n \rightarrow E$ in $\Eff$ are monotone functions taking $n$ ground
     \label{MulDefinition}
 \end{figure}
 
-Next we must pick our fibre categories for non-zero values of $n$. A simple instantiation is to pick each fibre $\C(E^n)$ to be the functor category $[E^n, \set]$,  where $E^n$ is a discrete category (a category that only contains the identity morphisms). That is, the category of functions returning an object in $\set$ given $n$ ground effects. Morphisms between objects are functions which, given a collection of ground effects, yield a morphism (function) in $C$. If $m\in [E^n, \set](A, B)$ then $m\ev\in\set(A\ev, B\ev)$. The fibres, $[E^n, C]$ are S-categories. This can be proved by constructing the S-category structures pointwise with respect to their parameter $\ev \in E^n$ as seen in Figures \ref{HowToBuildCCC} - \ref{HowToBuildSubtyping}. Full proofs of the naturality and monad laws can be found in appendix \ref{NaturalityAndMonadLawsProof}.
+Next we must pick our fibre categories for non-zero values of $n$. A simple instantiation is to pick each fibre $\C(E^n)$ to be the functor category $[E^n, \set]$,  where $E^n$ is a discrete category (a category that only contains the identity morphisms). That is, the category of functions returning an object in $\set$ given $n$ ground effects. Morphisms between objects are functions which, given a collection of ground effects, yield a morphism (function) in $C$. If $m\in [E^n, \set](A, B)$ then $m\ev\in\set(A\ev, B\ev)$. The fibres, $[E^n, C]$ are S-categories. This can be proved by constructing the S-category structures pointwise with respect to their parameter $\ev \in E^n$ as seen in Figures \ref{HowToBuildCCC} - \ref{HowToBuildSubtyping}. Full proofs of the naturality and monad laws can be found in Appendix \ref{NaturalityAndMonadLawsProof}.
 
 
 
@@ -3235,7 +3049,7 @@ Now we need to define the required morphisms between fibres. Firstly, for any fu
         \textbf{Re-Indexing Functors are S-Preserving}
                 
         \begin{theorem}
-            The re-indexing functors are also S-preserving. That is all the S-category features in $[E^n, \set]$ are preserved by $\theta\star$ in $[E^m, \set]$. For a full list of features and their proofs, please see appendix \ref{ReindexingFunctorProperties}.
+            The re-indexing functors are also S-preserving. That is all the S-category features in $[E^n, \set]$ are preserved by $\theta\star$ in $[E^m, \set]$. For a full list of features and their proofs, please see Appendix \ref{ReindexingFunctorProperties}.
         \end{theorem}
         
         
@@ -3460,8 +3274,10 @@ This work forms a potential foundation for precise analysis tools which could be
 
 %% Appendices
 \appendix
+
+% Appendices account for ~1000 words
+\input{AppendixWeakeningProofs.tex}
 \input{AppendixSCategoryFunctors.tex}
 \input{AppendixFunctorCategoryStructures.tex}
-
 
 \end{document}

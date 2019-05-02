@@ -46,10 +46,12 @@
 \newtheorem{corollary}{Corollary}[theorem]
 \newtheorem{lemma}[theorem]{Lemma}
 \newtheorem{definition}{Definition}[section]
-\fi
 
+\newtheorem{aside}{Aside}[section]
 \newtheorem{property}[theorem]{Property}
 \theoremstyle{definition}
+\fi
+
 
 
 \usepackage{tikz}
@@ -230,6 +232,10 @@
 \newcommand{\typerelation}[3]{{\color{DarkGreen}#1} \vdash #2 \colon {\color{blue}#3}}
 \newcommand\wellformed[2]{{\color{DarkGreen}#1}\vdash {\color{blue}#2}}
 \newcommand\wellformedok[2]{\ok{{\color{DarkGreen}#1}\vdash {\color{blue} #2}}}
+
+\newcommand{\wellformedtype}[2]{\typerelation{#1}{#2}{\type}}
+\newcommand{\wellformedeffect}[2]{\typerelation{#1}{#2}{\effect}}
+\newcommand{\wellformedF}[2]{\typerelation{#1}{#2}{F}}
 
 
 
@@ -469,7 +475,7 @@
 \newcommand{\allII}[0]{\forall_{I'}}
 \newcommand\allIU[0]{\forall_{I\times U}}
 \newcommand\type[0]{\texttt{Type}}
-\newcommand\effect[0]{\texttt{\teffect}}
+\newcommand\effect[0]{\texttt{Effect}}
 \newcommand\ciw[0]{\C(I, W)}
 \newcommand\ciu[0]{\C(I, U)}
 \newcommand\ciuw[0]{\C(I\times U, W)}

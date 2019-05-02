@@ -1,0 +1,251 @@
+\chapter{Additional Proofs}\label{WeakeningProofs}
+
+In this appendix, I provide introductions to some proofs which are too similar to proofs already in the dissertation to include. \todo{Explain better}
+
+\section{Effect Weakening on Effects}\label{AppendixEffectWeakeningOnEffects}
+
+It is harder to use inversion on the structure of $\w$, since the structure of $\w$ does not depend as strongly on the structure of $\P$. I present here the cases for variables.
+    
+        \case{\evar}
+        We do a case split on $\w$.
+        \subcase{$\w = \i$}
+        Then $\P' = \P$ and $\w = \Id{I}$. So the theorem holds trivially.
+        \subcase{$\w = \w'\x$}
+        Then by the definition of its denotation:    
+        \begin{align*}
+            \deno{\typerelation{\P,\a}{\a}{\effect}}\after\w &= \pp\after(\w'\times \Id{U}) \\
+            & = \pp\\
+            & = \deno{\typerelation{\P',\a}{\a}{\effect}}
+        \end{align*}
+        
+        \subcase{$\w = \w'\pi$}
+        Then \begin{equation}
+            \deno{\typerelation{\P,\a}{\a}{\effect}} = \pp\after\w'\after\p
+        \end{equation}
+        
+        Here $\P' = \P,\b$ and $\wrel{\w'}{\P''}{\P}$.
+        
+        So\begin{align*}
+            \pp\after\w' & = \deno{\typerelation{\P''}{\a}{\effect}}
+            \\
+            \pp\after\w'\after\p & =\deno{\typerelation{\P'',\b}{\a}{\effect}}\\
+            &= \deno{\typerelation{\P'}{\a}{\effect}}
+        \end{align*}
+        
+        \case{\eweaken}
+        \begin{equation}
+            \deno{\typerelation{\P,\b}{\a}{\effect}}\after\w = \deno{\typerelation{\P}{\a}{\effect}}\after\p\after\w
+        \end{equation}
+        
+        Similarly, we perform a case split on structure of $\w$:
+        
+        \subcase{$\w=\i$}
+        Then $\P' = \P,\b$ so $\w=\Id{I}$
+        So $\deno{\typerelation{\P,\b}{\a}{\effect}}\after\w = \deno{\typerelation{\P'}{\a}{\effect}}$
+        
+        \subcase{$\w=\w'\p$}
+        Then $\P' = (\P'',\g)$ and $\w=\w'\after\p$
+        Here $\wrel{\w'}{\P''}{\P,\b}$.
+        So
+        \begin{align*}
+            \deno{\typerelation{\P,\b}{\a}{\effect}}\after\w & = \deno{\typerelation{\P,\b}{\a}{\effect}}\after\w'\after\p\\
+            & = {\typerelation{\P''}{\a}{\effect}}\after\p\\
+            & = {\typerelation{\P'',\g}{\a}{\effect}}\\
+            & = {\typerelation{\P'}{\a}{\effect}}\\
+        \end{align*}
+        
+        \subcase{$\w=\w'\x$}
+        Then $\P'=\P'',\b$ and $\wrel{\w'}{\P''}{\P}$
+        
+        So \begin{align*}
+            \deno{\typerelation{\P,\b}{\a}{\effect}}\after\w &= \deno{\typerelation{\P}{\a}{\effect}}\after\p\after(\w'\times\Id{U})\\
+            &=\deno{\typerelation{\P}{\a}{\effect}}\after\w'\after\p\\
+            & = \deno{\typerelation{\P''}{\a}{\effect}}\after\p\\
+            & = \deno{\typerelation{\P'}{\a}{\effect}}\\
+        \end{align*}
+    
+        $$\square$$
+
+
+\section{Effect Weakening on Types}\label{AppendixEffectWeakeningOnTypes}
+
+This proof proceeds in a similar fashion the proof of effect substitution on types (Theorem \ref{EffectSubstitutionOnTypes}). That is, by induction over the derivation of $\deno{\typerelation{\P}{A}{\type}}$, and making use of the Beck-Chevalley condition and the S-preserving property of $\w\star$. 
+
+\case{\tquant}
+    This case uses the Beck-Chevalley condition and the fact that $\deno{\wrel{\w\x}{(\P', \a)}{(\P,\a)}} = \w\times \Id{U}$. This property is used in conjunction with induction to change the environment from $(\P, \a)$ to $(\P', \a)$.
+
+    \begin{align*}
+        \w\star\deno{\typerelation{\P}{\all{\a}A}{\type}} & = \w\star(\allI(\deno{\typerelation{\P,\a}{A}{\type}}))\\
+        & = \allI((\w\times\Id{U})\star\deno{\typerelation{\P,\a}{A}{\type}})\qt{By Beck-Chevalley}\\
+        & = \allI(\deno{\typerelation{\P',\a}{A}{\type}})\qt{By induction}\\
+        & = \allI(\deno{\typerelation{\P',\a}{A}{\type}})\\
+        & = \deno{\typerelation{\P'}{\all{\a}{A}}{\type}}\\
+    \end{align*}
+
+\case{\tfun}
+This case makes use of the S-preserving property that $\w\star$ preserves exponentials. Specifically $\w\star(B^A) = (\w\star B)^{(\w\star A)}$.
+\begin{align*}
+    \w\star\deno{\typerelation{\P}{\ab}{\type}} &= \w\star(\deno{\typerelation{\P}{B}{\type}}^{\deno{\typerelation{\P}{A}{\type}}})\\
+    &=\w\star(\deno{\typerelation{\P}{B}{\type}})^{\w\star(\deno{\typerelation{\P}{A}{\type}})}\\
+    & = \deno{\typerelation{\P'}{B}{\type}}^{\deno{\typerelation{\P'}{A}{\type}}}\\
+    & = \deno{\typerelation{\P'}{\ab}{\type}}\\
+\end{align*}
+
+$$\square$$
+
+\section{Effect Weakening on Terms} \label{AppendixEffectWeakeningOnTerms}
+This theorem is proved in a similar fashion to the effect substitution theorem (Theorem \ref{EffectSubstitutionOnTerms}) and many of its cases are the same.
+
+\case{\vsubtype}
+If $\D$ derives $\gpetyperelation{v}{B}$ then, by inversion, there exists $\D_1$ deriving $\gpetyperelation{v}{A}$, such that $ \D = \deno{A\subtypep B}\after \D_1$, as shown in Equation \ref{EffectWeakenTermsSubtype}.
+
+\begin{equation}
+    \label{EffectWeakenTermsSubtype}
+    \D = \ntreeruleII{\vsubtype}{\treeruleI{\D_1}{\gpetyperelation{v}{A}}}{ A \subtypep B}{\gpetyperelation{v}{B}}
+\end{equation}
+
+By induction there exists $\D_1'$ deriving $\etyperelation{\P'}{\G}{v}{A}$, so we can construct $\D'$ using the subtyping rule in Equation \ref{EffectWeakenTermsSubtypeNew}.
+So, using the weakening of the subtyping morphism, we can derive the denotation of $\D'$.
+
+\begin{equation}
+    \label{EffectWeakenTermsSubtypeNew}
+    \D' = \ntreeruleII{\vsubtype}{\treeruleI{\D_1'}{\etyperelation{\P'}{\G}{v}{A}}}{A \subtypep B}{\etyperelation{\P'}{\G}{v}{B}}
+\end{equation}
+
+\begin{align*}
+    \w\star(\D) & = \w\star{\deno{A\subtypep B}}\after\w\star\D_1 \\
+    & = \deno{A\subtypepp B}\after\D_1'\qt{By induction}\\
+    & = \D'
+\end{align*}
+
+\case{\vfun}
+This case holds by induction and the S-preserving property of $\w\star$.
+
+If $\D$ derives $\gpetyperelation{\lam{x}{A}{v}}{\ab}$ then by inversion there exists $\D_1$ deriving $\etyperelation{\P}{\gax}{v}{B}$ such that $\D$ and its denotation can be defined as in equations \ref{EffWeakenTermsLambdaTree} and \ref{EffWeakenTermsLambdaDeno}
+
+
+\begin{equation}
+    \label{EffWeakenTermsLambdaTree}
+    \D = \ntreeruleI{\vfun}{
+        \treeruleI{\D_1}{\etyperelation{\P}{\gax}{v}{B}}
+    }{\gpetyperelation{\lam{x}{A}{v}}{\ab}}
+\end{equation}
+
+
+\begin{equation}\label{EffWeakenTermsLambdaDeno}
+    \D = \cur{\D_1}\\
+\end{equation}
+
+By induction, there exists $\D_1'$ deriving $\etyperelation{\P'}{\gax}{v}{B}$ with denotation $\D_1' = \w\star(\D_1)$. Using S-preserving property, we can derive $\D'$ and its denotation, seen in equations \ref{EffWeakenTermsLambdaTreeNew} and \ref{EffWeakenTermsLambdaDenoNew}.
+
+\begin{equation}
+    \label{EffWeakenTermsLambdaTreeNew}
+    \D' = \ntreeruleI{\vfun}{
+        \treeruleI{\D_1'}{\etyperelation{\P'}{\gax}{v}{B}}
+    }{\etyperelation{\P'}{\G}{\lam{x}{A}{v}}{\ab}}
+\end{equation}
+
+
+\begin{equation}\label{EffWeakenTermsLambdaDenoNew}
+    \D' = \cur{\D_1'}\\
+\end{equation}
+
+Using S-closure, we can show that $\D' = \w\star(\D)$.
+
+\begin{align*}
+    \w\star(\D) & = \w\star(\cur{\D_1})\\
+    & = \cur{\w\star(\D_1)}\qt{By S-preserving property}\\
+    & = \cur{\D_1'}\qt{By induction}\\
+    & = \D'
+\end{align*}
+
+$$\square$$
+
+\section{Term Weakening Theorem}\label{AppendixTermWeakeningTheorem}
+Proceeds by induction on the derivation of $\D$. Making use of the weakening of effect environments on term weakenings in the case of (\textit{$\vgen$}).
+
+\case{\vgen}
+This case makes use of the effect weakening of term weakenings.
+
+If $\D$ derives $\gpetyperelation{\elam{\a}{v}}{\all{\a}{A}}$, then by inversion, we have $\D_1$ such that:
+
+\begin{equation}
+    \D = \ntreeruleI{\vgen}{\treeruleI{\D_1}{\etyperelation{\P,\a}{\G}{v}{A}}}{\gpetyperelation{\elam{\a}{v}}{\all{\e}{A}}}
+\end{equation}
+
+By induction, we derive $\D_1'$ such that it completes the tree in Equation \ref{TermWeakELamOne}. By induction, its denotation can be related to that of $\D_1$, as in Equation \ref{EffWeakELamDenoOne}. Hence we can show that the denotation of $\D$ is preserved in Equation \ref{EffWeakELamDenoResult}.
+
+\begin{equation}\label{TermWeakELamOne}
+    \D' = \ntreeruleI{\vgen}{\treeruleI{\D_1'}{\etyperelation{\P,\a}{\G'}{v}{A}}}{\etyperelation{\P}{\G'}{(\elam{\a}{v})}{\all{\e}{A}}}
+\end{equation}
+
+\begin{align*}
+    \D_1' & = \D_1\after\deno{\ewrel{\P,\a}{\w}{\G'}{\G}}\\
+    & = \D_1\after\deno{\wrel{\i\pi}{\P,a}{\P}}\star(\w) \numberthis\label{EffWeakELamDenoOne}\\
+    & = \D_1\after\pstar(\w)
+\end{align*}
+
+\begin{align*}
+    \D\after\w & = \bar{\D_1}\after\w\\
+    & = \bar{\D_1\after\pstar(\w)}\\
+    & = \bar{\D_1'}\numberthis\label{EffWeakELamDenoResult}\\
+    & = \D'
+\end{align*}
+
+
+\case{\vbind}
+This case makes use of the properties \todo{where?} of an S-category, specifically the tensor strength on the graded monad. By inversion, we have derivations $\D_1, \D_2$ such that:
+
+
+\begin{equation}
+    \D = \ntreeruleII{\vbind}{
+        \treeruleI{\D_1}{\etyperelation{\P}{\G}{v_1}{\M{\E_1}{A}}}
+    }{
+        \treeruleI{\D_2}{\etyperelation{\P}{\G,x: A}{v_2}{\M{\e_2}{B}}}
+    }{
+        \etyperelation{\P}{\G}{\doin{x}{v_1}{v_2}}{\M{\e_1\dot\e_2}{B}}
+    }
+\end{equation}
+
+If $\ewrel{\P}{\w}{\G'}{\G}$ then $\ewrel{\P}{\w\x}{\G',x:A}{\gax}$, so by induction, we can derive $\D_1'$, $\D_2'$ such that:
+
+\begin{equation}
+    \D' = \ntreeruleII{\vbind}{
+        \treeruleI{\D_1'}{\etyperelation{\P}{\G'}{v_1}{\M{\e_1}{A}}}
+    }{
+        \treeruleI{\D_2'}{\etyperelation{\P}{\G',x: A}{v_2}{\M{\e_2}{B}}}
+    }{
+        \etyperelation{\P}{\G'}{\doin{x}{v_1}{v_2}}{\M{\e_1\dot\e_2}{B}}
+    }
+\end{equation}
+
+This preserves denotations:
+
+\begin{align*}
+    \D' & = \bind{\e_1}{\e_2}{B}\after\T{\e_1}{\D_2'}\after\tstrength{\e_1}{\G'}{A}\after\pr{\Id{G'}}{\D_1'}\qt{By definition}\\
+    & = \bind{\e_1}{\e_2}{B}\after\T{\e_1}{(\D_2\after(\w\times\Id{A}))}\after\tstrength{\e_1}{\G'}{A}\after\pr{\Id{G'}}{\D_1\after\w}\qt{By induction on $\D_1', \D_2'$}\\
+    & = \bind{\e_1}{\e_2}{B}\after\T{\e_1}{\D_2}\after\tstrength{\e_1}{\G}{A}\after\pr{\w}{\D_1\after\w}\qt{By tensor strength}\\
+    & = \bind{\e_1}{\e_2}{B}\after\T{\e_1}{\D_2}\after\tstrength{\e_1}{\G}{A}\after\pr{\idg}{\D_1}\after\w\qt{By product property}\\
+    & = \D \qt{By definition}
+\end{align*}
+
+\case{\vreturn}
+    We have the sub-derivation $\D_1$ such that
+    \begin{equation}
+        \D = \ntreeruleI{\vreturn}{\treeruleI{\D_1}{\gpetyperelation{v}{A}}}{\gpetyperelation{\return{v}}{\moa}}
+    \end{equation}
+
+    Hence, by induction, with $\ewrel{\P}{\w}{\G'}{\G}$, we find the derivation $\D_1'$ such that:
+    \begin{equation}
+        \D' = \ntreeruleI{\vreturn}{\treeruleI{\D_1'}{\etyperelation{\P}{\G'}{v}{A}}}{\etyperelation{\P}{\G'}{\return{v}}{\moa}}
+    \end{equation}
+
+    This preserves denotations:
+
+    \begin{align*}
+        \D' & = \point{A}\after\D_1' \qt{By definition}\\
+            & = \point{A}\after\D_1\after\w\qt{By induction of $\D_1, \D_1'$}\\
+            & = \D\after\w\qt{By Definition}
+    \end{align*}
+
+    $$\square$$
