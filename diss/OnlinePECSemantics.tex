@@ -33,7 +33,7 @@ This (online only) document contains full proofs and derivations of all of the t
 \subsection{Ground Effects}
 The effects should form a monotonous, partially-ordered monoid $(E, \dot, \1, \subeffect)$ with ground elements $e$.
 
-\subsection{Effect Po-Monoid Under an Effect Environment}
+\subsection{Effect Po-Monoid Under an Effect-Variable Environment}
 
 Derive a new Po-Monoid for each $\P$:
 \begin{equation}
@@ -66,9 +66,9 @@ Where $\si\downarrow$ denotes any ground-substitution of $\P$. That is any subst
     \paragraph{Term Types}
     $$ A, B, C \gens \ground \mid \ab \mid \mea \mid \all{\a}{A}$$
   
-\subsection{Type and Effect Environments}
+\subsection{Type and Effect-Variable Environments}
 A type environment is a snoc-list of term-variable, type pairs, $G \gens \nil \mid \gax$ .
-An effect environment is a snoc-list of effect variables.
+An effect-variable environment is a snoc-list of effect variables.
 
 $\P\gens\nil\mid\P, \a$
 \paragraph{Domain Function on Type Environments}
@@ -77,10 +77,10 @@ $\P\gens\nil\mid\P, \a$
     \item $\dom{\gax} =  \dom{\G}  \cup \left\{x \right\}$
 \end{itemize}
 
-\paragraph{Membership of Effect Environments}
+\paragraph{Membership of Effect-Variable Environments}
 Informally, $\a \in \P$ if $\a$ appears in the list represented by $\P$.
 
-\paragraph{$\okt$ Predicate On Effect Environments}
+\paragraph{$\okt$ Predicate On Effect-Variable Environments}
 \begin{itemize}
     \item $\ntreerulez{\pnil}{\ok{\nil}}$
     \item $\condtreeruleI{\pextend}{\ok{\P}}{\ok{\P, \a}}{ \a\notin \P}$
@@ -107,7 +107,7 @@ We define a relation $\wellformedt{\P}{A}$ on types.
 \end{itemize}
 
 \paragraph{Ok Predicate on Type Environments}
-We now define a predicate on type environments and effect environments: $\oke{\P}{\G}$
+We now define a predicate on type environments and effect-variable environments: $\oke{\P}{\G}$
 
 \begin{itemize}
     \item $\ntreerulez{\envnil}{\oke{\P}{\nil}}$
@@ -123,7 +123,7 @@ We now define a predicate on type environments and effect environments: $\oke{\P
         \item $\ntreeruleII{\stransitive}{A \subtype_{\ground} B }{ B \subtype_{\ground} C}{A \subtype_{\ground} C}$
     \end{itemize}
 
-    We extend this relation with the (Fn) and (Quantification) subtyping rules to yield the full subtyping relation under an effect environment, $\P$, $\subtypep$
+    We extend this relation with the (Fn) and (Quantification) subtyping rules to yield the full subtyping relation under an effect-variable environment, $\P$, $\subtypep$
 
     \begin{itemize}
         \item $\ntreeruleI{\sground}{A \subtype_{\ground} B}{A \subtypep B}$
@@ -202,7 +202,7 @@ It should also be the case that \begin{equation}
 That is, $\Mul_I$ should be have identity $\deno{\typerelation{\P}{\1}{\effect}}$ and be associative.
 
 
-\section{Substitution and Weakening of the Effect Environment}
+\section{Substitution and Weakening of the Effect-Variable Environment}
 
 
 \subsection{Denotations}
@@ -565,7 +565,7 @@ Here are some simple corollaries of the adjunction between $\pstar$ and $\allI$.
         \end{property}
 
 \section{Term-Environment Weakenings}
-Type environment weakenings are inductively defined with respect to an effect environment.
+Type environment weakenings are inductively defined with respect to an effect-variable environment.
 
 
 \[
@@ -686,7 +686,7 @@ For each instance of the effect-environment weakening relation, define a denotat
 
 \section{Subtyping}
 
-For each instance of the subtyping relation with respect  to an effect environment, there exists a denotation, $\deno{A\subtypep B}: \C(I)(A, B)$.
+For each instance of the subtyping relation with respect  to an effect-variable environment, there exists a denotation, $\deno{A\subtypep B}: \C(I)(A, B)$.
 
 \begin{itemize}
     \item $\deno{\g_1\subtypep \g_2} = \deno{\g_1\subtypeg \g_2} : \C(I)(\g_1, \g_2)$
@@ -1945,7 +1945,7 @@ If $\wrel{\w}{\P'}{\P}$ and $\wellformedok{\P}{\G}$  then $\wellformedok{\P'}{\G
     
     
 \end{framed}
-\begin{theorem}[Effect Environment Weakening]
+\begin{theorem}[Effect-Variable Environment Weakening]
     If 
     \begin{align*}
         \w &= \deno{\wrelw{\P'}{\P}}\\
@@ -3237,7 +3237,7 @@ If $\wrel{\w}{\P'}{\P}$ and $\wellformedok{\P}{\G}$  then $\wellformedok{\P'}{\G
             \end{equation}
             
             \case{\vbind}
-            This case makes use of the weakening theorem on term environments. Let the trees in equations \ref{UniqueBindOne}, \ref{UniqueBindTwo} be the respective unique reduced type derivations of the subterms. By weakening, $\ewrel{\P}{\i\x}{(\G, x:A)}{(\G, x: A')}$ so if there's a derivation of $\etyperelation{\P}{(\G, x:A')}{v_2}{B}$, there's also one of $\etyperelation{\P}{\gax}{v_2}{B}$ (equation \ref{UniqueBindThree}). 
+            This case makes use of the weakening theorem on type environments. Let the trees in equations \ref{UniqueBindOne}, \ref{UniqueBindTwo} be the respective unique reduced type derivations of the subterms. By weakening, $\ewrel{\P}{\i\x}{(\G, x:A)}{(\G, x: A')}$ so if there's a derivation of $\etyperelation{\P}{(\G, x:A')}{v_2}{B}$, there's also one of $\etyperelation{\P}{\gax}{v_2}{B}$ (equation \ref{UniqueBindThree}). 
 
     \begin{equation}\label{UniqueBindOne}
         \edeltacrule{\G}{v_1}{\e_1}{A}{\e_1'}{A'}
