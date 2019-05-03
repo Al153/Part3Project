@@ -853,78 +853,141 @@ As is often the case in similar type systems, a type environment is a snoc list 
 
 \subsubsection{Well-Formedness Predicates}
 
-\todo{Boxify and format these}
+
 To formalise properties of the type system, it will be useful to have a collection of predicates ensuring that structures in the language are well behaved with respect to their use of effect variables. We write $\a \in \P$ if $\a$ appears in the list represented by $\P$.
 
-The $\okt$ predicate on effect environments asserts that the effect environment does not contain any duplicated effect variables.
+The $\okt$ predicate (Figure \ref{EffectEnvOk}) on effect environments asserts that the effect environment does not contain any duplicated effect variables. Using this, we can define the well-formedness relation on effects, $\wellformedeffect{\P}{\e}$ (Figure \ref{EffectWellformednes}). In short, this relation ensures that effects only reference variables that are in the effect environment. This is equivalent to saying that $\wellformedeffect{\P}{\e}$ means that $\e\in E_\P$.
 
-\[
+\begin{figure}[H]
+    \centering
+    \begin{framed}
+        \[
     \ntreerulez{\pnil}{\ok{\nil}}
 \quad
     \condtreeruleI{\pextend}{\ok{\P}}{\ok{\P, \a}}{\a\notin \P}
 \]
+    \end{framed}
+    
+    \caption{The \okt\s predicate on effect-variable environments}
+    \label{EffectEnvOk}
+\end{figure}
 
-Using this, we can define the well-formedness relation on effects, $\wellformedeffect{\P}{\e}$. In short, this relation ensures that effects only reference variables that are in the effect environment. This is equivalent to saying that $\wellformedeffect{\P}{\e}$ means that $\e\in E_\P$.
 
-\[
+\begin{figure}[H]
+    \centering
+    \begin{framed}
+        \[
     \ntreeruleI{\eground}{\ok{\P}}{\wellformedeffect{\P}{e}}
     \quad
     \ntreeruleI{\evar}{\ok{\P,\a}}{\wellformedeffect{\P,\a}{\a}}
-    \quad
+    \] 
+    
+    \[
     \condtreeruleI{\eweaken}{\wellformedeffect{\P}{\a}}{\wellformedeffect{\P,\b}{\a}}{\a\neq\b, \b\notin\P}
     \quad
     \ntreeruleII{\ecompose}{\wellformedeffect{\P}{\e_1}}{\wellformedeffect{\P}{\e_2}}{\wellformedeffect{\P}{\e_1\dot\e_2}}
 \]
+    \end{framed}
+    
+    \caption{The well-formedness relation on effects}
+    \label{EffectWellformednes}
+\end{figure}
 
-The well-formedness of effects can be used to a similar well-typed-relation on types, $\wellformedtype{\P}{A}$, which asserts that all effects in the type are well formed.
 
+
+The well-formedness of effects can be used to a similar well-typed-relation on types, $\wellformedtype{\P}{A}$, which asserts that all effects in the type are well formed (Figure \ref{TypeWellformedness}). 
+Finally, we can derive the a well-formedness of type environments,   $\oke{\P}{\G}$, which ensures that all types in the environment are well formed (Figure \ref{TypeEnvWellformedness}).
+
+\begin{figure}[H]
+    \centering
+    \begin{framed}
+        
 \[
     \ntreeruleI{\tground}{\ok{\P}}{\wellformedtype{\P}{\g}}
     \quad
     \ntreeruleII{\tfun}{\wellformedtype{\P}{A}}{\wellformedtype{\P}{B}}{\wellformedtype{\P}{\ab}}
-    \quad
+\] 
+
+\[
     \ntreeruleII{\teffect}{\wellformedtype{\P}{A}}{\wellformedeffect{\P}{\e}}{\wellformedtype{\P}{\mea}}
     \quad
     \ntreeruleI{\tquant}{\wellformedtype{\P,\a}{A}}{\wellformedtype{\P}{\all{\a}{A}}}
 \]
+    \end{framed}    
+    \caption{The well-formedness relation on types}
+    \label{TypeWellformedness}
+\end{figure}
 
-Finally, we can derive the a well-formedness of type environments,   $\oke{\P}{\G}$, which ensures that all types in the environment are well formed.
-
-\[
-    \ntreerulez{\envnil}{\oke{\P}{\nil}}
-    \quad
-    \condtreeruleI{\envextend}{\oke{\P}{\G}\s\s \wellformedtype{\P}{A}}{\oke{\P}{\gax}}{x\notin\dom{\G}}
-\]
+\begin{figure}[H]
+    \centering
+\begin{framed}
+    \[
+        \ntreerulez{\envnil}{\oke{\P}{\nil}}
+        \quad
+        \condtreeruleI{\envextend}{\oke{\P}{\G}\s\s \wellformedtype{\P}{A}}{\oke{\P}{\gax}}{x\notin\dom{\G}}
+    \]    
+\end{framed}
+    \caption{The well-formedness relation on typing environments}
+    \label{TypeEnvWellformedness}
+\end{figure}
 
 \subsubsection{Subtyping}
 
-We assume that the set of ground types ($\g$) has a subtyping partial order relation $\subtype_{\ground}$. This subtyping relationship could be the trivial partial order, which only includes $A\subtypeg B$ if $A = B$, or could be a more interesting relation. As this relationship is a partial order, it is antisymmetric, transitive and reflexive.
+We assume that the set of ground types ($\g$) has a subtyping partial order relation $\subtype_{\ground}$. This subtyping relationship could be the trivial partial order, which only includes $A\subtypeg B$ if $A = B$, or could be a more interesting relation. As this relationship is a partial order, it is antisymmetric, transitive and reflexive (Figure \ref{GroundSubtyping}).
+
+\begin{figure}[H]
+    \centering
+\begin{framed}
     \[
         \ntreerulez{\sreflexive}{A \subtype_{\ground} A}
         \quad
         \ntreeruleII{\stransitive}{A \subtype_{\ground} B}{B \subtype_{\ground} C}{A \subtype_{\ground} C}
     \]
+\end{framed}
+    \caption{Ground subtyping rules.}
+    \label{GroundSubtyping}
+\end{figure}
+    
 
-Using this ground type relation, we can then construct a subtyping relation between pairs of types $A, B$ with respect to an effect environment $\P$.
+Using this ground type relation, we can then construct a subtyping relation between pairs of types $A, B$ with respect to an effect environment $\P$ (Figure \ref{FullSubtypingDefinition}).
 
+\begin{figure}[H]
+    \centering
+
+    \begin{framed}
+    
 \[
     \scalebox{0.85}{$
     \ntreeruleI{\sground}{A \subtype_{\ground} B}{A \subtypep B}
     \quad
     \ntreeruleII{\sfun}{A \subtypep A'}{B' \subtypep B }{\fntype{A'}{B'} \subtypep \ab}
-    \quad
+    $}
+    \]
+    
+    \[\scalebox{0.85}{$
     \condtreeruleI{\squant}{A\subtypep A'}{\all{\a}{A}\subtypepa\all{\a}{A'}}{\a\notin\P}
     \quad
     \ntreeruleII{\seffect}{A\subtypep B}{ \e_1\subeffectp\e_2}{\M{\e_1}{A}\subtypep\M{\e_2}{B}}
     $}
-\]
+\]      
+    \end{framed}
+  
+
+    \caption{The extension of ground subtyping to the full subtyping relation.}
+    \label{FullSubtypingDefinition}
+\end{figure}
 
 Since the ground subtyping and subeffecting relations are partial orders, it is fairly simple to prove by induction that the new relation is also a partial order. By induction, it is also easy to prove that if $A \subtypep B$ and $\wellformedtype{\P}{A}$ then $\wellformedtype{\P}{B}$. This last property comes about because the subeffecting relation $\subeffectp$ only holds between effects in $E_\P$, which are well formed by definition.
 
 
 \subsubsection{Type Rules}
-We define a fairly standard set of type rules on the language.
+We define a fairly standard set of type rules on the language (Figure \ref{TypeRules}).
 
+
+\begin{figure}[H]
+    \centering
+    \begin{framed}
+        
 \[
     \scalebox{0.85}{$
     \ntreeruleII{\vconst}{\oke{\P}{\G}}{\wellformedtype{\P}{A}}{\gpetyperelation{\const{A}}{A}} 
@@ -967,34 +1030,46 @@ $}
     \quad
     \ntreeruleII{\vbind}{\gpetyperelation{v_1}{\M{\e_1}{A}}}{\etyperelation{\P}{\gax}{v_2}{\M{\e_2}{B}}}{\gpetyperelation{\doin{x}{v_1}{v_2}}{\M{\e_1 \dot \e_2}{B}}}
     $}
-\]
+\]        
+    \end{framed}
+    \caption{The type rules for PEC}
+    \label{TypeRules}
+\end{figure}
 
 \subsubsection{Ok Lemmas}
 
-\begin{lemma}[Ok Lemma on Type Environments]
-    If $\gpetyperelation{v}{A}$ then $\oke{\P}{\G}$.
-\end{lemma}
-\begin{proof}
-    If $\oke{\P}{\gax}$ then by inverting (See Figure \ref{InversionPrinciple}) the $\okt$ rule, we have $\oke{\P}{\G}$ 
+\begin{framed}
+    
+    \begin{lemma}[Ok Lemma on Type Environments]
+        If $\gpetyperelation{v}{A}$ then $\oke{\P}{\G}$.
+    \end{lemma}
+    \begin{proof}
+        If $\oke{\P}{\gax}$ then by inverting (See Figure \ref{InversionPrinciple}) the $\okt$ rule, we have $\oke{\P}{\G}$ 
+    
+        Only the type rule (\textit{\envextend}) adds terms to the environment from its preconditions to its postcondition and it does so in an $\okt$ preserving way. Any type derivation tree has at least one leaf. All leaves are axioms which require $\oke{\P}{\G}$. All non-axiom derivations preserve the $\okt$ property.
+        $$\square$$
+    \end{proof}
+    
+\end{framed}
 
-    Only the type rule (\textit{\envextend}) adds terms to the environment from its preconditions to its postcondition and it does so in an $\okt$ preserving way. Any type derivation tree has at least one leaf. All leaves are axioms which require $\oke{\P}{\G}$. All non-axiom derivations preserve the $\okt$ property.
-    $$\square$$
-\end{proof}
 
-\begin{lemma}[Ok Lemma on Effect Environments]
-    A second group of lemmas is that each of the judgments  $\wellformedeffect{\P}{\e}$, $\wellformedtype{\P}{A}$, and $\oke{\P}{\G}$ implies $\ok{\P}$.
-\end{lemma}
 
-\begin{proof}
-    We prove each of the implications separately, but an over-arching theme of this proof is that the leaf rules of any $\wellformedtype{\P}{\texttt{Consequence}}$ derivation tree require $\ok{\P}$ and that any modifications to the effect environment in the assumptions to the effect environment in the consequence of a rule preserve the $\okt$ relation. Hence, using induction and inversion, we can show that the effect environment is always well formed in any complete derivation tree.
-
-    Firstly in the case of the well-formedness relation $\wellformedeffect{\P}{\e}$, the only leaf rules are the (\textit{\eground}) and (\textit{\evar}) rules. By inversion, if $\wellformedeffect{\P}{e}$ or $\wellformedeffect{\P, \a}{\a}$ then $\ok{\P}$ or $\ok{\P, \a}$ respectively. Next, by inversion on the (\textit{\ecompose}) rule, if $\wellformedeffect{\P}{\e_1\dot\e_2}$ then $\wellformedeffect{\P}{\e_1}$, so by induction $\ok{\P}$. Finally, the weakening rule preserves the $\okt$ property of the effect environment, so $\wellformedeffect{\P, \b}{\a} \implies \wellformedeffect{\P}{\a} \implies \ok{\P} \implies \ok{(\P, \b)}$.
-
-    Secondly, in the case of the well formedness relation on types, the only leaf rule is (\textit{\tground}). If $\wellformedtype{\P}{\g}$, then by inversion, $\ok{\P}$. Similarly to the (\textit{\ecompose}) rule for effects, the (\textit{\tfun}) rule's preconditions have the same effect-environment, so $\ok{\P}$ holds by inversion and induction. By inversion on the (\textit{\teffect}) rule, $\wellformedeffect{\P}{\e}$ so $\ok{\P}$. Finally the (\textit{\tquant}) rule preserves $\okt$ in a similar way to the (\textit{\eweaken}) rule above.
-
-    Finally, if $\oke{\P}{\gax}$ then, by inversion, $\wellformedtype{\P}{A}$  and $\oke{\P}{\G}$. Since $\G$ is finite, $\oke{\P}{\nil}$. By inversion of the (\textit{\envnil}) rule, $\ok{\P}$.
-\end{proof}
-
+\begin{framed}
+    \begin{lemma}[Ok Lemma on Effect Environments]
+        A second group of lemmas is that each of the judgments  $\wellformedeffect{\P}{\e}$, $\wellformedtype{\P}{A}$, and $\oke{\P}{\G}$ implies $\ok{\P}$.
+    \end{lemma}
+    
+    \begin{proof}
+        We prove each of the implications separately, but an over-arching theme of this proof is that the leaf rules of any $\wellformedtype{\P}{\texttt{Consequence}}$ derivation tree require $\ok{\P}$ and that any modifications to the effect environment in the assumptions to the effect environment in the consequence of a rule preserve the $\okt$ relation. Hence, using induction and inversion, we can show that the effect environment is always well formed in any complete derivation tree.
+    
+        Firstly in the case of the well-formedness relation $\wellformedeffect{\P}{\e}$, the only leaf rules are the (\textit{\eground}) and (\textit{\evar}) rules. By inversion, if $\wellformedeffect{\P}{e}$ or $\wellformedeffect{\P, \a}{\a}$ then $\ok{\P}$ or $\ok{\P, \a}$ respectively. Next, by inversion on the (\textit{\ecompose}) rule, if $\wellformedeffect{\P}{\e_1\dot\e_2}$ then $\wellformedeffect{\P}{\e_1}$, so by induction $\ok{\P}$. Finally, the weakening rule preserves the $\okt$ property of the effect environment, so $\wellformedeffect{\P, \b}{\a} \implies \wellformedeffect{\P}{\a} \implies \ok{\P} \implies \ok{(\P, \b)}$.
+    
+        Secondly, in the case of the well formedness relation on types, the only leaf rule is (\textit{\tground}). If $\wellformedtype{\P}{\g}$, then by inversion, $\ok{\P}$. Similarly to the (\textit{\ecompose}) rule for effects, the (\textit{\tfun}) rule's preconditions have the same effect-environment, so $\ok{\P}$ holds by inversion and induction. By inversion on the (\textit{\teffect}) rule, $\wellformedeffect{\P}{\e}$ so $\ok{\P}$. Finally the (\textit{\tquant}) rule preserves $\okt$ in a similar way to the (\textit{\eweaken}) rule above.
+    
+        Finally, if $\oke{\P}{\gax}$ then, by inversion, $\wellformedtype{\P}{A}$  and $\oke{\P}{\G}$. Since $\G$ is finite, $\oke{\P}{\nil}$. By inversion of the (\textit{\envnil}) rule, $\ok{\P}$.
+    \end{proof}
+    
+\end{framed}
 
 
 \begin{figure}
@@ -1835,7 +1910,7 @@ Next, we consider the action of weakening and substitution on subtyping relation
 
 
 \begin{proof}
-    By rule induction over the definition of the subtype relation (Figures \ref{todo}\ref{SubtypingDenotations}), making use of S-preserving property and the effect-substitution theorem on types.
+    By rule induction over the definition of the subtype relation (Figures \ref{FullSubtypingDefinition}, \ref{SubtypingDenotations}), making use of S-preserving property and the effect-substitution theorem on types.
 
 
 \case{\sground}
@@ -1914,7 +1989,7 @@ We can now formulate the substitution theorem on terms. We need to be more caref
     
     
     \begin{proof}
-        This proof makes use of the previous effect-substitution theorems in section \ref{SubsAndWeakening}, and the adjunction of quantification and the re-indexing functor of projection, $\pstar$.
+        This proof makes use of the previous effect-substitution theorems in section \ref{SubsAndWeakening}, and the adjunction of quantification and the re-indexing functor of projection, $\pstar$. It proceeds by induction on the typing relation (Figure \ref{TypeRules}) and references term denotations (Figure \ref{TermDenotations}).
     
         \case{\vgen}
     
@@ -2288,7 +2363,7 @@ Finally, we can move on to the term substitution and weakening theorems. These t
     
     
     \begin{proof}
-        This proof proceeds by induction on the derivation $\D$ similarly to the term weakening theorem and making use of weakening of term substitutions.
+        By induction on the derivation of $\D$ (Figure \ref{TypeRules}) using the denotations of terms (Figure \ref{TermDenotations}). Making use of the weakening of effect environments on term substitutions in the case of (\textit{\vgen})
     
     \case{\vweaken}
     
@@ -2346,7 +2421,7 @@ The term-weakening theorem is formulated similarly.
     \end{theorem}
     
     \begin{proof}
-        By induction on the derivation of $\D$. Making use of the weakening of effect environments on term weakenings in the case of (\textit{\vgen}). Some cases can be found in Appendix \ref{AppendixTermWeakeningTheorem}
+        This proof follows similarly to the proof of the substitution theorem (Theorem \ref{TermSubstitutionOnTerms}). Some cases can be found in Appendix \ref{AppendixTermWeakeningTheorem}
     \end{proof}
     
 \end{framed}

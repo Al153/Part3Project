@@ -2,9 +2,9 @@
 \input{../proofs/header.tex}
 
 \newcommand{\pecput}[0]{\texttt{PEC}_\put}
-\newcommand{\pecputA}[0]{\texttt{PEC}_\put^{\wellformed{\P}{A}}}
-\newcommand{\pecputG}[0]{\texttt{PEC}_\put^{\wellformed{\P}{\G}}}
-\newcommand\eLogRel[4]{\logRel{#2}{\wellformed{#1}{#3}}{#4}}
+\newcommand{\pecputA}[0]{\texttt{PEC}_\put^{\wellformedt{\P}{A}}}
+\newcommand{\pecputG}[0]{\texttt{PEC}_\put^{\wellformedok{\P}{\G}}}
+\newcommand\eLogRel[4]{\logRel{#2}{\wellformedt{#1}{#3}}{#4}}
 \newcommand\peLogRel[3]{\eLogRel{\P}{#1}{#2}{#3}}
 
 \newcommand{\zptyperelation}[2]{\typerelation{\P}{#1}{#2}}
@@ -78,8 +78,8 @@ We define denotations for ground types as follows:
 
 \begin{align}
     \label{AdequacyGroundTypeDenotations}
-    \deno{\wellformed{\P}\U} & = \ev\mapsto\{\singleton\}\\
-    \deno{\wellformed{\P}\B} & = \ev\mapsto \{\top, \bot\}
+    \deno{\wellformedt{\P}\U} & = \ev\mapsto\{\singleton\}\\
+    \deno{\wellformedt{\P}\B} & = \ev\mapsto \{\top, \bot\}
 \end{align}
 
 We then define denotations for the constant expressions, including the \put operation. 
@@ -162,7 +162,7 @@ $\deno{\zptyperelation{\put^m}{\M{m}{\U}}} = \ev\mapsto(m, \singleton)$
 
 \begin{equation}
     \label{LogicalRelationType}
-    \relates_{\wellformed{\P}{A}} \in \deno{\wellformed{\P}{A}} \times \pecputA    
+    \relates_{\wellformedt{\P}{A}} \in \deno{\wellformedt{\P}{A}} \times \pecputA    
 \end{equation}
 
 \subsection{Definition}
@@ -194,7 +194,7 @@ $\deno{\zptyperelation{\put^m}{\M{m}{\U}}} = \ev\mapsto(m, \singleton)$
     \case{\sfun}
         $A\subtypep B\implies A = \fntype{A_1}{A_2}, B = \fntype{B_1}{B_2}$ where $B_1\subtypep A_1$ and $A_2\subtypep B_2$.
 
-        By the definition of the $\relates_{\wellformed{\P}{\ab}}$ relation, $\peLogRel{d}{\ab}{v} \Leftrightarrow (\forall e, u. \peLogRel{e}{A}{u}\implies \peLogRel{d(e)}{B}{\apply{v}{u}})$.
+        By the definition of the $\relates_{\wellformedt{\P}{\ab}}$ relation, $\peLogRel{d}{\ab}{v} \Leftrightarrow (\forall e, u. \peLogRel{e}{A}{u}\implies \peLogRel{d(e)}{B}{\apply{v}{u}})$.
 
         So 
 
@@ -287,7 +287,7 @@ Let $\relates_{\wellformedok{\P}{\G}} \in \deno{\G}\times \pecputG$ mean:
     \deno{\gpetyperelation{\apply{v}{u}}{B}}\fapply\rho = (\deno{\gpetyperelation{v}{\ab}}\fapply\rho)\fapply(\deno{\gpetyperelation{u}{A}}\fapply\rho)
 \end{equation}
 
-By induction $\peLogRel{\deno{\gpetyperelation{v}{\ab}}\fapply\rho}{\ab}{v\ssi}$ and $\peLogRel{\deno{\gpetyperelation{u}{A}}\fapply\rho}{A}{u\ssi}$. So by the definition of $\relates_{\wellformed{\P}{\ab}}$, 
+By induction $\peLogRel{\deno{\gpetyperelation{v}{\ab}}\fapply\rho}{\ab}{v\ssi}$ and $\peLogRel{\deno{\gpetyperelation{u}{A}}\fapply\rho}{A}{u\ssi}$. So by the definition of $\relates_{\wellformedt{\P}{\ab}}$, 
 
 \begin{align*}
     \deno{\gpetyperelation{\apply{v}{u}}{B}}\fapply\rho =\peLogRel{(\deno{\gpetyperelation{v}{\ab}}\fapply\rho)\fapply(\deno{\gpetyperelation{u}{A}}\fapply\rho)}{B}{\apply{(v\ssi)}{(u\ssi)}\beequiv (\apply{v}{u})\ssi}
@@ -361,10 +361,10 @@ By inversion, $\deno{\gpetyperelation{\elam{\a}{v}}{\all{\a}{A}}} = \bar{\deno{\
 \begin{align*}
     \forall{\e}. \pe(\deno{\gpetyperelation{\elam{\a}{v}}{\all{\a}{A}}}\fapply\rho)&= \ev \mapsto \pe(\ev)(\finpr{\deno{\etyperelation{\P, \a}{\G}{v}{A}}(\ev, \e')}{\e'\in E}(\rho \ev))\\
     & = \ev \mapsto (\deno{\etyperelation{\P, \a}{\G}{v}{A}}(\ev, \e)(\rho \ev))\\
-    & = \ev \mapsto (\pr{\Id{I}}{\deno{\wellformed{\P}{\e}}}\star\deno{\etyperelation{\P,\a}{\G}{v}{A}})\ev (\rho\ev)\\
-    & = (\pr{\Id{I}}{\deno{\wellformed{\P}{\e}}}\star\deno{\etyperelation{\P,\a}{\G}{v}{A}})\fapply \rho\\
+    & = \ev \mapsto (\pr{\Id{I}}{\deno{\wellformede{\P}{\e}}}\star\deno{\etyperelation{\P,\a}{\G}{v}{A}})\ev (\rho\ev)\\
+    & = (\pr{\Id{I}}{\deno{\wellformede{\P}{\e}}}\star\deno{\etyperelation{\P,\a}{\G}{v}{A}})\fapply \rho\\
     & = \deno{\gpetyperelation{v\ssub{\a}{\e}}{A\ssub{\a}{\e}}}\\
-    & \relates_{\wellformed{\P}{A\ssub{\a}{\e}}}{v\ssub{\a}{\e}}\fapply\rho
+    & \relates_{\wellformedt{\P}{A\ssub{\a}{\e}}}{v\ssub{\a}{\e}}\fapply\rho
 \end{align*}
 
 \case{\vspec}
@@ -373,7 +373,7 @@ Required to prove $\peLogRel{\deno{\gpetyperelation{\eapp{v}{\e}}{A\ssub{\a}{\e}
 By inversion and induction, $\peLogRel{\deno{\gpetyperelation{v}{\all{\a}{A}}}}{\all{\a}{A}}{v\ssi}$. So, $$\forall\e. \peLogRel{\pe\fapply(\deno{\gpetyperelation{v}{\all{\a}{A}}}\fapply\rho)}{A\ssub{\a}{\e}}{\eapp{(v\ssi)}{\e}}$$
 
 \begin{align*}
-    \deno{\gpetyperelation{\eapp{v}{\e}}{A\ssub{\a}{\e}}}\fapply\rho & = \pr{\Id{}}{\deno{\wellformed{\P}{\e}}}\star(\counit{\wellformed{\P,\b}{A\ssub{\a}{\b}}})\fapply(\deno{\gpetyperelation{v}{\all{\a}{A}}}\fapply(\rho))\\
+    \deno{\gpetyperelation{\eapp{v}{\e}}{A\ssub{\a}{\e}}}\fapply\rho & = \pr{\Id{}}{\deno{\wellformede{\P}{\e}}}\star(\counit{\wellformedt{\P,\b}{A\ssub{\a}{\b}}})\fapply(\deno{\gpetyperelation{v}{\all{\a}{A}}}\fapply(\rho))\\
     & = \ev\mapsto\pe(\deno{\gpetyperelation{v}{\all{\a}{A}}}\fapply(\rho)\ev)
     & = \pe\fapply(\deno{\gpetyperelation{v}{\all{\a}{A}}}\fapply\rho)
     & \peLogRel{}{A\ssub{\a}{\e}}{\eapp{v}{\e}}

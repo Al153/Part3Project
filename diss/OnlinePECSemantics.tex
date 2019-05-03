@@ -87,23 +87,23 @@ Informally, $\a \in \P$ if $\a$ appears in the list represented by $\P$.
 \end{itemize}
 
 \paragraph{Wellformedness of effects}
-We define a relation $\wellformed{\P}{\e}$.
+We define a relation $\wellformede{\P}{\e}$.
 
 \begin{itemize}
-    \item $\ntreeruleI{\eground}{\ok{\P}}{\wellformed{\P}{e}}$
-    \item $\ntreeruleI{\vvar}{\ok{\P,\a}}{\wellformed{\P,\a}{\a}}$
-    \item $\condtreeruleI{\eweaken}{\wellformed{\P}{\a}}{\wellformed{\P,\b}{\a}}{\a\neq\b, b\notin\P}$
-    \item $\ntreeruleII{\ecompose}{\wellformed{\P}{\e_1}}{\wellformed{\P}{\e_2}}{\wellformed{\P}{\e_1\dot\e_2}}$
+    \item $\ntreeruleI{\eground}{\ok{\P}}{\wellformede{\P}{e}}$
+    \item $\ntreeruleI{\vvar}{\ok{\P,\a}}{\wellformede{\P,\a}{\a}}$
+    \item $\condtreeruleI{\eweaken}{\wellformede{\P}{\a}}{\wellformede{\P,\b}{\a}}{\a\neq\b, b\notin\P}$
+    \item $\ntreeruleII{\ecompose}{\wellformede{\P}{\e_1}}{\wellformede{\P}{\e_2}}{\wellformede{\P}{\e_1\dot\e_2}}$
 \end{itemize}
 
 \paragraph{Wellformedness of Types}
-We define a relation $\wellformed{\P}{A}$ on types.
+We define a relation $\wellformedt{\P}{A}$ on types.
 
 \begin{itemize}
-    \item $\ntreerulez{\tground}{\wellformed{\P}{\g}}$
-    \item $\ntreeruleII{\tfun}{\wellformed{\P}{A}}{\wellformed{\P}{B}}{\wellformed{\P}{\ab}}$
-    \item $\ntreeruleII{\teffect}{\wellformed{\P}{A}}{\wellformed{\P}{\e}}{\wellformed{\P}{\mea}}$
-    \item $\ntreeruleI{\tquant}{\wellformed{\P,\a}{A}}{\wellformed{\P}{\all{\a}{A}}}$
+    \item $\ntreerulez{\tground}{\wellformedt{\P}{\g}}$
+    \item $\ntreeruleII{\tfun}{\wellformedt{\P}{A}}{\wellformedt{\P}{B}}{\wellformedt{\P}{\ab}}$
+    \item $\ntreeruleII{\teffect}{\wellformedt{\P}{A}}{\wellformede{\P}{\e}}{\wellformedt{\P}{\mea}}$
+    \item $\ntreeruleI{\tquant}{\wellformedt{\P,\a}{A}}{\wellformedt{\P}{\all{\a}{A}}}$
 \end{itemize}
 
 \paragraph{Ok Predicate on Type Environments}
@@ -111,7 +111,7 @@ We now define a predicate on type environments and effect environments: $\oke{\P
 
 \begin{itemize}
     \item $\ntreerulez{\envnil}{\oke{\P}{\nil}}$
-    \item $\ntreeruleIII{\envextend}{\oke{\P}{\G}}{ x\notin\dom{\G}}{ \wellformed{\P}{A}}{\oke{\P}{\gax}}$
+    \item $\ntreeruleIII{\envextend}{\oke{\P}{\G}}{ x\notin\dom{\G}}{ \wellformedt{\P}{A}}{\oke{\P}{\gax}}$
 \end{itemize}
 
 
@@ -134,16 +134,16 @@ We now define a predicate on type environments and effect environments: $\oke{\P
 
 \subsection{Type Rules}
 \begin{itemize}
-    \item $\ntreeruleII{\vconst}{\oke{\P}{\G}}{\wellformed{\P}{A}}{\gpetyperelation{\const{A}}{A}}$
+    \item $\ntreeruleII{\vconst}{\oke{\P}{\G}}{\wellformedt{\P}{A}}{\gpetyperelation{\const{A}}{A}}$
     \item $\ntreeruleI{\vunit}{\oke{\P}{\G}}{\gpetyperelation{\u}{\U}}$
     \item $\ntreeruleI{\vtrue}{\oke{\P}{\G}}{\gpetyperelation{\t}{\B}}$
     \item $\ntreeruleI{\vfalse}{\oke{\P}{\G}}{\gpetyperelation{\f}{\B}}$
     \item $\ntreeruleI{\vvar}{\oke{\P}{\gax}}{\etyperelation{\P}{\gax}{x}{A}}$
-    \item $\condtreeruleII{\vweaken}{\etyperelation{\P}{\G}{x}{A}}{\wellformed{\P}{B}}{\etyperelation{\P}{\gby}{x}{A}}{x \neq y, y\notin \dom{\G}}$
+    \item $\condtreeruleII{\vweaken}{\etyperelation{\P}{\G}{x}{A}}{\wellformedt{\P}{B}}{\etyperelation{\P}{\gby}{x}{A}}{x \neq y, y\notin \dom{\G}}$
     \item $\ntreeruleI{\vfun}{\etyperelation{\P}{\gax}{v}{B}}{\etyperelation{\P}{\G}{\lam{x}{A}{v}}{\ab}}$
     \item $\ntreeruleII{\vsubtype}{\etyperelation{\P}{\G}{v}{A}}{ A \subtypep B}{\etyperelation{\P}{\G}{v}{B}}$
     \item $\ntreeruleI{\vgen}{\etyperelation{\P,\a}{\G}{v}{A}}{\gpetyperelation{\elam{\a}{v}}{\all{\a}{A}}}$
-    \item $\ntreeruleII{\vspec}{\gpetyperelation{v}{\all{\a}A}}{\wellformed{\P}{\e}}{\gpetyperelation{\eapp{v}{\e}}{A\ssub{\a}{\e}}}$
+    \item $\ntreeruleII{\vspec}{\gpetyperelation{v}{\all{\a}A}}{\wellformede{\P}{\e}}{\gpetyperelation{\eapp{v}{\e}}{A\ssub{\a}{\e}}}$
     \item $\ntreeruleI{\vreturn}{\gpetyperelation{v}{A}}{\gpetyperelation{\return{v}}{\moa}}$
     \item $\ntreeruleII{\vapply}{\gpetyperelation{v_1}{\aeb}}{\gpetyperelation{v_2}{A}}{\gpetyperelation{\apply{v_1}{v_2}}{\meb}}$
     \item $\ntreeruleIII{\vif}{\gpetyperelation{v}{\B} }{ \gpetyperelation{v_1}{A}}{\gpetyperelation{v_2}{A}}{\gpetyperelation{\pifthenelse{A}{v}{v_1}{v_2}}{A}}$
@@ -191,7 +191,7 @@ With naturality conditions which mean, for $\theta: U^m \rightarrow U^n (I' \rig
 
 \section{Wellformedness}
 
-Each instance of the wellformedness relation on effects, $\wellformed{\P}{\e}$ has a denotation in $\C$: \begin{equation}
+Each instance of the wellformedness relation on effects, $\wellformede{\P}{\e}$ has a denotation in $\C$: \begin{equation}
     \deno{\typerelation{\P}{\e}{\effect}}: I \rightarrow U
 \end{equation}
 
@@ -483,7 +483,7 @@ Here are some simple corollaries of the adjunction between $\pstar$ and $\allI$.
 
         \begin{itemize}
             \item $\ntreeruleI{\esubnil}{\ok{\P'}}{\typerelation{\P'}{\nil}{\nil}}$
-            \item $\ntreeruleIII{\eqsubtype}{\typerelation{\P'}{\si}{\P}}{\wellformed{\P'}{\e}}{\a\notin\P}{\typerelation{\P'}{\si, \a \setto\e}{(\P, \a)}}$
+            \item $\ntreeruleIII{\eqsubtype}{\typerelation{\P'}{\si}{\P}}{\wellformede{\P'}{\e}}{\a\notin\P}{\typerelation{\P'}{\si, \a \setto\e}{(\P, \a)}}$
         \end{itemize}
 
     \subsection{Actions}
@@ -551,7 +551,7 @@ Here are some simple corollaries of the adjunction between $\pstar$ and $\allI$.
         \end{property}
 
         \begin{property}[Weakening]\label{EffectSubsPropertyTwo}
-            If $\typerelation{\P'}{\si}{\P}$ then $\wrelw{\P'}{\P'} \implies \typerelation{\P''}{\si}{\P}$ since $\wellformed{\P'}{\e}\implies \wellformed{\P''}{\e}$ and $\ok{\P'}\implies \ok{\P''}$
+            If $\typerelation{\P'}{\si}{\P}$ then $\wrelw{\P'}{\P'} \implies \typerelation{\P''}{\si}{\P}$ since $\wellformede{\P'}{\e}\implies \wellformede{\P''}{\e}$ and $\ok{\P'}\implies \ok{\P''}$
         \end{property}
 
         \begin{property}[Extension]\label{EffectSubsPropertyThree}
@@ -561,7 +561,7 @@ Here are some simple corollaries of the adjunction between $\pstar$ and $\allI$.
                 \a\notin\P\wedge\a\notin\P' \implies \typerelation{(\P', \a)}{(\si, \a\setto\a)}{(\P,\a)}
             \end{equation}
 
-            Since $\wrel{\i\pi}{\P',\a}{\P'}$ so $\typerelation{\P',\a}{\si}{\P}$ and $\wellformed{\P',\a}{\a}$        
+            Since $\wrel{\i\pi}{\P',\a}{\P'}$ so $\typerelation{\P',\a}{\si}{\P}$ and $\wellformede{\P',\a}{\a}$        
         \end{property}
 
 \section{Term-Environment Weakenings}
@@ -592,7 +592,7 @@ Type environment weakenings are inductively defined with respect to an effect en
     \[
         \ntreeruleI{\tsubnil}{\ok{\P'}}{\typerelation{\P'}{\nil}{\nil}}
         \quad\quad
-        \condtreeruleII{\tsubextend}{\typerelation{\P'}{\si}{\P}}{\wellformed{\P'}{\e}}{\typerelation{\P'}{\si, \a \setto\e}{(\P, \a)}}{\a\notin\P}
+        \condtreeruleII{\tsubextend}{\typerelation{\P'}{\si}{\P}}{\wellformede{\P'}{\e}}{\typerelation{\P'}{\si, \a \setto\e}{(\P, \a)}}{\a\notin\P}
     \]
 
     \subsection{Action on Terms}
@@ -762,25 +762,25 @@ In this section, we state and prove a theorem that the action of a simultaneous 
 \section{Effects}
 
 \begin{theorem}[Effect Substitution Preserves Effect Wellformedness]
-    If $\wellformed{\P}{\e}$ and $\typerelation{\P'}{\i}{\P}$ then $\wellformed{\P'}{\si(\e)}$   
+    If $\wellformede{\P}{\e}$ and $\typerelation{\P'}{\i}{\P}$ then $\wellformede{\P'}{\si(\e)}$   
 \end{theorem}
 
 \begin{framed}
     \begin{proof}
         \case{\eground}
-        $\si(e) = e$, so $\wellformed{\P'}{\si(\e)}$ holds.
+        $\si(e) = e$, so $\wellformede{\P'}{\si(\e)}$ holds.
         \case{\ecompose}
-        \bi, $\wellformed{\P}{\e_1}$ and $\wellformed{\P}{\e_2}$ so $\wellformed{\P'}{\si(\e_1)}$ and $\wellformed{\P'}{\si(\e_2)}$ by induction and hence $\wellformed{\P'}{\si(\e_1\dot\e_2)}$
+        \bi, $\wellformede{\P}{\e_1}$ and $\wellformede{\P}{\e_2}$ so $\wellformede{\P'}{\si(\e_1)}$ and $\wellformede{\P'}{\si(\e_2)}$ by induction and hence $\wellformede{\P'}{\si(\e_1\dot\e_2)}$
         \case{\evar}
         \bi, $\P=\P'',\a$ and $\ok{\P'',\a}$. Hence by case splitting on $\i$, we see that $\si=\si', \a\setto\e$.
         
-        So by inversion, $\wellformed{\P}{\e}$ so $\wellformed{\P'}{\si(\a)=\e}$
+        So by inversion, $\wellformede{\P}{\e}$ so $\wellformede{\P'}{\si(\a)=\e}$
         \case{\eweaken}
-        By inversion,  $\P=\P'', \b$ and $\wellformed{\P''}{\a}$, so $\si=\si'\b\setto\e$.
+        By inversion,  $\P=\P'', \b$ and $\wellformede{\P''}{\a}$, so $\si=\si'\b\setto\e$.
         
         So $\typerelation{\P'}{\si'}{\P''}$.
         
-        hence by induction, $\wellformed{\P'}{\si'(a)}$, so $\wellformed{\P'}{\si(\a)}$ since $\a\neq\b)$
+        hence by induction, $\wellformede{\P'}{\si'(a)}$, so $\wellformede{\P'}{\si(\a)}$ since $\a\neq\b)$
     \end{proof}
     
 \end{framed}
@@ -849,7 +849,7 @@ In this section, we state and prove a theorem that the action of a simultaneous 
 \end{framed}\section{Types}
 
 \begin{theorem}[Effect Substitution Preserves Type Wellformedness]
-    If $\typerelation{\P'}{\si}{\P}$ and $\wellformed{\P}{A}$ then $\wellformed{\P'}{A\ssi}$
+    If $\typerelation{\P'}{\si}{\P}$ and $\wellformedt{\P}{A}$ then $\wellformedt{\P'}{A\ssi}$
 \end{theorem}
 
 
@@ -857,40 +857,40 @@ In this section, we state and prove a theorem that the action of a simultaneous 
     \begin{proof}
         \case{\tground}
         
-        $\ok{\P'}$ so $\wellformed{\P'}{\g}$ and $\g\ssi=\g$.
+        $\ok{\P'}$ so $\wellformedt{\P'}{\g}$ and $\g\ssi=\g$.
         
-        Hence $\wellformed{\P'}{\g\ssi}$.
+        Hence $\wellformedt{\P'}{\g\ssi}$.
         
         \case{\tfun}
         
-        By inversion,  $\wellformed{\P}{A}$ and $\wellformed{\P}{B}$.
+        By inversion,  $\wellformedt{\P}{A}$ and $\wellformedt{\P}{B}$.
         
-        So by induction, $\wellformed{\P'}{A\ssi}$ and $\wellformed{\P'}{B\ssi}$.
+        So by induction, $\wellformedt{\P'}{A\ssi}$ and $\wellformedt{\P'}{B\ssi}$.
         
         So \begin{equation}
-            \wellformed{\P'}{\fntype{(A\ssi)}{(B\ssi)}}
+            \wellformedt{\P'}{\fntype{(A\ssi)}{(B\ssi)}}
         \end{equation}
         
         So \begin{equation}
-            \wellformed{\P'}{(\ab)\ssi}
+            \wellformedt{\P'}{(\ab)\ssi}
         \end{equation}
         
         
         
         \case{\teffect}
         
-        \bi, $\wellformed{\P}{\e}$ and $\wellformed{\P}{A}$ so by induction and substitution of effect preserving effect-wellformedness, 
+        \bi, $\wellformede{\P}{\e}$ and $\wellformedt{\P}{A}$ so by induction and substitution of effect preserving effect-wellformedness, 
         
-        $\wellformed{\P'}{\si(\e)}$ and $\wellformed{\P'}{A\ssi}$ so $\wellformed{\P}{\M{\si(\e)}{A\ssi}}$ so $\wellformed{\P'}{(\mea)\ssi}$
+        $\wellformede{\P'}{\si(\e)}$ and $\wellformedt{\P'}{A\ssi}$ so $\wellformedt{\P}{\M{\si(\e)}{A\ssi}}$ so $\wellformedt{\P'}{(\mea)\ssi}$
         
         \case{\tquant}
-        \bi, $\wellformed{\P,\a}{A}$. So by picking $\a\notin\P\wedge\a\notin\P'$ using $\a$-equivalence, we have $\typerelation{(\P',\a)}{(\si\a\setto\a)}{(\P,\a)}$.
+        \bi, $\wellformedt{\P,\a}{A}$. So by picking $\a\notin\P\wedge\a\notin\P'$ using $\a$-equivalence, we have $\typerelation{(\P',\a)}{(\si\a\setto\a)}{(\P,\a)}$.
         
-        So by induction $\wellformed{(\P, \a)}{A\sub{\si,\a\setto\a}}$
+        So by induction $\wellformedt{(\P, \a)}{A\sub{\si,\a\setto\a}}$
         
-        So $\wellformed{(\P',\a)}{A\ssi}$
+        So $\wellformedt{(\P',\a)}{A\ssi}$
         
-        So $\wellformed{\P'}{(\all{\a}{A})\ssi}$
+        So $\wellformedt{\P'}{(\all{\a}{A})\ssi}$
         
     \end{proof}
     
@@ -1040,9 +1040,9 @@ In this section, we state and prove a theorem that the action of a simultaneous 
         $\ok{\P}\implies\ok{\P'}$ so $\wellformedok{\P'}{\nil}$
         and $\nil\ssi = \nil$
         \case{\envextend}
-        \bi, $\wellformedok{\P}{\G}$ and $\wellformed{\P}{A}$.
+        \bi, $\wellformedok{\P}{\G}$ and $\wellformedt{\P}{A}$.
         
-        By induction and substitution preserving wellformedness of types, $\wellformedok{\P'}{\G'\ssi}$ and $\wellformed{\P'}{A\ssi}$.
+        By induction and substitution preserving wellformedness of types, $\wellformedok{\P'}{\G'\ssi}$ and $\wellformedt{\P'}{A\ssi}$.
         
         
         So $\wellformedok{\P'}{(\G'\ssi, x: A\ssi)}$.
@@ -1118,9 +1118,9 @@ In this section, we state and prove a theorem that the action of a simultaneous 
     Since $x\ssi = x$
     
     \case{\vweaken}
-    By inversion,  $\G = \G', y:B$, $\wellformed{\P}{B}$, and $\etyperelation{\P}{\G'}{x}{A}$. $x \neq y$
+    By inversion,  $\G = \G', y:B$, $\wellformedt{\P}{B}$, and $\etyperelation{\P}{\G'}{x}{A}$. $x \neq y$
     
-    By induction and the theorem that effect-environment substitution preserves type wellformedness, we have: $\etyperelation{\P'}{\G'\ssi}{x}{A\ssi}$ and $\wellformed{\P'}{B\ssi}$
+    By induction and the theorem that effect-environment substitution preserves type wellformedness, we have: $\etyperelation{\P'}{\G'\ssi}{x}{A\ssi}$ and $\wellformedt{\P'}{B\ssi}$
     
     So $\etyperelation{\P'}{\G\ssi}{x\ssi}{A\ssi}$
     
@@ -1152,9 +1152,9 @@ In this section, we state and prove a theorem that the action of a simultaneous 
     So $\etyperelation{\P'}{\G\ssi}{(\apply{v_1}{v_2})\ssi}{(\ab)\ssi}$
     \case{\vsubtype}
     
-    \bi, $\gpetyperelation{v}{A}$ and $\wellformed{\P}{A\subtype B}$
+    \bi, $\gpetyperelation{v}{A}$ and $\wellformedt{\P}{A\subtype B}$
     
-    So by induction and effect-environment substitution preserving subtyping, $\etyperelation{\P'}{\G\ssi}{v\ssi}{A\ssi}$ and $\wellformed{\P'}{A\ssi\subtype B\ssi}$
+    So by induction and effect-environment substitution preserving subtyping, $\etyperelation{\P'}{\G\ssi}{v\ssi}{A\ssi}$ and $\wellformedt{\P'}{A\ssi\subtype B\ssi}$
     
     So $\etyperelation{\P'}{\G\ssi}{v\ssi}{B\ssi}$
     \case{\vreturn}
@@ -1201,9 +1201,9 @@ In this section, we state and prove a theorem that the action of a simultaneous 
     So $\etyperelation{\P'}{\G\ssi}{v\ssi}{(\all{\a}{A})\ssi}$
     
     \case{\vspec}
-    \bi, $\gpetyperelation{v}{\all{\a}{A}}$, $\wellformed{\P}{\e}$.
+    \bi, $\gpetyperelation{v}{\all{\a}{A}}$, $\wellformede{\P}{\e}$.
     
-    So by induction and effect-environment substitution preserving wellformedness of effects: $\etyperelation{\P'}{\G\ssi}{v\ssi}{(\all{\a}{A})\ssi}$ and $\wellformed{\P'}{\si(\e)}$
+    So by induction and effect-environment substitution preserving wellformedness of effects: $\etyperelation{\P'}{\G\ssi}{v\ssi}{(\all{\a}{A})\ssi}$ and $\wellformede{\P'}{\si(\e)}$
     
     So $\etyperelation{\P'}{\G\ssi}{\eapp{(v\ssi)}{(\si(\e))}}{A\ssi\ssub{\a}{\si(\e)}}$.
     
@@ -1483,7 +1483,7 @@ In this section, we state and prove a theorem that the action of a simultaneous 
 \section{Effects}
 
 \begin{theorem}[Effect Weakening Preserves Effect Wellformedness]
-    If $\wrelw{\P'}{\P}$ then $\wellformed{\P}{\e}\implies\wellformed{\P'}{\e}$ 
+    If $\wrelw{\P'}{\P}$ then $\wellformede{\P}{\e}\implies\wellformede{\P'}{\e}$ 
 \end{theorem}
 
 
@@ -1494,7 +1494,7 @@ In this section, we state and prove a theorem that the action of a simultaneous 
             \case{\eground}
             \bi, $\ok{\P}\wedge\e\in E$.
             Hence by the ok-property, $\ok{\P'}$
-            So $\wellformed{\P'}{\e}$
+            So $\wellformede{\P'}{\e}$
         
             \case{\evar}
         
@@ -1506,7 +1506,7 @@ In this section, we state and prove a theorem that the action of a simultaneous 
                 So $\w = \w'\x$
                 So $\wrel{\w'}{\P'''}{\P''}$, and hence:
                 \begin{equation}
-                    \ntreeruleI{\evar}{\ok{\P''', \a}}{\wellformed{\P''',\a}{\a}}
+                    \ntreeruleI{\evar}{\ok{\P''', \a}}{\wellformede{\P''',\a}{\a}}
                 \end{equation}
             \subcase{$\P' = \P''', \b$} and $\b \neq\a$
         
@@ -1514,7 +1514,7 @@ In this section, we state and prove a theorem that the action of a simultaneous 
         
             By induction, $\wrel{\w'}{\P'''}{\P}$
             so \begin{equation}
-                \ntreeruleI{\eweaken}{\wellformed{\P'''}{\a}}{\wellformed{\P'}{\a}}
+                \ntreeruleI{\eweaken}{\wellformede{\P'''}{\a}}{\wellformede{\P'}{\a}}
             \end{equation}
         
             \case{\eweaken}
@@ -1528,17 +1528,17 @@ In this section, we state and prove a theorem that the action of a simultaneous 
         
             So by induction
             \begin{equation}
-                \ntreeruleI{\eweaken}{\wellformed{\P'''}{\a}}{\wellformed{\P'}{\a}}
+                \ntreeruleI{\eweaken}{\wellformede{\P'''}{\a}}{\wellformede{\P'}{\a}}
             \end{equation}
         
         
             \case{\ecompose}
         
-            \bi, $\wellformed{\P}{\e_1}$ and $\wellformed{\P}{\e_2}$. So by induction,
-            $\wellformed{\P'}{\e_1}$ and $\wellformed{\P'}{\e_2}$, and so:
+            \bi, $\wellformede{\P}{\e_1}$ and $\wellformede{\P}{\e_2}$. So by induction,
+            $\wellformede{\P'}{\e_1}$ and $\wellformede{\P'}{\e_2}$, and so:
         
             \begin{equation}
-                \wellformed{\P'}{\e_1\dot\e_2}
+                \wellformede{\P'}{\e_1\dot\e_2}
             \end{equation}
         \end{proof}
     
@@ -1633,7 +1633,7 @@ In this section, we state and prove a theorem that the action of a simultaneous 
 \section{Types}
 
 \begin{theorem}[Effect-Environment Weakening Preserves Type Wellformedness]
-        If $\wrelw{\P'}{\P}$ and $\wellformed{\P}{A}$ then $\wellformed{\P'}{A}$.
+        If $\wrelw{\P'}{\P}$ and $\wellformedt{\P}{A}$ then $\wellformedt{\P'}{A}$.
     
 \end{theorem}
 
@@ -1641,32 +1641,32 @@ In this section, we state and prove a theorem that the action of a simultaneous 
 \begin{framed}
     \begin{proof}
             \case{\tground}
-            \bi, $\ok{\P}$, hence by property 1 of weakening, $\ok{\P'}$. Hence $\wellformed{\P'}{\g}$.
+            \bi, $\ok{\P}$, hence by property 1 of weakening, $\ok{\P'}$. Hence $\wellformedt{\P'}{\g}$.
             \case{\tfun}
-            \bi, $\wellformed{\P}{A}$, $\wellformed{\P}{B}$.
-            So by induction $\wellformed{\P'}{A}$, $\wellformed{\P'}{B}$, hence,
+            \bi, $\wellformedt{\P}{A}$, $\wellformedt{\P}{B}$.
+            So by induction $\wellformedt{\P'}{A}$, $\wellformedt{\P'}{B}$, hence,
         
-            $$\wellformed{\P'}{\ab}$$
+            $$\wellformedt{\P'}{\ab}$$
         
             \case{\teffect}
         
-            By inversion,  $\wellformed{\P}{A}$, and $\wellformed{\P}{\e}$.
+            By inversion,  $\wellformedt{\P}{A}$, and $\wellformede{\P}{\e}$.
         
             So by induction and the effect-wellformedness theorem, 
         
-            $\wellformed{\P'}{A}$ and $\wellformed{\P'}{\e}$
+            $\wellformedt{\P'}{A}$ and $\wellformede{\P'}{\e}$
         
-            So $$\wellformed{\P'}{\mea}$$
+            So $$\wellformedt{\P'}{\mea}$$
         
             \case{\tquant}
-            \bi, $\wellformed{\P,\a}{A}$
+            \bi, $\wellformedt{\P,\a}{A}$
             Picking $\a\notin\P'$ using $\a$-conversion.
         
             So $\wrel{\w\x}{(\P', \a)}{(\P, \a)}$
         
-            So $\wellformed{(\P', \a)}{A}$
+            So $\wellformedt{(\P', \a)}{A}$
         
-            So $\wellformed{\P}{\all{\a}{A}}$
+            So $\wellformedt{\P}{\all{\a}{A}}$
         
         
     \end{proof}
@@ -1795,7 +1795,7 @@ If $\wrel{\w}{\P'}{\P}$ and $\wellformedok{\P}{\G}$  then $\wellformedok{\P'}{\G
             By inversion,  $\ok{\P}$ so $\wellformedok{\P}{\nil}$
             \case{\envextend}
         
-            By inversion,  $\wellformedok{\P}{\G}$, $x\in\dom{\G}$, $\wellformed{\P}{A}$
+            By inversion,  $\wellformedok{\P}{\G}$, $x\in\dom{\G}$, $\wellformedt{\P}{A}$
         
             So by induction $\wellformedok{\P'}{\G}$, and $\wellformedok{\p'}{\G}$
         
@@ -1931,11 +1931,11 @@ If $\wrel{\w}{\P'}{\P}$ and $\wellformedok{\P}{\G}$  then $\wellformedok{\P'}{\G
         
             \case{\vspec}
         
-            \bi, $\gpetyperelation{v}{\all{\a}{A}}$, and $\wellformed{\P}{\e}$.
+            \bi, $\gpetyperelation{v}{\all{\a}{A}}$, and $\wellformede{\P}{\e}$.
         
             So by induction, $\gppetyperelation{v}{\all{\a}{A}}$
         
-            And by the wellformedness-theorem $\wellformed{\P'}{\e}$
+            And by the wellformedness-theorem $\wellformede{\P'}{\e}$
         
             Hence, \begin{equation}
                 \gppetyperelation{\eapp{v}{\e}}{A\ssub{\a}{\e}}
@@ -2262,7 +2262,7 @@ If $\wrel{\w}{\P'}{\P}$ and $\wellformedok{\P}{\G}$  then $\wellformedok{\P'}{\G
         By inversion, $\oke{\P}{A}$ and $\ewrel{\P}{\w}{\G'}{\G}$, so by induction and the preservation of wellformedness of types, $\oke{\P'}{A}$ and $\ewrel{\P'}{\w}{\G'}{\G}$. Hence $\ewrel{\P'}{\w\p}{\G', x: A}{\G}$
         
         \case{\textend}
-        By inversion, $\oke{\P}{A}$ and $\ewrel{\P}{\w}{\G'}{\G}$, $A\subtypep B$. So by induction and the preservation of wellformedness of types, $\oke{\P'}{A}$ and $\ewrel{\P'}{\w}{\G'}{\G}$, $A\subtypepp B$. Since $A\subtypepp B$, $\wellformed{\P'}{B}$. Hence $\ewrel{\P'}{\w\x}{\G', x: A}{\G: B}$.
+        By inversion, $\oke{\P}{A}$ and $\ewrel{\P}{\w}{\G'}{\G}$, $A\subtypep B$. So by induction and the preservation of wellformedness of types, $\oke{\P'}{A}$ and $\ewrel{\P'}{\w}{\G'}{\G}$, $A\subtypepp B$. Since $A\subtypepp B$, $\wellformedt{\P'}{B}$. Hence $\ewrel{\P'}{\w\x}{\G', x: A}{\G: B}$.
     \end{proof}
 \end{framed}
 
@@ -2634,13 +2634,13 @@ If $\wrel{\w}{\P'}{\P}$ and $\wellformedok{\P}{\G}$  then $\wellformedok{\P'}{\G
         \case{\vspec}
         By inversion, we derive $\D_1$ such that
         \begin{equation}
-            \D = \ntreeruleII{\vspec}{\treeruleI{\D_1}{\etyperelation{\P}{\G}{v}{\all{\a}{A}}}}{\wellformed{\P}{\e}}{\etyperelation{\P}{\G}{\eapp{v}{\e}}{A\ssub{\a}{\e}}}
+            \D = \ntreeruleII{\vspec}{\treeruleI{\D_1}{\etyperelation{\P}{\G}{v}{\all{\a}{A}}}}{\wellformede{\P}{\e}}{\etyperelation{\P}{\G}{\eapp{v}{\e}}{A\ssub{\a}{\e}}}
         \end{equation}
         
         By induction, we derive $\D_1'$ such that
         
         \begin{equation}
-            \D' = \ntreeruleII{\vspec}{\treeruleI{\D_1'}{\etyperelation{\P}{\G'}{v\ssi}{\all{\a}{A}}}}{\wellformed{\P}{\e}}{\etyperelation{\P}{\G'}{(\eapp{v}{\e})\ssi}{A\ssub{\a}{\e}}}
+            \D' = \ntreeruleII{\vspec}{\treeruleI{\D_1'}{\etyperelation{\P}{\G'}{v\ssi}{\all{\a}{A}}}}{\wellformede{\P}{\e}}{\etyperelation{\P}{\G'}{(\eapp{v}{\e})\ssi}{A\ssub{\a}{\e}}}
         \end{equation}
         
         Where 
@@ -3041,13 +3041,13 @@ If $\wrel{\w}{\P'}{\P}$ and $\wellformedok{\P}{\G}$  then $\wellformedok{\P'}{\G
             \case{\vspec}
             By inversion, we derive $\D_1$ such that
             \begin{equation}
-                \D = \ntreeruleII{\vspec}{\treeruleI{\D_1}{\etyperelation{\P}{\G}{v}{\all{\a}{A}}}}{\wellformed{\P}{\e}}{\etyperelation{\P}{\G}{\eapp{v}{\e}}{A\ssub{\a}{\e}}}
+                \D = \ntreeruleII{\vspec}{\treeruleI{\D_1}{\etyperelation{\P}{\G}{v}{\all{\a}{A}}}}{\wellformede{\P}{\e}}{\etyperelation{\P}{\G}{\eapp{v}{\e}}{A\ssub{\a}{\e}}}
             \end{equation}
             
             By induction, we derive $\D_1'$ such that
             
             \begin{equation}
-                \D' = \ntreeruleII{\vspec}{\treeruleI{\D_1'}{\etyperelation{\P}{\G'}{v}{\all{\a}{A}}}}{\wellformed{\P}{\e}}{\etyperelation{\P}{\G'}{\eapp{v}{\e}}{A\ssub{\a}{\e}}}
+                \D' = \ntreeruleII{\vspec}{\treeruleI{\D_1'}{\etyperelation{\P}{\G'}{v}{\all{\a}{A}}}}{\wellformede{\P}{\e}}{\etyperelation{\P}{\G'}{\eapp{v}{\e}}{A\ssub{\a}{\e}}}
             \end{equation}
             
             Where 
@@ -3312,7 +3312,7 @@ If $\wrel{\w}{\P'}{\P}$ and $\wellformedok{\P}{\G}$  then $\wellformedok{\P'}{\G
             \begin{equation}
                 \ntreeruleII{\vsubtype}{
                     \ntreeruleII{\vspec}{
-                        \treeruleI{\D}{\gpetyperelation{v}{\all{\a}{A}}}}{\wellformed{\P}{\e}
+                        \treeruleI{\D}{\gpetyperelation{v}{\all{\a}{A}}}}{\wellformede{\P}{\e}
                     }{\gpetyperelation{\eapp{v}{\e}}{A\ssub{\a}{\e}}}
                     }{            
                     A\ssub{\a}{\e}\subtypep B'
@@ -3835,7 +3835,7 @@ If $\wrel{\w}{\P'}{\P}$ and $\wellformedok{\P}{\G}$  then $\wellformedok{\P'}{\G
                 
                 To find 
                 \begin{equation}
-                    \reduce(\ntreeruleII{\vspec}{\treeruleI{\D_1}{\gpetyperelation{v}{\all{\a}{A}}}}{\wellformed{\P}{\e}}{\gpetyperelation{\eapp{v}{\e}}{A\ssub{\a}{\e}}})
+                    \reduce(\ntreeruleII{\vspec}{\treeruleI{\D_1}{\gpetyperelation{v}{\all{\a}{A}}}}{\wellformede{\P}{\e}}{\gpetyperelation{\eapp{v}{\e}}{A\ssub{\a}{\e}}})
                 \end{equation}
         
                 Let
@@ -3855,7 +3855,7 @@ If $\wrel{\w}{\P'}{\P}$ and $\wellformedok{\P}{\G}$  then $\wellformedok{\P'}{\G
                 \begin{equation}
                     \ntreeruleII{\vsubtype}{
                         \ntreeruleII{\vspec}{
-                            \treeruleI{\D_1'}{\gpetyperelation{v}{\all{\a}{A}}}}{\wellformed{\P}{\e}
+                            \treeruleI{\D_1'}{\gpetyperelation{v}{\all{\a}{A}}}}{\wellformede{\P}{\e}
                         }{\gpetyperelation{\eapp{v}{\e}}{A\ssub{\a}{\e}}}
                     }{
                     A'\ssub{\a}{\e}\subtypep A\ssub{\a}{\e}
@@ -3962,7 +3962,7 @@ Reduction-based rules
         $}\]
     
         \[\scalebox{0.8}{$
-            \ntreeruleII{\eqeffbeta}{\wellformed{\P}{\e}}{\etyperelation{\P, \a}{\G}{v}{A}}{\gpeberelation{\eapp{(\elam{\a}{v}}{\e})}{v\ssub{\a}{\e}}{A\ssub{\a}{\e}}}
+            \ntreeruleII{\eqeffbeta}{\wellformede{\P}{\e}}{\etyperelation{\P, \a}{\G}{v}{A}}{\gpeberelation{\eapp{(\elam{\a}{v}}{\e})}{v\ssub{\a}{\e}}{A\ssub{\a}{\e}}}
             \quad 
             \\ntreeruleI{\eqeffeta}{\etyperelation{\P}{\G}{v}{\all{\a}{A}}}{\gpeberelation{\elam{\a}{(\eapp{v}{\a})}}{v}{\all{\a}{A}}}
         $}\]
@@ -3973,7 +3973,7 @@ Congruence rules
         \[\scalebox{0.8}{$
             \ntreeruleI{\eqgen}{\eberelation{\P, \a}{\G}{v_1}{v_2}{A}}{\gpeberelation{\elam{\a}{v_1}}{\elam{\a}{v_2}}{\all{\a}{A}}}
             \quad
-            \ntreeruleII{\eqspec}{\gpeberelation{v_1}{v_2}{\all{\a}{A}}}{\wellformed{\P}{\e}}{\gpeberelation{\eapp{v_1}{\e}}{\eapp{v_2}{\e}}{A\ssub{\a}{\e}}}
+            \ntreeruleII{\eqspec}{\gpeberelation{v_1}{v_2}{\all{\a}{A}}}{\wellformede{\P}{\e}}{\gpeberelation{\eapp{v_1}{\e}}{\eapp{v_2}{\e}}{A\ssub{\a}{\e}}}
         $}\]
     
         \[\scalebox{0.8}{$
