@@ -40,8 +40,6 @@
         - better? explanation of the effects monoid
 }
 
-\todo{Use squares or don't use squares.}
-
 \abstract
 To date, there has been limited work on the semantics of languages with polymorphic effect systems. The application, by Moggi \cite{MoggiMonads}, of strong monads to modelling the semantics of effects has become a mainstream concept in functional programming languages. The usage of monads was made more precise by Katsumata (\cite{Katsumata:2014}) using a graded monad to model languages with a range of independent and dependent effects at an operational level. Separately, a categorical semantics for parametric polymorphism in types was first published by Reynolds \cite{PLCSemantics} allowing a denotational analysis of languages including type parameters. There has been some work on polymorphism over the exception effect (which paper). However, there has been no work to date on the denotational semantics of languages with general parametric polymorphism over effects.
 
@@ -1089,6 +1087,8 @@ $}
         Secondly, in the case of the well formedness relation on types, the only leaf rule is (\textit{\tground}). If $\wellformedtype{\P}{\g}$, then by inversion, $\ok{\P}$. Similarly to the (\textit{\ecompose}) rule for effects, the (\textit{\tfun}) rule's preconditions have the same effect-environment, so $\ok{\P}$ holds by inversion and induction. By inversion on the (\textit{\teffect}) rule, $\wellformedeffect{\P}{\e}$ so $\ok{\P}$. Finally the (\textit{\tquant}) rule preserves $\okt$ in a similar way to the (\textit{\eweaken}) rule above.
     
         Finally, if $\oke{\P}{\gax}$ then, by inversion, $\wellformedtype{\P}{A}$  and $\oke{\P}{\G}$. Since $\G$ is finite, $\oke{\P}{\nil}$. By inversion of the (\textit{\envnil}) rule, $\ok{\P}$.
+
+        $$\square$$
     \end{proof}
     
 \end{framed}
