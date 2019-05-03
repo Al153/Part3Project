@@ -14,6 +14,8 @@
 \newcommand\numberthis{\addtocounter{equation}{1}\tag{\theequation}}
 \newcommand\groundEffects[0]{\texttt{Ground}}
 
+
+
 \title{A Denotational Semantics for Polymorphic Effect Systems}
 
 \date{\today}
@@ -25,19 +27,6 @@
 
 \newcommand{\note}[1]{
     %
-}
-
-\note{
-    Alan
-        - base is already used to refer to base category
-        - cartesian closed category is correct (weird, I know)
-        - Changed definition of S-Category
-        - changed "Required Category Structure"
-
-        - Framed all theorems + neatened definitions of theorems, added more references
-        - Improved prose-to-maths ratio of substitution+weakening sections.
-        - More boxification
-        - better? explanation of the effects monoid
 }
 
 \abstract
@@ -815,7 +804,7 @@ As mentioned before, expressions can now include effect variables. These are man
 
 
 \subsubsection{Effects}
-The ground effects form the same monotonic, partially ordered monoid $(E, \dot, \1, \subeffect)$ over ground elements $e$ as in EC (Section \ref{ECDefinition}). However, we now want to be able to reason about effects that contain polymorphic variables. As a  result, we need to be able reason about effect expressions in a symbolic fashion. As a result, we construct a new partially monoid over effects with variables in a effect-variable environment $\P$, written $(E_\P, \dotp, \subeffectp, \1)$. The set $E_\P$ consists of expressions generated from the grammar given in Figure \ref{PECExtension} where $\a$ ranges over variables in $\P$.
+The ground effects form the same monotonic, partially ordered monoid $(E, \dot, \1, \subeffect)$ over ground elements $e$ as in EC (Section \ref{ECDefinition}). However, we now want to be able to reason about effects that contain polymorphic variables. As a  result, we need to be able reason about effect expressions in a symbolic fashion. As a result, we construct a new partially ordered monoid over effects with variables in a effect-variable environment $\P$, written $(E_\P, \dotp, \subeffectp, \1)$. The set $E_\P$ consists of expressions generated from the grammar given in Figure \ref{PECExtension} where $\a$ ranges over variables in $\P$.
 
 In order to define the $\dotp$ operator, we need to consider a simple, extensional equational equivalence: $\zpberelation{\e_1}{\e_2}{\effect}$, defined in Figure \ref{EffectEquivalence}. Specifically, we define polymorphic effects $\e\in E_\P$ to be equivalence classes up to this equivalence.
 
