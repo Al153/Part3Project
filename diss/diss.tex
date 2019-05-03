@@ -10,6 +10,7 @@
 
 \newcommand\comment[1]{}
 \newcommand\numberthis{\addtocounter{equation}{1}\tag{\theequation}}
+\newcommand\groundEffects[0]{\texttt{Ground}}
 
 \title{A Denotational Semantics for Polymorphic Effect Systems}
 
@@ -34,6 +35,7 @@
         - Framed all theorems + neatened definitions of theorems, added more references
         - Improved prose-to-maths ratio of substitution+weakening sections.
         - More boxification
+        - better? explanation of the effects monoid
 }
 \todo{Type env vs term env?}
 \todo{Use squares or don't use squares.}
@@ -660,7 +662,7 @@ In this dissertation, I show how these category-theoretic building blocks can be
 
 
 \section{The Effect Calculus}
-
+\label{ECDefinition}
 The basic effect calculus is an extension of the simply typed lambda calculus to include constants, \texttt{if} expressions, effects, and subtyping. It has terms of the following form:
 
 \begin{align*}
@@ -670,10 +672,10 @@ The basic effect calculus is an extension of the simply typed lambda calculus to
 Here, $\const{A}$ is one of collection of constants, and $A$ ranges over the types:
 
 \begin{align*}
-    A, B, C ::= \g\mid \ab \mid\mea
+    A, B, C ::= \g\mid \ab \mid\M{e}{A}
 \end{align*}
 
-Here $\g$ is from a collection of ground types, including $\U, \B$, and $\e$ ranges over partially ordered monoid of effects: $(E, \dot, \subeffect, \1)$.
+Here $\g$ is from a collection of ground types, including $\U, \B$, and $e$ ranges over partially ordered monoid of effects: $(E, \dot, \subeffect, \1)$.
 
 The calculus has a simple, Haskell-style semantics. Lambda terms when applied to a parameter substitute their bound variable for the parameter expression, as seen in Figure \ref{ECBeta}, if statements pick a branch once their condition is decided to be true or false, Figure \ref{ECIf}, and finally the monadic effects behave in a similar way to Haskell's monad type class. It is difficult to simply formalise an operational $\beta\eta$-reduction semantics for a monadic language without a concrete instantiation of the graded monad. Instead, the monad should obey the equational laws given in Figure \ref{ECMonads}.
 
@@ -786,22 +788,26 @@ do $b$ $\texttt{<-}$ Prompt("Are You Sure?") in (
 \section{Polymorphic Effect Calculus}
 
 Next, we consider the Effect Calculus extended with terms to allow System-F-style polymorphism over effects.
+
+\begin{figure}[H]
+    \centering
+    \begin{framed}
+        
 \[
     v::=\text{..}\mid\elam{\a}{v}\mid\eapp{v}{\e}
     \quad\quad
-    A, B, C::=\text{...}\mid \all{\a}{A}
+    A, B, C::=\text{...}\mid \all{\a}{A}\mid\mea
     \quad\quad
     \e ::= e \mid \a \mid \e\dot\e
 \]
-
-\todo{Be less vague abount this monoid + partial order}
-
-Here effects $\e$ now range over the effect partially ordered monoid augmented with effect variables from an environment $\P = \nil, \a, \b ...$ (where $\nil$ represents the empty list), written as $(E_\P, \dotp, \subeffectp, \1)$. The ground effects of $E$ are now ranged over by $e$. We use $\e$ to range over effects including effect variables. The operator $\dotp$ is the extension of the original $\dot$ operator to symbolically act on expressions including effect variables. For example, if for some $\e$, $\forall \e'. \e'\dot\e = \e'$ then $\a\dotp\e = \a$ for some appropriate effect-variable environment $\P$.
-
+    \end{framed}
+    \caption{The extension to the grammar of EC which yields PEC}
+    \label{PECExtension}
+\end{figure}
 
 \subsection{Type System}
 \subsubsection{Environments}
-As mentioned before, effects can now include effect variables. These are managed in the type system using a well-formed effect-variable environment $\P$, which is a snoc-list.
+As mentioned before, expressions can now include effect variables. These are managed in the type system using a well-formed effect-variable environment $\P$, which is a snoc-list.
 
 \begin{align*}
     \P ::= \nil \mid \P, \a
@@ -810,29 +816,40 @@ As mentioned before, effects can now include effect variables. These are managed
 
 
 \subsubsection{Effects}
-The ground effects form the same monotonic, partially ordered monoid $(E, \dot, \1, \subeffect)$ over ground elements $e$. For each effect environment $\P$, we define a new, symbolic partially ordered monoid:
+The ground effects form the same monotonic, partially ordered monoid $(E, \dot, \1, \subeffect)$ over ground elements $e$ as in EC (Section \ref{ECDefinition}). However, we now want to be able to reason about effects that contain polymorphic variables. As a  result, we need to be able reason about effect expressions in a symbolic fashion. As a result, we construct a new partially monoid over effects with variables in a effect-variable environment $\P$, written $(E_\P, \dotp, \subeffectp, \1)$. The set $E_\P$ consists of expressions generated from the grammar given in Figure \ref{PECExtension} where $\a$ ranges over variables in $\P$.
 
-\begin{equation}
-    (E_\P, \dotp, \1, \subeffectp)
-\end{equation}
+In order to define the $\dotp$ operator, we need to consider a simple, extensional equational equivalence: $\zpberelation{\e_1}{\e_2}{\effect}$, defined in Figure \ref{EffectEquivalence}. Specifically, we define polymorphic effects $\e\in E_\P$ to be equivalence classes up to this equivalence.
+
+\begin{figure}[H]
+    \centering
+    \begin{framed}
+        \begin{align}
+            \zpberelation{\e_1}{\e_2}{\effect} & \Leftrightarrow \forall \si\in\groundEffects.\s\e_1\ssi = \e_2\ssi
+        \end{align}
+    \end{framed}
+    
+    \caption{Equational equivalence of effects with respect to an effect-variable environment. $\groundEffects$ is defined to be the set of ground-effect substitutions.}
+    \label{EffectEquivalence}
+\end{figure}
+Now we can define the monoid operator. 
+\begin{framed}
+    \begin{definition}[Polymorphic Effect Monoid]
+        $$\e_1\dotp\e_2 = \e_3 \Leftrightarrow \forall \si\in\groundEffects.\s (\e_1\ssi \dot \e_2\ssi = \e_3\ssi)$$ 
+    \end{definition}
+\end{framed}
+
+This choice of operator preserves any identity or annihilator elements in ground monoid. To define the $\subeffectp$ relation, we must again take inspiration from the substitution-based equivalence. 
 
 
-\todo{This needs to be less vague.}
-\todo{Adequately define the set, equational equality and partial order}
+\begin{framed}
+    
+\begin{definition}[Polymorphic Subeffecting]
+    $$\e_1\subeffectp\e_2\Leftrightarrow \forall\si\in\groundEffects.\s\e_1\ssi\subeffect\e_2$$
+    
+\end{definition}
 
-Here, $E_\P$ is the closure of $E\cup \left\{\a\mid\a\in\P\right\}$ under $\dotp$, which is defined as:
-
-\begin{equation}
-    \treeruleI{\e_3 = \e_1\dot\e_2}{\e_3 = \e_1\dotp\e_2}
-\end{equation} 
-
-For variable-free terms and is defined symbolically for variable-containing terms. Furthermore, we also define the subeffecting relation in terms of its variables and the ground relation.
-
-\begin{equation}
-    \e_1 \subeffectp \e_2 \Leftrightarrow \forall \si\downarrow. \e_1\sub{\si\downarrow} \subeffect \e_2\sub{\si\downarrow}
-\end{equation}
-
-Here $\si\downarrow$ denotes any ground-effect substitution of $\P$. That is any substitution of all effect variables in $\P$ to ground effects. Where it is obvious from the context, I use $\subeffect$ instead of $\subeffectp$.
+\end{framed}
+This subeffecting relation preserves ground effect structures such as a \textit{top} effect, which has all effects as subeffects. Where it is obvious from the context, I use $\dot$ instead of $\dotp$.
 
 
 \subsubsection{Types}
@@ -843,13 +860,17 @@ $$ A, B, C \gens \ground \mid \ab \mid \mea \mid \all{\a}{A}$$
 \subsubsection{Type Environments}
 As is often the case in similar type systems, a type environment is a snoc list of (term-variable, type) pairs, $\G \gens \nil \mid \gax$.
 
-\paragraph{Domain Function on Type Environments}
+\begin{framed}
+    \begin{definition}[Domain Function on Type Environments]
+        \[
+        \dom{\nil} = \emptyset
+        \quad\quad\quad
+        \dom{\gax} =  \dom{\G}  \cup \left\{x \right\}
+    \]
+    
+    \end{definition}      
+\end{framed}
 
-\[
-    \dom{\nil} = \emptyset
-    \quad\quad\quad
-    \dom{\gax} =  \dom{\G}  \cup \left\{x \right\}
-\]
 
 \subsubsection{Well-Formedness Predicates}
 
@@ -1325,10 +1346,7 @@ We are now equipped to define the denotations of structures in the language. Fir
 \deno{\nil} = \1 \quad\quad \deno{\P, \a} = \deno{\P}\times U    
 \]
 
-Hence, the denotation of an  effect-variable environment $\P$ is given by a finite product on $U$ of width $n$ where $n$ is the length of $\P$. In order to de-clutter the notation used going forwards, inheriting from Crole (\cite{crole_1994}), I write $I$ as shorthand for $\deno{\P}$.  
-
-
-As stated earlier, the denotation of a well-formed effect is a morphism $\deno{\typerelation{\P}{\e}{\effect}}: I \rightarrow U$ in $\C$. The denotations for effects are shown in Figure \ref{EffectDenotations}
+Hence, the denotation of an  effect-variable environment $\P$ is given by a finite product on $U$ of width $n$ where $n$ is the length of $\P$. In order to de-clutter the notation used going forwards, inheriting from Crole (\cite{crole_1994}), I write $I$ as shorthand for $\deno{\P}$. As stated earlier, the denotation of a well-formed effect is a morphism $\deno{\typerelation{\P}{\e}{\effect}}: I \rightarrow U$ in $\C$. The denotations for effects are shown in Figure \ref{EffectDenotations}.
 \begin{figure}[H]
     \centering
     \begin{framed}
