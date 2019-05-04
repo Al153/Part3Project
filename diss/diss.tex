@@ -775,7 +775,7 @@ do $b$ $\texttt{<-}$ Prompt("Are You Sure?") in (
 
 \section{Polymorphic Effect Calculus}
 
-Next, we consider the Effect Calculus extended with terms to allow System-F-style polymorphism over effects.
+Next, we consider the Effect Calculus extended with terms to allow System-F-style polymorphism over effects. We call this the Polymorphic Effect Calculus (PEC).
 
 \begin{figure}[H]
     \centering
@@ -804,9 +804,7 @@ As mentioned before, expressions can now include effect variables. These are man
 
 
 \subsubsection{Effects}
-The ground effects form the same monotonic, partially ordered monoid $(E, \dot, \1, \subeffect)$ over ground elements $e$ as in EC (Section \ref{ECDefinition}). However, we now want to be able to reason about effects that contain polymorphic variables. As a  result, we need to be able reason about effect expressions in a symbolic fashion. As a result, we construct a new partially ordered monoid over effects with variables in a effect-variable environment $\P$, written $(E_\P, \dotp, \subeffectp, \1)$. The set $E_\P$ consists of expressions generated from the grammar given in Figure \ref{PECExtension} where $\a$ ranges over variables in $\P$.
-
-In order to define the $\dotp$ operator, we need to consider a simple, extensional equational equivalence: $\zpberelation{\e_1}{\e_2}{\effect}$, defined in Figure \ref{EffectEquivalence}. Specifically, we define polymorphic effects $\e\in E_\P$ to be equivalence classes up to this equivalence.
+The ground effects form the same monotonic, partially ordered monoid $(E, \dot, \1, \subeffect)$ over ground elements $e$ as in EC (Section \ref{ECDefinition}). However, we now want to be able to reason about effects that contain polymorphic variables. As a  result, we need to be able reason about effect expressions in a symbolic fashion. As a result, we construct a new partially ordered monoid over effects with variables in a effect-variable environment $\P$, written $(E_\P, \dotp, \subeffectp, \1)$. To understand this structure, we consider a simple, extensional equational equivalence: $\zpberelation{\e_1}{\e_2}{\effect}$, defined in Figure \ref{EffectEquivalence}. The set $E_\P$ consists of expressions generated, up to equational equivalence, from the grammar given in Figure \ref{PECExtension} where $\a$ ranges over variables in $\P$.
 
 \begin{figure}[H]
     \centering
@@ -832,7 +830,7 @@ This choice of operator preserves any identity or annihilator elements in ground
 \begin{framed}
     
 \begin{definition}[Polymorphic Subeffecting]
-    $$\e_1\subeffectp\e_2\Leftrightarrow \forall\si\in\groundEffects.\s\e_1\ssi\subeffect\e_2$$
+    $$\e_1\subeffectp\e_2\Leftrightarrow \forall\si\in\groundEffects.\s\e_1\ssi\subeffect\e_2\ssi$$
     
 \end{definition}
 
@@ -1175,6 +1173,8 @@ A full derivation and proof of soundness of the semantics of the Effect Calculus
 
 
 \section{Required Category Structure}\label{PECRequirements}
+
+\todo{Concrete base category}
 In order to model the polymorphism of PEC, we need to now look at an indexed category. This consists of a base category, $\C$ in which we can interpret the possible effect-variable environments in, and a mapping from objects in the base category to S-categories in the category of S-categories. This mapping is denoted from this point onwards as $\C(-)$ and the induced categories $\C(\deno{\P})$ are called \textit{fibres}. To extend our mapping $\C(-)$ to a contravariant functor, as required in Section \ref{IndexedCategoryDefinition}, it needs to map morphisms in the base category $\C$ to functors between fibres. In particular, all functors derived from $\C$ must be \textit{S-preserving} (Definition \ref{SPreservingDefinition}). Thus, each morphism $\theta: \deno{\P'}\rightarrow\deno{\P}$ in $\C$ should induce an S-preserving, re-indexing functor $\theta\star: \C(\deno{\P})\rightarrow\C(\deno{\P'})$ between the fibres.
 
 
@@ -1185,6 +1185,12 @@ In order to model the polymorphism of PEC, we need to now look at an indexed cat
 \end{framed}
 
 The essential idea from this point on is that we have defined several relations of the form $\wellformed{\texttt{Env}}{\texttt{Conclusion}}$, such as the typing relation $\gpetyperelation{v}{A}$, and the well-formedness relation on effects $\wellformedeffect{\P}{\e}$. Each instance of such a relation has a denotation that is an object or morphism in a category. For example, $\deno{\typerelation{\P}{\e}{\effect}}$ is a morphism in the base category, $\deno{\typerelation{\P}{A}{\type}}$ is an object in the fibre (S-category) induced by $\P$, and $\deno{\gpetyperelation{v}{A}}$ is morphism between the objects which denote $\G$ and $A$ in the fibre induced by $\P$.
+
+
+\todo{Start New Section}
+
+\todo{End New Section}
+
 
 In order to form denotations of effects, $\e$, which are well formed with respect to an effect-variable environment, we need specific objects to exist in the base category $\C$. Firstly, there should exist an object, $U$, indicating the kind of effects. To denote effect variable environments, which are lists of effect variables, we need finite products on $U$, that is $\C$ should have a terminal object, $\1$ and binary products. We can form finite products as so: $U^0 = \1$ and $U^{n+1} = U^n\times U$. From now on, I use $I$ to mean $U^n$ for some $n$. Hence, the base category $\C$ should contain $\1$, $U$ and finite products of $U$.
 
