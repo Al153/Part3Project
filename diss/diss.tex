@@ -1189,12 +1189,41 @@ The essential idea from this point on is that we have defined several relations 
 
 \todo{Start New Section}
 
+\todo{I $->$ E^n, U $->$ E, $\C$ $->$ $\Eff$}
+
+To form our base category, we pick the concrete category $\Eff$ (Definition \ref{EffDefinition}) of ground effects and monotone functions. The denotation of an effect variable environment, $\deno{\P}$, is simply $E^n$ where $n$ is the number of variables in $\P$. The denotation of an effect, $\deno{\wellformedeffect{\P}{\e}}$ is a monotone function $E^n\rightarrow E$. For each ground effect $e$, we define $\deno{e}$ to be the constant function $\singleton \mapsto e$.
+
+
+\begin{framed}
+    
+    \begin{definition}[The Category of Effects]
+        \label{EffDefinition}
+        We define $\Eff$ to be a subcategory of $\set$. Its objects are finite powers of $E$, the set of ground effects. That is the objects are of the form $E^n$, which indicates the set of $n$-tuples of ground effects. Morphisms in $\Eff$ are functions monotone with respect to the subeffect partial order ($\subeffect$).
+    \end{definition}
+\end{framed}
+
+Finally, we define a monoidal operator,$\Mul_n: \ciu\times \ciu \rightarrow \ciu$ (Definition \ref{MulDef}). Note that this makes the set of functions $\ciu$ into a pre-ordered monoid. We could use a more general category structure here; the monoidal, natural $\Mul$ operator is all that is needed. However, this extra generality is not essential and requires some more structure to ensure that the semantics of effects is sound with respect to the effect equational equivalence given in Section \ref{PECExtension}.
+
+
+
+\begin{framed}
+    \begin{definition}\label{MulDef}
+        [$\Mul$ operator]
+        $\Mul_n: \ciu\times \ciu \rightarrow \ciu = (f, g)\mapsto \ev\mapsto f(\ev)\dot g(\ev)$
+    \end{definition}
+    
+    \begin{definition}[Naturality]\label{Naturality}
+        $\Mul$ has the following property:
+
+        \begin{equation*}
+            (\Mul_n(f, g)\after \theta) = \ev\mapsto(f(\theta \ev))\dot(g(\theta\ev)) = \Mul_m(f\after\theta, g\after\theta)
+        \end{equation*}
+    \end{definition}
+\end{framed}
+
 \todo{End New Section}
 
-
-In order to form denotations of effects, $\e$, which are well formed with respect to an effect-variable environment, we need specific objects to exist in the base category $\C$. Firstly, there should exist an object, $U$, indicating the kind of effects. To denote effect variable environments, which are lists of effect variables, we need finite products on $U$, that is $\C$ should have a terminal object, $\1$ and binary products. We can form finite products as so: $U^0 = \1$ and $U^{n+1} = U^n\times U$. From now on, I use $I$ to mean $U^n$ for some $n$. Hence, the base category $\C$ should contain $\1$, $U$ and finite products of $U$.
-
-There is also a requirement that the indexed category can model ground effects, types, and terms. In order to do this, it should have a base-category morphism $\deno{e}: \C(\1, U)$ for each ground effect $e$. Furthermore, each fibre should contain and object $\deno{\g}$ for each ground type $\g$. Finally, for each constant, $\const{A}$, there should exist a morphism in each fibre: $\deno{\const{A}}: \1 \rightarrow A$. These last two requirements are satisfied by the fibres all being S-categories.
+There is also a requirement that the indexed category can model ground effects, types, and terms. In order to do this, it should have a base-category function $\deno{e}: \C(\1, U)$ for each ground effect $e$. Furthermore, each fibre should contain and object $\deno{\g}$ for each ground type $\g$. Finally, for each constant, $\const{A}$, there should exist a morphism in each fibre: $\deno{\const{A}}: \1 \rightarrow A$. These last two requirements are satisfied by the fibres all being S-categories.
 
 Following this, there needs to be a monoidal operator $\Mul_I: \ciu \times \ciu \rightarrow \ciu$. This means that $\Mul_I$ should be associative and have an identity element (which is $\deno{\1}\after\term{I}$). A corollary of this is that the hom-set $\C(I, U)$ forms a monoid. Furthermore $\Mul_I$ should be natural, which means: $\Mul_{I'}(f, g)\after\theta = \Mul_I(f\after\theta, g\after\theta)$. Finally, $\Mul_\1$ should preserve the operation of the multiplication of ground effects. That is, $\Mul_\1(\deno{e_1},\deno{e_2}) = \deno{e_1\dot e_2}$ where $e_1, e_2$ are ground effects.
 
@@ -3108,37 +3137,7 @@ Using $\a$-equivalence, we can see that all effect-variable environments of the 
 \end{equation}
 
 
-We also need to define the base category. We choose this to be $\Eff$, a subcategory of $\set$, populated by the set of ground effects $E$ as the effect object $U$, its finite products, and monotone functions between them.
-
-\begin{align*}
-    E^0 & = \1 = \left\{\singleton\right\}\\
-    E^{n+1} &= E^n \times E
-\end{align*}
-
-Morphisms $E^n \rightarrow E$ in $\Eff$ are monotone functions taking $n$ ground-effect parameters and returning a ground effect. The ground effects ranged over by $e$ are represented by point functions $e: \1 \rightarrow E$, so the denotation of a ground effect $e$ is the constant valued function $\deno{\typerelation{\P}{e}{\effect}} = \ev \mapsto e$. We also need to define a monoidal operation $\Mul_n: \Eff(E^n, E) \times \Eff(E^n, E) \rightarrow \Eff(E^n, E)$ that is natural as described in Section \ref{PECRequirements}. A logical choice for $\Mul_n$ and proof of the naturality property is shown in Figure \ref{MulDefinition}.
-
-\begin{figure}
-    \centering
-    \begin{framed}
-        \centering\textbf{The Monoidal Mul Operator}
-        \begin{align*}
-            \Mul_n(f, g)(\ev) & = (f\ev)\dot(g\ev)
-        \end{align*}
-        
-        This satisfies naturality of $\Mul$.
-        
-        \begin{equation*}
-            (\Mul_m(f, g)\after \theta)\ev = (f(\theta\ev))\dot(g(\theta\ev)) = (\Mul_n(f\after\theta), (g\after\theta))\ev
-        \end{equation*}
-
-        $\Mul_n$ is monoidal, as required, due to the monoid structure of the operator $\dot$ on ground effects.
-    \end{framed}
-    
-    \caption{Definition of the $\Mul_n$ operator}
-    \label{MulDefinition}
-\end{figure}
-
-Next we must pick our fibre categories for non-zero values of $n$. A simple instantiation is to pick each fibre $\C(E^n)$ to be the functor category $[E^n, \set]$,  where $E^n$ is a discrete category (a category that only contains the identity morphisms). That is, the category of functions returning an object in $\set$ given $n$ ground effects. Morphisms between objects are functions which, given a collection of ground effects, yield a morphism (function) in $C$. If $m\in [E^n, \set](A, B)$ then $m\ev\in\set(A\ev, B\ev)$. The fibres, $[E^n, C]$ are S-categories. This can be proved by constructing the S-category structures pointwise with respect to their parameter $\ev \in E^n$ as seen in Figures \ref{HowToBuildCCC} - \ref{HowToBuildSubtyping}. Full proofs of the naturality and monad laws can be found in Appendix \ref{NaturalityAndMonadLawsProof}.
+We define the base category as specified in Section \ref{PECDenotations}. Next we must pick our fibre categories for non-zero values of $n$. A simple instantiation is to pick each fibre $\C(E^n)$ to be the functor category $[E^n, \set]$,  where $E^n$ is a discrete category (a category that only contains the identity morphisms). That is, the category of functions returning an object in $\set$ given $n$ ground effects. Morphisms between objects are functions which, given a collection of ground effects, yield a morphism (function) in $C$. If $m\in [E^n, \set](A, B)$ then $m\ev\in\set(A\ev, B\ev)$. The fibres, $[E^n, C]$ are S-categories. This can be proved by constructing the S-category structures pointwise with respect to their parameter $\ev \in E^n$ as seen in Figures \ref{HowToBuildCCC} - \ref{HowToBuildSubtyping}. Full proofs of the naturality and monad laws can be found in Appendix \ref{NaturalityAndMonadLawsProof}.
 
 
 
