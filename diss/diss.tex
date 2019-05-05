@@ -1105,7 +1105,7 @@ In this chapter, I  describe the category structure required to interpret an ins
 
 \section{Semantics for EC in an S-Category}\label{SCategoryIntro}
 
-As suggested in Section \ref{LanguageFeatureRequirements}, since EC contains multiple effects, STLC terms, and \texttt{if} expressions, we should be able to interpret its semantics in a cartesian closed category with an appropriate strong graded monad and the co-product $\1 + \1$, which models the type of booleans. With the addition of some extra category structure to handle subtyping, which I explain shortly, it is indeed possible to interpret EC. This section contains a fairly high-level treatment of the semantics. This is because the concepts introduced are a subset of those required for the semantics of PEC, which I explain in more detail later \ref{PECDenotations}. Semantics for similar languages to EC have also been given using an S-category-style construct, such as by Katsumata \cite{Katsumata:2014}. 
+As suggested in Section \ref{LanguageFeatureRequirements}, since EC contains multiple effects, STLC terms, and \texttt{if} expressions, we should be able to interpret its semantics in a cartesian closed category with an appropriate strong graded monad and the co-product $\1 + \1$, which models the type of booleans. With the addition of some extra category structure to handle subtyping, which I explain shortly, it is indeed possible to interpret EC. This section contains a fairly high-level treatment of the semantics. This is because the concepts introduced are a subset of those required for the semantics of PEC, which I explain in more detail in Section \ref{PECDenotations}. Semantics for similar languages to EC have also been given using an S-category-style construct, such as by Katsumata \cite{Katsumata:2014}. 
 
 In order to model a given instantiation of EC, that is an EC with a collection of effects, constants, and ground types, there should be a collection of objects in the category to represent the ground types. There should also be a \textit{point} morphism (a morphism from the terminal object to the appropriate type) for each constant. In addition to the previously stated requirements, we also require the category, $\C$, to be able to model subtyping. 
 
@@ -1174,7 +1174,6 @@ A full derivation and proof of soundness of the semantics of the Effect Calculus
 
 \section{Required Category Structure}\label{PECRequirements}
 
-\todo{Concrete base category}
 In order to model the polymorphism of PEC, we need to now look at an indexed category. This consists of a base category, $\C$ in which we can interpret the possible effect-variable environments in, and a mapping from objects in the base category to S-categories in the category of S-categories. This mapping is denoted from this point onwards as $\C(-)$ and the induced categories $\C(\deno{\P})$ are called \textit{fibres}. To extend our mapping $\C(-)$ to a contravariant functor, as required in Section \ref{IndexedCategoryDefinition}, it needs to map morphisms in the base category $\C$ to functors between fibres. In particular, all functors derived from $\C$ must be \textit{S-preserving} (Definition \ref{SPreservingDefinition}). Thus, each morphism $\theta: \deno{\P'}\rightarrow\deno{\P}$ in $\C$ should induce an S-preserving, re-indexing functor $\theta\star: \C(\deno{\P})\rightarrow\C(\deno{\P'})$ between the fibres.
 
 
@@ -1186,10 +1185,7 @@ In order to model the polymorphism of PEC, we need to now look at an indexed cat
 
 The essential idea from this point on is that we have defined several relations of the form $\wellformed{\texttt{Env}}{\texttt{Conclusion}}$, such as the typing relation $\gpetyperelation{v}{A}$, and the well-formedness relation on effects $\wellformedeffect{\P}{\e}$. Each instance of such a relation has a denotation that is an object or morphism in a category. For example, $\deno{\typerelation{\P}{\e}{\effect}}$ is a morphism in the base category, $\deno{\typerelation{\P}{A}{\type}}$ is an object in the fibre (S-category) induced by $\P$, and $\deno{\gpetyperelation{v}{A}}$ is morphism between the objects which denote $\G$ and $A$ in the fibre induced by $\P$.
 
-
-\todo{Start New Section}
-
-\todo{I $->$ E^n, U $->$ E, $\C$ $->$ $\Eff$}
+\todo{I $->$ E^n, E $->$ E, $\C$ $->$ $\Eff$}
 
 To form our base category, we pick the concrete category $\Eff$ (Definition \ref{EffDefinition}) of ground effects and monotone functions. The denotation of an effect variable environment, $\deno{\P}$, is simply $E^n$ where $n$ is the number of variables in $\P$. The denotation of an effect, $\deno{\wellformedeffect{\P}{\e}}$ is a monotone function $E^n\rightarrow E$. For each ground effect $e$, we define $\deno{e}$ to be the constant function $\singleton \mapsto e$.
 
@@ -1202,17 +1198,17 @@ To form our base category, we pick the concrete category $\Eff$ (Definition \ref
     \end{definition}
 \end{framed}
 
-Finally, we define a monoidal operator,$\Mul_n: \ciu\times \ciu \rightarrow \ciu$ (Definition \ref{MulDef}). Note that this makes the set of functions $\ciu$ into a pre-ordered monoid. We could use a more general category structure here; the monoidal, natural $\Mul$ operator is all that is needed. However, this extra generality is not essential and requires some more structure to ensure that the semantics of effects is sound with respect to the effect equational equivalence given in Section \ref{PECExtension}.
+Next, we define a monoidal operator, $\Mul_n: (E^n \rightarrow E)\times (E^n \rightarrow E) \rightarrow (E^n \rightarrow E)$ (Definition \ref{MulDef}). $\Mul$ has the function $\ev\mapsto \1$ as its identity. Note that this makes the set of functions $(E^n \rightarrow E)$ into a pre-ordered monoid. We could use a more general category structure here; the monoidal, natural $\Mul$ operator is all that is needed. However, this extra generality is not essential and requires some more structure to ensure that the semantics of effects is sound with respect to the effect equational equivalence given in Section \ref{PECExtension}.
 
 
 
 \begin{framed}
     \begin{definition}\label{MulDef}
         [$\Mul$ operator]
-        $\Mul_n: \ciu\times \ciu \rightarrow \ciu = (f, g)\mapsto \ev\mapsto f(\ev)\dot g(\ev)$
+        $\Mul_n: (E^n \rightarrow E)\times (E^n \rightarrow E) \rightarrow (E^n \rightarrow E) = (f, g)\mapsto \ev\mapsto f(\ev)\dot g(\ev)$
     \end{definition}
     
-    \begin{definition}[Naturality]\label{Naturality}
+    \begin{definition}[Naturality]\label{MulNaturality}
         $\Mul$ has the following property:
 
         \begin{equation*}
@@ -1221,26 +1217,22 @@ Finally, we define a monoidal operator,$\Mul_n: \ciu\times \ciu \rightarrow \ciu
     \end{definition}
 \end{framed}
 
-\todo{End New Section}
+There is also a requirement that the indexed category can model ground effects, types, and terms. In order to do this, it should have a base-category function $\deno{e}: \1\rightarrow E$ for each ground effect $e$. Furthermore, each fibre should contain an object $\deno{\g}$ for each ground type $\g$. Finally, for each constant, $\const{A}$, there should exist a morphism in each fibre: $\deno{\const{A}}: \1 \rightarrow A$. These last two requirements are satisfied by the fibres all being S-categories.
 
-There is also a requirement that the indexed category can model ground effects, types, and terms. In order to do this, it should have a base-category function $\deno{e}: \C(\1, U)$ for each ground effect $e$. Furthermore, each fibre should contain and object $\deno{\g}$ for each ground type $\g$. Finally, for each constant, $\const{A}$, there should exist a morphism in each fibre: $\deno{\const{A}}: \1 \rightarrow A$. These last two requirements are satisfied by the fibres all being S-categories.
+Our penultimate requirement is that the re-indexing functor induced by $\p: E^n\times E\rightarrow E$ (that is $\pstar: \C(E^n) \rightarrow \C(E^n\times E)$) has a right adjoint, denoted by $\allEn: \C(E^n\times E) \rightarrow \C(E^n)$. As the reader might be able to guess, this functor allows us to interpret quantification over effects. This right adjoint need not be S-preserving.
 
-Following this, there needs to be a monoidal operator $\Mul_I: \ciu \times \ciu \rightarrow \ciu$. This means that $\Mul_I$ should be associative and have an identity element (which is $\deno{\1}\after\term{I}$). A corollary of this is that the hom-set $\C(I, U)$ forms a monoid. Furthermore $\Mul_I$ should be natural, which means: $\Mul_{I'}(f, g)\after\theta = \Mul_I(f\after\theta, g\after\theta)$. Finally, $\Mul_\1$ should preserve the operation of the multiplication of ground effects. That is, $\Mul_\1(\deno{e_1},\deno{e_2}) = \deno{e_1\dot e_2}$ where $e_1, e_2$ are ground effects.
-
-Our penultimate requirement is that the re-indexing functor induced by $\p: I\times U\rightarrow I$ (that is $\pstar: \C(I) \rightarrow \C(I\times U)$) has a right adjoint, denoted by $\allI: \C(I\times U) \rightarrow \C(I)$. As the reader might be able to guess, this functor allows us to interpret quantification over effects. This right adjoint need not be S-preserving.
-
-Finally, this adjunction should satisfy the Beck-Chevalley condition, as seen in Figure \ref{BeckChevalleyDiagram}. That is $\theta\star\after\allI = \allII\after(\theta\times\Id{U})\star$, and the natural transformation $\bar{(\theta\times\Id{U})\star(\counit{})}$ between these functors is equal to the identity natural transformation. This allows us to commute the re-indexing functors with the quantification functor.
+Finally, this adjunction should satisfy the Beck-Chevalley condition, as seen in Figure \ref{BeckChevalleyDiagram}. That is $\theta\star\after\allEn = \allEm\after(\theta\times\Id{E})\star$, and the natural transformation $\bar{(\theta\times\Id{E})\star(\counit{})}$ between these functors is equal to the identity natural transformation. This allows us to commute the re-indexing functors with the quantification functor.
 
 \begin{figure}
     \begin{framed}
         \centering
         \begin{tikzcd}[column sep=huge]
-            \C(I) 
-            \arrow[bend left=50]{rrrr}[name=U,label=above:$\scriptstyle \theta\star\after\allI$]{}
-            \arrow[bend right=50]{rrrr}[name=D,label=below:$\scriptstyle \allII\after(\theta\times\Id{U})\star$]{} 
+            \C(E^n) 
+            \arrow[bend left=50]{rrrr}[name=U,label=above:$\scriptstyle \theta\star\after\allEn$]{}
+            \arrow[bend right=50]{rrrr}[name=D,label=below:$\scriptstyle \allEm\after(\theta\times\Id{E})\star$]{} 
             &&&& 
-            \C(I'\times U)
-            \arrow[name=Canon,shorten <=10pt,shorten >=10pt,equal,to path={(U) -- node[label=right:$\bar{(\theta\times\Id{U})\star(\counit{})}$] {} (D)}]{}
+            \C(E^m\times E)
+            \arrow[name=Canon,shorten <=10pt,shorten >=10pt,equal,to path={(U) -- node[label=right:$\bar{(\theta\times\Id{E})\star(\counit{})}$] {} (D)}]{}
         \end{tikzcd}
     \end{framed}
     \caption{A functor diagram of the Beck-Chevalley condition}
@@ -1248,30 +1240,30 @@ Finally, this adjunction should satisfy the Beck-Chevalley condition, as seen in
 \end{figure}
 
 \begin{align*}
-    \bar{(\theta\times\Id{U})\star(\counit{})} = \Id{}: \theta\star\after\allI \rightarrow \allII\after(\theta\times\Id{U})\star\in \C(I')
+    \bar{(\theta\times\Id{E})\star(\counit{})} = \Id{}: \theta\star\after\allEn \rightarrow \allEm\after(\theta\times\Id{E})\star\in \C(E^m)
 \end{align*}
 
 From the Beck-Chevalley condition, we can derive some more naturality conditions that will become useful later.
 Using the adjunction property, we have that: $\bar{f\after\pstar(n)} = \bar{f}\after n$. Secondly, using the Beck-Chevalley condition, we can derive some non-trivial interactions between re-indexing functors and the adjunction\footnote{This part of the proof comes from a stack-overflow answer: https://math.stackexchange.com/questions/188099/beck-chevalley-condition-and-maps-of-adjunctions}. 
     \begin{align*}
-        \theta\star\unit{A}:\quad&\theta\star A \rightarrow \theta\star\after\allI\after\pstar A\\
-        \theta\star\unit{} =& \bar{(\theta\times\Id{U})\star(\counit{\pstar})}\after\theta\star\unit{}\\
-        =& (\allII\after(\theta\times\Id{U})\star)(\counit{\pstar})\after\unit{(\allII\after(\theta\times\Id{U})\star)\after\pstar}\after\theta\star\unit{}\\
-        = & (\allII\after(\theta\times\Id{U})\star)(\counit{\pstar})\after\unit{\theta\star\after\allI\after\pstar}\after\theta\star\unit{}\\
-        = & (\allII\after(\theta\times\Id{U})\star)(\counit{\pstar}) \after(\theta\star\after\allI\after\pstar)\unit{} \after\unit{(\theta\times\Id{U})\star}\\
-        = & (\theta\star\after\allI)(\counit{\pstar}
-        \after\pstar\unit{})\after\unit{(\theta\times\Id{U})\star}\\
-        = & (\theta\star\after\allI)(\Id{})\after\unit{(\theta\times\Id{U})\star}\\
-        = & \unit{(\theta\times\Id{U})\star}
+        \theta\star\unit{A}:\quad&\theta\star A \rightarrow \theta\star\after\allEn\after\pstar A\\
+        \theta\star\unit{} =& \bar{(\theta\times\Id{E})\star(\counit{\pstar})}\after\theta\star\unit{}\\
+        =& (\allEm\after(\theta\times\Id{E})\star)(\counit{\pstar})\after\unit{(\allEm\after(\theta\times\Id{E})\star)\after\pstar}\after\theta\star\unit{}\\
+        = & (\allEm\after(\theta\times\Id{E})\star)(\counit{\pstar})\after\unit{\theta\star\after\allEn\after\pstar}\after\theta\star\unit{}\\
+        = & (\allEm\after(\theta\times\Id{E})\star)(\counit{\pstar}) \after(\theta\star\after\allEn\after\pstar)\unit{} \after\unit{(\theta\times\Id{E})\star}\\
+        = & (\theta\star\after\allEn)(\counit{\pstar}
+        \after\pstar\unit{})\after\unit{(\theta\times\Id{E})\star}\\
+        = & (\theta\star\after\allEn)(\Id{})\after\unit{(\theta\times\Id{E})\star}\\
+        = & \unit{(\theta\times\Id{E})\star}
     \end{align*}
 
     Importantly, this gives us the useful naturality condition that allows us to push re-indexing functors into the adjunction terms.
 
     \begin{align}\label{NaturalityCondition}
-        \theta\star(\bar{f}) & = \theta\star(\allI(f)\after\eta_A)\\
-        & = \theta\star(\allI(f))\after\theta\star(\eta_A)\\
-        & =  (\allII\after(\theta\times\Id{U})\star)f \after\unit{(\theta\times\Id{U})\star A}\\
-        & = \bar{(\theta\times\Id{U})\star f}\\
+        \theta\star(\bar{f}) & = \theta\star(\allEn(f)\after\eta_A)\\
+        & = \theta\star(\allEn(f))\after\theta\star(\eta_A)\\
+        & =  (\allEm\after(\theta\times\Id{E})\star)f \after\unit{(\theta\times\Id{E})\star A}\\
+        & = \bar{(\theta\times\Id{E})\star f}\\
     \end{align}
 
 \section{Road Map}
@@ -1294,7 +1286,7 @@ This collection of theorems finally allows us to complete all cases of the equat
             font=\sffamily\small\bfseries,minimum size=15mm}]
         
             \node[main node,text width=20mm, fill=red] (IndexCategory) {Indexed Category and Adjunction (\ref{PECRequirements})};
-            \node[main node,text width=20mm, fill=red] (MulNaturality) [below of=IndexCategory] {Naturality of Mul Operator (\ref{PECRequirements})};
+            \node[main node,text width=20mm, fill=red] (MulNaturality) [below of=IndexCategory] {Naturality of Mul Operator (Def. \ref{MulNaturality})};
         
             \node[main node,text width=20mm, fill=red] (BeckChevalley) [left of=MulNaturality]{Beck-Chevalley Condition (\ref{PECRequirements})};
             \node[main node,text width=20mm, fill=red](SClosure) [right of=MulNaturality]{Re-indexing Functors are S-Preserving (Def. \ref{SPreservingDefinition})};
@@ -1365,24 +1357,24 @@ This collection of theorems finally allows us to complete all cases of the equat
 
 
 \section{Denotations}\label{PECDenotations}
-We are now equipped to define the denotations of structures in the language. Firstly, we define the denotation of effect-variable environments. In the base category, with the kind of effects indicated by $U$, the denotation of an effect-variable environment $\P$ is given by a finite product.
+We are now equipped to define the denotations of structures in the language. Firstly, we define the denotation of effect-variable environments. In the base category, with the kind of effects indicated by $E$, the denotation of an effect-variable environment $\P$ is given by a finite product.
 
 \[
-\deno{\nil} = \1 \quad\quad \deno{\P, \a} = \deno{\P}\times U    
+\deno{\nil} = \1 \quad\quad \deno{\P, \a} = \deno{\P}\times E    
 \]
 
-Hence, the denotation of an  effect-variable environment $\P$ is given by a finite product on $U$ of width $n$ where $n$ is the length of $\P$. In order to de-clutter the notation used going forwards, inheriting from Crole (\cite{crole_1994}), I write $I$ as shorthand for $\deno{\P}$. As stated earlier, the denotation of a well-formed effect is a morphism $\deno{\typerelation{\P}{\e}{\effect}}: I \rightarrow U$ in $\C$. The denotations for effects are shown in Figure \ref{EffectDenotations}.
+Hence, the denotation of an  effect-variable environment $\P$ is given by a finite product on $E$ of width $n$ where $n$ is the length of $\P$. As stated earlier, the denotation of a well-formed effect is a morphism $\deno{\typerelation{\P}{\e}{\effect}}: E^n \rightarrow E$ in $\C$. The denotations for effects are shown in Figure \ref{EffectDenotations}.
 \begin{figure}[H]
     \centering
     \begin{framed}
         \[
-    \deno{\typerelation{\P}{e}{\effect}} = \deno{\e} \after \term{I}: I\rightarrow U
+    \deno{\typerelation{\P}{e}{\effect}} = \deno{e} \after \term{E^n}: E^n\rightarrow E
     \quad\quad
-    \deno{\typerelation{\P,\a}{\a}{\effect}} = \pp: I\times U \rightarrow U
+    \deno{\typerelation{\P,\a}{\a}{\effect}} = \pp: E^n\times E \rightarrow E
 \]\[
-    \deno{\typerelation{\P, \b}{\a}{\effect}} = \deno{\typerelation{\P}{\a}{\effect}}\after\p: I\times U\rightarrow U
+    \deno{\typerelation{\P, \b}{\a}{\effect}} = \deno{\typerelation{\P}{\a}{\effect}}\after\p: E^n\times E\rightarrow E
 \]\[
-    \deno{\typerelation{\P}{\e_1\dot \e_2}{\effect}} = \Mul_I(\deno{\typerelation{\P}{\e_2}{\effect}},\deno{\typerelation{\P}{\e_1}{\effect}}): I \rightarrow U
+    \deno{\typerelation{\P}{\e_1\dot \e_2}{\effect}} = \Mul_{E^n}(\deno{\typerelation{\P}{\e_2}{\effect}},\deno{\typerelation{\P}{\e_1}{\effect}}): E^n \rightarrow E
 \]
     \end{framed}
     \caption{The denotations of effects in the base category}
@@ -1390,9 +1382,9 @@ Hence, the denotation of an  effect-variable environment $\P$ is given by a fini
 \end{figure}
 
 
-Using these denotations, we are now equipped to define the denotations of types. As stated above, types that are well formed in $\P$ are denoted by objects in the fibre category $\C(I)$ given by the denotation of $\P$. These type denotations are given in Figure \ref{TypeDenotations}
+Using these denotations, we are now equipped to define the denotations of types. As stated above, types that are well formed in $\P$ are denoted by objects in the fibre category $\C(E^n)$ given by the denotation of $\P$. These type denotations are given in Figure \ref{TypeDenotations}
  
-Since the fibre category $\C(I)$ is an S-category, it has objects for all ground types, a terminal object, graded monad $\T{}{}$, exponentials, products, and co-product over $\1+\1$.
+Since the fibre category $\C(E^n)$ is an S-category, it has objects for all ground types, a terminal object, graded monad $\T{}{}$, exponentials, products, and co-product over $\1+\1$.
 
 \begin{figure}[H]
     \centering
@@ -1412,7 +1404,7 @@ Since the fibre category $\C(I)$ is an S-category, it has objects for all ground
 \[
     \deno{\typerelation{\P}{\mea}{\type}} =\T{\deno{\typerelation{\P}{\e}{\effect}}}{\deno{\typerelation{\P}{A}{\type}}}
     \quad\quad
-    \deno{\typerelation{\P}{\all{\a}{A}}{\type}} =\allI(\deno{\typerelation{\P,\a}{A}{\type}})
+    \deno{\typerelation{\P}{\all{\a}{A}}{\type}} =\allEn(\deno{\typerelation{\P,\a}{A}{\type}})
 \]
 
 
@@ -1421,7 +1413,7 @@ Since the fibre category $\C(I)$ is an S-category, it has objects for all ground
     \label{TypeDenotations}
 \end{figure}
 
-By using the terminal objects and products present in each fibre, we can now derive denotations of type environments. $\deno{\oke{\P}{\G}}$ should be an object in the fibre $\C(I)$ induced by $\P$. Specific denotations are given in Figure \ref{TypeEnvDenotations}
+By using the terminal objects and products present in each fibre, we can now derive denotations of type environments. $\deno{\oke{\P}{\G}}$ should be an object in the fibre $\C(E^n)$ induced by $\P$. Specific denotations are given in Figure \ref{TypeEnvDenotations}.
 
 \begin{figure}[H]
     \centering
@@ -1438,7 +1430,7 @@ By using the terminal objects and products present in each fibre, we can now der
 \end{figure}
 
 
-Another construction that is important is the denotation of subtyping. For each instance of the subtyping relation in $\P$, $A\subtypep B$, there exists a denotation in the fibre induced by $\P$. $\deno{A\subtypep B} \in\C(I)(A, B)$. Since the fibres are S-categories, the ground instances of the subtyping relation exist in each fibre anyway. In addition, for each instance of the subeffect relation $\e_1\subeffectp \e_2$ each fibre contains the natural transformation $\dsep{\e_1}{\e_2}: \T{\e_1}{}\rightarrow \T{\e_2}{}$. Specific subtyping denotations are given in Figure \ref{SubtypingDenotations}.
+Another construction that is important is the denotation of subtyping. For each instance of the subtyping relation in $\P$, $A\subtypep B$, there exists a denotation in the fibre induced by $\P$. $\deno{A\subtypep B} \in\C(E^n)(A, B)$. Since the fibres are S-categories, the ground instances of the subtyping relation exist in each fibre anyway. In addition, for each instance of the subeffect relation $\e_1\subeffectp \e_2$ each fibre contains the natural transformation $\dsep{\e_1}{\e_2}: \T{\e_1}{}\rightarrow \T{\e_2}{}$. Specific subtyping denotations are given in Figure \ref{SubtypingDenotations}.
 
 \begin{figure}[H]
     \centering
@@ -1450,7 +1442,7 @@ Another construction that is important is the denotation of subtyping. For each 
             \\
             \deno{\M{\e_1}{A}\subtypep\M{\e_2}{B}} &= \deno{\e_1\subeffectp\e_2}\after\T{\e_1}{\deno{A\subtypep B}}
             \\
-            \deno{\all{\a}{A}\subtypep\all{\a}{B}} &= \allI{\deno{A\subtypepa B}}
+            \deno{\all{\a}{A}\subtypep\all{\a}{B}} &= \allEn{\deno{A\subtypepa B}}
         \end{align*}
     \end{framed}
     
@@ -1459,7 +1451,7 @@ Another construction that is important is the denotation of subtyping. For each 
 \end{figure}
 
 
-This finally gives us the ability to express the denotations of well-typed terms in an effect-variable environment, $\P$ as morphisms in the fibre induced by $\P$, $\C(I)$.  Writing $\G_I$ and $A_I$ for $\deno{\wellformedok{\P}{\G}}$ and $\deno{\typerelation{\P}{A}{\type}}$, we can derive $\deno{\gpetyperelation{v}{A}}$ as a morphism in $\C(I)(\G_I, A_I)$. Since each fibre is an S-category, for each constant, $\const{A}$, there exists $\deno{\const{A}}: \1 \rightarrow A_I$ in $\C(I)$. These denotations can be seen in Figure \ref{TermDenotations}.
+This finally gives us the ability to express the denotations of well-typed terms in an effect-variable environment, $\P$ as morphisms in the fibre induced by $\P$, $\C(E^n)$.  Writing $\G_{E^n}$ and $A_{E^n}$ for $\deno{\wellformedok{\P}{\G}}$ and $\deno{\typerelation{\P}{A}{\type}}$, we can derive $\deno{\gpetyperelation{v}{A}}$ as a morphism in $\C(E^n)(\G_{E^n}, A_{E^n})$. Since each fibre is an S-category, for each constant, $\const{A}$, there exists $\deno{\const{A}}: \1 \rightarrow A_{E^n}$ in $\C(E^n)$. These denotations can be seen in Figure \ref{TermDenotations}.
 
 \begin{figure}[H]
     \footnotesize
@@ -1467,7 +1459,7 @@ This finally gives us the ability to express the denotations of well-typed terms
         \[
             \ntreeruleI{\vunit}{\wellformedok{\P}{\G}}{\deno{\etyperelation{\P}{\G}{\u}{\U}} = \term{\G} : \G \rightarrow \1}
             \quad
-            \ntreeruleI{\vconst}{\wellformedok{\P}{\G}}{\deno{\etyperelation{\P}{\G}{\const{A}}{A}} = \deno{\const{A}} \after \term{\G} : \G \rightarrow \deno{A}}
+            \ntreeruleI{\vconst}{\wellformedok{\P}{\G}}{\deno{\etyperelation{\P}{\G}{\const{A}}{A}} = \deno{\const{A}} \after \term{\G} : \G \rightarrow A}
         \]
         \\
         \\        
@@ -1516,12 +1508,12 @@ This finally gives us the ability to express the denotations of well-typed terms
         \\
         \\        
         \[
-            \ntreeruleI{\vgen}{f = \deno{\etyperelation{\P,\a}{\G}{v}{A}}: \ciuw(\G, A)}{\deno{\gpetyperelation{\elam{\a}{A}}{\all{\e}{A}}} = \bar{f}: \C(I)(\G, \allI(A))}    
+            \ntreeruleI{\vgen}{f = \deno{\etyperelation{\P,\a}{\G}{v}{A}}: \C(E^n\times E)(\G, A)}{\deno{\gpetyperelation{\elam{\a}{A}}{\all{\e}{A}}} = \bar{f}: \C(E^n)(\G, \allEn(A))}    
         \] 
         \\
         \\
         \begin{equation}\label{EffectApplication}
-            \ntreeruleII{\vspec}{g=\deno{\gpetyperelation{v}{\all{\a}{A}}}: \C(I)(\G, \allI(A))}{ h = \deno{\typerelation{\P}{\e}{\effect}}: \ciu}{\deno{\gpetyperelation{\eapp{v}{\e}}{A\ssub{\a}{\e}}} = \pr{\Id{I}}{h}\star(\counit{\deno{\typerelation{\P,\b}{A\ssub{\a}{\b}}{\type}}})\after g: \C(I)(\G, A\ssub{\a}{\e})}
+            \ntreeruleII{\vspec}{g=\deno{\gpetyperelation{v}{\all{\a}{A}}}: \C(E^n)(\G, \allEn(A))}{ h = \deno{\typerelation{\P}{\e}{\effect}}: E^n \rightarrow E}{\deno{\gpetyperelation{\eapp{v}{\e}}{A\ssub{\a}{\e}}} = \pr{\Id{E^n}}{h}\star(\counit{\deno{\typerelation{\P,\b}{A\ssub{\a}{\b}}{\type}}})\after g: \C(E^n)(\G, A\ssub{\a}{\e})}
         \end{equation}                
     \end{framed}
     \caption{The denotations of terms in PEC}
@@ -1534,8 +1526,8 @@ The least intuitive of these denotations is that of effect-application (\textit{
 \begin{figure}[H]
     \begin{framed}
         \begin{align*}
-            \counit{\deno{\typerelation{\P,\b}{A\ssub{\a}{\b}}{\type}}} & = \widehat{\Id{\allI(\deno{\typerelation{\P,\b}       {A\ssub{\a}{\b}}{\type}})}} \\ 
-            & : \quad \pstar \allI(\deno{\typerelation{\P,\b}{A\ssub{\a}{\b}}{\type}}) \rightarrow \deno{\typerelation{\P,\b}       {A\ssub{\a}{\b}}{\type}} \\
+            \counit{\deno{\typerelation{\P,\b}{A\ssub{\a}{\b}}{\type}}} & = \widehat{\Id{\allEn(\deno{\typerelation{\P,\b}       {A\ssub{\a}{\b}}{\type}})}} \\ 
+            & : \quad \pstar \allEn(\deno{\typerelation{\P,\b}{A\ssub{\a}{\b}}{\type}}) \rightarrow \deno{\typerelation{\P,\b}       {A\ssub{\a}{\b}}{\type}} \\
             & : \quad\pstar \deno{\typerelation{\P}{\all{\b}{A\ssub{\a}{\b}}}{\type}} \rightarrow \deno{\typerelation{\P,\b}        {A\ssub{\a}{\b}}{\type}} \\
             & : \quad \pstar \deno{\typerelation{\P}{\all{\a}{A}}{\type}} \rightarrow \deno{\typerelation{\P,\b}{A\ssub     {\a}{\b}}{\type}}\\
             & : \quad \deno{\typerelation{\P, \b}{\all{\a}{A}}{\type}} \rightarrow \deno{\typerelation{\P,\b}{A\ssub{\a}{\b}}{\type}}
@@ -1548,7 +1540,7 @@ The least intuitive of these denotations is that of effect-application (\textit{
 \begin{figure}[H]
     \begin{framed}
         \begin{align*}
-            \pr{\Id{I}}{h}\star(\counit{\deno{\typerelation{\P,\b}{A\ssub{\a}{\b}}{\type}}}) & : \quad \deno{\typerelation{\P}{\all{\a}{A}}{\type}} \rightarrow \deno{\typerelation{\P}{A\ssub{\a}{\b}\ssub{\b}{\e}}{\type}}\\
+            \pr{\Id{E^n}}{h}\star(\counit{\deno{\typerelation{\P,\b}{A\ssub{\a}{\b}}{\type}}}) & : \quad \deno{\typerelation{\P}{\all{\a}{A}}{\type}} \rightarrow \deno{\typerelation{\P}{A\ssub{\a}{\b}\ssub{\b}{\e}}{\type}}\\
             & : \quad \deno{\typerelation{\P}{\all{\a}{A}}{\type}} \rightarrow \deno{\typerelation{\P}{A\ssub{\a}{\e}}{\type}}
         \end{align*}
     \end{framed}
@@ -1565,7 +1557,7 @@ The least intuitive of these denotations is that of effect-application (\textit{
             &  \deno{\typerelation{\P, \b}{\all{\a}{A}}{\type}}  \arrow{rrrr}{\counit{\deno{\typerelation{\P,\b}{A\ssub{\a}{\b}}{\type}}}}&&&&  \deno{\typerelation{\P,\b}{A\ssub{\a}{\b}}{\type}} &
             \\
             \G \arrow{rr}{g}&&
-            \allI (A) \arrow{rrrr}{ \pr{\Id{I}}{h}\star(\counit{\deno{\typerelation{\P,\b}{A\ssub{\a}{\b}}{\type}}})}
+            \allEn (A) \arrow{rrrr}{ \pr{\Id{E^n}}{h}\star(\counit{\deno{\typerelation{\P,\b}{A\ssub{\a}{\b}}{\type}}})}
             &&&&
             A\ssub{\a}{\e}
         \end{tikzcd}
@@ -1597,7 +1589,7 @@ In this dissertation, substitutions and weakenings come in two flavours: weakeni
 
 \subsection{Substitution and Weakening on Effects}\label{SectionEffectSubstitution}
 
-The first family of theorems is that of weakening and substitution of the effect-variable environment. Weakenings are a relation between effect-variable environments $\wrel{\w}{\P'}{\P}$, that are defined in Figure \ref{EffectWeakeningDefinition}. We can define the denotation of an effect-environment weakening as a morphism in the base category: $\deno{\wrelw{\P'}{\P}}: I' \rightarrow I$. The denotations are defined in Figure \ref{TermWeakeningDenotations}.
+The first family of theorems is that of weakening and substitution of the effect-variable environment. Weakenings are a relation between effect-variable environments $\wrel{\w}{\P'}{\P}$, that are defined in Figure \ref{EffectWeakeningDefinition}. We can define the denotation of an effect-environment weakening as a morphism in the base category: $\deno{\wrelw{\P'}{\P}}: E^m \rightarrow E^n$. The denotations are defined in Figure \ref{TermWeakeningDenotations}.
 
 \begin{figure}[H]
     \centering
@@ -1619,11 +1611,11 @@ The first family of theorems is that of weakening and substitution of the effect
     \centering
     \begin{framed}
         \begin{align*}
-            \deno{\wrel{\i}{\P}{\P}} & = \Id{I}: I \rightarrow I
+            \deno{\wrel{\i}{\P}{\P}} & = \Id{E^n}: E^n \rightarrow E^n
             \\
-            \deno{\wrel{\w\pi}{\P',\a}{\P}} & = \deno{\wrelw{\P'}{\P}}\after \p: I'\times U\rightarrow I
+            \deno{\wrel{\w\pi}{\P',\a}{\P}} & = \deno{\wrelw{\P'}{\P}}\after \p: E^m\times E\rightarrow E^n
             \\
-            \deno{\wrel{\w\x}{\P',\a}{\P,\a}} & = (\deno{\wrelw{\P'}{\P}}\times \Id{U}): I'\times U\rightarrow I\times U 
+            \deno{\wrel{\w\x}{\P',\a}{\P,\a}} & = (\deno{\wrelw{\P'}{\P}}\times \Id{E}): E^m\times E\rightarrow E^n\times E 
         \end{align*}
     \end{framed}
     \caption{Effect weakening denotations}
@@ -1653,7 +1645,7 @@ Substitutions are also an inductively defined relation between effect-variable e
 \end{figure}
 
 
-We can define the action of substitutions on effects, as in Figure \ref{EffectSubstitutionActionEffects}. Furthermore, Figure \ref{EffectSubstitutionActionEffects} also gives the denotation of substitutions. The denotation of an effect-environment substitutions, $\deno{\typerelation{\P'}{\si}{\P}}$, is a morphism $I' \rightarrow I$ in the base category.
+We can define the action of substitutions on effects, as in Figure \ref{EffectSubstitutionActionEffects}. Furthermore, Figure \ref{EffectSubstitutionActionEffects} also gives the denotation of substitutions. The denotation of an effect-environment substitutions, $\deno{\typerelation{\P'}{\si}{\P}}$, is a morphism $E^m \rightarrow E^n$ in the base category.
 
 
 
@@ -1685,9 +1677,9 @@ We can define the action of substitutions on effects, as in Figure \ref{EffectSu
         \scalebox{.8}{\parbox{\linewidth}{%
         \begin{align*}
             \\
-            \deno{\typerelation{\P'}{\nil}{\nil}} & = \term{I}: \C(I', \1)
+            \deno{\typerelation{\P'}{\nil}{\nil}} & = \term{E^n}: \C(E^m, \1)
             \\
-            \deno{\typerelation{\P'}{(\si, \a\setto\e)}{\P,\a}} & = \pr{\deno{\typerelation{\P'}{\si}{\P}}}{\deno{\typerelation{\P}{\e}{\effect}}}\\&\quad: \C(I', I\times U)
+            \deno{\typerelation{\P'}{(\si, \a\setto\e)}{\P,\a}} & = \pr{\deno{\typerelation{\P'}{\si}{\P}}}{\deno{\typerelation{\P}{\e}{\effect}}}\\&\quad: \C(E^m, E^n\times E)
             \\
         \end{align*}
         }}
@@ -1714,8 +1706,8 @@ The general construction for effect-variable substitution allows us to define, i
     \begin{minipage}{.45\linewidth}
         \begin{framed}
             \begin{align*}
-                \deno{\typerelation{\P}{\Id{\P}}{\P}} & = \Id{I}\\
-                \deno{\typerelation{\P}{\ssub{\a}{\e}}{(\P,\a)}} & = \pr{\Id{I}}{\deno{\typerelation{\P}{\e}{\effect}}}
+                \deno{\typerelation{\P}{\Id{\P}}{\P}} & = \Id{E^n}\\
+                \deno{\typerelation{\P}{\ssub{\a}{\e}}{(\P,\a)}} & = \pr{\Id{E^n}}{\deno{\typerelation{\P}{\e}{\effect}}}
                 \\
             \end{align*}
         \end{framed}
@@ -1741,14 +1733,14 @@ The general construction for effect-variable substitution allows us to define, i
     \end{theorem}
     
     \begin{proof}
-        The proof of this depends on the naturality of $\Mul_I$ and inversion to narrow down case splitting on the structure of the effect-variable environments. It proceeds by induction on the definition of denotations of effects given in Figure \ref{EffectDenotations}.
+        The proof of this depends on the naturality of $\Mul_{E^n}$ and inversion to narrow down case splitting on the structure of the effect-variable environments. It proceeds by induction on the definition of denotations of effects given in Figure \ref{EffectDenotations}.
     
         \case{\eground}
         This case holds due to the terminal morphism being unique. Hence, pre-composing it with another morphism yields the terminal morphism.
     
         \begin{align*}
-            \deno{\typerelation{\P}{e}{\effect}}\after\si & = \deno{e}\after\term{I}\after\si \\
-            & = \deno{e}\after\term{I'} \\
+            \deno{\typerelation{\P}{e}{\effect}}\after\si & = \deno{e}\after\term{E^n}\after\si \\
+            & = \deno{e}\after\term{E^m} \\
             & = \deno{\typerelation{\P'}{e}{\type}}\\
         \end{align*}
     
@@ -1765,12 +1757,12 @@ The general construction for effect-variable substitution allows us to define, i
     
     \case{\ecompose}
     
-    We make use of the naturality of $\Mul_I$ and induction upon the subterms.
+    We make use of the naturality of $\Mul_{E^n}$ and induction upon the subterms.
     \begin{align*}
         \deno{\typerelation{\P}{\e_1\dot\e_2}{\effect}} \after\si &=
-        \Mul_I(\deno{\typerelation{\P}{\e_1}{\effect}}, \deno{\typerelation{\P}{\e_2}{\effect}})\after \si \\
-        & = \Mul_I(\deno{\typerelation{\P}{\e_1}{\effect}}\after \si, \deno{\typerelation{\P}{\e_2}{\effect}}\after \si)\qt{By Naturality}\\
-        & = \Mul_{I'}(\deno{\typerelation{\P'}{\si(\e_1)}{\effect}}, \deno{\typerelation{\P}{\si(\e_2)}{\effect}})\\
+        \Mul_{E^n}(\deno{\typerelation{\P}{\e_1}{\effect}}, \deno{\typerelation{\P}{\e_2}{\effect}})\after \si \\
+        & = \Mul_{E^n}(\deno{\typerelation{\P}{\e_1}{\effect}}\after \si, \deno{\typerelation{\P}{\e_2}{\effect}}\after \si)\qt{By Naturality}\\
+        & = \Mul_{E^m}(\deno{\typerelation{\P'}{\si(\e_1)}{\effect}}, \deno{\typerelation{\P}{\si(\e_2)}{\effect}})\\
         & = \deno{\typerelation{\P'}{\si(\e_1)\dot\si(\e_2)}{\effect}}\\
         & = \deno{\typerelation{\P'}{\si(\e_1\dot\e_2)}{\effect}}\\
     \end{align*}
@@ -1791,14 +1783,14 @@ The weakening theorem proceeds similarly.
     \end{theorem}
     
     \begin{proof}
-        This proof also depends on the naturality of $\Mul_I$ and case splitting on the structure of $\w$.  Some cases can be found in Appendix \ref{AppendixEffectWeakeningOnEffects}
+        This proof also depends on the naturality of $\Mul_{E^n}$ and case splitting on the structure of $\w$.  Some cases can be found in Appendix \ref{AppendixEffectWeakeningOnEffects}
     \end{proof}
 \end{framed}
 
 
 \begin{framed}
     \begin{lemma}[Extension Lemma on Effect Substitutions]\label{ExtensionLemmaOnEffectSubstitutions}
-        If $\typerelation{\P'}{\si}{\P}$, and $\a\#\si$, then $\typerelation{(\P', \a)}{(\si, \a\setto\a)}{(\P,\a)}$ with denotation $\deno{\typerelation{(\P', \a)}{(\si, \a\setto\a)}{(\P,\a)}} = (\deno{\typerelation{\P'}{\si}{\P}}\times\Id{U})$
+        If $\typerelation{\P'}{\si}{\P}$, and $\a\#\si$, then $\typerelation{(\P', \a)}{(\si, \a\setto\a)}{(\P,\a)}$ with denotation $\deno{\typerelation{(\P', \a)}{(\si, \a\setto\a)}{(\P,\a)}} = (\deno{\typerelation{\P'}{\si}{\P}}\times\Id{E})$
     \end{lemma}
     \begin{proof}
        This holds by the weakening-theorem on effects, theorem \ref{EffectWeakeningOnEffects}
@@ -1809,7 +1801,7 @@ The weakening theorem proceeds similarly.
 
 
 \subsection{Substitution and Weakening on Typing}
-We can now move on to state and prove the weakening and substitution theorems on types, subtyping, and type environments. The general structure of these theorems, as well as the term-based theorems later, is that when we want to quantify the action of a morphism $\theta: I' \rightarrow I$ between objects in the base category on structure in the fibres $\C(I)$, we should simply apply the associated re-indexing functor (As defined in Section \ref{PECRequirements}) $\theta\star: \C(I) \rightarrow \C(I')$ to the structure. The proof of the soundness of this operation is driven by the fact that the re-indexing functor is S-preserving. Specifically, effect substitutions ($\si$) have the actions given in Figure \ref{SubstitutionActionTypesTypeEnvs} on types and type-environments.
+We can now move on to state and prove the weakening and substitution theorems on types, subtyping, and type environments. The general structure of these theorems, as well as the term-based theorems later, is that when we want to quantify the action of a morphism $\theta: E^m \rightarrow E^n$ between objects in the base category on structure in the fibres $\C(E^n)$, we should simply apply the associated re-indexing functor (As defined in Section \ref{PECRequirements}) $\theta\star: \C(E^n) \rightarrow \C(E^m)$ to the structure. The proof of the soundness of this operation is driven by the fact that the re-indexing functor is S-preserving. Specifically, effect substitutions ($\si$) have the actions given in Figure \ref{SubstitutionActionTypesTypeEnvs} on types and type-environments.
 
 \begin{figure}[H]
     
@@ -1866,11 +1858,11 @@ We can now move on to state and prove the weakening and substitution theorems on
         \end{align*}
         
         \case{\tquant}
-        This case makes use of the Beck-Chevalley condition and the fact that $\deno{\typerelation{(\P', \a)}{(\si, \a\setto\a)}{(\P, \a)}} = \si\times\Id{U}$, which we can induct upon.
+        This case makes use of the Beck-Chevalley condition and the fact that $\deno{\typerelation{(\P', \a)}{(\si, \a\setto\a)}{(\P, \a)}} = \si\times\Id{E}$, which we can induct upon.
             \begin{align*}
-                \si\star\deno{\typerelation{\P}{\all{\a}A}{\type}} & = \si\star(\allI(\deno{\typerelation{\P,\a}{A}{\type}}))\\
-                & = \allI((\si\times\Id{U})\star\deno{\typerelation{\P,\a}{A}{\type}})\qt{By Beck-Chevalley}\\
-                & = \allI(\deno{\typerelation{\P',\a}{A\sub{\si, \a\setto\a}}{\type}})\qt{By induction}\\
+                \si\star\deno{\typerelation{\P}{\all{\a}A}{\type}} & = \si\star(\allEn(\deno{\typerelation{\P,\a}{A}{\type}}))\\
+                & = \allEn((\si\times\Id{E})\star\deno{\typerelation{\P,\a}{A}{\type}})\qt{By Beck-Chevalley}\\
+                & = \allEn(\deno{\typerelation{\P',\a}{A\sub{\si, \a\setto\a}}{\type}})\qt{By induction}\\
                 & = \deno{\typerelation{\P'}{\all{\a}{(A\sub{\si, \a\setto\a})}}{\type}}\\
                 & = \deno{\typerelation{\P'}{(\all{\a}{A})\ssi}{\type}}\\
             \end{align*}
@@ -2052,14 +2044,14 @@ We can now formulate the substitution theorem on terms. We need to be more caref
     So
     \begin{align*}
         \si\star\D &= \si\star(\bar{\D_1})\\
-        & = \bar{(\si\times\Id{U})\star\D_1}\qt{By naturality}\\
+        & = \bar{(\si\times\Id{E})\star\D_1}\qt{By naturality}\\
         & = \bar{\D_1'}\qt{By induction}\\
         & = \D'
     \end{align*}
     
     \case{\vspec}
     
-    This is a more complex case, as it makes use of several naturality properties and the adjunction $\pstar\dashv\allI$. By inversion, if $\D$ derives $\gpetyperelation{\eapp{v}{\e}}{A\ssub{\a}{\e}}$ then there exists $\D_1$ deriving $\gpetyperelation{v}{\all{\a}{A}}$ and $h = \deno{\typerelation{\P}{\e}{\effect}}$ such that $\D$ is derived from $\D_1$ and $h$ as in equations \ref{EffectSubTermsEffAppTree} and \ref{EffectSubTermsEffAppDeno}.
+    This is a more complex case, as it makes use of several naturality properties and the adjunction $\pstar\dashv\allEn$. By inversion, if $\D$ derives $\gpetyperelation{\eapp{v}{\e}}{A\ssub{\a}{\e}}$ then there exists $\D_1$ deriving $\gpetyperelation{v}{\all{\a}{A}}$ and $h = \deno{\typerelation{\P}{\e}{\effect}}$ such that $\D$ is derived from $\D_1$ and $h$ as in equations \ref{EffectSubTermsEffAppTree} and \ref{EffectSubTermsEffAppDeno}.
     
     
     \begin{equation}\label{EffectSubTermsEffAppTree}
@@ -2093,8 +2085,8 @@ We can now formulate the substitution theorem on terms. We need to be more caref
     \begin{align}
         \si\star{\D} & = \si\star(\pr{\Id{\G}}{h}\star(\e_{\deno{\typerelation{\P,\b}{A\ssub{\a}{\b}}{\type}}})\after\D_1)\\
         & = (\pr{\Id{\G}}{h}\after\si)\star(\e_{\deno{\typerelation{\P,\b}{A\ssub{\a}{\b}}{\type}}})\after\si\star(\D_1)\\
-        & = ((\si\times\Id{U})\after\pr{\Id{\G}}{h\after\si})\star(\e_{\deno{\typerelation{\P,\b}{A\ssub{\a}{\b}}{\type}}})\after\D_1'\\
-        & = (\pr{\Id{\G}}{h'})\star((\si\times\Id{U})\star\e_{\deno{\typerelation{\P,\b}{A\ssub{\a}{\b}}{\type}}})\after\D_1' \label{SubsProofLineNumber}
+        & = ((\si\times\Id{E})\after\pr{\Id{\G}}{h\after\si})\star(\e_{\deno{\typerelation{\P,\b}{A\ssub{\a}{\b}}{\type}}})\after\D_1'\\
+        & = (\pr{\Id{\G}}{h'})\star((\si\times\Id{E})\star\e_{\deno{\typerelation{\P,\b}{A\ssub{\a}{\b}}{\type}}})\after\D_1' \label{SubsProofLineNumber}
     \end{align}
     
     Looking at the inner part of the functor application:
@@ -2102,13 +2094,13 @@ We can now formulate the substitution theorem on terms. We need to be more caref
         A & = \deno{\typerelation{\P,\b}{A\ssub{\a}{\b}}{\type}}\\
     \end{align*}
     \begin{align*}
-        (\si\times\Id{U})\star\e_{\deno{\typerelation{\P,\b}{A\ssub{\a}{\b}}{\type}}} &= (\si\times\Id{U})\star\counit{A}\\
-        & = (\si\times\Id{U})\star(\widehat{\Id{\allI(A)}})\\
-        & = \widehat{\bar{(\si\times\Id{U})\star(\widehat{\Id{\allI(A)}})}}\qt{By bijection}\\
-        & = \widehat{\si\star(\bar{\widehat{\Id{\allI(A)}}})}\qt{By naturality}\\
-        & = \widehat{\si\star(\Id{\allI(A)})}\qt{By bijection}\\
-        & = \widehat{\Id{\allII(A\after(\si\times\Id{U}))}}\qt{By S-preserving property, naturality}\\
-        & = \widehat{\Id{\allII(A\sub{\si,\a\setto\a})}}\qt{By Substitution theorem}\\
+        (\si\times\Id{E})\star\e_{\deno{\typerelation{\P,\b}{A\ssub{\a}{\b}}{\type}}} &= (\si\times\Id{E})\star\counit{A}\\
+        & = (\si\times\Id{E})\star(\widehat{\Id{\allEn(A)}})\\
+        & = \widehat{\bar{(\si\times\Id{E})\star(\widehat{\Id{\allEn(A)}})}}\qt{By bijection}\\
+        & = \widehat{\si\star(\bar{\widehat{\Id{\allEn(A)}}})}\qt{By naturality}\\
+        & = \widehat{\si\star(\Id{\allEn(A)})}\qt{By bijection}\\
+        & = \widehat{\Id{\allEm(A\after(\si\times\Id{E}))}}\qt{By S-preserving property, naturality}\\
+        & = \widehat{\Id{\allEm(A\sub{\si,\a\setto\a})}}\qt{By Substitution theorem}\\
         & = \e_{A\ssi}
     \end{align*}
     
@@ -2165,13 +2157,13 @@ Having analysed the manipulation of the effect-variable environment, we are now 
 \end{figure}
 
 
-The denotation of such a weakening is a morphism within the fibre category derived from the effect-variable environment: $\deno{\pewrel{\w}{\G'}{\G}}: \G' \rightarrow \G \in \C(I)$. These denotations are defined in Figure \ref{TermWeakeningDenotations}.
+The denotation of such a weakening is a morphism within the fibre category derived from the effect-variable environment: $\deno{\pewrel{\w}{\G'}{\G}}: \G' \rightarrow \G \in \C(E^n)$. These denotations are defined in Figure \ref{TermWeakeningDenotations}.
 
 \begin{figure}[H]
     \centering
     \begin{framed}
         \begin{align}
-            \deno{\pewrel{\i}{\G}{\G}} &= \idg: \G \rightarrow \G \in \C(I)
+            \deno{\pewrel{\i}{\G}{\G}} &= \idg: \G \rightarrow \G \in \C(E^n)
             \\
             \deno{\pewrel{\w\pi}{\G', ax}{\G}} &= \deno{\pewrel{\w}{\G'}{\G}}\after\p: \G'\times A \rightarrow \G
             \\
@@ -2234,7 +2226,7 @@ We also need to explain the action of these term substitutions on terms. We defi
     (\eapp{v}{\e})\ssi & = \eapp{(v\ssi)}{\e}\\
 \end{align*}
 
-Denotations of type-environment substitutions are morphisms in the appropriate fibre category: $\deno{\etyperelation{\P}{\G'}{\si}{\G}}: \G' \rightarrow \G \in \C(I)$ and are defined in Figure \ref{TermSubstitutionDenotations}.
+Denotations of type-environment substitutions are morphisms in the appropriate fibre category: $\deno{\etyperelation{\P}{\G'}{\si}{\G}}: \G' \rightarrow \G \in \C(E^n)$ and are defined in Figure \ref{TermSubstitutionDenotations}.
 
 \begin{figure}[H]
     \centering
@@ -2269,11 +2261,11 @@ Let us first consider the action of effect weakenings on these morphisms. The we
         By induction on the derivation of $\w$. making use of weakening on types, type environments, and subtyping.
     
         \case{\tid}
-        Then $\w = \i$, so its denotation is $\w = \Id{\G_I}$
+        Then $\w = \i$, so its denotation is $\w = \Id{\G_{E^n}}$
         
         So
         \begin{equation}
-          \w_1\star(\Id{\G_I}) = \Id{\G_{I'}} = \deno{\ewrel{\P'}{\i}{\G}{\G}}  
+          \w_1\star(\Id{\G_{E^n}}) = \Id{\G_{E^m}} = \deno{\ewrel{\P'}{\i}{\G}{\G}}  
         \end{equation}
         
         \case{\tproject}
@@ -2333,7 +2325,7 @@ Secondly, we can state and prove the weakening theorem on term-environment subst
         By induction on the definition of $\si$, making use of the weakening on terms, types, and type environments.
     
         \case{\tsubnil}
-        Then $\si = \term{\G'_{I}}$, so $\w\star(\si) = \term{\G'_{I'}} = \deno{\etyperelation{\P'}{\G'}{\si}{\G}}$
+        Then $\si = \term{\G'_{E^n}}$, so $\w\star(\si) = \term{\G'_{E^m}} = \deno{\etyperelation{\P'}{\G'}{\si}{\G}}$
         
         \case{\tsubextend}
         Then $\si = (\si',x\setto v)$
@@ -3060,13 +3052,13 @@ Now we can state the soundness theorem.
     \end{equation}
     
     \case{\eqeffbeta}
-    This case makes use of the adjunction properties of $\allI, \pstar$. Let  $h = \deno{\typerelation{\P}{\e}{\effect}}$, $f = \deno{\etyperelation{\P,\a}{\G}{v}{A}}$, and $A = \deno{\typerelation{\P,\a}{A\ssub{\a}{\a}}{\type}}$. Then we can find the sub-term denotation $\deno{\gpetyperelation{\elam{\a}{v}}{\all{\a}{A}}} = \bar{f}$, which allows us to express the denotation of the whole expression.
+    This case makes use of the adjunction properties of $\allEn, \pstar$. Let  $h = \deno{\typerelation{\P}{\e}{\effect}}$, $f = \deno{\etyperelation{\P,\a}{\G}{v}{A}}$, and $A = \deno{\typerelation{\P,\a}{A\ssub{\a}{\a}}{\type}}$. Then we can find the sub-term denotation $\deno{\gpetyperelation{\elam{\a}{v}}{\all{\a}{A}}} = \bar{f}$, which allows us to express the denotation of the whole expression.
     
     \begin{align*}
-        \deno{\gpetyperelation{\eapp{(\elam{\a}{v})}{\e}}{\all{\a}{A}}} & = \pr{\Id{I}}{h}\star(\counit{A})\after\bar{f}\\
-        & = \pr{\Id{I}}{h}\star(\counit{A})\after\pr{\Id{I}}{h}\star(\pstar(\bar{f}))\qt{Identity functor}\\
-        &= \pr{\Id{I}}{h}\star(\counit{A}\after\pstar(\bar{f}))\\
-        &= \pr{\Id{I}}{h}\star(f)\qt{By adjunction}\\
+        \deno{\gpetyperelation{\eapp{(\elam{\a}{v})}{\e}}{\all{\a}{A}}} & = \pr{\Id{E^n}}{h}\star(\counit{A})\after\bar{f}\\
+        & = \pr{\Id{E^n}}{h}\star(\counit{A})\after\pr{\Id{E^n}}{h}\star(\pstar(\bar{f}))\qt{Identity functor}\\
+        &= \pr{\Id{E^n}}{h}\star(\counit{A}\after\pstar(\bar{f}))\\
+        &= \pr{\Id{E^n}}{h}\star(f)\qt{By adjunction}\\
         &= \deno{\gpetyperelation{v\ssub{\a}{\e}}{A\ssub{\a}{e}}}\qt{By substitution theorem}\\
     \end{align*}
     
@@ -3075,14 +3067,14 @@ Now we can state the soundness theorem.
     
         \begin{align*}
             \deno{\gpetyperelation{\elam{\a}{(\eapp{v}{\a})}}{\all{\a}{A}}} & = \bar{\deno{\etyperelation{\P,\a}{\G}{\eapp{v}{\a}}{A}}} \\
-            & = \bar{\pr{\Id{I\times U}}{\pp}\star(\e_{\deno{\typerelation{\P,\a,\b}{A\ssub{\a}{\b}}{\type}}})\after\pstar(f)}
+            & = \bar{\pr{\Id{E^n\times E}}{\pp}\star(\e_{\deno{\typerelation{\P,\a,\b}{A\ssub{\a}{\b}}{\type}}})\after\pstar(f)}
         \end{align*}
     
         Let us look at $\deno{\typerelation{\P,\a,\b}{A\ssub{\a}{\b}}{\type}}$. We have the weakening $\wrel{\i\pi\x}{\P,\a,\b}{\P,\b}$, so by the weakening theorem on type denotations, we can re-arrange the quantification and projection functors.
     
         \begin{align*}
-            \allIU(\deno{\typerelation{\P,\a,\b}{A\ssub{\a}{\b}}{\type}}) & = \allI( (\p\times \Id{U})\star\deno{\typerelation{\P,\b}{A\ssub{\a}{\b}}{\type}})\\ 
-            & = \pstar\allI(\deno{\typerelation{\P,\b}{A\ssub{\a}{\b}}{\type}})
+            \allIU(\deno{\typerelation{\P,\a,\b}{A\ssub{\a}{\b}}{\type}}) & = \allEn( (\p\times \Id{E})\star\deno{\typerelation{\P,\b}{A\ssub{\a}{\b}}{\type}})\\ 
+            & = \pstar\allEn(\deno{\typerelation{\P,\b}{A\ssub{\a}{\b}}{\type}})
         \end{align*}
     
         Using this and the adjunction and naturality properties (\ref{NaturalityCondition}), we can unwind the definition of the co-unit on $\deno{\typerelation{\P,\a,\b}{A\ssub{\a}{\b}}{\type}}$.
@@ -3091,20 +3083,20 @@ Now we can state the soundness theorem.
         \begin{align*}
             \counit{\deno{\typerelation{\P,\a,\b}{A\ssub{\a}{\b}}{\type}}} 
             & = \widehat{\Id{\allIU(\deno{\typerelation{\P,\a,\b}{A\ssub{\a}{\b}}{\type}})}}\\
-            & = \widehat{\Id{\pstar\allI(\deno{\typerelation{\P,\b}{A\ssub{\a}{\b}}{\type}})}}\\
-            & =\widehat{\Id{\pstar\allI A}}\\
-            & = \widehat{\pstar(\Id{\allI A})}\\
+            & = \widehat{\Id{\pstar\allEn(\deno{\typerelation{\P,\b}{A\ssub{\a}{\b}}{\type}})}}\\
+            & =\widehat{\Id{\pstar\allEn A}}\\
+            & = \widehat{\pstar(\Id{\allEn A})}\\
             & = \widehat{\pstar(\bar{\counit{A}})}\\
-            & = \widehat{\bar{(\p\times\Id{U})\star(\counit{A})}}\\
-            & = (\p\times\Id{U})\star(\counit{A}) 
+            & = \widehat{\bar{(\p\times\Id{E})\star(\counit{A})}}\\
+            & = (\p\times\Id{E})\star(\counit{A}) 
         \end{align*}
     
         This rearrangement can now be used in conjunction with the contravariant composition of re-indexing functors to show the denotation $\deno{\gpetyperelation{\elam{\a}{(\eapp{v}{\a})}}{\all{\a}{A}}}$ is equal to the morphism $f$.
         \begin{align*}
-            \deno{\gpetyperelation{\elam{\a}{(\eapp{v}{\a})}}{\all{\a}{A}}} & = \bar{\pr{\Id{I\times U}}{\pp}\star(\counit{\deno{\typerelation{\P,\a,\b}{A\ssub{\a}{\b}}{\type}}})\after\pstar(f)}\\
-            & = \bar{\pr{\Id{I\times U}}{\pp}\star((\p\times\Id{U})\star(\counit{A}))\after\pstar(f)}\\
+            \deno{\gpetyperelation{\elam{\a}{(\eapp{v}{\a})}}{\all{\a}{A}}} & = \bar{\pr{\Id{E^n\times E}}{\pp}\star(\counit{\deno{\typerelation{\P,\a,\b}{A\ssub{\a}{\b}}{\type}}})\after\pstar(f)}\\
+            & = \bar{\pr{\Id{E^n\times E}}{\pp}\star((\p\times\Id{E})\star(\counit{A}))\after\pstar(f)}\\
             & = \bar{\pr{\p}{\pp}\star(\counit{A})\after\pstar(f)}\\
-            &= \bar{\Id{I\times U}\star(\counit{A})\after\pstar(f)} \\
+            &= \bar{\Id{E^n\times E}\star(\counit{A})\after\pstar(f)} \\
             & = \bar{\counit{A}\after \pstar(f)}\qt{The identity re-indexing functor is the identity.}\\
             & = f \qt{By adjunction}
         \end{align*}
@@ -3492,7 +3484,7 @@ The leftwards and rightwards components of this bijection can be derived as foll
         
 \begin{theorem}
     [Beck-Chevalley condition, part I]
-    Firstly, the functors $(\theta\star\after\allEn)$ and $(\allEm\after(\theta\times\Id{E})\star)$ are equal. Secondly, the natural transformation $\bar{(\theta\times\Id{U})\star \counit{}}$ is equal to the identity natural transformation.
+    Firstly, the functors $(\theta\star\after\allEn)$ and $(\allEm\after(\theta\times\Id{E})\star)$ are equal. Secondly, the natural transformation $\bar{(\theta\times\Id{E})\star \counit{}}$ is equal to the identity natural transformation.
 \end{theorem}
 
     \begin{proof}
@@ -3503,7 +3495,7 @@ The leftwards and rightwards components of this bijection can be derived as foll
     ((\theta\star\after\allEn)A)\env &= \theta\star(\allEn  A)\env\\
         &= (\allEn A)(\theta(\env))\\
         &= \Pi_{\e\in E}(A(\theta(\env), \e))\\
-    &= \Pi_{\e\in E}(((\theta\times \Id{U})\star A)(\env,   \e))\\
+    &= \Pi_{\e\in E}(((\theta\times \Id{E})\star A)(\env,   \e))\\
         &= \allEm((\theta\times\Id{E})\star A)\env\\
         &= ((\allEm\after(\theta\times\Id{E})\star)A)\env
     \end{align*}
@@ -3511,12 +3503,12 @@ The leftwards and rightwards components of this bijection can be derived as foll
 Secondly,
     
 \begin{align*}
-    \bar{(\theta\times\Id{U})\star \counit{A}} \ev  & = \finpr{(\theta\times\Id{U})\star\counit{A}(\ev, \e)}{\e\in E}\\
+    \bar{(\theta\times\Id{E})\star \counit{A}} \ev  & = \finpr{(\theta\times\Id{E})\star\counit{A}(\ev, \e)}{\e\in E}\\
     & = \finpr{\counit{A}(\theta\ev, \e)}{\e\in E}\\
     & = \finpr{\pi_\e}{\e\in E}: \Pi_{\e\in E}A(\theta\ev, \e) \rightarrow \Pi_{\e\in E}A(\theta\ev, \e)\\
     & = \Id{\Pi_{\e\in E}A(\theta\ev, \e)}\\
-    & = \Id{\allII\after(\theta\times\Id{U})\star A}\ev\\
-    & = \Id{\theta\star\after\allI}
+    & = \Id{\allEm\after(\theta\times\Id{E})\star A}\ev\\
+    & = \Id{\theta\star\after\allEn}
 \end{align*}
 
     $$\square$$

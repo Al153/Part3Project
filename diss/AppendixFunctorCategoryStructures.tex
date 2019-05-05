@@ -4,64 +4,6 @@
     \chapter{Functorial S-Categories}
     This appendix provides a full, although terse, exposition of S-category structure of functor categories $[E^n, \set]$ and the S-preserving nature of the re-indexing functors between them.
     
-    \section{Base Category is Monoidal}
-    
-    We construct the base category, $\Eff$, as follows:
-    
-    \begin{itemize}
-        \item $U = E$, the set of ground effects in the non-polymorphic language.
-        \item $\1$ is a singleton set.
-        \item $U^n = E^n$, set of $n$-wide tuples of effects, $\vec{\e}$
-    \end{itemize}
-    
-    Hence when we treat effects that are well formed in $\P$ as morphisms, $E^n \rightarrow E$ in $\Eff$, we should treat them as functions $f: E^n \rightarrow E$. Ground effects become point functions: $e: \1 \rightarrow E$, so the denotation of a ground effect is the constant value function: $\deno{\typerelation{\P}{e}{\effect}} = \ev \mapsto e$. We extend the multiplication of ground effects to multiplication on effect functions, giving us our $\Mul_n$ operation $\Mul_n(f, g)(\ev) = (f\ev)\dot(g\ev)$. This $\Mul_n$ satisfies the naturality and monoidal requirements, as seen in figure \ref{MulMonoidAndNatural}. It is also trivially the case that $\Mul_n(\deno{\typerelation{\P}{e_1}{\effect}}, \deno{\typerelation{\P}{e_2}{\effect}}) = \deno{\typerelation{\P}{e_1\dot e_2}{\effect}}$.
-    
-    \begin{figure}
-        \begin{framed}
-            \begin{framed}
-                \centering\textbf{Naturality} 
-                \begin{equation*}
-                    (\Mul_m(f, g)\after \theta)\ev = (f(\theta\ev))\dot(g(\theta\ev)) = (\Mul_n(f\after\theta), (g\after\theta))\ev
-                \end{equation*}
-            \end{framed} 
-            
-            \begin{framed}
-                \centering\textbf{Left and Right Identity}
-    
-    
-                \begin{minipage}{.45\textwidth}
-                    \begin{align*}
-                        \Mul_n(\deno{\typerelation{\P}{\1}{\effect}}, f)(\ev) & = (\1\ev)\dot(f\ev)\\
-                        & = (\1)\dot(f\ev)\\
-                        & = f\ev\\
-                    \end{align*}
-                \end{minipage}
-                \quad
-                \begin{minipage}{.45\textwidth}
-                    \begin{align*}
-                        \Mul_n(f, \deno{\typerelation{\P}{\1}{\effect}})(\ev) & = (f\ev)\dot(\1\ev)\\
-                        & = (f\ev)\dot(\1)\\
-                        & = f\ev\\
-                    \end{align*}
-                \end{minipage}
-            \end{framed}
-    
-            \begin{framed}
-                \centering\textbf{Monoid Associativity}
-    
-                \begin{align*}
-                    \Mul_n(f, \Mul_n(g, h))(\ev) & = (f\ev)\dot((g\ev)\dot(h\ev))\\
-                    & = ((f\ev)\dot(g\ev))\dot(h\ev)\\
-                    & = \Mul_n(\Mul_n(f,g), h)(\ev)
-                \end{align*}
-            \end{framed}
-        \end{framed}
-        
-        
-        \caption{Our pick for $\Mul$ is natural and is a monoid at each $n$.}
-        \label{MulMonoidAndNatural}
-    \end{figure}
-    
     \section{S-Categories}
     The semantic category, $[E^0, \set]$ of the effect-environment $\nil$ is isomorphic to $\set$. Since each effect-environment is alpha equivalent to a natural number, the semantic category for $\P$ shall be represented as $\C(\P) = \C(n) = [E^n, \set]$, the category of functions $E^n\rightarrow \set$. Objects in $[E^n, \set]$ are functions and we describe them by their actions on a generic vector of ground effects, $\ev$. Morphisms in $[E^n, \set]$ are natural transformations between the functions. So:
     

@@ -13,7 +13,7 @@ It is harder to use inversion on the structure of $\w$, since the structure of $
         \subcase{$\w = \w'\x$}
         Then by the definition of its denotation:    
         \begin{align*}
-            \deno{\typerelation{\P,\a}{\a}{\effect}}\after\w &= \pp\after(\w'\times \Id{U}) \\
+            \deno{\typerelation{\P,\a}{\a}{\effect}}\after\w &= \pp\after(\w'\times \Id{E}) \\
             & = \pp\\
             & = \deno{\typerelation{\P',\a}{\a}{\effect}}
         \end{align*}
@@ -58,7 +58,7 @@ It is harder to use inversion on the structure of $\w$, since the structure of $
         Then $\P'=\P'',\b$ and $\wrel{\w'}{\P''}{\P}$
         
         So \begin{align*}
-            \deno{\typerelation{\P,\b}{\a}{\effect}}\after\w &= \deno{\typerelation{\P}{\a}{\effect}}\after\p\after(\w'\times\Id{U})\\
+            \deno{\typerelation{\P,\b}{\a}{\effect}}\after\w &= \deno{\typerelation{\P}{\a}{\effect}}\after\p\after(\w'\times\Id{E})\\
             &=\deno{\typerelation{\P}{\a}{\effect}}\after\w'\after\p\\
             & = \deno{\typerelation{\P''}{\a}{\effect}}\after\p\\
             & = \deno{\typerelation{\P'}{\a}{\effect}}\\
@@ -72,11 +72,11 @@ It is harder to use inversion on the structure of $\w$, since the structure of $
 This proof proceeds in a similar fashion the proof of effect substitution on types (Theorem \ref{EffectSubstitutionOnTypes}). That is, by induction over the derivation of $\deno{\typerelation{\P}{A}{\type}}$, and making use of the Beck-Chevalley condition and the S-preserving property of $\w\star$. 
 
 \case{\tquant}
-    This case uses the Beck-Chevalley condition and the fact that $\deno{\wrel{\w\x}{(\P', \a)}{(\P,\a)}} = \w\times \Id{U}$. This property is used in conjunction with induction to change the environment from $(\P, \a)$ to $(\P', \a)$.
+    This case uses the Beck-Chevalley condition and the fact that $\deno{\wrel{\w\x}{(\P', \a)}{(\P,\a)}} = \w\times \Id{E}$. This property is used in conjunction with induction to change the environment from $(\P, \a)$ to $(\P', \a)$.
 
     \begin{align*}
         \w\star\deno{\typerelation{\P}{\all{\a}A}{\type}} & = \w\star(\allI(\deno{\typerelation{\P,\a}{A}{\type}}))\\
-        & = \allI((\w\times\Id{U})\star\deno{\typerelation{\P,\a}{A}{\type}})\qt{By Beck-Chevalley}\\
+        & = \allI((\w\times\Id{E})\star\deno{\typerelation{\P,\a}{A}{\type}})\qt{By Beck-Chevalley}\\
         & = \allI(\deno{\typerelation{\P',\a}{A}{\type}})\qt{By induction}\\
         & = \allI(\deno{\typerelation{\P',\a}{A}{\type}})\\
         & = \deno{\typerelation{\P'}{\all{\a}{A}}{\type}}\\
