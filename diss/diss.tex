@@ -144,23 +144,30 @@ An object, typically written $\1$, is \textit{terminal} in a category, $\C$ if f
 
 \subsubsection{Products}
 A \textit{binary product} of a pair of objects $A, B\in\obj\C$ consists of an object, written $A \times B$, with morphisms $\p: A\times B\rightarrow A$, $\pp: A\times B \rightarrow B$ such that for any other object $C$ and morphisms, $f: C\rightarrow A$, $g: C\rightarrow B$ there exists a unique morphism $\pr{f}{g}: C \rightarrow (A\times B)$ such that the following commutes:
-{\centering
-\begin{tikzcd}
-    & \arrow{dl}[swap]{f} C  \arrow[d, "\pr{f}{g}"] \arrow [dr, "g"] & \\
-    A & \arrow [l, "\p"] (A\times B) \arrow{r}[swap]{\pp} & B\\
-\end{tikzcd}
-}
+
+\begin{center}
+    \begin{tikzcd}
+        & \arrow{dl}[swap]{f} C  \arrow[d, "\pr{f}{g}"] \arrow [dr, "g"] & \\
+        A & \arrow [l, "\p"] (A\times B) \arrow{r}[swap]{\pp} & B\\
+    \end{tikzcd}
+\end{center}
+
+
 
 A category is said to \textit{have binary products} if for all objects $A, B$, the product $A\times B$ also exists.
 
 \subsubsection{Exponentials}
 An \textit{exponential} for objects $A, C$ is an object $C^A$ with morphism $\app: C^A\times A \rightarrow C$ such that for any object $B$ and morphism $f: B\times A \rightarrow C$, there exists a morphism $\cur{f}: B \rightarrow C^A$ such that the following commutes:
 
-{\centering
-\begin{tikzcd}
-    C^A \times A \arrow{r}{\app}& C\\
-    B\times A\arrow{u}{\cur{f}\times \Id{B}} \arrow{ur}{f}
-\end{tikzcd}}
+
+\begin{center}
+    \begin{tikzcd}
+        C^A \times A \arrow{r}{\app}& C\\
+        B\times A\arrow{u}{\cur{f}\times \Id{B}} \arrow{ur}{f}
+    \end{tikzcd}
+\end{center}
+
+
 
 A category \textit{has exponentials} if for all pairs of objects $A, C$ it has an exponential $C^A$.
 
@@ -1361,7 +1368,7 @@ We are now equipped to define the denotations of structures in the language. Fir
 \deno{\nil} = \1 \quad\quad \deno{\P, \a} = \deno{\P}\times E    
 \]
 
-Hence, the denotation of an  effect-variable environment $\P$ is given by a finite product on $E$ of width $n$ where $n$ is the length of $\P$. As stated earlier, the denotation of a well-formed effect is a morphism $\deno{\typerelation{\P}{\e}{\effect}}: E^n \rightarrow E$ in $\C$. The denotations for effects are shown in Figure \ref{EffectDenotations}.
+Hence, the denotation of an  effect-variable environment $\P$ is given by a finite product on $E$ of width $n$ where $n$ is the length of $\P$. As stated earlier, the denotation of a well-formed effect is a morphism $\deno{\typerelation{\P}{\e}{\effect}}: E^n \rightarrow E$ in $\Eff$. The denotations for effects are shown in Figure \ref{EffectDenotations}.
 \begin{figure}[H]
     \centering
     \begin{framed}
