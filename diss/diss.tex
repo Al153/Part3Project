@@ -1185,8 +1185,6 @@ In order to model the polymorphism of PEC, we need to now look at an indexed cat
 
 The essential idea from this point on is that we have defined several relations of the form $\wellformed{\texttt{Env}}{\texttt{Conclusion}}$, such as the typing relation $\gpetyperelation{v}{A}$, and the well-formedness relation on effects $\wellformedeffect{\P}{\e}$. Each instance of such a relation has a denotation that is an object or morphism in a category. For example, $\deno{\typerelation{\P}{\e}{\effect}}$ is a morphism in the base category, $\deno{\typerelation{\P}{A}{\type}}$ is an object in the fibre (S-category) induced by $\P$, and $\deno{\gpetyperelation{v}{A}}$ is morphism between the objects which denote $\G$ and $A$ in the fibre induced by $\P$.
 
-\todo{I $->$ E^n, E $->$ E, $\C$ $->$ $\Eff$}
-
 To form our base category, we pick the concrete category $\Eff$ (Definition \ref{EffDefinition}) of ground effects and monotone functions. The denotation of an effect variable environment, $\deno{\P}$, is simply $E^n$ where $n$ is the number of variables in $\P$. The denotation of an effect, $\deno{\wellformedeffect{\P}{\e}}$ is a monotone function $E^n\rightarrow E$. For each ground effect $e$, we define $\deno{e}$ to be the constant function $\singleton \mapsto e$.
 
 
