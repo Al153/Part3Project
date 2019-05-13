@@ -783,6 +783,7 @@ do $b$ $\texttt{<-}$ Prompt("Are You Sure?") in (
 
 \section{Polymorphic Effect Calculus}
 
+
 Next, we consider the Effect Calculus extended with terms to allow System-F-style polymorphism over effects. We call this the Polymorphic Effect Calculus (PEC).
 
 \begin{figure}[H]
@@ -802,6 +803,7 @@ Next, we consider the Effect Calculus extended with terms to allow System-F-styl
 \end{figure}
 
 \subsection{Type System}
+\label{PECTypeSystem}
 \subsubsection{Environments}
 As mentioned before, expressions can now include effect variables. These are managed in the type system using a well-formed effect-variable environment $\P$, which is a snoc-list.
 
@@ -2917,6 +2919,7 @@ We can sum up the importance of these theorems in the corollary below.
 \end{framed}
 
 \section{Soundness}
+\label{SoundnessDefinition}
 We are now at a stage where we can state and prove the most important theorem for a denotational semantics: soundness with respect to an equational equivalence. The desire for soundness follows from the common sense requirement that terms that are equivalent in a given language should also have equivalent denotations. In our case, I introduce a $\beta\eta$-based equational equivalence relation and then prove that equivalent terms have equal denotations.
 
 The equational equivalence relation is a rule-based relation with three main flavours of rules. Firstly, as seen in Figure \ref{BetaEtaReductions}, there are the reductions which formalise how we expect the program to execute given an appropriate implementation. We give $\beta\eta$-reductions for each term transition, such as the application of lambda terms or the execution of an \texttt{if} expression, as well as the monad equivalence laws. Secondly, there are congruences, seen in Figure \ref{BetaEtaCongruence}, which formalise how the reduction of subexpressions affects the rest of the expression in a compositional way. Finally, we extend this relation into an equivalence relation by closing it under transitivity, reflexivity and symmetry as seen in Figure \ref{BetaEtaEquivalence}.
@@ -3121,6 +3124,7 @@ This completes the proof of soundness for this semantics.
 In this chapter, I have introduced the indexed S-category structure, given a denotational semantics for PEC with respect to this structure, and proved that these semantics soundly model PEC. However, I have not shown whether it's possible to construct an indexed S-category, or how complex such categories might be. These questions will be addressed in the next chapter.
 
 \chapter{Constructing a Model of PEC}
+\label{HowToBuildAModel}
 
 Now we have proved that an appropriate categorical structure can model PEC, it remains to explicitly construct such an indexed category. There exist $\set$-based models for the semantics of many effectful languages with a graded monad, such as a certain instantiations of the Effect Calculus \cite{Katsumata:2014}. More specifically, it is possible to treat $\set$ as an S-category. Hence, I use a $\set$ based S-category as a starting point. In this section, I  demonstrate how to construct an strictly indexed S-category, which can model the PEC, from such an S-category.
 
@@ -3526,6 +3530,9 @@ Secondly,
 
 Hence we have proof that our construction is indeed a valid indexed S-category. Importantly, this shows that reasonable models of the PEC are possible to construct and that our requirements do not overconstrain potential models to the point that they are not useful for doing actual analysis. This contrasts with models for System F, which cannot be \set based\cite{PolymorphismIsNotSetTheoretic}.
 
+\chapter{Adequacy}
+\input{adequacyChapter.tex}
+
 \chapter{Conclusion}
 This dissertation has introduced a denotational semantics for polymorphic effect systems in category theory and has proved that non-trivial models capable of interpreting effect-polymorphic languages can indeed be constructed in simple categories such as $\set$. It is reasonable to conjecture that the reason that PEC's semantics are significantly simpler than those of other polymorphic languages, such as System F, is that PEC's polymorphism is not impredicative. Its polymorphic types do not quantify over themselves. This hypothesis could be tested by attempting to construct simple, $\set$-based models for other predicatively polymorphic languages. An example of such a language might be the lambda calculus extended with types that depend on the natural numbers.
 
@@ -3545,5 +3552,6 @@ This work forms a potential foundation for precise analysis tools which could be
 \input{AppendixWeakeningProofs.tex}
 \input{AppendixSCategoryFunctors.tex}
 \input{AppendixFunctorCategoryStructures.tex}
+\input{AppendixAdequacyProofs.tex}
 
 \end{document}

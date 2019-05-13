@@ -1,0 +1,258 @@
+
+
+    An important result, though often not proved in presentations of denotational semantics, is that of adequacy. A denotational semantics is adequate if two terms having equal denotations implies that the terms are equationally equivalent. In this chapter, I shall introduce an instantiation of PEC,  $\pecput$ with a suitable denotational semantics, generated using the methods described in Chapter \ref{HowToBuildAModel}. Following this, I shall introduce a set of logical relation between the denotations and closed terms. Using these relations, I shall prove that closed terms with the same denotations are equivalent under the equational equivalence given in Section \ref{SoundnessDefinition}.
+
+    \section{Instantiation of the Polymorphic Effect Calculus}
+    Let us instantiate the polymorphic effect calculus to be a language in which one can write programs which can create an output signal using the statement $\put$. The effect system of EC is then used to count an upper bound on the number of outputs that a program can make. This language shall be called $\pecput$.
+
+    \subsection{Ground Types}
+    We simply use the basic ground types.
+
+    \begin{equation}
+        \label{AdequacyGroundTypes}
+        \g \gens \B \mid \U
+    \end{equation}
+
+    \subsection{Graded Monad}
+    We index the base graded monad with a partially ordered monoid derived from the natural numbers. This base monoid is extended as described in Section \ref{PECTypeSystem} to symbolically include variables $\a, \b, \g$ which range over the natural numbers. The abstract effect of a term therefore computes an upper bound on the number of outputs produced.  This means that the $\doin{x}{v}{v'}$ type rule adds together the upper bounds on the two expressions to give an upper bound on the number of outputs of the sequenced expression. The $\return{v}$ type rule acknowledges that a pure expression does not have any output. Subtyping  allows the type system to compute a looser bound.
+    
+    \begin{equation}
+        E = (\N, 0, +, \leq)        
+    \end{equation}
+    
+
+    \subsection{Constants}
+    We extend the set of constant, built in expressions to include a \put\s statement which performs a single output action.
+
+    \begin{equation}
+        \label{AdequacyConstants}
+        \const{A} \gens \t^\B \mid \f^\B \mid \u^\U \mid \put^{\M{1}{\U}}        
+    \end{equation}
+
+    \subsection{Subtyping}
+    The ground subtyping relation is the identity relation, meaning the $\U$ and $\B$ types are subtypes only of themselves. This is extended using the subeffect and function subtyping rules given in \ref{PECTypeSystem} to give a full subtyping relation.
+
+    \section{Instantiation of a Model of the Polymorphic Effect Calculus}
+
+    Let us now instantiate a model of $\pecput$ in the indexed category derived as in Chapter \ref{HowToBuildAModel} from a model of the non-polymorphic version of $\pecput$ in $\set$, the category of sets and functions. To do this, we build an S-category for $\pecput$. Since $\set$ is already a CCC and has co-products, we simply need to define a strong graded monad, a denotation for $\put$, and the subeffecting natural transformations.
+    
+    \subsection{Non-Polymorphic Model}
+    \paragraph{Graded Monad}
+    The strong graded monad on $\set$ is given by tagging values of the underlying type with the number of output operations required to compute that value.
+
+    \begin{align}
+        \label{AdequacyGradedMonad}
+        \Tz{n}{A} & = \setcomp{(n', a)}{n'\leq n\wedge a\in A}\\
+        \bindz{m}{n}{A} & = (m', (n', a))\mapsto (n' + m', a)\\
+        \pointz{A} & = a\mapsto (0, a)\\\
+        \tstrengthz{n}{A}{B} & = (a, (n', b)) \mapsto (n', (a, b))
+    \end{align}
+
+
+\paragraph{Subeffecting Natural Transformations}
+These natural transformations are given by inclusion functions (identities), since $n\leq m\wedge (n',a)\in\Tz{n}{A} \implies (n'\leq n \leq m, a\in A)\implies (n',a)\in\Tz{m}{A}$. Other subtyping morphisms are generated using the usual method according to the subtype derivation (Figure \ref{SubtypingDenotations}).
+
+\paragraph{Ground Denotations}
+We define denotations for ground types an ground terms as in Figure \ref{PECPUTGroundDenotations}.
+
+\begin{figure}[H]
+    \centering
+    \begin{minipage}{0.45\linewidth}
+        \begin{framed}
+            \begin{align*}
+                \\
+                \deno{\U} & = \{\singleton\}\\
+                \deno{\B} & = \{\top, \bot\}\\
+            \end{align*}
+        \end{framed}
+    \end{minipage}
+    \quad
+    \begin{minipage}{0.45\linewidth}
+        \begin{framed}
+            
+\begin{align*}
+    \deno{\u} & = \singleton\mapsto \singleton\\
+    \deno{\t} & = \singleton\mapsto \top\\
+    \deno{\f} & = \singleton\mapsto \bot\\
+    \deno{\put} & = \singleton\mapsto (1, \singleton)
+\end{align*}
+
+        \end{framed}
+    \end{minipage}
+    
+    \caption{Ground denotations for types and terms of $\pecput$ in $\set$}
+    \label{PECPUTGroundDenotations}
+\end{figure}
+
+
+
+
+
+\subsection{Making the Model Polymorphic}
+Using the methods explained in Chapter \ref{HowToBuildAModel}, we can lift this model into an indexed S-Category using the functor categories $[E^n, \set]$. Hence the model can be proved sound for $\pecput$.
+    
+
+\section{Programming with Put}
+We can now introduce some syntactic sugar for $\pecput$. Specifically, we introduce a notion of powers of $\put$ in Definition \ref{PutPowers}. These powers have simple denotations in our indexed category. Due to soundness, all terms in the equivalence class have the same denotation.
+
+\begin{framed}
+    \begin{definition}[Powers of Put as an Equational Equivalence Class]
+        \label{PutPowers}
+    Define $\put^n$ as follows:
+    
+    \begin{align*}
+        \label{PutnDefinition}
+        \gpeberelation{\put^0}{&{\s}\return{\u}}{\M{0}{\U}}\\ 
+        \gpeberelation{\put^{m+1}}{&{\s}\doin{\_}{\put^n}{\put}}{\M{m+1}{\U}}
+    \end{align*}
+    \end{definition}
+\end{framed}
+
+
+\begin{framed}
+    \begin{lemma}[Denotations of Powers of Put]
+    $\deno{\gpetyperelation{\put^m}{\M{m}{\U}}} = \ev\mapsto\rho\mapsto(m, \singleton)$    
+    \end{lemma}
+    
+    \begin{proof}
+        By induction on $m$.
+    
+        \case{0}
+        
+        \begin{equation}
+            \deno{\gpetyperelation{\put^0}{\M{0}{\U}}}\fundRho = \pointn{}(\singleton) = (0, \singleton)
+        \end{equation}
+        
+        \case{m+1}
+        \begin{align*}
+            \deno{\gpetyperelation{\put^{m+1}}{\M{0}{\U}}}\fundRho & = (\bindmu^n\after\Tn{m}{(\deno{\typerelation{\nil}{\put}{\M{1}{\U}}}\after\p)}\after \strengtht^n)
+            \\&\quad(\singleton, \deno{\gpetyperelation{\put^m}{\M{n}{\U}}}\fundRho)\\
+            & = (m+1, \singleton)
+        \end{align*}
+    \end{proof}
+\end{framed}
+
+
+
+\section{Logical Relations}
+It is difficult to directly prove adequacy. This is because we cannot directly perform induction over morphisms. So instead we use a system of logical relations which relate elements of denotations of types to closed terms of the same type (Definition \ref{LogicalRelationDefinition}). Specifically we define a relation for a given type, effect environment, and tuple of ground effects. Since they are defined structurally with respect the type, we can induct over the structure to prove properties. We then show that these logical relations are preserved by subtyping (Theorem \ref{LogRelSubtype}) and that they behave well with respect to single effect-variable substitutions (Theorem \ref{EnvironmentLemma}). Finally, we prove a fundamental property (Theorem \ref{FundPropTheorem}) which shows that the denotation of a term relates to the term itself. In Section \ref{AdequacySection}, we finally use the logical relations to prove adequacy.
+
+\begin{framed}
+    \begin{definition}[Logical Relation]\label{LogicalRelationDefinition}
+        \begin{equation}
+            \label{LogicalRelationType}
+            \erelates{\P}{A}(\ev: E^n) \in \powset{\deno{\wellformedt{\P}{A}}\ev\times \pecput^{A\ssub{\a}{\e}}}
+        \end{equation}
+   
+        \begin{align*}
+                    (d, v)\in\erelates{\P}{\all{\a}{A}}(\ev) & \leftrightarrow \forall\e. (\pe(d), \eapp{v}{\e})\in\erelates{\P}{A\ssub{\a}{\e}}(\ev)\\
+                    (d, v)\in\erelates{\P}{\U}(\ev) & \Leftrightarrow (d=\singleton \wedge \zberelation{v}{()}{\U})
+                    \\
+                    (d, v)\in\erelates{\P}{\B}(\ev) & \Leftrightarrow ((d=\top \wedge \zberelation{v}{\t}{\B}) 
+                    \\& \quad\vee (d=\bot \wedge \zberelation{v}{\f}{\B}))
+                    \\
+                    (d, v)\in\erelates{\P}{\ab}(\ev)  &\Leftrightarrow \forall e, u. (e, u)\in\erelates{\P}{A}(\ev) \implies (d(e), \apply{v}{u})\in \erelates{\P}{B}(\ev)
+                    \\
+                    (d, v)\in\erelates{\P}{\M{f}{A}}(\ev) &\Leftrightarrow (d= (n, d')
+                    \\ & \quad\wedge \exists v'. ((d', v')\in\erelates{\P}{A}
+                    \\ & \quad\wedge  \zberelation{v}{\doin{\_}{\put^{n'}}{\return{v'}}}{(\M{f}{A})\ssub{\av}{\ev}}))
+        \end{align*}
+    \end{definition}
+        
+\end{framed}
+
+\begin{framed}
+    \begin{theorem}[Logical Relation and Subtyping]\label{LogRelSubtype}
+        If $A\subtypep B$ and $\inLogRelPE{d}{v}{A}$ then $\inLogRelPE{d}{v}{B}$
+    \end{theorem}
+    
+    \begin{proof}
+        By induction on the derivation of $A\subtypep B$.
+    
+        Cases are given in Appendix \ref{AdequacySubtypingProof}.
+    \end{proof}
+\end{framed}
+
+\begin{framed}
+    \begin{lemma}[Environment Lemma]\label{EnvironmentLemma}
+        $$\erelates{\P,\a}{A}(\ev, \e) = \erelates{\P}{A\ssub{\e}{\a}}(\ev)$$
+    \end{lemma}
+    
+    \begin{proof}
+        By induction over the type $A$, proving that $\inLogRel{d}{v}{\P,\a}{A}{\ev, \e} \Leftrightarrow \inLogRelPE{d}{v}{A\ssub{\a}{\e}}$.
+    
+        Cases are given in Appendix \ref{AdequacyEnvironmentsProof}.
+    \end{proof}
+\end{framed}
+
+
+
+
+\subsection{Fundamental Property}\label{FundProp}
+
+\begin{framed}
+    \begin{theorem}[Fundamental Property]\label{FundPropTheorem}
+        Let $\erelatesg{\P}{\G}(\ev) \in \powset{\deno{\G}\ev)\times \pecput^{\G\ssub{\av}{\ev}}}$ mean:
+    
+        \begin{equation}
+            \label{LogicalRelationTypeEnvironment}
+            \inLogRelPEG{\rho}{\si}{\G} \Leftrightarrow \forall x. \inLogRelPE{\rho(x)}{\si(x)}{\G(x)}
+        \end{equation}
+    
+    
+        If $\inLogRelPEG{\rho}{\si}{\G}$ then $\inLogRelPE{\deno{\gpetyperelation{v}{A}}\fundRho}{v\fundSub}{A}$ up to equational equivalence.    
+    \end{theorem}
+    
+    \begin{proof}
+        By induction over the derivation of $\gpetyperelation{v}{A}$.
+        
+        Full cases in Appendix \ref{AdequacyFundamentalPropertyProof}.
+    \end{proof}
+\end{framed}
+
+
+\section{Adequacy}
+\label{AdequacySection}
+
+
+\begin{framed}
+    
+    \begin{theorem}[Adequacy]
+        For types $G$ defined as: $ G\gens \B \mid \U \mid \M{n}{G}$, equality of denotations implies equational equality.
+        
+        \begin{equation}
+            \deno{\ztyperelation{v}{G}} = \deno{\ztyperelation{u}{G}} \implies \zberelation{v}{u}{G}
+        \end{equation}
+        
+    \end{theorem}
+        
+        \begin{proof}
+            By induction on the structure of $G$, making use of the fundamental Property \ref{FundProp}.
+        
+            \case{Boolean}
+
+            Let $d=\deno{\ztyperelation{v}{\B}}=\deno{\ztyperelation{v}{\B}}\in \{ \top, \bot\}$. By the fundamental property, $\inLogRelPE{d}{v}{\B}$  and $\inLogRelPE{d}{v}{\B}$.
+        
+            \subcase{$d=\top$}
+            Then $\zberelation{v\beequiv\t}{u}{\B}$
+        
+            
+            \subcase{$d=\bot$}
+            Then $\zberelation{v\beequiv\f}{u}{\B}$
+        
+            \case{Unit}
+
+            Let $\singleton=\deno{\ztyperelation{v}{\U}}=\deno{\ztyperelation{v}{\U}}\in \{\singleton\}$. By the fundamental property, $\inLogRelPE{d}{v}{\U}$  and $\inLogRelPE{d}{v}{\U}$. Hence $\zberelation{v\beequiv\u}{u}{\U}$.
+        
+            \case{\teffect}
+        
+            Let $( n',  d) = \deno{\ztyperelation{v}{\M{n}{G}}} = \deno{\ztyperelation{u}{\M{n}{G}}}$. By the fundamental property, $\inLogRelPE{((n', d))}{v}{\M{n}{G}}$ and $\inLogRelPE{((n', d))}{u}{\M{n}{G}}$. So there exists $u', v'$ such that $\inLogRelPE{d'}{u'}{G}$ and $\inLogRelPE{d'}{u'}{G}$ and:
+        
+            \begin{align*}
+                \zberelation{v&}{\doin{\_}{\put^{n'}}{\return{v'}}}{\M{n}{G}}\\
+                &\beequiv \doin{\_}{\put^{n'}}{\return{u'}}\\
+                & \beequiv u
+            \end{align*}
+        $\square$
+        \end{proof}
+\end{framed}

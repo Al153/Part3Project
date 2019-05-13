@@ -1,0 +1,327 @@
+\chapter{Adequacy Proofs}
+
+\section{Adequacy and Subtyping}
+\label{AdequacySubtypingProof}
+
+\begin{proof}
+    This is proved by induction over the subtyping relation.
+
+    \case{\sground}
+    $A\subtypep B\implies A = B$, since ground subtyping is the identity relation.
+
+\case{\sfun}
+    $A\subtypep B\implies A = \fntype{A_1}{A_2}, B = \fntype{B_1}{B_2}$ where $B_1\subtypep A_1$ and $A_2\subtypep B_2$.
+
+    By the definition of the $\relates_{\wellformedt{\P}{\ab}}$ relation, $\inLogRelPE{d}{v}{\ab} \Leftrightarrow (\forall e, u. \inLogRelPE{e}{u}{A}\implies \inLogRelPE{d(e)}{\apply{v}{u}}{B})$.
+
+    So 
+
+    \begin{align*}
+        \forall e, u. \inLogRelPE{e}{u}{B_1} & \implies \inLogRelPE{e}{u}{A_1} \qt{By induction $B_1\subtypep A_1$}\\
+        & \implies \inLogRelPE{d(e)}{\apply{u}{v}}{A_2}\qt{By definition}\\
+        & \implies \inLogRelPE{d(e)}{\apply{u}{v}}{B_2}\qt{By induction $A_2\subtypep B_2$}
+    \end{align*}
+
+    As required.
+\case{\seffect}
+
+$\M{n_1}{A_1} \subtypep \M{n_2}{A_2} \implies n_1\leq n_2, A_1\subtypep A_2$
+
+\begin{align*}
+    \inLogRelPE{d}{v}{\M{n_1}{A_1}} & \implies  d=(n_1', d') \wedge n_1' \leq n_1\leq n_2 
+    \\ & \quad\wedge \exists v'. (\inLogRelPE{d'}{v'}{A_1} 
+    \\ & \quad\wedge\zberelation{v}{\doin{\_}{\put^{n'}}{\return{v'}}}{\M{n_1}{A_1}})
+    \\
+    & \implies \ztyperelation{v_1'}{A_2} \wedge \inLogRelPE{d'}{v'}{A_2} 
+    \\ & \quad 
+    \wedge \zberelation{v}{\doin{\_}{\put^{n'}}{\return{v'}}}{\M{n_1}{A_2}}
+    \\
+    & \implies \inLogRelPE{d}{v}{\M{n_2}{A_2}}
+\end{align*}
+
+\case{\squant}
+$\all{\a}{A_1}\subtypep \all{\a}{A_2}\implies A_1\subtype A_2$
+
+So:
+
+\begin{align*}
+    \inLogRelPE{d}{v}{\all{\a}{A_1}} & \implies \forall \e.\inLogRelPE{\pe(d)}{\eapp{v}{\e}}{A_1\ssub{\e}{\a}}\\
+    & \implies \forall\e \inLogRelPE{\pe(d)}{\eapp{v}{\e}}{A_2\ssub{\e}{\a}}\\
+    & \implies \inLogRelPE{d}{v}{\all{\a}{A_2}}
+\end{align*}
+\end{proof}
+
+\section{Adequacy and Effect Environments}
+\label{AdequacyEnvironmentsProof}
+
+\begin{proof}
+    By induction over the type $A$, proving that $\inLogRel{d}{v}{\P,\a}{A}{\ev, \e} \Leftrightarrow \inLogRelPE{d}{v}{A\ssub{\a}{\e}}$.
+
+    \case{Bool}
+            \begin{align*}
+                \inLogRel{d}{v}{\P,\a}{\B}{\ev, \e} & \Leftrightarrow (d = \top \wedge \zberelation{v}{\t}{\B})
+                \\ 
+                & \quad\wedge(d = \bot \wedge \zberelation{v}{\f}{\B})
+                \\
+                & \Leftrightarrow  \inLogRelPE{d}{v}{\B}
+            \end{align*}
+    
+        \case{Unit}
+        \begin{align*}
+            \inLogRel{d}{v}{\P,\a}{\U}{\ev, \e} & \Leftrightarrow (d = \singleton \wedge \zberelation{v}{\u}{\U})
+            \\
+            & \Leftrightarrow  \inLogRelPE{d}{v}{\U}
+        \end{align*}
+    
+        \case{\tfun}
+        \begin{align*}
+            \inLogRel{d}{v}{\P,\a}{\ab}{\ev, \e} & \Leftrightarrow \forall\inLogRel{e}{u}{\P,\a}{A}{\ev, \e}. \inLogRel{d(e)}{\apply{v}{u}}{\P,\a}{B}{\ev, \e} 
+            \\
+            & \Leftrightarrow 
+            \forall\inLogRelPE{e}{u}{A\ssub{\e}{\a}}. \inLogRelPE{d(e)}{\apply{v}{u}}{B\ssub{\a}{\e}}
+            \\
+            & \Leftrightarrow  \inLogRelPE{d}{v}{\fntype{A\ssub{\a}{\e}}{B\ssub{\a}{\e}}}
+            \\
+        \end{align*}
+    
+        \case{\teffect}
+    
+        \begin{align*}
+            \inLogRel{d}{v}{\P,\a}{\M{f}{A}}{\ev, \e} & \Leftrightarrow d= (n, d')
+            \\ & \wedge \exists v'. \inLogRel{d'}{v'}{\P,\a}{A}{\ev, \e}
+            \\ & \quad\wedge  \zberelation{v}{\doin{\_}{\put^{n'}}{\return{v'}}}{\M{f}{A}\ssub{\av}{\ev}\ssub{\a}{\e}}
+            \\ & \Leftrightarrow \exists v'. \inLogRelPE{d'}{v'}{A\ssub{\a}{\e}}
+            \\ & \quad\wedge  \zberelation{v}{\doin{\_}{\put^{n'}}{\return{v'}}}{\M{f}{A}\ssub{\a}{\e}\ssub{\av}{\ev}}
+            \\ & \Leftrightarrow \inLogRelPE{d}{v}{A\ssub{\a}{\e}}
+        \end{align*}
+    \case{\tquant}
+    \begin{align*}
+        \inLogRel{d}{v}{\P,\a}{\all{\b}{A}}{\ev, \e_1} & \Leftrightarrow \forall \e_2. \inLogRel{\pi_{\e_2}(d)}{\eapp{v}{\e_2}}{\P,\a}{A\ssub{\b}{\e_2}}{\ev, \e_1}
+        \\
+        & \Leftrightarrow \forall \e_2. \inLogRelPE{\pi_{\e_2}(d)}{\eapp{v}{\e_2}}{A\ssub{\b}{\e_2}\ssub{\a}{\e_1}}
+        \\
+        & \Leftrightarrow \inLogRelPE{d}{v}{\all{\b}{A\ssub{\a}{\e_1}}}
+    \end{align*}
+    
+\end{proof}
+
+\section{Adequacy Fundamental Property}
+\label{AdequacyFundamentalPropertyProof}
+By induction over the derivation of $\gpetyperelation{v}{A}$.
+
+\begin{proof}
+    \case{Variables}
+        \begin{align*}
+            \deno{\gpetyperelation{x}{\G(x)}}\fundRho & = \rho(x) \\
+            x\ssi\ssub{\av}{\ev} & = \si(x)\\
+        \end{align*}
+    
+        And $\inLogRelPE{\rho(x)}{\si(x)\ssub{\av}{\ev}}{\G(x)}$.
+    
+        \case{Constants}
+        \begin{align*}
+            \deno{\gpetyperelation{\t}{\B}}\fundRho & = \top \wedge \zberelation{\t\fundSub}{\t}{\B} 
+            \\ 
+            \deno{\gpetyperelation{\f}{\B}}\fundRho & = \bot \wedge \zberelation{\f\fundSub}{\f}{\B}
+            \\ 
+            \deno{\gpetyperelation{\u}{\U}}\fundRho & = \singleton \wedge \zberelation{\u\fundSub}{\u}{\U}
+            \\
+            \deno{\gpetyperelation{\put}{\M{1}{\U}}}\fundRho & = (1, \singleton)\wedge \zberelation{\put}{\doin{\_}{\put^1}{\return{\u}}}{\s\M{\1}{\U}}
+            \\
+        \end{align*}
+    
+        \begin{align*}
+            \qt{ So } \inLogRelPE{\deno{\gpetyperelation{\t}{\B}}\fundRho}{\t\fundSub}{\B}
+            \\
+            \qt{ So } \inLogRelPE{\deno{\gpetyperelation{\t}{\B}}\fundRho}{\f\fundSub}{\B}
+            \\
+            \qt{ So } \inLogRelPE{\deno{\gpetyperelation{\u}{\U}}\fundRho}{\u\fundSub}{\U}
+            \\
+            \qt{So }\inLogRelPE{\deno{\gpetyperelation{\put}{\M{\1}{U}}}\fundRho}{\put\fundSub}{\M{\1}{\U}}
+            \\ 
+        \end{align*}
+    
+        \case{\vsubtype}
+    
+        \begin{equation}
+            \deno{\gpetyperelation{v}{B}}\fundRho = \deno{\gpetyperelation{v}{A}}\fundRho
+        \end{equation}
+    
+        By induction, $\inLogRelPE{\deno{\gpetyperelation{v}{A}}\fundRho}{v\fundSub}{A}$.
+        Since, by the subtyping lemma (Lemma \ref{LogRelSubtype}) $A\subtypep B \wedge \inLogRelPE{d}{v}{A} \implies \inLogRelPE{d}{v}{B}$, we have that $\inLogRelPE{\deno{\gpetyperelation{v}{B}}}{v\fundSub}{B}$.
+    
+        \case{\vfun}
+    
+        For all $\inLogRelPE{d}{u}{A}$, 
+        \begin{align*}
+            (\deno{\gpetyperelation{\lam{x}{A}{v}}{\ab}}\fundRho) d & = (\cur{\deno{\typerelation{\gax}{v}{B}}}\fundRho) d\\
+            & = \deno{\typerelation{\gax}{v}{B}} (\fundRhoExt{[x\mapsto d]})\\
+        \end{align*}
+    
+        Since $\inLogRelPE{d}{u}{A}$, we have $\inLogRelPEG{(\rho[x\mapsto d])}{(\si, x\setto u)}{\gax}$, so by induction
+        \begin{align*}
+            \inLogRelPE{\deno{\typerelation{\gax}{v}{B}}(\ev)(\rho[x\mapsto d])&}{v\ssub{\av}{\ev}\sub{\si, x\setto u}}{B}
+        \end{align*}
+    
+        We can see that $\zberelation{v\ssub{\av}{\ev}{\sub{\si, x\setto u}}}{\apply{((\lam{x}{A}{v})\fundSub)}{u}}{B\ssub{\av}{\ev}}$.
+    
+        Hence $\inLogRelPE{(\deno{\gpetyperelation{\lam{x}{A}{v}}{\ab}}\fundRho) }{(\lam{x}{A}{v})\fundSub}{\ab}$.
+    
+    
+    \case{\vapply}
+    \begin{equation}
+        \deno{\gpetyperelation{\apply{v}{u}}{B}}\fundRho = (\deno{\gpetyperelation{v}{\ab}}\fundRho)(\deno{\gpetyperelation{u}{A}}\fundRho)
+    \end{equation}
+    
+    By induction $\inLogRelPE{\deno{\gpetyperelation{v}{\ab}}\fundRho}{v\fundSub}{\ab}$ and $\inLogRelPE{\deno{\gpetyperelation{u}{A}}\fundRho}{u\fundSub}{A}$. So by the definition of $\erelates{\P}{\ab}$, 
+    
+    \begin{align*}
+       \inLogRelPE{(\deno{\gpetyperelation{v}{\ab}}\fundRho)(\deno{\gpetyperelation{u}{A}}\fundRho)}{\apply{(v\fundSub)}{(u\fundSub)})}{B}
+    \end{align*}
+    
+    Where $\zberelation{\apply{(v\fundSub)}{(u\fundSub)}}{(\apply{v}{u})\fundSub}{B\ssub{\av}{\ev}}$.
+    
+    So $\inLogRelPE{\deno{\gpetyperelation{\apply{v}{u}}{B}}\fundRho}{(\apply{v}{u})\fundSub}{B}$.
+    
+    
+    \case{\vreturn}
+    
+    \begin{equation}
+        \deno{\gpetyperelation{v}{\M{0}{A}}}\fundRho = (0, \deno{\gpetyperelation{v}{A}}\fundRho)
+    \end{equation}
+    
+    By induction, $\inLogRelPE{\deno{\gpetyperelation{v}{A}}\fundRho}{v\fundSub}{A}$. So by picking $v' = v\fundSub$, we have
+    
+    \begin{equation}
+        \zberelation{(\return{v})\fundSub}{\return{(v\fundSub)\beequiv \doin{\_}{\put^0}{\return{v'}}}}{\M{0}{A\ssub{\av}{\ev}}}
+    \end{equation}
+    
+    So $\inLogRelPE{\deno{\gpetyperelation{\return{v}}{\M{0}{A}}}\fundRho}{(\return{v})\fundSub}{\M{0}{A}}$
+    
+    \case{\vbind}
+    
+    By inversion, $(\deno{\gpetyperelation{\doin{x}{v_1}{v_2}}{\M{m+n}{B}}}\fundRho) = (m'+n', d_2)$, where $(n', d_2) = (\deno{\typerelation{\gax}{v_2}{\mnb}}(\fundRhoExt{[x\mapsto d_1]}))$, and $(n', d_1) = (\deno{\gpetyperelation{v_1}{\mma}}\fundRho)$.
+    
+    By induction, $\inLogRelPE{(m', d_1)}{v_1\fundSub}{\mma}$. So $\exists v_1'$ such that $\zberelation{v_1\fundSub}{\doin{\_}{\put^{m'}}{\return{v_1'}}}{\mma}$. So $\inLogRelPE{(\fundRhoExt{[x\mapsto d_1]})}{(\ssi, x\setto v_1')}{\gax}$.
+    
+    So by induction $\inLogRelPE{\deno{\typerelation{\gax}{v_2}{\mnb}}(\fundRhoExt{[x\mapsto d_1]})}{v_2\sub{\si, x\setto v_1'}}{\mnb}$.
+    
+    Hence, $\exists v_2'$ such that $\zberelation{v_2\sub{\si, x\setto v_1'}}{\doin{\_}{\put^{n'}{\return{v_2'}}}}{\M{m + n}{B}}$ and $\inLogRelPE{d_2}{v_2'}{\mnb}$.
+    
+    Hence,
+    
+    \begin{align*}
+        \zberelation{\doin{x}{v_1\fundSub}{v_2\fundSub}&}{\doin{x}{(\doin{\_}{\put^{m'}}{\return{v_1'}})}{(v_2\fundSub)}}{\M{m+n}{B}}\\
+        &\beequiv\doin{\_}{\put^{m'}}{v_2\sub{\si, x\setto{v_1'}}}\\
+        &\beequiv\doin{\_}{\put^{m'+n'}}{\return{v_2'}}
+    \end{align*}
+    
+    So $\inLogRelPE{\deno{\gpetyperelation{\doin{x}{v_1}{v_2}}{\M{m+n}{B}}}\fundRho}{(\doin{x}{v_1}{v_2})\fundSub}{\M{m+n}{B}}$.
+    
+    
+    
+    \case{\vif}
+    
+    By inversion, $$\deno{\gpetyperelation{\pifthenelse{A}{b}{v_1}{v_2}}{A}}\fundRho = \begin{cases}
+        \deno{\gpetyperelation{v_1}{A}}\fundRho \qt{If }\deno{\gpetyperelation{b}{\B}}\fundRho = \top\\
+        \deno{\gpetyperelation{v_2}{A}}\fundRho \qt{If }\deno{\gpetyperelation{b}{\B}}\fundRho = \bot
+    \end{cases}
+    $$.
+    
+    By induction,
+    
+    \begin{align*}
+        \inLogRelPE{\deno{\gpetyperelation{b}{\B}&}\fundRho}{b\fundSub}{\B}\\
+        \inLogRelPE{\deno{\gpetyperelation{v_1}{A}&}\fundRho}{v_1\fundSub}{A}\\
+        \inLogRelPE{\deno{\gpetyperelation{v_2}{A}&}\fundRho}{v_2\fundSub}{A}
+    \end{align*}
+    
+    \subcase{$\deno{\gpetyperelation{b}{\B}}\fundRho = \top$ and $\zberelation{b\fundSub}{\t}{\B}$}
+    
+    \begin{equation}
+        \deno{\gpetyperelation{\pifthenelse{A}{b}{v_1}{v_2}}{A}}\fundRho = \deno{\gpetyperelation{v_1}{A}}\fundRho
+    \end{equation}
+    
+    And
+    
+    \begin{equation}
+       \zberelation{ v_1\fundSub}{(\pifthenelse{A}{b}{v_1}{v_2})\fundSub}{A\ssub{\av}{\ev}}
+    \end{equation}
+    
+    So
+    \begin{equation}
+            \inLogRelPE{\deno{\gpetyperelation{\pifthenelse{A}{b}{v_1}{v_2}}{A}}\fundRho}{(\pifthenelse{A}{b}{v_1}{v_2})\fundSub}{A}
+        \end{equation}
+    
+    \subcase{$\deno{\gpetyperelation{b}{\B}}\fundRho = \bot$ and $\zberelation{b\fundSub}{\f}{\B}$}
+    
+        \begin{equation}
+            \deno{\gpetyperelation{\pifthenelse{A}{b}{v_1}{v_2}}{A}}\fundRho = \deno{\gpetyperelation{v_2}{A}}\fundRho
+        \end{equation}
+        
+        And
+        
+        \begin{equation}
+           \zberelation{v_2\fundSub}{(\pifthenelse{A}{b}{v_1}{v_2})\fundSub}{A\ssub{\av}{\ev}}
+        \end{equation}
+        
+        So
+        \begin{equation}
+                \inLogRelPE{\deno{\gpetyperelation{\pifthenelse{A}{b}{v_1}{v_2}}{A}}\fundRho}{(\pifthenelse{A}{b}{v_1}{v_2})\fundSub}{A}
+            \end{equation}
+        
+    
+    \case{\vgen}
+    
+    For all $\e\in E$:
+    
+    \begin{align}
+        \pe(\deno{\gpetyperelation{\elam{\a}{v}}{\all{\a}{A}}}\fundRho) & = \pe(\finpr{\deno{\etyperelation{\P,\a}{\G}{v}{A}}(\ev, \e')}{\e'\in E}(\rho)) 
+        \\
+        & = \deno{\etyperelation{\P,\a}{\G}{v}{A}}(\ev, \e)(\rho)
+    \end{align}
+    
+    By induction, we know that $\inLogRel{\deno{\etyperelation{\P,\a}{\G}{v}{A}}(\ev, \e)(\rho)}{v\ssub{\av}{\ev}\ssub{\a}{\e}\ssi}{\P,\a}{A}{\ev, \e}$.
+    
+    
+    By the environment lemma (Lemma \ref{EnvironmentLemma}), $\erelates{\P, \a}{A}(\ev, \e) = \erelates{\P}{A\ssub{\a}{\e}}(\ev)$.
+    
+    
+    So $\inLogRelPE{\deno{\etyperelation{\P,\a}{\G}{v}{A}}(\ev, \e)(\rho)}{v\ssub{\av}{\ev}\ssub{\a}{\e}\ssi}{A\ssub{\a}{\e}}$
+    
+    Since $\a$ does not appear in $\si$ (Since $\si$ is well formed under $\P = \nil$), we can commute the substitutions: $v\ssub{\av}{\ev}\ssub{\a}{\e}\ssi = v\ssub{\av}{\ev}\ssi\ssub{\a}{\e}$.
+    
+    Hence: 
+    \begin{equation*}
+        \zberelation{v\ssub{\av}{\ev}\ssub{\a}{\e}\ssi = v\ssub{\av}{\ev}\ssi\ssub{\a}{\e}}{\eapp{\elam{\a}{(v\fundSub)}}{\e}}{A\ssub{\a}{\e}\ssub{\av}{\ev}}
+    \end{equation*}
+    
+    So $\inLogRelPE{    \pe(\deno{\gpetyperelation{\elam{\a}{v}}{\all{\a}{A}}}\fundRho)}{\eapp{\elam{\a}{(v\fundSub)}}{\e}}{A\ssub{\a}{\e}}$.
+    
+    So $\inLogRelPE{\deno{\gpetyperelation{\elam{\a}{v}}{\all{\a}{A}}}}{(\elam{\a}{v})\fundSub}{\all{\a}{A}}$.
+    
+    
+    \case{\vspec}
+    Required to prove $\inLogRelPE{\deno{\gpetyperelation{\eapp{v}{\e}}{A\ssub{\a}{\e}}}\fundRho}{(\eapp{v}{\e})\fundSub\beequiv\eapp{(v\fundSub)}{\e}}{A\ssub{\a}{\e}}$.
+    
+    By inversion and induction, $\inLogRelPE{\deno{\gpetyperelation{v}{\all{\a}{A}}}}{v\fundSub}{\all{\a}{A}}$. So, $$\forall\e. \inLogRelPE{\pe(\deno{\gpetyperelation{v}{\all{\a}{A}}}\fundRho)}{\eapp{(v\fundSub)}{\e}}{A\ssub{\a}{\e}}$$
+    
+    Let $\e' = \deno{\wellformede{\P}{\e}}\ev$.
+    
+    \begin{align*}
+        \deno{\gpetyperelation{\eapp{v}{\e}}{A\ssub{\a}{\e}}}\fundRho 
+        & = \pr{\Id{}}{\deno{\wellformede{\P}{\e}}}\star(\counit{\wellformedt{\P,\b}{A\ssub{\a}{\b}}})(\ev)(\deno{\gpetyperelation{v}{\all{\a}{A}}}\fundRho)\\
+        & = \pi_{\e'}(\deno{\gpetyperelation{v}{\all{\a}{A}}}\fundRho)
+    \end{align*}
+    
+    Its also the case that
+    \begin{equation}
+        \eapp{(v\fundSub)}{\e'} = (\eapp{v}{\e})\fundSub
+    \end{equation}
+    
+    So
+    
+    \begin{equation}
+        \inLogRelPE{\deno{\gpetyperelation{\eapp{v}{\e}}{A\ssub{\a}{\e}}}\fundRho }{(\eapp{v}{\e})\fundSub}{A\ssub{\a}{\e}}
+    \end{equation}
+\end{proof}

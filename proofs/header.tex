@@ -667,4 +667,22 @@
 \newcommand\liftp[0]{^\pi}
 \newcommand{\pe}[0]{\pi_\e}
 
+
+
+\usepackage[mathscr]{euscript}
+\let\euscr\mathscr \let\mathscr\relax
+\usepackage[scr]{rsfso}
+\newcommand{\powerset}{\raisebox{.15\baselineskip}{\Large\ensuremath{\wp}}}
+\newcommand\erelates[2]{\texttt{R}_{\wellformedt{#1}{#2}}}
+\newcommand\erelatesg[2]{\texttt{R}_{\wellformedok{#1}{#2}}}
+\newcommand\powset[1]{\powerset(#1)}
+\newcommand{\av}[0]{\vec{\a}}
+
+\newcommand\inLogRel[5]{(#1, #2)\in\erelates{#3}{#4}(#5)}
+\newcommand\inLogRelE[4]{\inLogRel{#1}{#2}{#3}{#4}{\ev}}
+\newcommand{\inLogRelPE}[3]{\inLogRelE{#1}{#2}{\P}{#3}}
+\newcommand{\inLogRelPEG}[3]{({#1}{#2})\in\erelatesg{\P}{#3}(\ev)}
+\newcommand\fundSub[0]{\ssub{\av}{\ev}\ssi}
+\newcommand\fundRho[0]{(\ev)(\rho)}
+\newcommand\fundRhoExt[1]{(\ev)(\rho#1)}
 \fi
