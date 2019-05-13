@@ -1,6 +1,6 @@
 
 
-    An important result, though often not proved in presentations of denotational semantics, is that of adequacy. A denotational semantics is adequate if two terms having equal denotations implies that the terms are equationally equivalent. In this chapter, I shall introduce an instantiation of PEC,  $\pecput$ with a suitable denotational semantics, generated using the methods described in Chapter \ref{HowToBuildAModel}. Following this, I shall introduce a set of logical relation between the denotations and closed terms. Using these relations, I shall prove that closed terms with the same denotations are equivalent under the equational equivalence given in Section \ref{SoundnessDefinition}.
+    An important result, though often not proved in presentations of denotational semantics, is that of adequacy. A denotational semantics is adequate if two terms having equal denotations implies that the terms are equationally equivalent. Proving adequacy ensures that a denotational semantics may be used for program analysis. In this chapter, I shall introduce an instantiation of PEC,  $\pecput$ with a suitable denotational semantics, generated using the methods described in Chapter \ref{HowToBuildAModel}. Following this, I shall introduce a set of logical relation between the denotations and closed terms. Using these relations, I shall prove that closed terms with the same denotations are equivalent under the equational equivalence given in Section \ref{SoundnessDefinition}.
 
     \section{Instantiation of the Polymorphic Effect Calculus}
     Let us instantiate the polymorphic effect calculus to be a language in which one can write programs which can create an output signal using the statement $\put$. The effect system of EC is then used to count an upper bound on the number of outputs that a program can make. This language shall be called $\pecput$.
@@ -135,7 +135,7 @@ We can now introduce some syntactic sugar for $\pecput$. Specifically, we introd
 
 
 \section{Logical Relations}
-It is difficult to directly prove adequacy. This is because we cannot directly perform induction over morphisms. So instead we use a system of logical relations which relate elements of denotations of types to closed terms of the same type (Definition \ref{LogicalRelationDefinition}). Specifically we define a relation for a given type, effect environment, and tuple of ground effects. Since they are defined structurally with respect the type, we can induct over the structure to prove properties. We then show that these logical relations are preserved by subtyping (Theorem \ref{LogRelSubtype}) and that they behave well with respect to single effect-variable substitutions (Theorem \ref{EnvironmentLemma}). Finally, we prove a fundamental property (Theorem \ref{FundPropTheorem}) which shows that the denotation of a term relates to the term itself. In Section \ref{AdequacySection}, we finally use the logical relations to prove adequacy.
+It is difficult to directly prove adequacy. This is because we cannot directly perform induction over morphisms. So instead we use a system of logical relations which relate elements of denotations of types to closed terms of the same type (Definition \ref{LogicalRelationDefinition}). Specifically we define a relation for a given type, effect environment, and tuple of ground effects. Since they are defined structurally with respect the type, we can induct over the structure to prove properties. We then show that these logical relations are preserved by subtyping (Theorem \ref{LogRelSubtype}) and that they behave well with respect to single effect-variable substitutions (Theorem \ref{EnvironmentLemma}). These properties allow us to prove a fundamental property of these logical relations (Theorem \ref{FundPropTheorem}) which shows that the denotation of a term relates to the term itself. In Section \ref{AdequacySection}, we finally use the logical relations to prove adequacy.
 
 \begin{framed}
     \begin{definition}[Logical Relation]\label{LogicalRelationDefinition}
@@ -174,7 +174,7 @@ It is difficult to directly prove adequacy. This is because we cannot directly p
 \end{framed}
 
 \begin{framed}
-    \begin{lemma}[Environment Lemma]\label{EnvironmentLemma}
+    \begin{lemma}[Environment z]\label{EnvironmentLemma}
         $$\erelates{\P,\a}{A}(\ev, \e) = \erelates{\P}{A\ssub{\e}{\a}}(\ev)$$
     \end{lemma}
     
@@ -189,6 +189,7 @@ It is difficult to directly prove adequacy. This is because we cannot directly p
 
 
 \subsection{Fundamental Property}\label{FundProp}
+At this point, we know how the logical relations interact with subtyping and the change of environment. We can now use these properties to prove the fundamental property linking relating terms to their denotations.
 
 \begin{framed}
     \begin{theorem}[Fundamental Property]\label{FundPropTheorem}
@@ -214,6 +215,7 @@ It is difficult to directly prove adequacy. This is because we cannot directly p
 \section{Adequacy}
 \label{AdequacySection}
 
+The properties proved up to this point show that each term's denotation is related to the term itself. We now use this property to prove adequacy.
 
 \begin{framed}
     

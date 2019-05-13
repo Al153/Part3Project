@@ -3534,9 +3534,7 @@ Hence we have proof that our construction is indeed a valid indexed S-category. 
 \input{adequacyChapter.tex}
 
 \chapter{Conclusion}
-This dissertation has introduced a denotational semantics for polymorphic effect systems in category theory and has proved that non-trivial models capable of interpreting effect-polymorphic languages can indeed be constructed in simple categories such as $\set$. It is reasonable to conjecture that the reason that PEC's semantics are significantly simpler than those of other polymorphic languages, such as System F, is that PEC's polymorphism is not impredicative. Its polymorphic types do not quantify over themselves. This hypothesis could be tested by attempting to construct simple, $\set$-based models for other predicatively polymorphic languages. An example of such a language might be the lambda calculus extended with types that depend on the natural numbers.
-
-The final piece of the puzzle would be to find an adequate model of a given effect-polymorphic language. This means instantiating a sound model such that if the denotations of two terms are equal in the model, then the terms themselves are equal up to the same equational equivalence. This is typically a hard problem which is often not addressed in presentations of denotational semantics.
+This dissertation has introduced a denotational semantics for polymorphic effect systems in category theory and has demonstrated that non-trivial, adequate models capable of interpreting effect-polymorphic languages can indeed be constructed in simple categories such as $\set$. It is reasonable to conjecture that the reason that PEC's semantics are significantly simpler than those of other polymorphic languages, such as System F, is that PEC's polymorphism is not impredicative. Its polymorphic types do not quantify over themselves. This hypothesis could be tested by attempting to construct simple, $\set$-based models for other predicatively polymorphic languages. An example of such a language might be the lambda calculus extended with types that depend on the natural numbers.
 
 This work forms a potential foundation for precise analysis tools which could be used to improve compilers and interpreters in the future. A more precise analysis of programs allows more specific optimisations to be made, such as code re-ordering or removal of dead code, where they would not be considered sound under a non-polymorphic system.
 
@@ -3548,7 +3546,7 @@ This work forms a potential foundation for precise analysis tools which could be
 %% Appendices
 \appendix
 
-% Appendices account for ~1000 words
+% Appendices account for 1080 words
 \input{AppendixWeakeningProofs.tex}
 \input{AppendixSCategoryFunctors.tex}
 \input{AppendixFunctorCategoryStructures.tex}
