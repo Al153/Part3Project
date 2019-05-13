@@ -14,9 +14,9 @@
     \end{equation}
 
     \subsection{Graded Monad}
-    We index the base graded monad with a partially ordered monoid derived from the natural numbers. This base monoid is extended as described in Section \ref{PECTypeSystem} to symbolically include variables $\a, \b, \g$ which range over the natural numbers. The abstract effect of a term therefore computes an upper bound on the number of outputs produced.  This means that the $\doin{x}{v}{v'}$ type rule adds together the upper bounds on the two expressions to give an upper bound on the number of outputs of the sequenced expression. The $\return{v}$ type rule acknowledges that a pure expression does not have any output. Subtyping  allows the type system to compute a looser bound.
+    We index the base graded monad with a partially ordered monoid derived from the natural numbers (Equation \ref{AdequacyMonoid}). This base monoid is extended as described in Section \ref{PECTypeSystem} to symbolically include variables $\a, \b, \g$ which range over the natural numbers. The abstract effect of a term therefore computes an upper bound on the number of outputs produced.  This means that the $\doin{x}{v}{v'}$ type rule adds together the upper bounds on the two expressions to give an upper bound on the number of outputs of the sequenced expression. The $\return{v}$ type rule acknowledges that a pure expression does not have any output. Subtyping  allows the type system to compute a looser bound.
     
-    \begin{equation}
+    \begin{equation}\label{AdequacyMonoid}
         E = (\N, 0, +, \leq)        
     \end{equation}
     
@@ -135,7 +135,7 @@ We can now introduce some syntactic sugar for $\pecput$. Specifically, we introd
 
 
 \section{Logical Relations}
-It is difficult to directly prove adequacy. This is because we cannot directly perform induction over morphisms. So instead we use a system of logical relations which relate elements of denotations of types to closed terms of the same type (Definition \ref{LogicalRelationDefinition}). Specifically we define a relation for a given type, effect environment, and tuple of ground effects. Since they are defined structurally with respect the type, we can induct over the structure to prove properties. We then show that these logical relations are preserved by subtyping (Theorem \ref{LogRelSubtype}) and that they behave well with respect to single effect-variable substitutions (Theorem \ref{EnvironmentLemma}). These properties allow us to prove a fundamental property of these logical relations (Theorem \ref{FundPropTheorem}) which shows that the denotation of a term relates to the term itself. In Section \ref{AdequacySection}, we finally use the logical relations to prove adequacy.
+It is difficult to directly prove adequacy. This is because we cannot directly perform induction over morphisms. So instead we use a system of logical relations which relate elements of denotations of types to closed terms of the same type (Definition \ref{LogicalRelationDefinition}). Specifically we define a relation for a given type, effect environment, and tuple of ground effects. Since they are defined structurally with respect the type, we can induct over the structure to prove properties. Using such induction, we show that these logical relations are preserved by subtyping (Theorem \ref{LogRelSubtype}) and that they behave well with respect to single effect-variable substitutions (Theorem \ref{EnvironmentLemma}). These properties allow us to prove a fundamental property of these logical relations (Theorem \ref{FundPropTheorem}) which shows that the denotation of a term relates to the term itself. In Section \ref{AdequacySection}, we finally use the logical relations to prove adequacy.
 
 \begin{framed}
     \begin{definition}[Logical Relation]\label{LogicalRelationDefinition}
@@ -215,7 +215,7 @@ At this point, we know how the logical relations interact with subtyping and the
 \section{Adequacy}
 \label{AdequacySection}
 
-The properties proved up to this point show that each term's denotation is related to the term itself. We now use this property to prove adequacy.
+The fundamental theorem gives us the ability to prove the main theorem of this section: adequacy.
 
 \begin{framed}
     
