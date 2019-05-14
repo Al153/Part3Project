@@ -3041,7 +3041,6 @@ Now we can state the soundness theorem.
         I have omitted the congruence cases here as they hold through simple application of the inductive hypothesis on subterms. This occurs because this denotational semantics is compositional, meaning that denotations of terms are defined entirely in terms of the denotations of their subexpression. Similarly, the equivalence relation cases hold simply because equality on morphisms is an equivalence relation by definition. I do however, give a selection of the reduction cases to demonstrate the necessity of the S-category requirements.
     
     \case{\eqrightunit}
-    \todo{Splits bottom of box}
     This case makes use of the right-unit monad law. Let $f = \deno{\gpetyperelation{v}{\mea}}$.
         \begin{equation}
         \begin{split}
@@ -3395,25 +3394,25 @@ The leftwards and rightwards components of this bijection can be derived as foll
 
 \begin{figure}
     \begin{framed}
-        
-
-
         \centering
         \textbf{The Adjunction Operations}
-        
-        \todo{Put these next to each other}
-        \begin{align*}
-            f:&\quad \pstar A \rightarrow B\\
-            \bar{f}:&\quad A\rightarrow \allEn B\\
-            \bar{f}(\env) =&\quad \finpr{f(\env, \e)}{\e\in E}
-        \end{align*}
-        
 
+        \begin{minipage}{0.45\linewidth}
+            \begin{align*}
+                f:&\quad \pstar A \rightarrow B\\
+                \bar{f}:&\quad A\rightarrow \allEn B\\
+                \bar{f}(\env) =&\quad \finpr{f(\env, \e)}{\e\in E}
+            \end{align*}
+        \end{minipage}
+        \quad
+        \begin{minipage}{0.45\linewidth}
+            
         \begin{align*}
             g:&\quad A \rightarrow \allEn B\\
             \widehat{g}:&\quad \pstar A\rightarrow B\\
             \widehat{g}(\env, \e_{n+1}) =&\quad\pi_{\e_{n+1}}\after g(\env)
         \end{align*}
+        \end{minipage}
     \end{framed}
 
     \caption{The definition of the adjunction's bijection operations}
