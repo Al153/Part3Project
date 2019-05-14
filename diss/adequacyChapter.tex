@@ -1,6 +1,6 @@
 
 
-    An important result, though often not proved in presentations of denotational semantics, is that of adequacy. A denotational semantics is adequate if two terms having equal denotations implies that the terms are equationally equivalent. Proving adequacy ensures that a denotational semantics may be used for program analysis. In this chapter, I shall introduce an instantiation of PEC,  $\pecput$ with a suitable denotational semantics, generated using the methods described in Chapter \ref{HowToBuildAModel}. Following this, I shall introduce a set of logical relation between the denotations and closed terms. Using these relations, I shall prove that closed terms with the same denotations are equivalent under the equational equivalence given in Section \ref{SoundnessDefinition}.
+    An important result, though often not proved in presentations of denotational semantics, is that of adequacy. A denotational semantics is adequate if two terms having equal denotations implies that the terms are equationally equivalent. Proving adequacy ensures that a denotational semantics may be used for program analysis. In this chapter, I shall introduce an instantiation of PEC,  $\pecput$ with a suitable denotational semantics, generated using the methods described in Chapter \ref{HowToBuildAModel}. Following this, I shall introduce a set of logical relation between the denotations and closed terms. Using these relations, I shall then prove that closed terms with the same denotations are equivalent under the equational equivalence given in Section \ref{SoundnessDefinition}.
 
     \section{Instantiation of the Polymorphic Effect Calculus}
     Let us instantiate the polymorphic effect calculus to be a language in which one can write programs which can create an output signal using the statement $\put$. The effect system of EC is then used to count an upper bound on the number of outputs that a program can make. This language shall be called $\pecput$.
@@ -22,7 +22,7 @@
     
 
     \subsection{Constants}
-    We extend the set of constant, built in expressions to include a \put\s statement which performs a single output action.
+    As stated, we extend the set of constant, built in expressions to include a \put\s statement which performs a single output action.
 
     \begin{equation}
         \label{AdequacyConstants}
@@ -135,7 +135,7 @@ We can now introduce some syntactic sugar for $\pecput$. Specifically, we introd
 
 
 \section{Logical Relations}
-It is difficult to directly prove adequacy. This is because we cannot directly perform induction over morphisms. So instead we use a system of logical relations which relate elements of denotations of types to closed terms of the same type (Definition \ref{LogicalRelationDefinition}). Specifically we define a relation for a given type, effect environment, and tuple of ground effects. Since they are defined structurally with respect the type, we can induct over the structure to prove properties. Using such induction, we show that these logical relations are preserved by subtyping (Theorem \ref{LogRelSubtype}) and that they behave well with respect to single effect-variable substitutions (Theorem \ref{EnvironmentLemma}). These properties allow us to prove a fundamental property of these logical relations (Theorem \ref{FundPropTheorem}) which shows that the denotation of a term relates to the term itself. In Section \ref{AdequacySection}, we finally use the logical relations to prove adequacy.
+It is difficult to directly prove adequacy. This is because we cannot directly perform induction over morphisms. So instead we use a system of logical relations which relate elements of denotations of types to closed terms of the same type (Definition \ref{LogicalRelationDefinition}). Specifically we define a relation for a given type, effect environment, and tuple of ground effects. Since they are defined structurally with respect to the type, we can induct over the type structure to prove properties. Specifically, using such induction, we show that these logical relations are preserved by subtyping (Theorem \ref{LogRelSubtype}) and that they behave well with respect to single effect-variable substitutions (Theorem \ref{EnvironmentLemma}). These properties allow us to prove a fundamental property of these logical relations (Theorem \ref{FundPropTheorem}) which asserts that the denotation of a term relates to the term itself. In Section \ref{AdequacySection}, we finally use the logical relations to prove adequacy.
 
 \begin{framed}
     \begin{definition}[Logical Relation]\label{LogicalRelationDefinition}
@@ -167,9 +167,7 @@ It is difficult to directly prove adequacy. This is because we cannot directly p
     \end{theorem}
     
     \begin{proof}
-        By induction on the derivation of $A\subtypep B$.
-    
-        Cases are given in Appendix \ref{AdequacySubtypingProof}.
+        By induction on the derivation of $A\subtypep B$. Cases are given in Appendix \ref{AdequacySubtypingProof}.
     \end{proof}
 \end{framed}
 
@@ -179,9 +177,7 @@ It is difficult to directly prove adequacy. This is because we cannot directly p
     \end{lemma}
     
     \begin{proof}
-        By induction over the type $A$, proving that $\inLogRel{d}{v}{\P,\a}{A}{\ev, \e} \Leftrightarrow \inLogRelPE{d}{v}{A\ssub{\a}{\e}}$.
-    
-        Cases are given in Appendix \ref{AdequacyEnvironmentsProof}.
+        By induction over the type $A$, proving that $\inLogRel{d}{v}{\P,\a}{A}{\ev, \e} \Leftrightarrow \inLogRelPE{d}{v}{A\ssub{\a}{\e}}$. Cases are given in Appendix \ref{AdequacyEnvironmentsProof}.
     \end{proof}
 \end{framed}
 
@@ -205,9 +201,7 @@ At this point, we know how the logical relations interact with subtyping and the
     \end{theorem}
     
     \begin{proof}
-        By induction over the derivation of $\gpetyperelation{v}{A}$.
-        
-        Full cases in Appendix \ref{AdequacyFundamentalPropertyProof}.
+        By induction over the derivation of $\gpetyperelation{v}{A}$. The full set of  cases is given in Appendix \ref{AdequacyFundamentalPropertyProof}.
     \end{proof}
 \end{framed}
 
@@ -215,7 +209,7 @@ At this point, we know how the logical relations interact with subtyping and the
 \section{Adequacy}
 \label{AdequacySection}
 
-The fundamental theorem gives us the ability to prove the main theorem of this section: adequacy.
+The fundamental property gives us the ability to prove the main theorem of this chapter: adequacy.
 
 \begin{framed}
     
@@ -258,3 +252,5 @@ The fundamental theorem gives us the ability to prove the main theorem of this s
         $\square$
         \end{proof}
 \end{framed}
+
+Adequacy is important as it tells us that the model is indeed useful for program analysis. Adequacy is often omitted in the presentation of denotational semantics, as it is often difficult to prove. However, this $\set$ based construction shows that logical relations required to prove adequacy are fairly simple. Indeed, simply by changing the relation for $\wellformedt{\P}{\mea}$, adequacy can be proved for polymorphic languages with different effect systems.
