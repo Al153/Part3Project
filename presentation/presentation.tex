@@ -4,6 +4,7 @@
 \newcommand\PRESENTATIONMODE[0]{signal command to allow beamer to work with the header file}
 
 \newcommand\script[1]{}
+\def\checkmark{\tikz\fill[scale=0.4](0,.35) -- (.25,0) -- (1,.7) -- (.25,.15) -- cycle;} 
 
 \input{../proofs/header.tex}
 
@@ -12,12 +13,13 @@
 \author{Alexander Taylor, at736}
 \institute{University of Cambridge}
 \date{\today}
+\setbeamertemplate{itemize items}[ball]
 
 \newcommand\comment[1]{
     %
 }
 
-\todo{Add in contributions slide}
+
 
 \comment{
 How to give a scientific talk
@@ -73,6 +75,8 @@ How to give a scientific talk
 
 
 \begin{document}
+\setbeamertemplate{itemize items}[ball]
+
 
 \begin{frame}
     \titlepage
@@ -80,6 +84,7 @@ How to give a scientific talk
 
 \begin{frame}[fragile]{Motivating Polymorphic Effect Analysis}    
 
+    \todo{Syntax highlight}
 \begin{verbatim}
 def logAction(
     action: Unit => String
@@ -109,24 +114,42 @@ logAction(() => readEnvironmentVariables)
     }
 \end{frame}
 
-\begin{frame}{What is denotational Semantics? }
-    \begin{itemize}
-        \item A mapping $\deno{-}: \text{Language Structure} \rightarrow \text{Mathematical Structure}$
+\begin{frame}{What is a Denotational Semantics? }
+    \begin{itemize}\setlength\itemsep{3em}
+        \item A \textit{compositional} mapping $\deno{-}: \text{Language Structure} \rightarrow \text{Mathematical Structure}$
         \item In particular want to define $\deno{\gtyperelation{t}{A}}$
-        \item Needs to be \textit{compositional}, \textit{sound}
-        \item And \textit{adequate} for our needs
+        \item Needs to be \textit{sound} $t_1 \beequiv t_2 \implies \deno{t_1} = \deno{t_2}$
+        \item And \textit{adequate} for our needs $\deno{t_1} = \deno{d_2}\implies t_1 \beequiv t_2$
     \end{itemize}
 
     \script{
         - Denotational semantics is where we create a mapping between program terms and an abstract mathematical structure.
         - We want this to be compositional - meaning that each term's denotation is defined in terms of its subterms 
-        - It should also be sound, meaning that equivalent program terms up-for, for example, beta-eta reduction, have equal denotations.
+        - It should also be sound, meaning that equivalent program terms up-to, for example, beta-eta reduction, have equal denotations.
         - we also want it to be adequate - if two terms have equal denotations, then that should mean something useful about the relation of the two terms (e.g. can replace one by the other, etc)
+    }
+\end{frame}
+
+\begin{frame}
+    \frametitle{Contributions}
+
+    \begin{itemize}\setlength\itemsep{3em}
+        \item A sound set of requirements for denotational semantics of effect-polymorphic languages.
+        \item A method to construct models for effect-polymorphic languages in $\set$.
+        \item A proof of adequacy of such a model.
+    \end{itemize}
+
+    \script{
+        - There are three main contributions here
+            - A set of requirements to make a sound model of an effect polymorphic language
+            - A construction of models for polymorphic languages in the category of Sets
+            - And for a particular language I've proved adequacy.
     }
 \end{frame}
 
 \begin{frame}{Denotational Semantics using Category Theory}
     \begin{itemize}
+        \setlength\itemsep{3em}
         \item Interested in: Objects, Morphisms, and Functors
         \item $\deno{A}, \deno{\G} \in\obj\C$
         \item $\deno{\gtyperelation{t}{A}}: \deno{\G}\rightarrow \deno{A}$
@@ -146,6 +169,7 @@ logAction(() => readEnvironmentVariables)
 
         A cartesian closed category (CCC) consists of:
         \begin{itemize}
+            \setlength\itemsep{3em}
             \item Products $A\times B$ - models tuples
             \item A terminal object $\1$ - models the \U\texttt{  }type
             \item Exponential objects $B^A$ - models functions as first-class objects
@@ -165,6 +189,7 @@ logAction(() => readEnvironmentVariables)
 \begin{frame}{Language features (2.A) - Monads}
         A (strong) monad consists of:
         \begin{itemize}
+            \setlength\itemsep{3em}
             \item A functor $\T{}{}: \C\rightarrow \C$
             \item Join and Unit natural transformations
             \begin{itemize}
@@ -191,6 +216,7 @@ logAction(() => readEnvironmentVariables)
 \begin{frame}{Language features (2.B) - Graded Monads}
     A (strong) graded monad consists of:
         \begin{itemize}
+            \setlength\itemsep{3em}
             \item An indexed functor $\T{\e}{}: \C\rightarrow \C$
             \item Indexed Join and Unit natural transformations
             \begin{itemize}
@@ -205,61 +231,6 @@ logAction(() => readEnvironmentVariables)
             - We now have one functor, indexed by a monoid of effect symbols. The rules and morphisms stay the same but are now also indexed. 
 
         }    
-\end{frame}
-
-\begin{frame}{Language Features (3.A) - If-Expressions}
-    - If expression example
-    - Co-product diagram
-
-    \begin{itemize}
-        \item $\pifthenelse{A}{b}{t}{f}$
-        \item If expressions modelled by co-products
-        \item 
-        \begin{tikzcd}[ampersand replacement=\&]
-            \&  A   \& \\
-            \G \arrow{ur}{t} \arrow [r, "\inl"] \&   (\G + \G) \arrow{u}{[t, f]}  \& \arrow{l}[swap]{\inr} \arrow{ul}[swap]{f} \G\\
-        \end{tikzcd}
-    \end{itemize}
-    
-
-
-    \script{
-        - Finally, we may want to add if expressions to our language. 
-        - This can be fairly easily be done using co-products (the generalisation of what disjoint unions on sets are)
-     }
-\end{frame}
-
-\begin{frame}[fragile]{Language Features 3.B - An Issue}
-    Consider this:
-
-\begin{verbatim}
-    if (UserConfirms) then Save() else pass;
-\end{verbatim}
-
-\begin{itemize}
-    \item Branches have different effects
-    \item So have different types!
-    \item This doesn't type correctly
-\end{itemize}
-
-\script{        
-    - But leads to an issue when effects are involved. Both branches of the expression need to have the same type, but we might want to write programs where one side has a different effect.
-}
-
-\end{frame}
-
-\begin{frame}{Language Features 3.C - Subtyping}
-    $$\ntreeruleII{Subtype}{\gtyperelation{t}{A}}{A \subtype B}{\gtyperelation{t}{B}}$$
-
-    \begin{itemize}
-        \item This needs a denotation
-        \item So introduce $\deno{A\subtype B}$
-        \item $\deno{\gtyperelation{t}{B}} = \deno{A\subtype B}\after \deno{\gtyperelation{t}{A}}$
-    \end{itemize}
-
-    \script{
-        - To allow more programs to type correctly, we need to introduce subtyping and appropriate morphisms to handle this.
-    }
 \end{frame}
 
 \begin{frame}{An Effectful Language}
@@ -286,12 +257,12 @@ logAction(() => readEnvironmentVariables)
 
 \begin{frame}{Semantics of EC}
     \begin{itemize}
+        \setlength\itemsep{3em}
         \item Can build a model of EC when we have
         \begin{itemize}
             \item CCC
-            \item Co-product
             \item Strong Graded Monad
-            \item Subtyping morphisms
+            \item Co-product and Subtyping (morphisms for if-statements)
         \end{itemize}
         \item We'll call this an S-category
     \end{itemize}
@@ -315,7 +286,7 @@ logAction(() => readEnvironmentVariables)
 \end{frame}
 
 \begin{frame}[fragile]{An Ugly Example}
-
+\todo{syntax highlight this}
     \begin{lstlisting}[
         mathescape,
         columns=fullflexible,
@@ -364,6 +335,8 @@ do $\_$ $\texttt{<-}$ $twiceState$(increment) in $twiceIO$(writeLog)
 \end{frame}
 
 \begin{frame}[fragile]{An Ugly Example - With a Makeover}
+
+    \todo{Syntax highlighting}
     \begin{lstlisting}[
         mathescape,
         columns=fullflexible,
@@ -386,6 +359,7 @@ do $\_$ $\texttt{<-}$ ($twice$ State increment) in ($twice$ IO writeLog)
 \begin{frame}{How do we Model the Semantics of a Polymorphic Language?}
 
     \begin{itemize}
+        \setlength\itemsep{3em}
         \item For a fixed effect variable environment $\P$ and terms with no polymorphic sub-terms, we have EC
         \item Effect-variable environments of length $n$ are isomorphic by $\a$-equivalence
     \end{itemize}
@@ -401,10 +375,41 @@ do $\_$ $\texttt{<-}$ ($twice$ State increment) in ($twice$ IO writeLog)
 \end{frame}
 
 \begin{frame}{How do we Model the Semantics of a Polymorphic Language?}
-    - Stack of S-categories and their morphisms
 
-    - type rule for generalisation
-    - "Need functors"
+\begin{minipage}{0.45\linewidth}
+    \begin{itemize}
+        \item So we instantiate an S-category for each environment.
+        \item The type rule for quantification requires us to move between categories \todo{Type rule here}.
+        \item Functors are required.
+    \end{itemize}
+\end{minipage}\quad \begin{minipage}{0.45\linewidth}
+    \begin{tikzpicture}[->,>=stealth', scale=0.7, every node/.style={scale=0.7}]
+        %draw the s-category stack
+\foreach \y[count=\c,evaluate={\yi=int(\c-1)}] in {2, 3, 4, 5, 6}{
+    \node[ellipse, draw,fill=yellow, fill opacity=1, minimum width=5cm, minimum height=15mm,label=right:$S_\yi$] (s\yi) at (8,\y){};
+    \node[circle, draw, inner sep=1pt, label=above:{$\G$}] (g\yi) at (7,\y){};
+    \node[circle, draw, inner sep=1pt, fill, label=above:{$A$}] (a\yi) at (9,\y){};
+    \draw[->](g\yi) to[bend right=5] node[below]{\tiny $\deno{\etyperelation{\P_\yi}{\G}{v}{A}}$} (a\yi);
+}
+
+% Hidden ellipse to draw functors to
+\node[ellipse, minimum width=5cm, minimum height=15mm] (s5) at (8,8){};
+
+%Draw the ... for the s-category stack
+\foreach \y[count=\c,evaluate={\yi=int(\c-1)}] in {7, 7.5, 8}{
+    \node[fill, circle, inner sep=1pt] (p\yi) at (8, \y){};
+}
+
+% draw the re-indexing functors
+
+
+%Draw the bracket
+
+\draw [decoration={brace,amplitude=8pt},decorate] ($(s5)+(10em,1ex)$) -- ($(s0)+(10em,-1ex)$);
+\node[text width=20mm] (Label) at (14,5){Fibres for each effect environment};
+\end{tikzpicture}
+
+\end{minipage}
 
 \script{
     - So we can imagine a stack of these S-Categories, called fibres
@@ -413,14 +418,16 @@ do $\_$ $\texttt{<-}$ ($twice$ State increment) in ($twice$ IO writeLog)
 \end{frame}
 
 \begin{frame}{Base Category}
-    - We need a way of reasoning about effect-variable environment categorically
+\begin{itemize}
+    \item Need to be able to reason about the effect environment categorically
+    \item Model effects and their environments using category $\Eff$: \begin{itemize}
+        \item Objects are products of the set of ground effects $\{\singleton\} , E, E\times E,... E^n..$
+        \item Morphisms are monotone functions
+    \end{itemize}
+    \item Represent $\P$ as an object $E^n$
+    \item Transformations (e.g. substitutions) between environments become functions
+\end{itemize}
 
-    - We can model effects and environments in new category.
-
-    - Objects: $\1$, $U$, $U^n$ (write I for $U^n$)
-    - Morphisms: $\deno{e}: \1\rightarrow U$
-    - Monoidal operator $\Mul: \ciu\times\ciu\rightarrow\ciu$
-    - Can represent each effect environment as an object $I$, and common transformations between environments, such as weakening and substitutions, are morphisms between effect environments.
 
     \script{
         - So we need a way of reasoning about the transformations of effect-variable environments in a category theoretic manner
@@ -503,7 +510,7 @@ do $\_$ $\texttt{<-}$ ($twice$ State increment) in ($twice$ IO writeLog)
 \end{frame}
 
 \begin{frame}{Quantification}
-    \begin{itemize}
+    \begin{itemize}\setlength\itemsep{2em}
         \item What about effect-generalisation?
         \item $\ntreeruleI{Effect-Gen}{\etyperelation{\P,\a}{\G}{v}{A}}{\etyperelation{\P}{\G}{\elam{\a}{v}}{\all{\a}{A}}}$
         \item Need to map $\deno{\etyperelation{\P,\a}{\G}{v}{A}}$ to $\deno{\etyperelation{\P}{\G}{\elam{\a}{v}}{\all{\a}{A}}}$
@@ -584,7 +591,7 @@ do $\_$ $\texttt{<-}$ ($twice$ State increment) in ($twice$ IO writeLog)
 
     \begin{itemize}
         \item Can we actually instantiate a category with the required structure? 
-        \item Starting point a model of EC in $\set$
+        \item Starting point: a model of EC in $\set$
     \end{itemize}
     
     \script{
@@ -596,26 +603,12 @@ do $\_$ $\texttt{<-}$ ($twice$ State increment) in ($twice$ IO writeLog)
     }
 \end{frame}
 
-\begin{frame}{Instantiating a Model (2) - Base Category}
-\begin{itemize}
-    \item Use $\Eff$ - category of monotone functions of tuples of ground effects to ground effects
-    \item $\deno{\typerelation{\nil,\a, \b}{\b\dot(\a\dot\texttt{IO})}{\effect}} = (e_1, e_2)\mapsto e_2\dot(e_1\dot\texttt{IO})$
-    \item $\Mul(f, g)\ev = (f\ev)\dot(g\ev) $
-\end{itemize}
-
-    \script{
-        - Firstly, we want to build a base category
-        - to do this, we shall consider the category of monotone functions taking vectors of ground effects and returning ground effects
-        - We construct the multiplication operator using the $\dot$ monoid operator from the EC spec
-    }
-\end{frame}
-
-\begin{frame}{Instantiating a Model (3) - Fibres}
-    \begin{itemize}
+\begin{frame}{Instantiating a Model (2) - Fibres}
+    \begin{itemize}\setlength\itemsep{3em}
         \item The fibre $\C(n)$ is the category of functors $[E^n, \set]$
-        \item I.E. objects are functions that take a vector of ground effects and return a set.
-        \item Morphisms are functions that return functions in $\set$
-        \item S-Category features
+        \item I.E. objects are functions that take a vector of ground effects and return a set $\deno{\wellformedt{\P}{A}}: E^n \rightarrow \obj(\set)$.
+        \item Morphisms are dependent functions that return functions in $f: (\ev: E^n)\rightarrow A\ev\rightarrow B\ev$
+        \item These fibres have S-Category features
     \end{itemize}
 
     \script{
@@ -627,19 +620,22 @@ do $\_$ $\texttt{<-}$ ($twice$ State increment) in ($twice$ IO writeLog)
 \end{frame}
 
 \begin{frame}{Instantiating a Model (4) - Functors and Adjunctions}
-
-    Re-indexing functors act by pre-composition
+\begin{itemize}
+    \item Re-indexing functors act by pre-composition
     \begin{align*}
         A\in&\quad [E^n, \set]\\
         \theta\star(A) \emv =&\quad  A(\theta(\emv))\\
         \theta\star(f) \emv =&\quad f(\theta(\emv)): \theta\star(A) \rightarrow \theta\star(B)\\
     \end{align*}
-
-
-    The quantification functor takes a product over all ground effects
+    \item The quantification functor takes a product over all ground effects
     \begin{align*}
         \allEn(A)\env =&\Pi_{\e\in E}{A(\env, \e)}
     \end{align*}
+\end{itemize}
+    
+
+
+    
 
     \script{
         - Finally, we need to construct the various functors
@@ -649,7 +645,13 @@ do $\_$ $\texttt{<-}$ ($twice$ State increment) in ($twice$ IO writeLog)
 \end{frame}
 
 \begin{frame}{The End}
-    - Dissertation and github links
+    \begin{itemize}\setlength\itemsep{3em}
+        \item Sound: Proved for all indexed S-Categories \checkmark
+        \item Compositional: By the definition of denotations \checkmark
+        \item Adequate: Proved for an instantiation in $\set$ \checkmark
+    \end{itemize}
+
+    \todo{Dissertation and github links}
 
     \script{Thanks}
     

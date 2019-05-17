@@ -1,5 +1,3 @@
-    \todo{Theorem 5.4.3: it isn't clear what "up to equational equivalence" means. If you prove that the logical relation respects the equational theory (i.e. (d, v) $\in$ R iff (d, v') $\in$ R for v $\beequiv$ v') then you can just delete "up to equational equivalence". Also, I'm not convinced that you need to define the relation on substitutions here. This is the     only place you use it (except the appendix), so you can just expand out the definition.}
-    
 
     An important result, though often not proved in presentations of denotational semantics, is that of adequacy. A denotational semantics is adequate when two closed terms of ground type having equal denotations implies that the terms are equationally equivalent. Proving adequacy ensures that a denotational semantics may be used for program analysis. In this chapter, I shall introduce an instantiation of PEC,  $\pecput$ with a suitable denotational semantics, generated using the methods described in Chapter \ref{HowToBuildAModel}. Following this, I shall introduce a set of logical relation between the denotations and closed terms. Using these relations, I shall then prove that closed terms with the same denotations are equivalent under the equational equivalence given in Section \ref{SoundnessDefinition}.
 
@@ -124,7 +122,7 @@ We can now introduce some syntactic sugar for $\pecput$. Specifically, we introd
 
 
 \section{Logical Relations}
-It is difficult to directly prove adequacy. This is because we cannot directly perform induction over morphisms. So instead we use a system of logical relations which relate elements of denotations of types to closed terms of the same type (Definition \ref{LogicalRelationDefinition}). Specifically we define a relation for a given type, effect environment, and tuple of ground effects. Since they are defined structurally with respect to the type, we can induct over the type structure to prove properties. Specifically, using such induction, we show that these logical relations are preserved by subtyping (Theorem \ref{LogRelSubtype}) and that they behave well with respect to single effect-variable substitutions (Theorem \ref{EnvironmentLemma}). These properties allow us to prove a fundamental property of these logical relations (Theorem \ref{FundPropTheorem}) which asserts that the denotation of a term relates to the term itself. In Section \ref{AdequacySection}, we finally use the logical relations to prove adequacy.
+It is difficult to directly prove adequacy. This is because we cannot directly perform induction over morphisms. So instead we use a system of logical relations which relate elements of denotations of types to closed terms of the same type (Definition \ref{LogicalRelationDefinition}). Specifically we define a relation for a given type, effect environment, and tuple of ground effects. Since they are defined structurally with respect to the type, we can induct over the type structure to prove properties. Specifically, using such induction, we show that these logical relations are preserved by subtyping (Theorem \ref{LogRelSubtype}), they respect equational equivalence (Theorem \ref{LogRelBeequiv}), and that they behave well with respect to single effect-variable substitutions (Theorem \ref{EnvironmentLemma}). These properties allow us to prove a fundamental property of these logical relations (Theorem \ref{FundPropTheorem}) which asserts that the denotation of a term relates to the term itself. In Section \ref{AdequacySection}, we finally use the logical relations to prove adequacy.
 
 \begin{framed}
     \begin{definition}[Logical Relation]\label{LogicalRelationDefinition}
@@ -161,6 +159,20 @@ It is difficult to directly prove adequacy. This is because we cannot directly p
 \end{framed}
 
 \begin{framed}
+    \begin{theorem}[Logical Relation and Equational Equivalence]\label{LogRelBeequiv}
+        For all $v_1, v_2, A, \ev.$
+        \begin{equation}
+            \zberelation{v_1}{v_2}{A\ssub{\av}{\ev}}\implies (\inLogRelPE{d}{v_1}{A} \Leftrightarrow \inLogRelPE{d}{v_2}{A})
+        \end{equation}
+        
+    \end{theorem}
+    
+    \begin{proof}
+        By a simple induction on the type $A$. Cases are given in Appendix \ref{AdequacyEqEquivProof}.
+    \end{proof}
+\end{framed}
+
+\begin{framed}
     \begin{lemma}[Environment Lemma]\label{EnvironmentLemma}
         $$\erelates{\P,\a}{A}(\ev, \e) = \erelates{\P}{A\ssub{\e}{\a}}(\ev)$$
     \end{lemma}
@@ -178,15 +190,7 @@ At this point, we know how the logical relations interact with subtyping and the
 
 \begin{framed}
     \begin{theorem}[Fundamental Property]\label{FundPropTheorem}
-        Let $\erelatesg{\P}{\G}(\ev) \in \powset{\deno{\G}\ev)\times \pecput^{\G\ssub{\av}{\ev}}}$ mean:
-    
-        \begin{equation}
-            \label{LogicalRelationTypeEnvironment}
-            \inLogRelPEG{\rho}{\si}{\G} \Leftrightarrow \forall x. \inLogRelPE{\rho(x)}{\si(x)}{\G(x)}
-        \end{equation}
-    
-    
-        If $\inLogRelPEG{\rho}{\si}{\G}$ then $\inLogRelPE{\deno{\gpetyperelation{v}{A}}\fundRho}{v\fundSub}{A}$ up to equational equivalence.    
+        If $\forall x. \inLogRelPE{\rho(x)}{\si(x)}{\G(x)}$ then $\inLogRelPE{\deno{\gpetyperelation{v}{A}}\fundRho}{v\fundSub}{A}$ up to equational equivalence.    
     \end{theorem}
     
     \begin{proof}

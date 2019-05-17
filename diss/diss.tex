@@ -7,7 +7,6 @@
 \usepackage{graphicx}
 \usepackage[nottoc]{tocbibind}
 \usepackage{url}
- 
 
 
 \newcommand\comment[1]{}
@@ -33,7 +32,7 @@
 \abstract
 To date, there has been limited work on the semantics of languages with polymorphic effect systems. The application, by Moggi \cite{MoggiMonads}, of strong monads to modelling the semantics of effects has become a mainstream concept in functional programming languages. The usage of monads was made more precise by Katsumata \cite{Katsumata:2014} using a graded monad to model languages with a range of independent and dependent effects at an operational level. Separately, a categorical semantics for parametric polymorphism in types was first published by Reynolds \cite{PLCSemantics} allowing a denotational analysis of languages including type parameters. There has been some work on polymorphism over the exception effect by Benton and Buchlovsky \cite{PolymorphicExceptions}. However, there has been no work to date on the denotational semantics of languages with general parametric polymorphism over effects.
 
-In this dissertation, I present several pieces of work. Firstly, I introduce a modern definition of a lambda-calculus-based language with an explicit graded monad to handle a variety of effects. This calculus is then extended with parameterisation over effects to yield a more general lambda calculus with polymorphism over effects. Next, I give an indexed-category-based denotational semantics for the language, along with an outline of a proof for the soundness of these semantics. Following this, I present a method of transforming a model of a non-polymorphic language into a model of the language with polymorphism over effects.
+In this dissertation, I present several pieces of work. Firstly, I introduce a modern definition of a lambda-calculus-based language with an explicit graded monad to handle a variety of effects. This calculus is then extended with parameterisation over effects to yield a more general lambda calculus with polymorphism over effects. Next, I give an indexed-category-based denotational semantics for the language, along with an outline of a proof for the soundness of these semantics. Following this, I present a method of transforming a model of a non-polymorphic language into a model of the language with polymorphism over effects and a proof of adequacy for a model constructed according to this method.
 
 The full proofs, though in a terser format, can be found online on my github repository\footnote{\url{https://github.com/Al153/Part3Project/blob/master/diss/OnlinePECSemantics.pdf}}, since due to the number of theorems and cases, the total size is well over 100 pages of definitions, theorems, and proofs.
 
@@ -436,7 +435,7 @@ An important concept in category theory is that of an \textit{adjunction}. An ad
     \begin{align*}
         \bar{(-)}: \quad\C(FA, B) &\leftrightarrow \DC(A, GB)   \quad: \widehat{(-)}\\
         f & \mapsto G(f)\after\eta_A \\
-        \epsilon\after F(g) & \mapsfrom g\\
+        \epsilon\after F(g) & \mapsfrom g
     \end{align*}
     \end{framed}
     \caption{How to construct the adjunction isomorphism from its unit and co-unit.}
