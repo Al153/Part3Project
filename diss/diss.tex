@@ -236,7 +236,7 @@ A \textit{monad} consists of a functor, $T: \C \rightarrow \C$, from $\C$ onto i
 
 \begin{figure}
         \centering
-        \begin{minipage}{0.45\textwidth}
+        \begin{minipage}{0.45\linewidth}
             \centering
             \begin{framed}
                 \begin{tikzcd}
@@ -247,7 +247,7 @@ A \textit{monad} consists of a functor, $T: \C \rightarrow \C$, from $\C$ onto i
             \caption{Monad Associativity Law}
             \label{MonadAssociativity}
         \end{minipage}\hfill
-        \begin{minipage}{0.45\textwidth}
+        \begin{minipage}{0.45\linewidth}
             \centering
             \begin{framed}
                 
@@ -274,7 +274,7 @@ A \textit{graded monad} is a generalisation of a monad to be indexed by a monoid
 
 \begin{figure}
         \centering
-        \begin{minipage}{0.45\textwidth}
+        \begin{minipage}{0.45\linewidth}
             \centering
             \begin{framed}
                 \begin{tikzcd}[ampersand replacement=\&]
@@ -287,7 +287,7 @@ A \textit{graded monad} is a generalisation of a monad to be indexed by a monoid
             \caption{Associativity of a graded monad}
             \label{GradedMonadAssociativity}
         \end{minipage}\hfill
-        \begin{minipage}{0.45\textwidth}
+        \begin{minipage}{0.45\linewidth}
             \centering
             \begin{framed}
                 \begin{tikzcd}[ampersand replacement=\&]
@@ -315,7 +315,7 @@ A slightly harder concept to motivate is that of tensorial (or tensor) \textit{s
 
 \begin{figure}
         \centering
-        \begin{minipage}{0.45\textwidth}
+        \begin{minipage}{0.45\linewidth}
             \centering
             \begin{framed}
                 \begin{tikzcd}[ampersand replacement=\&]
@@ -329,7 +329,7 @@ A slightly harder concept to motivate is that of tensorial (or tensor) \textit{s
                 \label{TensorStrengthLeftNaturality}
         \end{minipage}
         \quad
-        \begin{minipage}{0.45\textwidth}
+        \begin{minipage}{0.45\linewidth}
             \centering
             \begin{framed}
                 \begin{tikzcd}[ampersand replacement=\&]
@@ -349,7 +349,7 @@ A slightly harder concept to motivate is that of tensorial (or tensor) \textit{s
     \todo{Fix the alignments of these}
 
 
-    \begin{minipage}{0.45\textwidth}
+    \begin{minipage}{0.45\linewidth}
         \centering
         \begin{framed}
             \begin{tikzcd}[ampersand replacement=\&]
@@ -368,7 +368,7 @@ A slightly harder concept to motivate is that of tensorial (or tensor) \textit{s
         \label{TensorStrengthUnitorLaw}
         \end{minipage}
         \quad
-        \begin{minipage}{0.45\textwidth}
+        \begin{minipage}{0.45\linewidth}
             \centering
             \begin{framed}
                 \begin{tikzpicture}[baseline= (a).base]
@@ -397,7 +397,7 @@ A slightly harder concept to motivate is that of tensorial (or tensor) \textit{s
             \label{TensorStengthJoin}
         \end{minipage}
     
-        \begin{minipage}{0.45\textwidth}
+        \begin{minipage}{0.45\linewidth}
             \begin{framed}
                 \begin{tikzcd}[ampersand replacement=\&]
                     A \times B
@@ -415,7 +415,7 @@ A slightly harder concept to motivate is that of tensorial (or tensor) \textit{s
             \label{TensorStrengthPoint}
         \end{minipage}
         \quad
-        \begin{minipage}{0.45\textwidth}
+        \begin{minipage}{0.45\linewidth}
             \begin{framed}
                 \begin{align*}
                     \bar{(-)}: \quad\C(FA, B) &\leftrightarrow \DC(A, GB)   \quad: \widehat{(-)}\\
@@ -727,7 +727,7 @@ The calculus has a simple, Haskell-style semantics. Lambda terms when applied to
 
 \begin{figure}
     \centering
-    \begin{minipage}{0.45\textwidth}
+    \begin{minipage}{0.45\linewidth}
         \begin{framed}
             \begin{lstlisting}[
                 mathescape,
@@ -744,7 +744,7 @@ do $b$ $\texttt{<-}$ Prompt("Are You Sure?") in (
         \end{framed}
     \end{minipage}
     \quad
-    \begin{minipage}{0.45\textwidth}
+    \begin{minipage}{0.45\linewidth}
         \begin{framed}
             \begin{lstlisting}[
                 mathescape,
@@ -1150,7 +1150,7 @@ A full derivation and proof of soundness of the semantics of the Effect Calculus
 
 \begin{figure}[H]
 \centering
-\begin{minipage}{0.45\textwidth}
+\begin{minipage}{0.45\linewidth}
     \begin{framed}
         \begin{tikzcd}[ampersand replacement=\&, column sep=huge]
             A \times \T{\e_1}{B} \arrow [r, "\Id{A} \times \dse{\e_1}{\e_2}_B"] \arrow [d, "\tstrength{\e_1}{A}{B}"] \&
@@ -1163,7 +1163,7 @@ A full derivation and proof of soundness of the semantics of the Effect Calculus
     \label{SubeffectTensorStrength}
 \end{minipage}  
 \quad
-\begin{minipage}{0.45\textwidth}
+\begin{minipage}{0.45\linewidth}
     \begin{framed}
         \scalebox{0.8}{    
 \begin{tikzcd}[ampersand replacement=\&]
@@ -1674,7 +1674,7 @@ We can define the action of substitutions on effects, as in Figure \ref{EffectSu
 
 \begin{figure}[H]
     \centering
-    \begin{minipage}{0.47\textwidth}
+    \begin{minipage}{0.47\linewidth}
       \begin{framed}
         \centering
         \textbf{Action}
@@ -1692,7 +1692,7 @@ We can define the action of substitutions on effects, as in Figure \ref{EffectSu
       \end{framed}
     \end{minipage}
     \quad
-    \begin{minipage}{0.47\textwidth}
+    \begin{minipage}{0.47\linewidth}
       \begin{framed}
         \centering
         \textbf{Denotations}
@@ -2401,7 +2401,7 @@ Up until this point, due to the subtyping rule, we have had to be careful about 
 \begin{figure}[H]
 \begin{framed}
         \centering
-            \begin{minipage}{0.47\textwidth}
+            \begin{minipage}{0.47\linewidth}
                 \centering
                 \begin{equation*}
                     \scalebox{.9}{$                    \ntreeruleII{\vsubtype}{
@@ -2417,7 +2417,7 @@ Up until this point, due to the subtyping rule, we have had to be careful about 
                 \end{equation*}
             \end{minipage}
             \quad
-            \begin{minipage}{0.47\textwidth}
+            \begin{minipage}{0.47\linewidth}
                 \centering
 
                 \begin{equation*}
@@ -2601,91 +2601,9 @@ The $\reduce$ function maps each derivation to its reduced equivalent. It does t
         $}
     \end{equation}
 
-
-    \case{\vbind}
-
-    To find the reduction of a tree ending in a use of the (\textit{\vbind}) rule as seen in Equation \ref{BindBeforeReduction}, we first reduce the left-most subtree, $\D_1$ to find $\D_1'$, as seen in Equation \ref{BindReductionOne}.
-    \begin{equation}\label{BindBeforeReduction}
-        \scalebox{.8}{$
-        \reduce(
-            \ntreeruleII{\vbind}{
-                \treeruleI{
-                    \D_1
-                }{
-                    \gpetyperelation{v_1}{\M{\e_1}{A}}
-                }
-            }{
-                \treeruleI{
-                    \D_2
-                }{
-                    \etyperelation{\P}{\gax}{v_2}{\M{\e_2}{B}}
-                }
-            } {
-                \gpetyperelation{\doin{x}{v_1}{v_2}}{\M{\e_1\dot\e_2}{B}}
-            }
-        )
-        $}
-    \end{equation}
-
-
-    \begin{equation}\label{BindReductionOne}
-        \scalebox{.8}{$
-        \ntreeruleII{\vsubtype}{
-            \treeruleI{\D'_1}{\gpetyperelation{v_1}{\M{\e'_1}{A'}}}
-        }{
-        \subeffecttreep{\e_1'}{A'}{\e_1}{A}
-        }{
-            \gpetyperelation{v_1}{\M{\e_1}{A}}
-        } = \reduce(\D_1)
-        $}
-    \end{equation}
-
-    Since $\ewrel{\P}{(i,\x)}{(\G, x: A')}{(\gax)}$ if $A' \subtypep A$, and because $\D_2$ derives $\etyperelation{\P}{(\gax)}{v_2}{\M{\e_2}{B}}$, there also exists a derivation $\D_3$ of $\etyperelation{\P}{(\G, x: A')}{v_2}{\M{\e_2}{B}}$. $\D_3$ is derived from $\D_2$ simply by inserting a (\textit{\vsubtype}) rule below all instances of the (\textit{\vvar}) rule. Then we can reduce $\D_3$ to find $\D_3'$ in \ref{BindReductionThree}.
-
-    \begin{equation}\label{BindReductionThree}
-        \scalebox{.8}{$
-        \ntreeruleII{\vsubtype}{
-            \treeruleI{\D'_3}{\etyperelation{\P}{\G, x: A'}{v_2}{\M{\e'_2}{B'}}}
-        }{
-        \subeffecttreep{\e_1'}{B'}{\e_2}{B}
-        }{
-            \etyperelation{\P}{\G, x: A'}{v_2}{\M{\e_2}{B}}
-        } = \reduce(\D_3)
-        $}
-    \end{equation}
-    
-
-    Since the effects monoid operation is monotone, if $\e_1\subeffectp\e_1'$ and $\e_2\subeffectp\e_2'$ then $\e_1\dot\e_2 \subeffectp \e_1'\dot\e_2'$. Then the result of reduction of the whole bind expression is:
-
-
-    \begin{equation}
-        \scalebox{0.8}{$
-        \ntreeruleII{\vsubtype}{
-            \subeffecttreep{\e_1'\dot\e_2'}{B'}{\e_1\dot\e_2}{B}
-        }{
-            \ntreeruleII{\vbind}{
-                \treeruleI{
-                    \D'_1
-                }{
-                    \gpetyperelation{v_1}{\M{\e_1'}{A'}}
-                }
-            }{
-                \treeruleI{
-                    \D'_3
-                }{
-                    \etyperelation{\P}{\G, x: A'}{v_2}{\M{\e_2'}{B'}}
-                }
-            }{
-            \gpetyperelation{\doin{x}{v_1}{v_2}}{\M{\e_1'\dot\e_2'}{B}}
-            }
-        }{
-            \gpetyperelation{\doin{x}{v_1}{v_2}}{\M{\e_1\dot\e_2}{B}}
-        }
-        $}
-    \end{equation}
     \end{framed}
 
-    \caption{Some cases of the reduce function.}
+    \caption{An example case of the $\reduce$ function. Further cases can be seen \todo{Where}}
     \label{ReduceFunctionCases}
 \end{figure}
 
@@ -2697,7 +2615,8 @@ The $\reduce$ function maps each derivation to its reduced equivalent. It does t
     
     
     \begin{proof}
-        We proceed by induction over the structure of $\D$, making use of the substitution and weakening theorems. We make use of the the definition of the $\reduce$ function as defined in Figure \ref{ReduceFunctionCases}. We also use the definitions of $\D_1, \D_2 ...$ from the same figure.    
+        We proceed by induction over the structure of $\D$, making use of the substitution and weakening theorems. We make use of the the definition of the $\reduce$ function as defined in Figure \ref{ReduceFunctionCases}. We also use the definitions of $\D_1, \D_2$ from the same figure. Some of the other cases of this proof make use of the term weakening theorem (Theorem \ref{TermWeakeningOnTerms}).
+
         \case{\vapply}
         This case makes use of the fact that composing subtyping morphisms gives the transitive subtyping morphism. Let us define some short-hands.
             \begin{align*}
@@ -2722,70 +2641,12 @@ The $\reduce$ function maps each derivation to its reduced equivalent. It does t
                 & = g\after\app\after\pr{\D'_1}{f\after f'\after \D'_2}\\
                 & = \D'\qt{By defintion}
             \end{align*}
-            
-        \case{\vbind}
-    
-        This is a long case that makes use of the type-environment weakening theorem on terms.
-    
-        Let us define the following helper morphisms:
-        \begin{align*}
-            f & = \deno{A' \subtypep A}: A' \rightarrow A\\
-            g & = \deno{B' \subtypep B}: B' \rightarrow B\\
-            h_1 & = \deno{\e_1' \subeffectp \e_1} : \T{\e_1'}{} \rightarrow \T{\e_1}{} \\
-            h_2 & = \deno{\e_2'\subeffectp \e_2}:\T{\e_2'}{} \rightarrow \T{\e_2}{}\\
-            h & = \deno{\e_1'\dot\e_2'\subeffectp\e_1\dot\e_2}: \T{\e_1'\dot\e_2'}{}\rightarrow \T{\e_1\dot\e_2}{}
-        \end{align*}
-    
-        Due to the denotation of the weakening used to derive $\D_3$ from $\D_2$, we have 
-        \begin{equation}
-            \D_3 = \D_2\after(\idg\times f)
-        \end{equation}
-    
-        Due to the reduction of $\D_3$,
-        we have 
-        \begin{equation}
-            \D_3 = h_{2, B} \after \T{\e_2'}{g}\after \D_3'
-        \end{equation}
-    
-        So we can look at the denotation of the whole term.
-    
-        \begin{align*}
-            \D &= \bind{\e_1}{\e_2}{B}\after \T{\e_1}{\D_2}\after\tstrength{\e_1}{\G}{A}\after\pr{\idg}{\D_1}\qt{By definition.}\\
-            &= \bind{\e_1}{\e_2}{B}\after \T{\e_1}{\D_2}\after\tstrength{\e_1}{\G}{A}\after\pr{\idg}{h_{1, A}\after\T{\e_1'}{f}\after\D_1'}\qt{By reduction of $\D_1$.}\\
-            &= \bind{\e_1}{\e_2}{B}\after \T{\e_1}{\D_2}\after\tstrength{\e_1}{\G}{A}\after(\idg\times h_{1, A})\after\pr{\idg}{\T{\e_1'}{f}\after\D_1'}\qt{Factor out $h_1$}\\
-            &= \bind{\e_1}{\e_2}{B}\after \T{\e_1}{\D_2}\after
-            h_{1, (\G\times A)}\after
-            \tstrength{\e_1'}{\G}{A}\after\pr{\idg}{\T{\e_1'}{f}\after\D_1'}\qt{Tensor strength and subeffecting $h_1$}\\
-            &= \bind{\e_1}{\e_2}{B}\after 
-            h_{1, B}\after\T{\e_1'}{\D_2}\after
-            \tstrength{\e_1'}{\G}{A}\after\pr{\idg}{\T{\e_1'}{f}\after\D_1'}\qt{Naturality of $h_1$}\\
-            &= \bind{\e_1}{\e_2}{B}\after 
-            h_{1, B}\after\T{\e_1'}{\D_2}\after
-            \tstrength{\e_1'}{\G}{A}\after(\idg\times \T{\e_1'}{f})\after\pr{\idg}{\D_1'}\qt{Factor out pairing again}\\
-            &= \bind{\e_1}{\e_2}{B}\after 
-            h_{1, B}\after\T{\e_1'}{(\D_2\after(\idg\times f))}\after
-            \tstrength{\e_1'}{\G}{A'}\after\pr{\idg}{\D_1'}\qt{Tensor strength}\\
-            &= \bind{\e_1}{\e_2}{B}\after 
-            h_{1, B}\after\T{\e_1'}{(\D_3)}\after
-            \tstrength{\e_1'}{\G}{A'}\after\pr{\idg}{\D_1'}\qt{By the definition of $\D_3$}\\
-            &= \bind{\e_1}{\e_2}{B}\after 
-            h_{1, B}\after\T{\e_1'}{(h_{2, B}\after\T{\e_2'}{g}\after \D_3')}\after
-            \tstrength{\e_1'}{\G}{A'}\after\pr{\idg}{\D_1'}\qt{By the reduction of $\D_3$}\\
-            &= \bind{\e_1}{\e_2}{B}\after 
-            h_{1, B}\after\T{\e_1'}{h_{2, B}}\after\T{\e_1'}{\T{\e_2'}{g}}\after \T{\e_1'}{\D_3'}\after
-            \tstrength{\e_1'}{\G}{A'}\after\pr{\idg}{\D_1'}\qt{Factor out the functor}\\
-            &= h_B\after\bind{\e_1'}{\e_2'}{B}\after\T{\e_1'}{\T{\e_2'}{g}}\after \T{\e_1'}{\D_3'}\after
-            \tstrength{\e_1'}{\G}{A'}\after\pr{\idg}{\D_1'}\qt{By the $\mu$ and Subtype rule }\\
-            & = h_B\after\T{\e_1'\dot\e_2'}{g}\after\bind{\e_1'}{\e_2'}{B'}\after \T{\e_1'}{\D_3'}\after
-            \tstrength{\e_1'}{\G}{A'}\after\pr{\idg}{\D_1'}\qt{By naturality of $\bindmu$ }\\
-            & = \D' \qt{By definition} & \square
-        \end{align*}
     \end{proof}
 \end{framed}
 
 \begin{figure}[h!]
     \begin{framed}
-        \begin{minipage}{0.47\textwidth}
+        \begin{minipage}{0.47\linewidth}
             \begin{equation}
                 \ntreeruleI{\vfun}{\scalebox{.65}{$
                     \ntreeruleII{\vsubtype}{
@@ -2799,7 +2660,7 @@ The $\reduce$ function maps each derivation to its reduced equivalent. It does t
             \end{equation}
         \end{minipage}
         \quad
-        \begin{minipage}{0.47\textwidth}
+        \begin{minipage}{0.47\linewidth}
             \begin{equation}
                 \ntreeruleII{\vsubtype}{
                     \scalebox{.65}{$
@@ -3051,70 +2912,79 @@ Using $\a$-equivalence, we can see that all effect-variable environments of the 
  
 We define the base category as specified in Section \ref{PECDenotations}. Next we must pick our fibre categories for non-zero values of $n$. A simple instantiation is to pick each fibre $\C(E^n)$ to be the functor category $[E^n, \set]$,  where $E^n$ is a discrete category (a category that only contains the identity morphisms). That is, the category of functions returning an object in $\set$ given $n$ ground effects. Morphisms between objects are functions which, given a collection of ground effects, yield a morphism (function) in $\set$. If $m\in [E^n, \set](A, B)$ then $m\ev\in\set(A\ev, B\ev)$. The fibres, $[E^n, \set]$ are S-categories. This can be proved by constructing the S-category structures pointwise with respect to their parameter $\ev \in E^n$ as seen in Figures \ref{HowToBuildCCC} - \ref{HowToBuildSubtyping}. Full proofs of the naturality and monad laws can be found in Appendix \ref{NaturalityAndMonadLawsProof}.
 
+\todo{Align boxes correctly}
 
 
-\begin{figure}
-    
-    \begin{framed}
-        \centering\textbf{Cartesian Closed Category}
-
-Since $E$ is small, $E^n$ is also small, and hence $[E^n, \set]$ is a CCC. This can be demonstrated pointwise.
-
-\begin{align*}
-    (A\times B)\ev & = (A\ev)\times(B\ev)\\
-    \1\ev & = \1\\
-    (B^A)\ev &= (B\ev)^{(A\ev)}\\
-    \p\ev & = \p\\
-    \pp\ev & = \pp\\
-    \app\ev & = \app\\
-    \cur{f}\ev & = \cur{f\ev}\\
-    \pr{f}{g}\ev & = \pr{f\ev}{g\ev}\\
-\end{align*}
-
-\end{framed}
-\caption{The construction of CCC features in the functor category $[E^n, \set]$}
-\label{HowToBuildCCC}
-\end{figure}
 
 \begin{figure}
+    \begin{minipage}{0.47\linewidth}
+        \begin{framed}
+            \centering\textbf{Cartesian Closed Category}
     
-\begin{framed}
-    \centering\textbf{The Co-Product on the Terminal Set}
-
-We can define the co-product pointwise.
-
-\begin{align*}
-    (\1 + \1)\ev & = (\1\ev + \1\ev)\\
-    & = (\1 + \1)\\
-    \inl\ev &= \inl\\
-    \inr\ev &= \inr\\
-    [f, g]\ev &= [f\ev, g\ev]\\
-\end{align*}
-\end{framed}
-\caption{The construction of co-product features in the functor category $[E^n, \set]$}
-\label{HowToBuildCoproduct}
+    Since $E$ is small, $E^n$ is also small, and hence $[E^n, \set]$ is a CCC. This can be demonstrated pointwise.
+    
+    \begin{align*}
+        (A\times B)\ev & = (A\ev)\times(B\ev)\\
+        \1\ev & = \1\\
+        (B^A)\ev &= (B\ev)^{(A\ev)}\\
+        \p\ev & = \p\\
+        \pp\ev & = \pp\\
+        \app\ev & = \app\\
+        \cur{f}\ev & = \cur{f\ev}\\
+        \pr{f}{g}\ev & = \pr{f\ev}{g\ev}\\
+    \end{align*}
+    
+    \end{framed}
+    \caption{The construction of CCC features in the functor category $[E^n, \set]$}
+    \label{HowToBuildCCC}
+    \end{minipage}
+    \quad\begin{minipage}{0.47\linewidth}
+        \begin{framed}
+            \centering\textbf{The Co-Product on the Terminal Set}
+        
+        We can define the co-product pointwise.
+        
+        \begin{align*}
+            \\ \\
+            (\1 + \1)\ev & = (\1\ev + \1\ev)\\
+            & = (\1 + \1)\\
+            \inl\ev &= \inl\\
+            \inr\ev &= \inr\\
+            [f, g]\ev &= [f\ev, g\ev]\\
+            \\ \\ \\ 
+        \end{align*}
+        \end{framed}
+        \caption{The construction of co-product features in the functor category $[E^n, \set]$}
+        \label{HowToBuildCoproduct}
+    \end{minipage}
+    
 \end{figure}
 
 \begin{figure}
     \begin{framed}
         \centering\textbf{Ground Types and Terms}
 
-        Each ground type in the non-polymorphic calculus has a fixed denotation $\deno{\g}\in\obj\set$. The ground type in the polymorphic calculus hence has a denotation represented by the constant function.
-        
-        \begin{align*}
-            \deno{\g}:&\quad E^n\rightarrow \obj\set\\
-            \ev \mapsto&\quad  \deno{\g}\\
-        \end{align*}
-        
-        Each constant term $\const{A}$ in the non-polymorphic calculus has a fixed denotation $\deno{\const{A}}\in\set(\1, A)$.
+        Each ground type in the non-polymorphic calculus has a fixed denotation $\deno{\g}\in\obj\set$. The ground type in the polymorphic calculus hence has a denotation represented by the constant function. Each constant term $\const{A}$ in the non-polymorphic calculus has a fixed denotation $\deno{\const{A}}\in\set(\1, A)$.
         
         So the morphism $\deno{\const{A}}$ in $[E^n, \set]$ is the corresponding constant dependently typed morphism.
         
-        \begin{align*}
-            \deno{\const{A}}:&\quad[E^n, \set](\1, A)\\
-            \ev\mapsto&\quad\deno{\const{A\ev}}
-        \end{align*}        
+        \begin{minipage}
+            {0.45\linewidth}
+            \begin{align*}
+                \deno{\g}:&\quad E^n\rightarrow \obj\set\\
+                \ev \mapsto&\quad  \deno{\g}\\
+            \end{align*}
+            
+        \end{minipage}\quad
+        \begin{minipage}
+            {0.45\linewidth}
+            \begin{align*}
+                \deno{\const{A}}:&\quad[E^n, \set](\1, A)\\
+                \ev\mapsto&\quad\deno{\const{A\ev}}
+            \end{align*}   
+        \end{minipage}            
     \end{framed}
+
     \caption{The definition of ground types and terms in the category $[E^n, \set]$ }
     \label{HowToBuildGround}
 \end{figure}
@@ -3148,13 +3018,7 @@ Through some mechanical proof and the naturality of the $\Tz{}{}$ strong graded 
         \centering\textbf{Subeffecting}
 
 
-        Given a collection of subeffecting natural transformations in $\set$,
-        
-        \begin{align*}
-            \deno{\e_1\subeffectz \e_2}:&\quad \Tz{\e_1}{} \rightarrow \Tz{\e_2}{}
-        \end{align*}
-        
-        We can form subeffect natural transformations in $[E^n, \set]$:
+        Given a collection of subeffecting natural transformations in $\set$, $\deno{\e_1\subeffectz \e_2}:\s \Tz{\e_1}{} \rightarrow \Tz{\e_2}{}$, we can form subeffect natural transformations in $[E^n, \set]$:
         
         \begin{align*}
             \deno{f\subeffectn g}:&\quad\Tn{f}{}\rightarrow \Tn{g}{}\\
@@ -3172,14 +3036,14 @@ Through some mechanical proof and the naturality of the $\Tz{}{}$ strong graded 
 \centering\textbf{Subtyping}
 
 
-Subtyping in $[E^n, \set]$ holds via subtyping in $\set$
+Subtyping in $[E^n, \set]$ holds via subtyping in $\set$, so the subtyping relation $A \subtype B$ forms a morphism in $[E^n, \set]$
 
 \begin{align*}
     \deno{A\subtype_n B}:&\quad A\rightarrow B\\
     \deno{A\subtype_n B}\ev=&\quad \deno{A\ev\subtype_0 B\ev}
 \end{align*}
 
-So the subtyping relation $A \subtype B$ forms a morphism in $[E^n, \set]$
+
 
     \end{framed}
     \caption{Definition of subtyping morphisms in the functor category $[E^n, \set]$}
@@ -3190,46 +3054,50 @@ Now we need to define the required morphisms between fibres. Firstly, for any fu
 
 
 \begin{figure}
-    \begin{framed}
-        \centering
-        \textbf{The Pre-composition Functor}
-
-        \begin{align*}
-            A\in&\quad [E^n, \set]\\
-            \theta\star(A) \emv =&\quad  A(\theta(\emv))\\
-            f:&\quad A \rightarrow B\\
-            \theta\star(f) \emv =&\quad f(\theta(\emv)): \theta\star(A) \rightarrow \theta\star(B)\\
-        \end{align*}
-    \end{framed}
-    \caption{A description of the pre-composition functor.}
-    \label{PrecompositionFunctor}
+    \begin{minipage}{0.47\linewidth}
+        \begin{framed}
+            \centering
+            \textbf{The Pre-composition Functor}
+    
+            \begin{align*}
+                A\in&\quad [E^n, \set]\\
+                \theta\star(A) \emv =&\quad  A(\theta(\emv))\\
+                f:&\quad A \rightarrow B\\
+                \theta\star(f) \emv =&\quad f(\theta(\emv)): \theta\star(A) \rightarrow \theta\star(B)
+            \end{align*}
+        \end{framed}
+        \caption{A description of the pre-composition functor.}
+        \label{PrecompositionFunctor}
+    \end{minipage}
+    \quad
+    \begin{minipage}{0.47\linewidth}
+        \begin{framed}
+            \centering
+            \textbf{Composition of Functors}
+    
+            \begin{align*}
+                \theta\star(\phi\star A) \ev & = \phi\star(A)(\theta \ev)\\
+                & = A(\phi(\theta\ev))\\
+                & = A((\phi\after\theta) \ev)\\
+                & = (\phi\after\theta)\star(A) \ev
+            \end{align*}
+        \end{framed}
+    
+        \caption{The pre-composition functor composes in a contravariant fashion.}
+        \label{PrecompositionFunctorComposition}
+    \end{minipage}
 \end{figure}
 
-\begin{figure}
-    \begin{framed}
-        \centering
-        \textbf{Composition of Pre-Composition Functor}
-
-        \begin{align*}
-            \theta\star(\phi\star A) \ev & = \phi\star(A)(\theta \ev)\\
-            & = A(\phi(\theta\ev))\\
-            & = A((\phi\after\theta) \ev)\\
-            & = (\phi\after\theta)\star(A) \ev
-        \end{align*}
-    \end{framed}
-
-    \caption{The pre-composition functor composes in a contravariant fashion.}
-    \label{PrecompositionFunctorComposition}
-\end{figure}
 
 
 
 \begin{figure}
     
     \begin{framed}
-        \centering
-        \textbf{Re-Indexing Functors are S-Preserving}
-                
+        \begin{center}
+            \textbf{Re-Indexing Functors are S-Preserving}    
+        \end{center}
+        
         \begin{theorem}
             The re-indexing functors are also S-preserving. That is all the S-category features in $[E^n, \set]$ are preserved by $\theta\star$ in $[E^m, \set]$. For a full list of features and their proofs, please see Appendix \ref{ReindexingFunctorProperties}.
         \end{theorem}
@@ -3237,27 +3105,32 @@ Now we need to define the required morphisms between fibres. Firstly, for any fu
         
         \begin{proof}
             All of the S-category features are proved pointwise.
-        
-            \case{Graded Monad Functor}
+            \\
+            \\
+            \begin{minipage}{0.45\linewidth}
+                \case{Graded Monad Functor}
             \begin{align*}
+                \\ 
                 (\theta\star\Tn{f}{A})\ev & = \Tn{f}{A}(\theta\ev) \\
                 & = \Tz{(f(\theta\ev))}{(A(\theta\ev))}\\
-                & = (\Tm{(f\after\theta)}{\theta\star A})\ev\\
+                & = (\Tm{(f\after\theta)}{\theta\star A})\ev\\ \\
             \end{align*}
-        
-            \case{Terminal Object}
+            \end{minipage}
+            \quad
+            \begin{minipage}
+                {0.45\linewidth}
+                \case{Terminal Object}
             
         \begin{align*}
             (\theta\star \1)\ev & = \1(\theta\ev)\\
             & = \1 \\
             & = \1 \ev\\
-        \end{align*}
-        
-        \begin{align*}
             (\theta\star\term{A})\ev & = \term{A}(\theta\ev)\\
             & = \term{A(\theta\ev)}\\
             & = \term{\theta\star A}\ev & \square
         \end{align*}
+            \end{minipage}
+
         \end{proof}
     \end{framed}
     \caption{The pre-composition re-indexing functor $f\star$ is S-Preserving}
@@ -3327,7 +3200,7 @@ The leftwards and rightwards components of this bijection can be derived as foll
 
 \begin{figure}
     \centering
-    \begin{minipage}{0.47\textwidth}
+    \begin{minipage}{0.47\linewidth}
       \begin{framed}
         \centering
         \textbf{Unit}
@@ -3341,7 +3214,7 @@ The leftwards and rightwards components of this bijection can be derived as foll
       \end{framed}
     \end{minipage}
     \quad
-    \begin{minipage}{0.47\textwidth}
+    \begin{minipage}{0.47\linewidth}
       \begin{framed}
         \centering
         \textbf{Co-Unit}
@@ -3376,11 +3249,7 @@ The leftwards and rightwards components of this bijection can be derived as foll
         \end{align*}
         
         \centering
-        So $\counit{B}\after\pstar(\bar{g}) = g$.
-\\
-
-
-        Similarly, for any $f: A \rightarrow \allEn B$,
+        So $\counit{B}\after\pstar(\bar{g}) = g$.   Similarly, for any $f: A \rightarrow \allEn B$,
         \begin{align*}
             ((\allEn(\widehat{f}))\after\unit{A})(\env) & = \Pi_{\e\in E}(\widehat{f}(\env, \e))\after \finpr{\Id{A(\env, \e)}}{\e\in E}\\
             & = \Pi_{\e\in E}(\pi_\e\after f(\env))\after \finpr{\Id{A(\env, \e)}}{\e\in E}\\
@@ -3404,19 +3273,22 @@ The leftwards and rightwards components of this bijection can be derived as foll
     Firstly, the functors $(\theta\star\after\allEn)$ and $(\allEm\after(\theta\times\Id{E})\star)$ are equal. Secondly, the natural transformation $\bar{(\theta\times\Id{E})\star \counit{}}$ is equal to the identity natural transformation.
 \end{theorem}
 
-    \begin{proof}
+\todo{fix overflow}
 
-        Firstly,
-
-    \begin{align*}
-    ((\theta\star\after\allEn)A)\env &= \theta\star(\allEn  A)\env\\
-        &= (\allEn A)(\theta(\env))\\
-        &= \Pi_{\e\in E}(A(\theta(\env), \e))\\
-    &= \Pi_{\e\in E}(((\theta\times \Id{E})\star A)(\env,   \e))\\
-        &= \allEm((\theta\times\Id{E})\star A)\env\\
-        &= ((\allEm\after(\theta\times\Id{E})\star)A)\env
-    \end{align*}
-
+  \textbf{Proof:}
+  \\
+        \begin{minipage}[t]{0.45\linewidth}
+            Firstly,
+            \begin{align*}
+                ((\theta\star\after\allEn)A)\env &= \theta\star(\allEn  A)\env\\
+                    &= (\allEn A)(\theta(\env))\\
+                    &= \Pi_{\e\in E}(A(\theta(\env), \e))\\
+                &= \Pi_{\e\in E}(((\theta\times \Id{E})\star A)(\env,   \e))\\
+                    &= \allEm((\theta\times\Id{E})\star A)\env\\
+                    &= ((\allEm\after(\theta\times\Id{E})\star)A)\env
+                \end{align*}
+        \end{minipage}\quad
+        \begin{minipage}[t]{0.45\linewidth}      
 Secondly,
     
 \begin{align*}
@@ -3427,7 +3299,8 @@ Secondly,
     & = \Id{\allEm\after(\theta\times\Id{E})\star A}\ev\\
     & = \Id{\theta\star\after\allEn} & \square
 \end{align*}
-    \end{proof}
+        \end{minipage}
+
     \end{framed}
     \caption{Proof that the $\pstar \dashv \allEn$ adjunction satisfies the Beck-Chevalley condition.}
     \label{BeckChevalley1}

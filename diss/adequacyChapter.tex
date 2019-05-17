@@ -5,28 +5,15 @@
     Let us instantiate the polymorphic effect calculus to be a language in which one can write programs which can create an output signal using the statement $\put$. The effect system of EC is then used to count an upper bound on the number of outputs that a program can make. This language shall be called $\pecput$.
 
     \subsection{Ground Types}
-    We simply use the basic ground types.
-
-    \begin{equation}
-        \label{AdequacyGroundTypes}
-        \g \gens \B \mid \U
-    \end{equation}
+    We simply use the basic ground types: $\g \gens \B \mid \U$.
 
     \subsection{Graded Monad}
-    We index the base graded monad with a partially ordered monoid derived from the natural numbers (Equation \ref{AdequacyMonoid}). This base monoid is extended as described in Section \ref{PECTypeSystem} to symbolically include variables $\a, \b, \g$ which range over the natural numbers. The abstract effect of a term therefore computes an upper bound on the number of outputs produced.  This means that the $\doin{x}{v}{v'}$ type rule adds together the upper bounds on the two expressions to give an upper bound on the number of outputs of the sequenced expression. The $\return{v}$ type rule acknowledges that a pure expression does not have any output. Subtyping  allows the type system to compute a looser bound.
+    We index the base graded monad with a partially ordered monoid derived from the natural numbers $E = (\N, 0, +, \leq)$. This base monoid is extended as described in Section \ref{PECTypeSystem} to symbolically include variables $\a, \b, \g$ which range over the natural numbers. The abstract effect of a term therefore computes an upper bound on the number of outputs produced.  This means that the $\doin{x}{v}{v'}$ type rule adds together the upper bounds on the two expressions to give an upper bound on the number of outputs of the sequenced expression. The $\return{v}$ type rule acknowledges that a pure expression does not have any output. Subtyping  allows the type system to compute a looser bound.
     
-    \begin{equation}\label{AdequacyMonoid}
-        E = (\N, 0, +, \leq)        
-    \end{equation}
     
 
     \subsection{Constants}
-    As stated, we extend the set of constant, built in expressions to include a \put\s statement which performs a single output action.
-
-    \begin{equation}
-        \label{AdequacyConstants}
-        \const{A} \gens \t^\B \mid \f^\B \mid \u^\U \mid \put^{\M{1}{\U}}        
-    \end{equation}
+    As stated, we extend the set of constant, built in expressions to include a \put\s statement which performs a single output action. $\const{A} \gens \t^\B \mid \f^\B \mid \u^\U \mid \put^{\M{1}{\U}}$
 
     \subsection{Subtyping}
     The ground subtyping relation is the identity relation, meaning the $\U$ and $\B$ types are subtypes only of themselves. This is extended using the subeffect and function subtyping rules given in \ref{PECTypeSystem} to give a full subtyping relation.
@@ -37,15 +24,39 @@
     
     \subsection{Non-Polymorphic Model}
     \paragraph{Graded Monad}
-    The strong graded monad on $\set$ is given by tagging values of the underlying type with the number of output operations required to compute that value.
+    The strong graded monad on $\set$ is given by tagging values of the underlying type with the number of output operations required to compute that value (Figure \ref{AdequacyGradedMonad}).
 
-    \begin{align}
+\begin{figure}
+    \centering
+    \begin{minipage}[t]{0.45\linewidth}
+        \begin{framed}
+            \begin{align*}
+                \Tz{n}{A} & = \setcomp{(n', a)}{n'\leq n\wedge a\in A}\\
+                \bindz{m}{n}{A} & = (m', (n', a))\mapsto (n' + m', a)\\
+                \pointz{A} & = a\mapsto (0, a)\\
+                \tstrengthz{n}{A}{B} & = (a, (n', b)) \mapsto (n', (a, b))
+            \end{align*}
+        \end{framed}
+        \caption{The graded monad.}
         \label{AdequacyGradedMonad}
-        \Tz{n}{A} & = \setcomp{(n', a)}{n'\leq n\wedge a\in A}\\
-        \bindz{m}{n}{A} & = (m', (n', a))\mapsto (n' + m', a)\\
-        \pointz{A} & = a\mapsto (0, a)\\\
-        \tstrengthz{n}{A}{B} & = (a, (n', b)) \mapsto (n', (a, b))
-    \end{align}
+    \end{minipage}\quad
+    \begin{minipage}[t]{0.45\linewidth}
+        \begin{framed}
+            \begin{align*}
+                \deno{\u} & = \singleton\mapsto \singleton\\
+                \deno{\t} & = \singleton\mapsto \top\\
+                \deno{\f} & = \singleton\mapsto \bot\\
+                \deno{\put} & = \singleton\mapsto (1, \singleton)
+            \end{align*}
+            \end{framed}
+            
+                \caption{Denotations for ground terms. \todo{Align}}
+                \label{PECPUTGroundDenotations}
+    \end{minipage}
+\end{figure}
+
+
+   
 
 
 \paragraph{Subeffecting Natural Transformations}
@@ -54,22 +65,6 @@ These natural transformations are given by inclusion functions, since $n\leq m\w
 \paragraph{Ground Denotations}
 We define denotations for ground terms as in Figure \ref{PECPUTGroundDenotations}, using $\top, \bot$ to represent the elements of $1+1$.
 
-\begin{figure}[H]
-    \centering
-    \
-        \begin{framed}
-            
-\begin{align*}
-    \deno{\u} & = \singleton\mapsto \singleton\\
-    \deno{\t} & = \singleton\mapsto \top\\
-    \deno{\f} & = \singleton\mapsto \bot\\
-    \deno{\put} & = \singleton\mapsto (1, \singleton)
-\end{align*}
-\end{framed}
-
-    \caption{Ground denotations for terms of $\pecput$ in $\set$}
-    \label{PECPUTGroundDenotations}
-\end{figure}
 
 
 
@@ -240,9 +235,8 @@ The fundamental property gives us the ability to prove the main theorem of this 
             \begin{align*}
                 \zberelation{v&}{\doin{\_}{\put^{n'}}{\return{v'}}}{\M{n}{G}}\\
                 &\beequiv \doin{\_}{\put^{n'}}{\return{u'}}\\
-                & \beequiv u
+                & \beequiv u & \square
             \end{align*}
-        $\square$
         \end{proof}
 \end{framed}
 

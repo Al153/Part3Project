@@ -90,7 +90,7 @@
             \centering\textbf{Naturality of the Graded Monad Transformations}
     
     
-            \begin{minipage}{.45\textwidth}
+            \begin{minipage}{.45\linewidth}
                 \centering
                 \begin{tikzcd}[column sep=huge]
                     A\ev 
@@ -106,7 +106,7 @@
                     \Tz{\1}{(B\ev)}
                 \end{tikzcd}
             \end{minipage}
-            \quad\begin{minipage}{.45\textwidth}
+            \quad\begin{minipage}{.45\linewidth}
                 \centering
                 \begin{tikzcd}[column sep=huge]
                     \Tz{(f\ev)}{\Tz{(g\ev)}{(A\ev)}}
@@ -126,7 +126,7 @@
     
     
             
-           \begin{minipage}{.45\textwidth}
+           \begin{minipage}{.45\linewidth}
             \centering
                 \begin{tikzcd}[column sep=huge]
                     A\ev \times \Tz{f\ev}{(B\ev)}
@@ -142,7 +142,7 @@
                     \Tz{f\ev}{(A'\ev\times B\ev)}
                 \end{tikzcd}
             \end{minipage}
-            \quad\begin{minipage}{.45\textwidth}
+            \quad\begin{minipage}{.45\linewidth}
                 \centering
                 \begin{tikzcd}[column sep=huge]
                     A\ev \times \Tz{f\ev}{(B\ev)}
@@ -167,7 +167,7 @@
     \begin{framed}
             \centering\textbf{Monad Laws}
         
-            \begin{minipage}{.45\textwidth}
+            \begin{minipage}{.45\linewidth}
                 \centering\textbf{Left Unit}
         
         
@@ -177,7 +177,7 @@
                     &=(\Id{\Tn{f}{A}})\ev
                 \end{align*}
             \end{minipage}\quad
-            \begin{minipage}{.45\textwidth}
+            \begin{minipage}{.45\linewidth}
                 \centering\textbf{Right Unit}
         
         
@@ -189,7 +189,7 @@
             \end{minipage}
             \\
         
-            \begin{minipage}{\textwidth}
+            \begin{minipage}{\linewidth}
                 \centering\textbf{Monad Associativity} 
         
         
@@ -213,7 +213,7 @@
                 \centering
                 \textbf{Bind Law}
         
-                \begin{minipage}{.45\textwidth}
+                \begin{minipage}{.45\linewidth}
                     \centering
                     \begin{tikzpicture}[baseline= (a).base]
                         \node[scale=.7] (a) at (0,0){
@@ -237,7 +237,7 @@
                 \end{tikzpicture}
                 \end{minipage}
                 \quad
-                \begin{minipage}{.45\textwidth}
+                \begin{minipage}{.45\linewidth}
                     \centering
                     \scalebox{.75}{\parbox{\linewidth}{%
                         \begin{align*}
@@ -254,7 +254,7 @@
                 \centering
                 \textbf{Commutes with Unit}
         
-                \begin{minipage}{.45\textwidth}
+                \begin{minipage}{.45\linewidth}
                     \centering
                     \begin{tikzpicture}[baseline= (a).base]
                         \node[scale=.7] (a) at (0,0){
@@ -274,7 +274,7 @@
                 \end{tikzpicture}
                 \end{minipage}
                 \quad
-                \begin{minipage}{.45\textwidth}
+                \begin{minipage}{.45\linewidth}
                     \centering
                     \scalebox{.75}{\parbox{\linewidth}{%
                     \begin{align*}
@@ -293,7 +293,7 @@
                 Let $\alpha_{A, B, C} = \pr{\p\after\p}{\pr{\pp\after\p}{\pp}}: ((A \times B) \times C) \rightarrow (A \times (B \times C))$
         
         
-                \begin{minipage}{.45\textwidth}
+                \begin{minipage}{.45\linewidth}
                     \centering
                     \begin{tikzpicture}[baseline= (a).base]
                         \node[scale=.7] (a) at (0,0){
@@ -316,7 +316,7 @@
                 \end{tikzpicture}
                 \end{minipage}
                 \quad
-                \begin{minipage}{.45\textwidth}
+                \begin{minipage}{.45\linewidth}
                     \centering
                     \scalebox{.75}{\parbox{\linewidth}{%
                     \begin{align*}
@@ -384,7 +384,7 @@
     
     
         
-                \begin{minipage}{.45\textwidth}
+                \begin{minipage}{.45\linewidth}
                     \centering
                     \begin{tikzpicture}[baseline= (a).base]
                         \node[scale=.7] (a) at (0,0){\begin{tikzcd}
@@ -397,7 +397,7 @@
                 \end{tikzpicture}
                 \end{minipage}
                 \quad
-                \begin{minipage}{.45\textwidth}
+                \begin{minipage}{.45\linewidth}
                     \centering
                     \scalebox{.75}{\parbox{\linewidth}{%
                     \begin{align*}
@@ -414,7 +414,7 @@
                 \centering
                 \textbf{Commutes with Join}
     
-                \begin{minipage}{.45\textwidth}
+                \begin{minipage}{.45\linewidth}
                     \centering
                     \begin{tikzpicture}[baseline= (a).base]
                         \node[scale=.7] (a) at (0,0){
@@ -440,7 +440,7 @@
                 \end{tikzpicture}
                 \end{minipage}
                 \quad
-                \begin{minipage}{.45\textwidth}
+                \begin{minipage}{.45\linewidth}
                     \centering
                     \scalebox{.75}{\parbox{\linewidth}{%
                     \begin{align*}
@@ -560,7 +560,7 @@
         \begin{framed}
             \centering\textbf{$\theta\star$ Preserves Co-products}
     
-            \begin{minipage}{.45\textwidth}
+            \begin{minipage}{.45\linewidth}
                 \begin{align*}
                     (\theta\star(\1 + \1))\ev & = (\1 + \1)(\theta\ev)\\
                     & = (\1 + \1)\qt{Constant function}\\
@@ -568,7 +568,7 @@
                 \end{align*}
             \end{minipage}
             \quad
-            \begin{minipage}{.45\textwidth}
+            \begin{minipage}{.45\linewidth}
                 \begin{align*}
                     (\theta\star\inl )\ev & = \inl(\theta\ev)\\
                     & = \inl \qt{Constant Fn}\\
@@ -576,7 +576,7 @@
                 \end{align*}
             \end{minipage}
     
-            \begin{minipage}{.45\textwidth}
+            \begin{minipage}{.45\linewidth}
                 \begin{align*}
                     (\theta\star\inr )\ev & = \inr(\theta\ev)\\
                     & = \inr \qt{Constant Fn}\\
@@ -584,7 +584,7 @@
                 \end{align*}
             \end{minipage}
             \quad
-            \begin{minipage}{.45\textwidth}
+            \begin{minipage}{.45\linewidth}
                 \begin{align*}
                     (\theta\star [f, g])\ev & = [f, g](\theta\ev)\\
                     & = [f (\theta\ev), g(\theta\ev)]\\
@@ -604,7 +604,7 @@
         \begin{framed}
             \centering\textbf{$\theta\star$ Preserves the Graded Monad}
     
-            \begin{minipage}{.45\textwidth}
+            \begin{minipage}{.45\linewidth}
                 \begin{align*}
                     (\theta\star\Tn{f}{A})\ev & = \Tn{f}{A}(\theta\ev) \\
                     & = \Tz{(f(\theta\ev))}{(A(\theta\ev))}\\
@@ -612,7 +612,7 @@
                 \end{align*}
             \end{minipage}
             \quad
-            \begin{minipage}{.45\textwidth}
+            \begin{minipage}{.45\linewidth}
                 \begin{align*}
                     (\theta\star\pointn{A})\ev & = \pointn{A}(\theta\ev) \\
                     & = \pointz{A(\theta\ev)}\\
@@ -620,7 +620,7 @@
                 \end{align*}
             \end{minipage}
     
-            \begin{minipage}{.45\textwidth}
+            \begin{minipage}{.45\linewidth}
                 \begin{align*}
                     (\theta\star \bindn{f}{g}{A})\ev & = \bindn{f}{g}{A}(\theta\ev)\\
                     & = \bindz{f(\theta\ev)}{g(\theta\ev)}{A(\theta\ev)}\\
@@ -628,7 +628,7 @@
                 \end{align*}
             \end{minipage}
             \quad
-            \begin{minipage}{.45\textwidth}
+            \begin{minipage}{.45\linewidth}
                 \begin{align*}
                     (\theta\star \tstrengthn{f}{A}{B})\ev & = \tstrengthn{f}{A}{B}(\theta \ev)\\
                     & = \tstrengthz{(f(\theta\ev))}{(A(\theta\ev))}{(B(\theta\ev))}\\
@@ -645,7 +645,7 @@
         \begin{framed}
             \centering\textbf{$\theta\star$ preserves Ground Subtyping and Subeffecting}
     
-            \begin{minipage}{.45\textwidth}
+            \begin{minipage}{.45\linewidth}
                 \begin{align*}
                     \theta\star(\deno{A\subtypeg B})\ev  & = \deno{A\subtypeg B}(\theta\ev)\\
                     & = \deno{A\subtype B} \qt{Constant Function}\\
@@ -653,7 +653,7 @@
                 \end{align*}
             \end{minipage}
             \quad
-            \begin{minipage}{.45\textwidth}
+            \begin{minipage}{.45\linewidth}
                 \begin{align*}
                     (\theta\star(\dsen{f}{g} A))\ev & = (\dsen{f}{g} A)(\theta \ev)\\
                     & = (\dsen{f(\theta\ev)}{g(\theta\ev)}(A(\theta\ev)))\\
