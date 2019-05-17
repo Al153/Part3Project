@@ -901,12 +901,12 @@ In this section, we state and prove a theorem that the action of a simultaneous 
 
 \begin{framed}
     \begin{proof}
-        By induction on the derivation on $\deno{\typerelation{\P}{A}{\type}}$. Making use of the S-Closure of the re-indexing functor.
+        By induction on the derivation on $\deno{\typerelation{\P}{A}{\type}}$. Making use of the S-Preservation of the re-indexing functor.
         
         \case{\tground}
         \begin{align*}
             \si\star\deno{\typerelation{\P}{\g}{\type}} &= \si\star\deno{\g}\\
-            & =  \deno{\g}\qt{By S-Closure}\\
+            & =  \deno{\g}\qt{By S-Preservation}\\
             & = \deno{\typerelation{\P'}{\g\ssi}{\type}}
         \end{align*}
         
@@ -993,12 +993,12 @@ In this section, we state and prove a theorem that the action of a simultaneous 
             \si\star(\g_1\subtypeg\g_2) &= (\g_1\subtypeg\g_2)
         \end{align*}
         
-        Since $\si\star$ is s-closed.
+        Since $\si\star$ is S-preserving.
         
         \case{\seffect}
         \begin{align*}
             \si\star\deno{\M{\e_1}{A} \subtypep \M{\e_2}{B}} & = \si\star(\deno{\e_1\subeffectp\e_2})\after\si\star(\T{\e_1}(\deno{A\subtypep B})) \\ 
-             &= \deno{\si(\e_1)\subeffectpp\si(\e_2)} \after \T{\si(\e_1)}{\deno{A\ssi\subtypepp B\ssi}}\qt{By S-Closure}\\
+             &= \deno{\si(\e_1)\subeffectpp\si(\e_2)} \after \T{\si(\e_1)}{\deno{A\ssi\subtypepp B\ssi}}\qt{By S-Preservation}\\
              &= \deno{\M{\si(\e_1)}{A\ssi}\subtypepp\M{\si(\e_2)}{B\ssi}}\\
              &= \deno{(\M{\e_1}{A})\ssi\subtypepp\M{\e_2}{B}\ssi}\\
         \end{align*}
@@ -1058,7 +1058,7 @@ In this section, we state and prove a theorem that the action of a simultaneous 
 
 \begin{framed}
     \begin{proof}
-        By induction on the derivation on $\deno{\wellformedok{\P}{\G}}$. Using the S-Closure of the re-indexing functor.
+        By induction on the derivation on $\deno{\wellformedok{\P}{\G}}$. Using the S-Preservation of the re-indexing functor.
         
         \case{\envnil}
         \begin{align*}
@@ -1231,7 +1231,7 @@ Then \begin{eqnarray}
 \begin{framed}
     \begin{proof}
         
-    By induction over the derivation of $\D$. Using the S-Closure of $\si\star$. We use $\G_I$ to indicate $\deno{\wellformedok{\P}{\G}}$, an $A_I$ to indicate $\deno{\typerelation{\P}{A}{\type}}$
+    By induction over the derivation of $\D$. Using the S-Preservation of $\si\star$. We use $\G_I$ to indicate $\deno{\wellformedok{\P}{\G}}$, an $A_I$ to indicate $\deno{\typerelation{\P}{A}{\type}}$
     
     \case{\vunit}
     
@@ -1368,8 +1368,8 @@ Then \begin{eqnarray}
     
     \begin{align*}
         \si\star(\D) &= \si\star(\bind{\e_1}{\e_2}{A}\after\T{\e_1}{\D_2}\after\tstrength{\e_1}{\G}{A}\after\pr{\Id{\G}}{\D_1})\\
-        & = \si\star(\bind{\e_1}{\e_2}{A})\after\si\star(\T{\e_1}{\D_2})\after\si\star(\tstrength{\e_1}{\G}{A})\after\pr{\si\star(\Id{\G_{I})}}{\si\star(\D_1)}\qt{By S-Closure}\\
-        &= \bind{\si(\e_1)}{\si(\e_2)}{A\ssi'}\after\T{\si(\e_1)}{\si\star(\D_2)}\after\tstrength{\si(\e_1)}{\G\ssi}{A\ssi}\after\pr{\si\star(\Id{\G_{I})}}{\si\star(\D_1)}\qt{By S-Closure}\\
+        & = \si\star(\bind{\e_1}{\e_2}{A})\after\si\star(\T{\e_1}{\D_2})\after\si\star(\tstrength{\e_1}{\G}{A})\after\pr{\si\star(\Id{\G_{I})}}{\si\star(\D_1)}\qt{By S-Preservation}\\
+        &= \bind{\si(\e_1)}{\si(\e_2)}{A\ssi'}\after\T{\si(\e_1)}{\si\star(\D_2)}\after\tstrength{\si(\e_1)}{\G\ssi}{A\ssi}\after\pr{\si\star(\Id{\G_{I})}}{\si\star(\D_1)}\qt{By S-Preservation}\\
         &= \bind{\si(\e_1)}{\si(\e_2)}{A\ssi'}\after\T{\si(\e_1)}{\D_2'}\after\tstrength{\si(\e_1)}{\G\ssi}{A\ssi}\after\pr{\si\star(\Id{\G_{I})}}{\D_1'}\qt{By Induction}\\
         &= \D'\\
     \end{align*}
@@ -1392,7 +1392,7 @@ Then \begin{eqnarray}
     
     \begin{align*}
         \si\star(\D) &= \si\star(\app\after(([\cur{\D_2\after\pp}, \cur{\D_3\after\pp}]\after\D_1)\times\Id{\G})\after\diag{\G})\\
-        &= \app\after(([\cur{\si\star(\D_2)\after\pp}, \cur{\si\star(\D_3)\after\pp}]\after\si\star(\D_1))\times\Id{\G\ssi})\after\diag{\G\ssi}\qt{By S-Closure}\\
+        &= \app\after(([\cur{\si\star(\D_2)\after\pp}, \cur{\si\star(\D_3)\after\pp}]\after\si\star(\D_1))\times\Id{\G\ssi})\after\diag{\G\ssi}\qt{By S-Preservation}\\
         &= \app\after(([\cur{\D_2'\after\pp}, \cur{\D_3'\after\pp}]\after\D_1')\times\Id{\G\ssi})\after\diag{\G\ssi}\qt{By Induction}\\
         & = \D'\\
     \end{align*}
@@ -1460,7 +1460,7 @@ Then \begin{eqnarray}
         & = \widehat{\bar{(\si\times\Id{U})\star(\widehat{\Id{\allI(A)}})}}\qt{By bijection}\\
         & = \widehat{\si\star(\bar{\widehat{\Id{\allI(A)}}})}\qt{By naturality}\\
         & = \widehat{\si\star(\Id{\allI(A)})}\qt{By bijection}\\
-        & = \widehat{\Id{\allII(A\after(\si\times\Id{U}))}}\qt{By S-Closure, naturality}\\
+        & = \widehat{\Id{\allII(A\after(\si\times\Id{U}))}}\qt{By S-Preservation, naturality}\\
         & = \widehat{\Id{\allII(A\sub{\si,\a\setto\a})}}\qt{By Substitution theorem}\\
         & = \e_{A\ssi}
     \end{align*}
@@ -1678,12 +1678,12 @@ In this section, we state and prove a theorem that the action of a simultaneous 
 
 \begin{framed}
     \begin{proof}
-            By induction on the derivation on $\deno{\typerelation{\P}{A}{\type}}$. Making use of the S-Closure of the re-indexing functor.
+            By induction on the derivation on $\deno{\typerelation{\P}{A}{\type}}$. Making use of the S-Preservation of the re-indexing functor.
             
             \case{\tground}
             \begin{align*}
                 \w\star\deno{\typerelation{\P}{\g}{\type}} &= \w\star\deno{\g}\\
-                & =  \deno{\g}\qt{By S-Closure}\\
+                & =  \deno{\g}\qt{By S-Preservation}\\
                 & = \deno{\typerelation{\P'}{\g}{\type}}
             \end{align*}
             
@@ -1751,12 +1751,12 @@ In this section, we state and prove a theorem that the action of a simultaneous 
             \w\star(\g_1\subtypeg\g_2) &= (\g_1\subtypeg\g_2)
         \end{align*}
         
-        Since $\w\star$ is s-closed.
+        Since $\w\star$ is S-preserving.
         
         \case{\seffect}
         \begin{align*}
             \w\star\deno{\M{\e_1}{A} \subtypep \M{\e_2}{B}} & = \w\star(\deno{\e_1\subeffectp\e_2})\after\w\star(\T{\e_1}(\deno{A\subtypep B})) \\ 
-             &= \deno{\e_1\subeffectpp\e_2} \after \T{\e_1}{\deno{A\subtypepp B}}\qt{By S-Closure}\\
+             &= \deno{\e_1\subeffectpp\e_2} \after \T{\e_1}{\deno{A\subtypepp B}}\qt{By S-Preservation}\\
              &= \deno{\M{\e_1}{A}\subtypepp\M{\e_2}{B}}\\
              &= \deno{(\M{\e_1}{A})\subtypepp\M{\e_2}{B}}\\
         \end{align*}
@@ -1810,7 +1810,7 @@ If $\wrel{\w}{\P'}{\P}$ and $\wellformedok{\P}{\G}$  then $\wellformedok{\P'}{\G
 
 \begin{framed}
     \begin{proof}
-        By induction on the derivation on $\deno{\wellformedok{\P}{\G}}$. Using the S-Closure of the re-indexing functor.
+        By induction on the derivation on $\deno{\wellformedok{\P}{\G}}$. Using the S-Preservation of the re-indexing functor.
         
         \case{\envnil}
         \begin{align*}
@@ -1961,7 +1961,7 @@ If $\wrel{\w}{\P'}{\P}$ and $\wellformedok{\P}{\G}$  then $\wellformedok{\P'}{\G
 
 \begin{framed}
     \begin{proof}
-        By induction over the derivation of $\D$. Using the S-Closure of $\w\star$. We use $\G_I$ to indicate $\deno{\wellformedok{\P}{\G}}$, an $A_I$ to indicate $\deno{\typerelation{\P}{A}{\type}}$
+        By induction over the derivation of $\D$. Using the S-Preservation of $\w\star$. We use $\G_I$ to indicate $\deno{\wellformedok{\P}{\G}}$, an $A_I$ to indicate $\deno{\typerelation{\P}{A}{\type}}$
         
         \case{\vunit}
         
@@ -2099,8 +2099,8 @@ If $\wrel{\w}{\P'}{\P}$ and $\wellformedok{\P}{\G}$  then $\wellformedok{\P'}{\G
         
         \begin{align*}
             \w\star(\D) &= \w\star(\bind{\e_1}{\e_2}{A}\after\T{\e_1}{\D_2}\after\tstrength{\e_1}{\G}{A}\after\pr{\Id{\G}}{\D_1})\\
-            & = \w\star(\bind{\e_1}{\e_2}{A})\after\w\star(\T{\e_1}{\D_2})\after\w\star(\tstrength{\e_1}{\G}{A})\after\pr{\w\star(\Id{\G_{I})}}{\w\star(\D_1)}\qt{By S-Closure}\\
-            &= \bind{\e_1}{\e_2}{A_{I'}}\after\T{\e_1}{\w\star(\D_2)}\after\tstrength{\e_1}{\G_{I'}}{A_{I'}}\after\pr{\w\star(\Id{\G_{I})}}{\w\star(\D_1)}\qt{By S-Closure}\\
+            & = \w\star(\bind{\e_1}{\e_2}{A})\after\w\star(\T{\e_1}{\D_2})\after\w\star(\tstrength{\e_1}{\G}{A})\after\pr{\w\star(\Id{\G_{I})}}{\w\star(\D_1)}\qt{By S-Preservation}\\
+            &= \bind{\e_1}{\e_2}{A_{I'}}\after\T{\e_1}{\w\star(\D_2)}\after\tstrength{\e_1}{\G_{I'}}{A_{I'}}\after\pr{\w\star(\Id{\G_{I})}}{\w\star(\D_1)}\qt{By S-Preservation}\\
             &= \bind{\e_1}{\e_2}{A_{I'}}\after\T{\e_1}{\D_2'}\after\tstrength{\e_1}{\G_{I'}}{A_{I'}}\after\pr{\w\star(\Id{\G_{I})}}{\D_1'}\qt{By Induction}\\
             &= \D'\\
         \end{align*}
@@ -2123,7 +2123,7 @@ If $\wrel{\w}{\P'}{\P}$ and $\wellformedok{\P}{\G}$  then $\wellformedok{\P'}{\G
         
         \begin{align*}
             \w\star(\D) &= \w\star(\app\after(([\cur{\D_2\after\pp}, \cur{\D_3\after\pp}]\after\D_1)\times\Id{\G})\after\diag{\G})\\
-            &= \app\after(([\cur{\w\star(\D_2)\after\pp}, \cur{\w\star(\D_3)\after\pp}]\after\w\star(\D_1))\times\Id{\G_{I'}})\after\diag{\G_{I'}}\qt{By S-Closure}\\
+            &= \app\after(([\cur{\w\star(\D_2)\after\pp}, \cur{\w\star(\D_3)\after\pp}]\after\w\star(\D_1))\times\Id{\G_{I'}})\after\diag{\G_{I'}}\qt{By S-Preservation}\\
             &= \app\after(([\cur{\D_2'\after\pp}, \cur{\D_3'\after\pp}]\after\D_1')\times\Id{\G_{I'}})\after\diag{\G_{I'}}\qt{By Induction}\\
             & = \D'\\
         \end{align*}
@@ -2192,7 +2192,7 @@ If $\wrel{\w}{\P'}{\P}$ and $\wellformedok{\P}{\G}$  then $\wellformedok{\P'}{\G
             & = \widehat{\bar{(\w\times\Id{U})\star(\widehat{\Id{\allI(A)}})}}\qt{By bijection}\\
             & = \widehat{\w\star(\bar{\widehat{\Id{\allI(A)}}})}\qt{By naturality}\\
             & = \widehat{\w\star(\Id{\allI(A)})}\qt{By bijection}\\
-            & = \widehat{\Id{\allII(A\after(\w\times\Id{U}))}}\qt{By S-Closure, naturality}\\
+            & = \widehat{\Id{\allII(A\after(\w\times\Id{U}))}}\qt{By S-Preservation, naturality}\\
             & = \widehat{\Id{\allII(A)}}\qt{By Substitution theorem}\\
             & = \e_{A_{I'}}
         \end{align*}
