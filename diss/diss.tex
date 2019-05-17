@@ -143,53 +143,76 @@ A category is \textit{cartesian closed} if it has a terminal object, products fo
 An object, typically written $\1$, is \textit{terminal} in a category, $\C$, if for all objects $A\in\obj\C$, there exists exactly one morphism from $A$ to $\1$, written $\term{A}: A \rightarrow \1$.
 
 \subsubsection{Products}
-A \textit{binary product} of a pair of objects $A, B\in\obj\C$ consists of an object, written $A \times B$, with morphisms $\p: A\times B\rightarrow A$, $\pp: A\times B \rightarrow B$ such that for any other object $C$ and morphisms, $f: C\rightarrow A$, $g: C\rightarrow B$ there exists a unique morphism $\pr{f}{g}: C \rightarrow (A\times B)$ such that the following commutes:
-
-\begin{center}
-    \begin{tikzcd}
-        & \arrow{dl}[swap]{f} C  \arrow[d, "\pr{f}{g}"] \arrow [dr, "g"] & \\
-        A & \arrow [l, "\p"] (A\times B) \arrow{r}[swap]{\pp} & B\\
-    \end{tikzcd}
-\end{center}
-
-
-
+A \textit{binary product} of a pair of objects $A, B\in\obj\C$ consists of an object, written $A \times B$, with morphisms $\p: A\times B\rightarrow A$, $\pp: A\times B \rightarrow B$ such that for any other object $C$ and morphisms, $f: C\rightarrow A$, $g: C\rightarrow B$ there exists a unique morphism $\pr{f}{g}: C \rightarrow (A\times B)$ such Figure \ref{ProductDiagram} commutes.
 A category is said to \textit{have binary products} if for all objects $A, B$, the product $A\times B$ also exists.
 
 \subsubsection{Exponentials}
-An \textit{exponential} for objects $A, C$ is an object $C^A$ with morphism $\app: C^A\times A \rightarrow C$ such that for any object $B$ and morphism $f: B\times A \rightarrow C$, there exists a morphism $\cur{f}: B \rightarrow C^A$ such that the following commutes:
+An \textit{exponential} for objects $A, C$ is an object $C^A$ with morphism $\app: C^A\times A \rightarrow C$ such that for any object $B$ and morphism $f: B\times A \rightarrow C$, there exists a morphism $\cur{f}: B \rightarrow C^A$ such that Figure \ref{ExponentialDiagram} commutes. A category \textit{has exponentials} if for all pairs of objects $A, C$, it has an exponential $C^A$.
 
+\begin{minipage}{0.47\linewidth}
+    \begin{figure}[H]
+        \begin{framed}
+            \centering
+            \begin{center}
+                \begin{tikzcd}
+                    & \arrow{dl}[swap]{f} C  \arrow[d, "\pr{f}{g}"] \arrow [dr, "g"] & \\
+                    A & \arrow [l, "\p"] (A\times B) \arrow{r}[swap]{\pp} & B
+                \end{tikzcd}
+            \end{center}
+        \end{framed}
+        \caption{The Product Diagram}
+        \label{ProductDiagram}
+    \end{figure}
+\end{minipage}\quad
+\begin{minipage}{0.47\linewidth}
+    \begin{figure}[H]
+        \begin{framed}
+            \centering
+            \begin{center}
+                \begin{tikzcd}
+                    C^A \times A \arrow{r}{\app}& C\\
+                    B\times A\arrow{u}{\cur{f}\times \Id{B}} \arrow{ur}{f}
+                \end{tikzcd}
+            \end{center}
+        \end{framed}
+        \caption{The Exponential Diagram}
+        \label{ExponentialDiagram}
+    \end{figure}
+\end{minipage}\quad
 
-\begin{center}
-    \begin{tikzcd}
-        C^A \times A \arrow{r}{\app}& C\\
-        B\times A\arrow{u}{\cur{f}\times \Id{B}} \arrow{ur}{f}
-    \end{tikzcd}
-\end{center}
-
-
-
-A category \textit{has exponentials} if for all pairs of objects $A, C$, it has an exponential $C^A$.
 
 \subsubsection{Diagonal and Twist Morphisms}
-In the definition of the semantics of the if-expression, it is useful to make use of the following twist and diagonal shorthand morphisms.
-
-\begin{align*}
-    \twist{A}{B}: (A\times B) \rightarrow (B\times A) = \pr{\pp}{\p}\\
-    \diag{A}: A \rightarrow (A\times A)  = \pr{\Id{A}}{\Id{A}}
-\end{align*}
+In the definition of the semantics of the if-expression, it is useful to make use of the twist $\twist{A}{B}: (A\times B) \rightarrow (B\times A) = \pr{\pp}{\p}$ and diagonal $\diag{A}: A \rightarrow (A\times A)  = \pr{\Id{A}}{\Id{A}}$ morphisms.
 
 \subsection{Co-Product}
-A \textit{co-product} is the dual of a product. The is a co-product for objects $A, B$ if there exists an object $A+B$ in $\C$ with morphisms $\inl: A\rightarrow (A+B)$, $inr: B\rightarrow (A+B)$ such that for any other object $C$ with morphisms $f: A\rightarrow C$, $g: B\rightarrow C$, there exists a unique morphism $[f, g]: (A + B)\rightarrow C $ such that the following commutes:
+A \textit{co-product} is the dual of a product. The is a co-product for objects $A, B$ if there exists an object $A+B$ in $\C$ with morphisms $\inl: A\rightarrow (A+B)$, $inr: B\rightarrow (A+B)$ such that for any other object $C$ with morphisms $f: A\rightarrow C$, $g: B\rightarrow C$, there exists a unique morphism $[f, g]: (A + B)\rightarrow C $ such that Figure \ref{CoproductDiagram} commutes.
 
-\begin{center}
-    \begin{tikzcd}
-        &  C   & \\
-        A \arrow{ur}{f} \arrow [r, "\inl"] &  \arrow{u}{[f, g]} (A + B)  & \arrow{l}[swap]{\inr} \arrow{ul}[swap]{g} B\\
-    \end{tikzcd}
-\end{center}
-
-
+\begin{minipage}{0.47\linewidth}
+    \begin{figure}[H]
+        \centering
+        \begin{framed}
+            \begin{tikzcd}
+                &  C   & \\
+                A \arrow{ur}{f} \arrow [r, "\inl"] &  \arrow{u}{[f, g]} (A + B)  & \arrow{l}[swap]{\inr} \arrow{ul}[swap]{g} B
+            \end{tikzcd}
+        \end{framed}
+        \caption{Co-product Diagram}
+        \label{CoproductDiagram}
+    \end{figure}
+\end{minipage}\quad
+\begin{minipage}{0.47\linewidth}
+    \begin{figure}[H]
+        \centering
+        \begin{framed}
+            \begin{tikzcd}
+                F(A) \arrow{r}{\theta_A} \arrow{d}{F(f)}  & G(A) \arrow{d}{G(f)}\\
+                F(B) \arrow{r}{\theta_B}& G(B)
+            \end{tikzcd}
+        \end{framed}
+        \caption{Naturality of a natural transformation}
+        \label{Naturality}
+    \end{figure}
+\end{minipage}\quad
 
 \subsection{Functors}
 A \textit{functor} $F: \C \rightarrow \DC$ is a mapping of objects and morphisms in $\C$ to objects and morphisms respectively in $\DC$ that preserves composition and identities.
@@ -205,21 +228,6 @@ A \textit{functor} $F: \C \rightarrow \DC$ is a mapping of objects and morphisms
 
 A \textit{natural transformation} $\theta$ between two functors $F, G: \C \rightarrow \DC$ is a collection of morphisms in $\DC$, indexed by objects in $\C$ with  $\theta_A: F(A) \rightarrow G(A)$ such that diagram in Figure \ref{Naturality} commutes for each $f: A \rightarrow B \in \C$.
 
-\begin{figure}
-    \centering
-    \begin{minipage}{0.45\textwidth}
-        \centering
-        \begin{framed}
-            \begin{tikzcd}
-                F(A) \arrow{r}{\theta_A} \arrow{d}{F(f)}  & G(A) \arrow{d}{G(f)}\\
-                F(B) \arrow{r}{\theta_B}& G(B)\\ 
-            \end{tikzcd}
-    \end{framed}
-        \caption{Naturality of a natural transformation}
-        \label{Naturality}
-    \end{minipage}\hfill
-\end{figure}
-
 
 
 \subsection{Monad}
@@ -227,27 +235,30 @@ A \textit{monad} consists of a functor, $T: \C \rightarrow \C$, from $\C$ onto i
 
 
 \begin{figure}
-\begin{framed}  
         \centering
         \begin{minipage}{0.45\textwidth}
             \centering
-            \begin{tikzcd}
-                T(T(T(A)) \arrow{r}{\mu_{T(A)}} \arrow{d}{T(\mu_{A})} & T(T(A)) \arrow{d}{\mu_A} \\
-                T(T(A)) \arrow{r}{\mu_A} & T(A)    
-            \end{tikzcd}        
+            \begin{framed}
+                \begin{tikzcd}
+                    T(T(T(A)) \arrow{r}{\mu_{T(A)}} \arrow{d}{T(\mu_{A})} & T(T(A)) \arrow{d}{\mu_A} \\
+                    T(T(A)) \arrow{r}{\mu_A} & T(A)    
+                \end{tikzcd}        
+            \end{framed}
             \caption{Monad Associativity Law}
             \label{MonadAssociativity}
         \end{minipage}\hfill
         \begin{minipage}{0.45\textwidth}
             \centering
+            \begin{framed}
+                
             \begin{tikzcd}
                 T(A) \arrow{r}{\point{T(A)}} \arrow{d}{T(\point{A})} \arrow[equal]{rd} & T(T(A)) \arrow{d}{\mu_A}\\
                 T(T(A)) \arrow{r}{\mu_A} & T(A)
             \end{tikzcd}
+            \end{framed}
             \caption{Monad Left- and Right-Unit laws}
             \label{MonadUnits}
         \end{minipage}
-\end{framed}
 \end{figure}
 
 
@@ -262,38 +273,40 @@ A \textit{graded monad} is a generalisation of a monad to be indexed by a monoid
 
 
 \begin{figure}
-\begin{framed}
         \centering
         \begin{minipage}{0.45\textwidth}
             \centering
-            \begin{tikzcd}[ampersand replacement=\&]
-                \T{\e_1}{\T{\e_2}{\T{\e_3}{A}}} 
-                \arrow [r, "\bind{\e_1}{\e_2}{\T{\e_3}{A}}"]
-                \arrow [d, "\T{\e_1}{\bind{\e_2}{\e_3}{A}}"] \& \T{\e_1 \dot \e_2}{\T{\e_3} A} \arrow [d, "\bind{\e_1 \dot \e_2}{\e_3}{A}"] \\
-                \T{\e_1}{\T{\e_2 \dot \e_3}{A}} \arrow [r, "\bind{\e_1}{\e_2 \dot \e_3}{A}"] \& \T{\e_1 \dot \e_2 \dot \e_3}{A}    
-            \end{tikzcd}
+            \begin{framed}
+                \begin{tikzcd}[ampersand replacement=\&]
+                    \T{\e_1}{\T{\e_2}{\T{\e_3}{A}}} 
+                    \arrow [r, "\bind{\e_1}{\e_2}{\T{\e_3}{A}}"]
+                    \arrow [d, "\T{\e_1}{\bind{\e_2}{\e_3}{A}}"] \& \T{\e_1 \dot \e_2}{\T{\e_3} A} \arrow [d, "\bind{\e_1 \dot \e_2}{\e_3}{A}"] \\
+                    \T{\e_1}{\T{\e_2 \dot \e_3}{A}} \arrow [r, "\bind{\e_1}{\e_2 \dot \e_3}{A}"] \& \T{\e_1 \dot \e_2 \dot \e_3}{A}    
+                \end{tikzcd}
+            \end{framed}
             \caption{Associativity of a graded monad}
             \label{GradedMonadAssociativity}
         \end{minipage}\hfill
         \begin{minipage}{0.45\textwidth}
             \centering
-            \begin{tikzcd}[ampersand replacement=\&]
-                \tea
-                 \arrow[equal]{rd} 
-                 \arrow[r, "\T{\e}{\point{A}}"]
-                 \arrow{d}{\point{\tea}}
-                \& 
-                \T{\e}{\T{\1}{A}} 
-                    \arrow[d, "\bind{\e}{\1}{A}"] \\
-                    \T{\1}{\T{\e}{A}}
-                         \arrow{r}{\bind{\1}{\e}{A}}
-                \& 
-                \tea
-            \end{tikzcd}
+            \begin{framed}
+                \begin{tikzcd}[ampersand replacement=\&]
+                    \tea
+                     \arrow[equal]{rd} 
+                     \arrow[r, "\T{\e}{\point{A}}"]
+                     \arrow{d}{\point{\tea}}
+                    \& 
+                    \T{\e}{\T{\1}{A}} 
+                        \arrow[d, "\bind{\e}{\1}{A}"] \\
+                        \T{\1}{\T{\e}{A}}
+                             \arrow{r}{\bind{\1}{\e}{A}}
+                    \& 
+                    \tea
+                \end{tikzcd}
+            \end{framed}
             \caption{Left- and Right- Units of a graded monad}
             \label{GradedMonadUnits}
         \end{minipage}
-\end{framed}
 \end{figure}
 
 
@@ -301,98 +314,116 @@ A \textit{graded monad} is a generalisation of a monad to be indexed by a monoid
 A slightly harder concept to motivate is that of tensorial (or tensor) \textit{strength} for a graded monad. Tensor strength consists of a natural transformation: $\strengtht_{A, B}: A \times \T{}{B} \rightarrow \T{}{(A \times B)}$, which is required to have well-defined interactions with the graded monad morphisms and the product-reordering natural transformation $\alpha_{A, B, C} = \pr{\p\after\p}{\pr{\pp\after\p}{\pp}}: ((A \times B) \times C) \rightarrow (A \times (B \times C))$, as seen in Figures \ref{TensorStrengthLeftNaturality}, \ref{TensorStrengthRightNaturality}, \ref{TensorStrengthUnitorLaw}, \ref{TensorStengthJoin}, \ref{TensorStrengthPoint}, \ref{TensorStrengthAlpha}. The reasoning behind this is that the tensor-strength natural transformation allows us to model operations that are invisibly implicit in a programming language but not given by default in category theory, such as in Figure \ref{MonadStrengthRequirement} in Section \ref{LanguageFeatureRequirements}. Tensor strength of a monad can be generalised to tensor strength of a graded monad by indexing by an element of the monoid algebra. A monad (or respectively a graded monad) is called \textit{strong} if it has tensorial strength. 
 
 \begin{figure}
-\begin{framed}
         \centering
         \begin{minipage}{0.45\textwidth}
             \centering
-            \begin{tikzcd}[ampersand replacement=\&]
-                A \times \teb  \arrow [r, "f \times \Id{\teb}"] \arrow [d, "\tstrength{\e}{A}{B}"]  \&
-                A' \times \teb \arrow [d, "\tstrength {\e} {A'}{B}"]\\
-                \T{\e}{(A \times B)} \arrow [r, "\T{\e}{(f \times \Id{B})}"]\&
-                \T{\e}{(A' \times B)}
-                \end{tikzcd}
-                \caption{Left Naturality of Graded Tensor Strength}
+            \begin{framed}
+                \begin{tikzcd}[ampersand replacement=\&]
+                    A \times \teb  \arrow [r, "f \times \Id{\teb}"] \arrow [d, "\tstrength{\e}{A}{B}"]  \&
+                    A' \times \teb \arrow [d, "\tstrength {\e} {A'}{B}"]\\
+                    \T{\e}{(A \times B)} \arrow [r, "\T{\e}{(f \times \Id{B})}"]\&
+                    \T{\e}{(A' \times B)}
+                    \end{tikzcd}
+            \end{framed}
+            \caption{Left Naturality of Graded Tensor Strength}
                 \label{TensorStrengthLeftNaturality}
         \end{minipage}
-        \hfill
+        \quad
         \begin{minipage}{0.45\textwidth}
             \centering
-            \begin{tikzcd}[ampersand replacement=\&]
-                A \times \teb \arrow [r, "\Id{A} \times \T{\e}{f}"] \arrow [d, "\tstrength{\e}{A}{B}"]\&
-                A \times \T{\e}{B'} \arrow [d, "\tstrength{\e}{A}{B'}"]\\
-                \T{\e}{(A \times B)} \arrow [r, "\T{e}{(\Id{A} \times f)}"] \&
-                \T{\e}{(A \times B')}
-            \end{tikzcd}
+            \begin{framed}
+                \begin{tikzcd}[ampersand replacement=\&]
+                    A \times \teb \arrow [r, "\Id{A} \times \T{\e}{f}"] \arrow [d, "\tstrength{\e}{A}{B}"]\&
+                    A \times \T{\e}{B'} \arrow [d, "\tstrength{\e}{A}{B'}"]\\
+                    \T{\e}{(A \times B)} \arrow [r, "\T{e}{(\Id{A} \times f)}"] \&
+                    \T{\e}{(A \times B')}
+                \end{tikzcd}
+            \end{framed}
             \caption{Right Naturality of Graded Tensor Strength}
             \label{TensorStrengthRightNaturality}
         \end{minipage} 
-\end{framed}
 \end{figure}
 
 
 \begin{figure}
-\begin{framed}
+    \todo{Fix the alignments of these}
+    \begin{minipage}{0.45\textwidth}
         \centering
-        \begin{minipage}{0.45\textwidth}
-        \begin{tikzcd}[ampersand replacement=\&]
-            A \times \teb 
-            \arrow [r, "\tstrength{\e}{A}{B}"]
-            \arrow [rd, "\pp"]
-            \& 
-            \T{\e}{(A \times B)}
-            \arrow [d, "\T{\e}{\pp}"]
-            \\
-            \&
-            \teb
-        \end{tikzcd}
+        \begin{framed}
+            \begin{tikzcd}[ampersand replacement=\&]
+                A \times \teb 
+                \arrow [r, "\tstrength{\e}{A}{B}"]
+                \arrow [rd, "\pp"]
+                \& 
+                \T{\e}{(A \times B)}
+                \arrow [d, "\T{\e}{\pp}"]
+                \\
+                \&
+                \teb
+            \end{tikzcd}        
+        \end{framed}
         \caption{Tensor Strength Unitor Law}
         \label{TensorStrengthUnitorLaw}
         \end{minipage}
         \quad
-        \centering
         \begin{minipage}{0.45\textwidth}
-            \begin{tikzpicture}[baseline= (a).base]
-                \node[scale=.7] (a) at (0,0){
-            \begin{tikzcd}[ampersand replacement=\&]
-                A \times \T{\e_1}{\T{\e_2}{B}} 
-                \arrow [r, "\tstrength{\e_1}{A}{\T{\e_2}{B}}"]
-                \arrow [dr, "\Id{A} \times \bind{\e_1}{\e_2}{B}"]
-                \& 
-                \T{\e_1}{(A \times \T{\e_2}{B})} 
-                \arrow [r, "\T{\e_1}{\tstrength{\e_2}{A}{B}}"]
-                \& 
-                \T{\e_1}{\T{\e_2}{(A \times B)}} 
-                \arrow [d, "\bind{\e_1}{\e_2}{A \times B}"]
-                \\
-                \&
-                A \times \T{\e_1 \dot \e_2}{B}  
-                \arrow [r, "\tstrength{\e_1 \dot \e_2}{A}{B}"] 
-                \&
-                \T{\e_1 \dot \e_2}({A \times B)}
-            \end{tikzcd}
-            };
-\end{tikzpicture}
+            \centering
+            \begin{framed}
+                \begin{tikzpicture}[baseline= (a).base]
+                    \node[scale=.7] (a) at (0,0){
+                \begin{tikzcd}[ampersand replacement=\&]
+                    A \times \T{\e_1}{\T{\e_2}{B}} 
+                    \arrow [r, "\tstrength{\e_1}{A}{\T{\e_2}{B}}"]
+                    \arrow [dr, "\Id{A} \times \bind{\e_1}{\e_2}{B}"]
+                    \& 
+                    \T{\e_1}{(A \times \T{\e_2}{B})} 
+                    \arrow [r, "\T{\e_1}{\tstrength{\e_2}{A}{B}}"]
+                    \& 
+                    \T{\e_1}{\T{\e_2}{(A \times B)}} 
+                    \arrow [d, "\bind{\e_1}{\e_2}{A \times B}"]
+                    \\
+                    \&
+                    A \times \T{\e_1 \dot \e_2}{B}  
+                    \arrow [r, "\tstrength{\e_1 \dot \e_2}{A}{B}"] 
+                    \&
+                    \T{\e_1 \dot \e_2}({A \times B)}
+                \end{tikzcd}
+                };
+                \end{tikzpicture}        
+            \end{framed}
             \caption{How the tensor-strength natural transformation commutes with the join natural transformation.}
             \label{TensorStengthJoin}
         \end{minipage}
     
-        \quad
         \begin{minipage}{0.45\textwidth}
-            \begin{tikzcd}[ampersand replacement=\&]
-                A \times B
-                \arrow [r, "\Id{A} \times \point{B}"]
-                \arrow [rd, "\point{A \times B}"]
-                \&
-                A \times \tob 
-                \arrow [d, "\tstrength{\1}{A}{B}"]
-                \\
-                \&
-                \T{\1}{(A \times B)}
-            \end{tikzcd}
+            \begin{framed}
+                \begin{tikzcd}[ampersand replacement=\&]
+                    A \times B
+                    \arrow [r, "\Id{A} \times \point{B}"]
+                    \arrow [rd, "\point{A \times B}"]
+                    \&
+                    A \times \tob 
+                    \arrow [d, "\tstrength{\1}{A}{B}"]
+                    \\
+                    \&
+                    \T{\1}{(A \times B)}
+                \end{tikzcd}
+            \end{framed}
             \caption{How the tensor-strength natural transformation commutes with the unit natural transformation}
             \label{TensorStrengthPoint}
         \end{minipage}
-\end{framed}
+        \quad
+        \begin{minipage}{0.45\textwidth}
+            \begin{framed}
+                \begin{align*}
+                    \bar{(-)}: \quad\C(FA, B) &\leftrightarrow \DC(A, GB)   \quad: \widehat{(-)}\\
+                    f & \mapsto G(f)\after\eta_A \\
+                    \epsilon\after F(g) & \mapsfrom g
+                \end{align*}
+            \end{framed}
+            \caption{How to construct the adjunction isomorphism from its unit and co-unit.}
+            \label{Adjunction}
+        \end{minipage}
 \end{figure}
 
 
@@ -430,31 +461,9 @@ A slightly harder concept to motivate is that of tensorial (or tensor) \textit{s
 An important concept in category theory is that of an \textit{adjunction}. An adjunction consists of functors $F: C\rightarrow D$, and  $G: D\rightarrow C$ and a pair of natural transformations, known respectively as the unit and co-unit: $\eta_A: A \rightarrow G(F A)$ in $\C$ and $\epsilon_B: F(G B) \rightarrow B$ in $\DC$, such that $\epsilon_{F A}\after F(\eta_A) = \Id{F A}$ and $G(\epsilon_B)\after \eta_{F B} = \Id{G B}$. We can then use $\epsilon$ and $\eta$ to form a natural isomorphism between morphisms in the two categories, as seen in Figure \ref{Adjunction}. This natural isomorphism is called an adjunction.
 
 
-\begin{figure}
-    \begin{framed}
-    \begin{align*}
-        \bar{(-)}: \quad\C(FA, B) &\leftrightarrow \DC(A, GB)   \quad: \widehat{(-)}\\
-        f & \mapsto G(f)\after\eta_A \\
-        \epsilon\after F(g) & \mapsfrom g
-    \end{align*}
-    \end{framed}
-    \caption{How to construct the adjunction isomorphism from its unit and co-unit.}
-    \label{Adjunction}
-\end{figure}
-
 \subsection{Strictly Indexed Category}\label{IndexedCategoryDefinition}
 
-The final piece of category theory required to understand this dissertation is the concept of a \textit{strictly indexed category}. A strictly indexed category is a functor from a \textit{base category} $\C$ into a target (\textit{indexed}) category of categories, where objects are categories and morphisms are functors. Objects, $A$, in the base category are mapped to categories $\C(A)$, known as \textit{fibres} in the indexed category. Morphisms between objects in the base category, $f: B\rightarrow A$, are contravariantly mapped to functors, written $f\star: \C(A)\rightarrow \C(B)$ and known as \textit{re-indexing functors}, between fibres in the indexed category. The ``strictly'' adverb indicates that the indexing in this construction is performed using a functor as opposed to the weaker \textit{pseudofunctor} (weak 2-functor) structure. Since pseudofunctors are not needed to explain anything in this project, I leave out their definition, though an interested reader may wish to research them further\footnote{https://ncatlab.org/nlab/show/pseudofunctor}. 
-
-
-Due to the composition laws for functors, $\theta\star\after\phi\star = (\phi\after\theta)\star$ and $\Id{A}\star(B) = B\in\obj \C(A)$, and $\Id{}\star$ is the identity functor. For example, we may use the category of cartesian closed categories and functors that preserve the cartesian closed structure, ($\cccat$) indexed by a partial order, $\mathbb{P}$:
-
-\begin{align*}
-    I: \mathbb{P} & \rightarrow \cccat\qt{The indexing functor.} \\
-    A \in\obj\mathbb{P} & \mapsto \C \in\cccat\qt{Objects are mapped to categories.}\\
-    A \leq B & \mapsto (A \leq B)\star: \C \rightarrow \DC\qt{Morphisms are mapped to functors preserving CCC properties.}
-\end{align*}
-
+The final piece of category theory required to understand this dissertation is the concept of a \textit{strictly indexed category}. A strictly indexed category is a functor from a \textit{base category} $\C$ into a target (\textit{indexed}) category of categories, where objects are categories and morphisms are functors. Objects, $A$, in the base category are mapped to categories $\C(A)$, known as \textit{fibres} in the indexed category. Morphisms between objects in the base category, $f: B\rightarrow A$, are contravariantly mapped to functors, written $f\star: \C(A)\rightarrow \C(B)$ and known as \textit{re-indexing functors}, between fibres in the indexed category. The ``strictly'' adverb indicates that the indexing in this construction is performed using a functor as opposed to the weaker \textit{pseudofunctor} (weak 2-functor) structure. Since pseudofunctors are not needed to explain anything in this project, I leave out their definition, though an interested reader may wish to research them further\footnote{https://ncatlab.org/nlab/show/pseudofunctor}.  Due to the composition laws for functors, $\theta\star\after\phi\star = (\phi\after\theta)\star$ and $\Id{A}\star(B) = B\in\obj \C(A)$, and $\Id{}\star$ is the identity functor.
 \section{Language Features and Their Requirements}\label{LanguageFeatureRequirements}
 
 
@@ -826,31 +835,39 @@ The ground effects form the same monotonic, partially ordered monoid $(E, \dot, 
     \caption{Equational equivalence of effects with respect to an effect-variable environment. $\groundEffects$ is defined to be the set of ground-effect substitutions.}
     \label{EffectEquivalence}
 \end{figure}
-Now we can define the monoid operator. 
+Now we can define the monoid operator (Definition \ref{PolymorphicMonoidDef}). This choice of operator preserves any identity or annihilator elements in ground monoid. To define the $\subeffectp$ relation (Definition \ref{PolymorphicSubeffectDef}), we must again take inspiration from the substitution-based equivalence. This subeffecting relation preserves ground effect structures such as a \textit{top} effect, which has all effects as subeffects. Where it is obvious from the context, I use $\dot$ instead of $\dotp$.
+
+
+\begin{minipage}{0.47\linewidth}
 \begin{framed}
-    \begin{definition}[Polymorphic Effect Monoid]
-        $$\e_1\dotp\e_2 = \e_3 \Leftrightarrow \forall \si\in\groundEffects.\s (\e_1\ssi \dot \e_2\ssi = \e_3\ssi)$$ 
+    \begin{definition}[Polymorphic Effect Monoid]\label{PolymorphicMonoidDef}
+        \begin{align*}
+            \e_1\dotp\e_2 & = \e_3  \Leftrightarrow
+            \\
+            \forall \si \in\groundEffects. & \s (\e_1\ssi \dot \e_2\ssi = \e_3\ssi)
+        \end{align*}
     \end{definition}
 \end{framed}
+\end{minipage}
+\quad
+\begin{minipage}{0.47\linewidth}
+    \begin{framed}
+        \begin{definition}[Polymorphic Subeffecting]
+            \label{PolymorphicSubeffectDef}
+            \begin{align*}
+                \e_1\subeffectp\e_2\Leftrightarrow \forall\si\in\groundEffects.\s\e_1\ssi\subeffect\e_2\ssi
+                \\
+            \end{align*}
+        \end{definition}
+        \end{framed}
+\end{minipage}
 
-This choice of operator preserves any identity or annihilator elements in ground monoid. To define the $\subeffectp$ relation, we must again take inspiration from the substitution-based equivalence. 
-
-
-\begin{framed}
-    
-\begin{definition}[Polymorphic Subeffecting]
-    $$\e_1\subeffectp\e_2\Leftrightarrow \forall\si\in\groundEffects.\s\e_1\ssi\subeffect\e_2\ssi$$
-    
-\end{definition}
-
-\end{framed}
-This subeffecting relation preserves ground effect structures such as a \textit{top} effect, which has all effects as subeffects. Where it is obvious from the context, I use $\dot$ instead of $\dotp$.
 
 
 \subsubsection{Types}
-As stated, types are now generated by the grammar below. Note that $\g$ ranges over the ground types of a particular instantiation of PEC.
+As stated, types are now generated by the following grammar: $ A, B, C \gens \ground \mid \ab \mid \mea \mid \all{\a}{A}$. Note that $\g$ ranges over the ground types of a particular instantiation of PEC.
 
-$$ A, B, C \gens \ground \mid \ab \mid \mea \mid \all{\a}{A}$$
+
   
 \subsubsection{Type Environments}
 As is often the case in similar type systems, a type environment is a snoc list of (term-variable, type) pairs, $\G \gens \nil \mid \gax$.
@@ -1060,10 +1077,7 @@ $}
         If $\gpetyperelation{v}{A}$ then $\oke{\P}{\G}$.
     \end{lemma}
     \begin{proof}
-        If $\oke{\P}{\gax}$ then by inverting (See Figure \ref{InversionPrinciple}) the $\okt$ rule, we have $\oke{\P}{\G}$ 
-    
-        Only the type rule (\textit{\envextend}) adds terms to the environment from its preconditions to its postcondition and it does so in an $\okt$ preserving way. Any type derivation tree has at least one leaf. All leaves are axioms which require $\oke{\P}{\G}$. All non-axiom derivations preserve the $\okt$ property.
-        $$\square$$
+        By simple induction using inversion (Aside \ref{InversionPrinciple}). $\square$
     \end{proof}
     
 \end{framed}
@@ -1076,23 +1090,15 @@ $}
     \end{lemma}
     
     \begin{proof}
-        We prove each of the implications separately, but an over-arching theme of this proof is that the leaf rules of any $\wellformedtype{\P}{\texttt{Consequence}}$ derivation tree require $\ok{\P}$ and that any modifications to the effect-variable environment in the assumptions to the effect-variable environment in the consequence of a rule preserve the $\okt$ relation. Hence, using induction and inversion, we can show that the effect-variable environment is always well formed in any complete derivation tree.
-    
-        Firstly in the case of the well-formedness relation $\wellformedeffect{\P}{\e}$, the only leaf rules are the (\textit{\eground}) and (\textit{\evar}) rules. By inversion, if $\wellformedeffect{\P}{e}$ or $\wellformedeffect{\P, \a}{\a}$ then $\ok{\P}$ or $\ok{\P, \a}$ respectively. Next, by inversion on the (\textit{\ecompose}) rule, if $\wellformedeffect{\P}{\e_1\dot\e_2}$ then $\wellformedeffect{\P}{\e_1}$, so by induction $\ok{\P}$. Finally, the weakening rule preserves the $\okt$ property of the effect-variable environment, so $\wellformedeffect{\P, \b}{\a} \implies \wellformedeffect{\P}{\a} \implies \ok{\P} \implies \ok{(\P, \b)}$.
-    
-        Secondly, in the case of the well formedness relation on types, the only leaf rule is (\textit{\tground}). If $\wellformedtype{\P}{\g}$, then by inversion, $\ok{\P}$. Similarly to the (\textit{\ecompose}) rule for effects, the (\textit{\tfun}) rule's preconditions have the same effect-environment, so $\ok{\P}$ holds by inversion and induction. By inversion on the (\textit{\teffect}) rule, $\wellformedeffect{\P}{\e}$ so $\ok{\P}$. Finally the (\textit{\tquant}) rule preserves $\okt$ in a similar way to the (\textit{\eweaken}) rule above.
-    
-        Finally, if $\oke{\P}{\gax}$ then, by inversion, $\wellformedtype{\P}{A}$  and $\oke{\P}{\G}$. Since $\G$ is finite, $\oke{\P}{\nil}$. By inversion of the (\textit{\envnil}) rule, $\ok{\P}$.
-
-        $$\square$$
+        Each lemma is proved separately, again using simple induction and inversion. $\square$
     \end{proof}
     
 \end{framed}
 
 
-\begin{figure}
-    \begin{framed}
-        \textbf{Inversion in Inductive Proofs}
+\begin{framed}
+    \begin{aside}[Inversion in Inductive Proofs]\label{InversionPrinciple}
+        
 
         In proofs involving assumptions with multiple inductive rules, a useful property is that of inversion. This allows us to case split over the inductive rule that generated the assumption and can allow us to infer the structure of the term.
 
@@ -1102,10 +1108,11 @@ $}
             \ntreeruleII{\vapply}{\gpetyperelation{v_1}{\ab}}{\gpetyperelation{v_2}{A}}{\gpetyperelation{\apply{v_1}{v_2}}{B}}
         \end{equation}
         Then we might use the inferred subexpressions $v_1, v_2$ to prove the theorem in this case.
+    \end{aside}
+        
     \end{framed}
-    \caption{An explanation of the concept of inversion.}
-    \label{InversionPrinciple}
-\end{figure}
+
+
 
 
 \chapter{The Semantics of PEC in an Strictly Indexed Category}
@@ -1142,18 +1149,21 @@ A full derivation and proof of soundness of the semantics of the Effect Calculus
 \begin{figure}[H]
 \centering
 \begin{minipage}{0.45\textwidth}
-    \begin{tikzcd}[ampersand replacement=\&, column sep=huge]
-        A \times \T{\e_1}{B} \arrow [r, "\Id{A} \times \dse{\e_1}{\e_2}_B"] \arrow [d, "\tstrength{\e_1}{A}{B}"] \&
-        A \times \T{\e_2}{B} \arrow [d, "\tstrength{\e_2}{A}{B}"] \\
-        \T{\e_1}{(A \times B)} \arrow [r, "\dse{\e_1}{\e_2}_{ A \times B}"] \&
-        \T{\e_2}{(A \times B)} 
-    \end{tikzcd}\qquad
+    \begin{framed}
+        \begin{tikzcd}[ampersand replacement=\&, column sep=huge]
+            A \times \T{\e_1}{B} \arrow [r, "\Id{A} \times \dse{\e_1}{\e_2}_B"] \arrow [d, "\tstrength{\e_1}{A}{B}"] \&
+            A \times \T{\e_2}{B} \arrow [d, "\tstrength{\e_2}{A}{B}"] \\
+            \T{\e_1}{(A \times B)} \arrow [r, "\dse{\e_1}{\e_2}_{ A \times B}"] \&
+            \T{\e_2}{(A \times B)} 
+        \end{tikzcd}
+    \end{framed}
     \caption{The interaction of the subeffect natural transformation with the tensor-strength natural transformation.}
     \label{SubeffectTensorStrength}
 \end{minipage}  
 \quad
 \begin{minipage}{0.45\textwidth}
-\scalebox{0.8}{    
+    \begin{framed}
+        \scalebox{0.8}{    
 \begin{tikzcd}[ampersand replacement=\&]
     \T{\e_1}{\T{\e_2}{}} 
     \arrow [rr, "\T{\e_1}{\deno{\e_2\subeffect\e_2'}
@@ -1173,6 +1183,8 @@ A full derivation and proof of soundness of the semantics of the Effect Calculus
     \T{\e_1'\dot\e_2'}{}
 \end{tikzcd}
 }
+    \end{framed}
+
 \caption{The interaction of the subeffect natural transformation with the graded monad join natural transformation.}
 \label{SubeffectBind}
 \end{minipage}  
@@ -1230,14 +1242,19 @@ Finally, the adjunction should satisfy the Beck-Chevalley condition, as seen in 
 \begin{figure}
     \begin{framed}
         \centering
-        \begin{tikzcd}[column sep=huge]
-            \C(E^n) 
-            \arrow[bend left=50]{rrrr}[name=U,label=above:$\scriptstyle \theta\star\after\allEn$]{}
-            \arrow[bend right=50]{rrrr}[name=D,label=below:$\scriptstyle \allEm\after(\theta\times\Id{E})\star$]{} 
-            &&&& 
-            \C(E^m\times E)
-            \arrow[name=Canon,shorten <=10pt,shorten >=10pt,equal,to path={(U) -- node[label=right:$\bar{(\theta\times\Id{E})\star(\counit{})}$] {} (D)}]{}
-        \end{tikzcd}
+        \begin{tikzpicture}[baseline= (a).base]
+                    \node[scale=.7] (a) at (0,0){
+                        \begin{tikzcd}[column sep=huge]
+                            \C(E^n) 
+                            \arrow[bend left=50]{rrrr}[name=U,label=above:$\scriptstyle \theta\star\after\allEn$]{}
+                            \arrow[bend right=50]{rrrr}[name=D,label=below:$\scriptstyle \allEm\after(\theta\times\Id{E})\star$]{} 
+                            &&&& 
+                            \C(E^m\times E)
+                            \arrow[name=Canon,shorten <=10pt,shorten >=10pt,equal,to path={(U) -- node[label=right:$\bar{(\theta\times\Id{E})\star(\counit{})}$] {} (D)}]{}
+                        \end{tikzcd}
+                    };
+        \end{tikzpicture}
+        
     \end{framed}
     \caption{A functor diagram of the Beck-Chevalley condition}
     \label{BeckChevalleyDiagram}
@@ -1249,6 +1266,8 @@ Finally, the adjunction should satisfy the Beck-Chevalley condition, as seen in 
 
 From the Beck-Chevalley condition, we can derive some more naturality conditions that will become useful later.
 Using the adjunction property, we have that: $\bar{f\after\pstar(n)} = \bar{f}\after n$. Secondly, using the Beck-Chevalley condition, we can derive some non-trivial interactions between re-indexing functors and the adjunction\footnote{This part of the proof comes from a stack-overflow answer: https://math.stackexchange.com/questions/188099/beck-chevalley-condition-and-maps-of-adjunctions}. 
+
+\todo{Put these next to each other?}
     \begin{align*}
         \theta\star\unit{A}:\quad&\theta\star A \rightarrow (\theta\star\after\allEn\after\pstar) A\\
         \theta\star\unit{} =& \bar{(\theta\times\Id{E})\star(\counit{\pstar})}\after\theta\star\unit{}\\
@@ -1267,7 +1286,7 @@ Using the adjunction property, we have that: $\bar{f\after\pstar(n)} = \bar{f}\a
         \theta\star(\bar{f}) & = \theta\star(\allEn(f)\after\eta_A)\\
         & = \theta\star(\allEn(f))\after\theta\star(\eta_A)\\
         & =  (\allEm\after(\theta\times\Id{E})\star)f \after\unit{(\theta\times\Id{E})\star A}\\
-        & = \bar{(\theta\times\Id{E})\star f}\\
+        & = \bar{(\theta\times\Id{E})\star f}
     \end{align}
 
 \section{Road Map}
@@ -1455,7 +1474,7 @@ Another construction that is important is the denotation of subtyping. For each 
 
 This finally gives us the ability to express the denotations of well-typed terms in an effect-variable environment, $\P$, as morphisms in the fibre induced by $\P$, $\C(E^n)$.  Writing $\G_{E^n}$ and $A_{E^n}$ for $\deno{\wellformedok{\P}{\G}}$ and $\deno{\typerelation{\P}{A}{\type}}$, we can derive $\deno{\gpetyperelation{v}{A}}$ as a morphism in $\C(E^n)(\G_{E^n}, A_{E^n})$. Since each fibre is an S-category, for each constant, $\const{A}$, there exists $\deno{\const{A}}: \1 \rightarrow A_{E^n}$ in $\C(E^n)$. These denotations can be seen in Figure \ref{TermDenotations}.
 
-\begin{figure}[H]
+\begin{figure}
     \footnotesize
     \begin{framed}
         \[
@@ -1525,7 +1544,7 @@ This finally gives us the ability to express the denotations of well-typed terms
 The least intuitive of these denotations is that of effect-application (\textit{\vspec}) in Equation \ref{EffectApplication}. As explained later in Section \ref{SubsAndWeakening}, the re-indexing functor represents application of the substitution $\ssub{\b}{\e}$. By doing type analysis on the co-unit morphism $ \counit{\deno{\typerelation{\P,\b}{A\ssub{\a}{\b}}{\type}}}$, as in Figure \ref{CoUnitType}, we can see that before the application of the substitution, the co-unit natural transformation takes a quantified type to a substituted type under an extended effect-variable environment. By applying the substitution re-indexing functor in Figure \ref{ReIndexedCoUnitType}, we substitute $\e$ for the extra effect variable, $\b$. In the case of the quantified type, as $\b$ is not used, the substitution has no effect, but in the case of the substituted type, the substitutions compose to yield the substitution $\ssub{\a}{\e}$. This composes with the expression denotation $g$ to give the applied denotation in Figure \ref{EffectSpecComp}.
 
 
-\begin{figure}[H]
+\begin{figure}
     \begin{framed}
         \begin{align*}
             \counit{\deno{\typerelation{\P,\b}{A\ssub{\a}{\b}}{\type}}} & = \widehat{\Id{\allEn(\deno{\typerelation{\P,\b}       {A\ssub{\a}{\b}}{\type}})}} \\ 
@@ -1539,7 +1558,7 @@ The least intuitive of these denotations is that of effect-application (\textit{
     \label{CoUnitType}
 \end{figure}
 
-\begin{figure}[H]
+\begin{figure}
     \begin{framed}
         \begin{align*}
             \pr{\Id{E^n}}{h}\star(\counit{\deno{\typerelation{\P,\b}{A\ssub{\a}{\b}}{\type}}}) & : \quad \deno{\typerelation{\P}{\all{\a}{A}}{\type}} \rightarrow \deno{\typerelation{\P}{A\ssub{\a}{\b}\ssub{\b}{\e}}{\type}}\\
@@ -1552,7 +1571,7 @@ The least intuitive of these denotations is that of effect-application (\textit{
 
 
  
-\begin{figure}[H]
+\begin{figure}
     \begin{framed}
         \centering
         \begin{tikzcd}
@@ -1735,27 +1754,7 @@ The general construction for effect-variable substitution allows us to define, i
     \end{theorem}
     
     \begin{proof}
-        The proof of this depends on the naturality of $\Mul_{E^n}$ and inversion to narrow down case splitting on the structure of the effect-variable environments. It proceeds by induction on the definition of denotations of effects given in Figure \ref{EffectDenotations}.
-    
-        \case{\eground}
-        This case holds due to the terminal morphism being unique. Hence, pre-composing it with another morphism yields the terminal morphism.
-    
-        \begin{align*}
-            \deno{\typerelation{\P}{e}{\effect}}\after\si & = \deno{e}\after\term{E^n}\after\si \\
-            & = \deno{e}\after\term{E^m} \\
-            & = \deno{\typerelation{\P'}{e}{\type}}\\
-        \end{align*}
-    
-    \case{\evar}
-    
-    Since the structure of the substitution $\si$ depends on the structure of $\P$, we can perform inversion to infer the denotation of $\si$.
-    
-    \begin{align*}
-        \deno{\typerelation{\P,\a}{\a}{\effect}}\after\si &= \pp\after\pr{\si'}{\deno{\typerelation{\P'}{\e}{\effect}}}\qt{By inversion $\si = (\si', \a\setto\e)$}\\
-        & =\deno{\typerelation{\P'}{\e}{\effect}} \\
-        &= \deno{\typerelation{\P'}{\si'(\a)}{\effect}}\\
-    \end{align*}
-    
+        This proof depends on the naturality of $\Mul_{E^n}$ and inversion to narrow down case splitting on the structure of the effect-variable environments. It proceeds by induction on the definition of denotations of effects given in Figure \ref{EffectDenotations}.
     
     \case{\ecompose}
     
@@ -1766,10 +1765,8 @@ The general construction for effect-variable substitution allows us to define, i
         & = \Mul_{E^n}(\deno{\typerelation{\P}{\e_1}{\effect}}\after \si, \deno{\typerelation{\P}{\e_2}{\effect}}\after \si)\qt{By Naturality}\\
         & = \Mul_{E^m}(\deno{\typerelation{\P'}{\si(\e_1)}{\effect}}, \deno{\typerelation{\P}{\si(\e_2)}{\effect}})\\
         & = \deno{\typerelation{\P'}{\si(\e_1)\dot\si(\e_2)}{\effect}}\\
-        & = \deno{\typerelation{\P'}{\si(\e_1\dot\e_2)}{\effect}}\\
-    \end{align*}
-    
-    $$\square$$
+        & = \deno{\typerelation{\P'}{\si(\e_1\dot\e_2)}{\effect}}&\square
+    \end{align*}   
     \end{proof}
 \end{framed}
 
@@ -1785,7 +1782,7 @@ The weakening theorem proceeds similarly.
     \end{theorem}
     
     \begin{proof}
-        This proof also depends on the naturality of $\Mul_{E^n}$ and case splitting on the structure of $\w$.  Some cases can be found in Appendix \ref{AppendixEffectWeakeningOnEffects}
+        This proof also depends on the naturality of $\Mul_{E^n}$ and case splitting on the structure of $\w$.  Some cases can be found in Appendix \ref{AppendixEffectWeakeningOnEffects}.
     \end{proof}
 \end{framed}
 
@@ -1795,9 +1792,7 @@ The weakening theorem proceeds similarly.
         If $\typerelation{\P'}{\si}{\P}$, and $\a\#\si$, then $\typerelation{(\P', \a)}{(\si, \a\setto\a)}{(\P,\a)}$ with denotation $\deno{\typerelation{(\P', \a)}{(\si, \a\setto\a)}{(\P,\a)}} = (\deno{\typerelation{\P'}{\si}{\P}}\times\Id{E})$
     \end{lemma}
     \begin{proof}
-       This holds by the weakening-theorem on effects, theorem \ref{EffectWeakeningOnEffects}
-    
-       $$\square$$
+       This holds by the weakening-theorem on effects, Theorem \ref{EffectWeakeningOnEffects} $\square$.
     \end{proof}
 \end{framed}
 
