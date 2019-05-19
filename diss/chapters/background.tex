@@ -334,7 +334,7 @@ A slightly harder concept to motivate is that of tensorial (or tensor) \textit{s
 
 
 \subsection{Adjunction}\label{WhatsAnAdjunction}
-An important concept in category theory is that of an \textit{adjunction}. An adjunction consists of functors $F: C\rightarrow D$, and  $G: D\rightarrow C$ and a pair of natural transformations, known respectively as the unit and co-unit: $\eta_A: A \rightarrow G(F A)$ in $\C$ and $\epsilon_B: F(G B) \rightarrow B$ in $\DC$, such that $\epsilon_{F A}\after F(\eta_A) = \Id{F A}$ and $G(\epsilon_B)\after \eta_{F B} = \Id{G B}$. We can then use $\epsilon$ and $\eta$ to form a natural isomorphism between morphisms in the two categories, as seen in Figure \ref{Adjunction}. This natural isomorphism is called an adjunction.
+An important concept in category theory is that of an \textit{adjunction}. An adjunction consists of functors $F: C\rightarrow D$, and  $G: D\rightarrow C$ and a pair of natural transformations, known respectively as the unit and co-unit: $\unit{A}: A \rightarrow G(F A)$ in $\C$ and $\counit{B}: F(G B) \rightarrow B$ in $\DC$, such that $\counit{F A}\after F(\eta_A) = \Id{F A}$ and $G(\counit{B})\after \eta_{F B} = \Id{G B}$. We can then use $\unit{}$ and $\counit{}$ to form a natural isomorphism between morphisms in the two categories, as seen in Figure \ref{Adjunction}. This natural isomorphism is called an adjunction.
 
 
 \subsection{Strictly Indexed Category}\label{IndexedCategoryDefinition}

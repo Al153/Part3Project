@@ -1,4 +1,8 @@
-\documentclass{Report}
+\RequirePackage[safe]{silence}
+\WarningFilter*{latexfont}{Font}
+
+\documentclass{report}
+\usepackage[T1]{fontenc}
 \input{../proofs/header.tex}
 
 \usepackage{fancyvrb}
@@ -7,45 +11,26 @@
 \usepackage{graphicx}
 \usepackage[nottoc]{tocbibind}
 \usepackage{url}
+\usepackage{setspace}
+\usepackage{xspace}
 
-
-\newcommand\comment[1]{}
-\newcommand\numberthis{\addtocounter{equation}{1}\tag{\theequation}}
-\newcommand\groundEffects[0]{\texttt{Ground}}
-
-
-
-
-\title{A Denotational Semantics for Polymorphic Effect Systems}
-
-\date{\today}
-\author{Alexander Taylor}
+\newcommand\authorname[0]{Alexander J.\ Taylor\xspace}
+\newcommand\authorcollege[0]{St John's College}
+\newcommand\authoremail[0]{al@altaylor.io}
+\newcommand\dissertationtitle[0]{A Denotational Semantics for Polymorphic Effect Systems}
+\newcommand\wordcount[0]{11,621\footnote{Calculated using Latex Workshop's word count facility (TexCount).}}
 
 \begin{document}
 
-\maketitle
-
-\newcommand{\note}[1]{
-    %
-}
-
-\input{abstract.tex}
-
-\tableofcontents
-
-\input{introduction.tex}
-
-\input{background.tex}
-
-\input{PECSemanticsChapter.tex}
-
-\input{constructingAModel.tex}
+\pagestyle{empty}
+\singlespacing
+\input{proforma/titlepage}
+\onehalfspacing
+\input{proforma/declaration}
+\singlespacing
 
 
-\input{adequacyChapter.tex}
-
-\input{conclusion.tex}
-
+\input{chapters/dissBody.tex}
 
 \bibliography{diss} 
 \bibliographystyle{ieeetr}
@@ -54,13 +39,13 @@
 %% Appendices
 \appendix
 
-% Appendices account for 1070 words
+% Appendices account for 1310 words
 
 % Comment out for accurate word count.
-\input{AppendixWeakeningProofs.tex}
-\input{AppendixReduceCases.tex}
-\input{AppendixSCategoryFunctors.tex}
-\input{AppendixFunctorCategoryStructures.tex}
-\input{AppendixAdequacyProofs.tex}
+\input{appendices/AppendixWeakeningProofs.tex}
+\input{appendices/AppendixReduceCases.tex}
+\input{appendices/AppendixSCategoryFunctors.tex}
+\input{appendices/AppendixFunctorCategoryStructures.tex}
+\input{appendices/AppendixAdequacyProofs.tex}
 
 \end{document}
