@@ -1,0 +1,414 @@
+
+\chapter{Constructing a Model of PEC}
+\label{HowToBuildAModel}
+
+Now we have proved that an appropriate categorical structure can model PEC, it remains to explicitly construct such an indexed category. There exist $\set$-based models for the semantics of many effectful languages with a graded monad, such as a certain instantiations of the Effect Calculus \cite{Katsumata:2014}. More specifically, it is possible to treat $\set$ as an S-category. Hence, I use a $\set$ based S-category as a starting point. In this section, I  demonstrate how to construct an strictly indexed S-category, which can model the PEC, from such an S-category.
+
+Suppose we have an S-category structure derived from $\set$ which models an instance of EC. That is, there is a strong graded monad $\Tz{}{}, \bindmu^0, \pointz{}, \strengtht^0$ on $\set$, and there exist subtyping functions $\deno{A\subtypeg B}: A \rightarrow B$ for each instance of the ground subtyping relation and natural transformations $\deno{\e_1 \subeffectz \e_2}: \Tz{\e_1}{} \rightarrow \Tz{\e_2}{}$ for each instance of the subeffecting relation. Furthermore, $\set$ is cartesian closed and has co-products for all pairs of objects. Since this structure is a model for the EC, it is graded by the partially ordered monoid on ground effects: $(E, \subeffectz, \1, \dot)$. I have marked each of these instances of S-category structure with $0$ to indicate that they occur in the fibre induced by the empty effect-variable environment.
+
+Using $\a$-equivalence, we can see that all effect-variable environments of the same length are equivalent. For example, the terms in Equation \ref{AlphaEquivalence} are $\a$-equivalent. Hence, we can reduce an effect-variable environment to the natural number $n$ indicating its length.
+
+\begin{equation}\label{AlphaEquivalence}
+    \scalebox{.8}{$
+    (\etyperelation{(\nil, \a, \b)}{\G}{\lam{f}{\fntype{\texttt{Int}}{\M{\a\dot\b}{\U}}}{(\apply{f}{0})}}{\M{\a\dot\b}{\U}})  =_\a(\etyperelation{(\nil, \g, \d)}{\G}{\lam{f}{\fntype{\texttt{Int}}{\M{\g\dot\d}{\U}}}{(\apply{f}{0})}}{\M{\g\dot\d}{\U}})
+    $}
+\end{equation}
+ 
+We define the base category as specified in Section \ref{PECDenotations}. Next we must pick our fibre categories for non-zero values of $n$. A simple instantiation is to pick each fibre $\C(E^n)$ to be the functor category $[E^n, \set]$,  where $E^n$ is a discrete category (a category that only contains the identity morphisms). That is, the category of functions returning an object in $\set$ given $n$ ground effects. Morphisms between objects are functions which, given a collection of ground effects, yield a morphism (function) in $\set$. If $m\in [E^n, \set](A, B)$ then $m\ev\in\set(A\ev, B\ev)$. The fibres, $[E^n, \set]$ are S-categories. This can be proved by constructing the S-category structures pointwise with respect to their parameter $\ev \in E^n$ as seen in Figures \ref{HowToBuildCCC} - \ref{HowToBuildSubtyping}. Full proofs of the naturality and monad laws can be found in Appendix \ref{NaturalityAndMonadLawsProof}.
+
+
+\begin{figure}
+    \begin{minipage}{0.47\linewidth}
+        \begin{framed}
+            \centering\textbf{Cartesian Closed Category}
+    
+    Since $E$ is small, $E^n$ is also small, and hence $[E^n, \set]$ is a CCC. This can be demonstrated pointwise.
+    
+    \begin{align*}
+        (A\times B)\ev & = (A\ev)\times(B\ev)\\
+        \1\ev & = \1\\
+        (B^A)\ev &= (B\ev)^{(A\ev)}\\
+        \p\ev & = \p\\
+        \pp\ev & = \pp\\
+        \app\ev & = \app\\
+        \cur{f}\ev & = \cur{f\ev}\\
+        \pr{f}{g}\ev & = \pr{f\ev}{g\ev}\\
+    \end{align*}
+    
+    \end{framed}
+    \caption{The construction of CCC features in the functor category $[E^n, \set]$.}
+    \label{HowToBuildCCC}
+    \end{minipage}
+    \quad\begin{minipage}{0.47\linewidth}
+        \begin{framed}
+            \centering\textbf{The Co-Product on the Terminal Set}
+        
+        We can define the co-product pointwise.
+        
+        \begin{align*}
+            \\ \\
+            (\1 + \1)\ev & = (\1\ev + \1\ev)\\
+            & = (\1 + \1)\\
+            \inl\ev &= \inl\\
+            \inr\ev &= \inr\\
+            [f, g]\ev &= [f\ev, g\ev]\\
+            \\ \\ \\ 
+        \end{align*}
+        \end{framed}
+        \caption{The construction of co-product features in the functor category $[E^n, \set]$.}
+        \label{HowToBuildCoproduct}
+    \end{minipage}
+    
+\end{figure}
+
+\begin{figure}
+    \begin{framed}
+        \centering\textbf{Ground Types and Terms}
+
+        Each ground type in the non-polymorphic calculus has a fixed denotation $\deno{\g}\in\obj\set$. The ground type in the polymorphic calculus hence has a denotation represented by the constant function. Each constant term $\const{A}$ in the non-polymorphic calculus has a fixed denotation $\deno{\const{A}}\in\set(\1, A)$.
+        
+        So the morphism $\deno{\const{A}}$ in $[E^n, \set]$ is the corresponding constant dependently typed morphism.
+        
+        \begin{minipage}
+            {0.45\linewidth}
+            \begin{align*}
+                \deno{\g}:&\quad E^n\rightarrow \obj\set\\
+                \ev \mapsto&\quad  \deno{\g}\\
+            \end{align*}
+            
+        \end{minipage}\quad
+        \begin{minipage}
+            {0.45\linewidth}
+            \begin{align*}
+                \deno{\const{A}}:&\quad[E^n, \set](\1, A)\\
+                \ev\mapsto&\quad\deno{\const{A\ev}}
+            \end{align*}   
+        \end{minipage}            
+    \end{framed}
+
+    \caption{The definition of ground types and terms in the category $[E^n, \set]$.}
+    \label{HowToBuildGround}
+\end{figure}
+
+
+\begin{figure}
+    \begin{framed}
+        \centering\textbf{Strong Graded Monad}
+
+Given the strong graded monad $(\Tz{}{}, \pointz{}, \bindmu^0, \strengtht^0)$ on $\set$ we can construct an appropriate graded monad, $(\Tn{}{}, \pointn{}{}{}, \bindmu^n,\strengtht^n)$, on $[E^n, \set]$.
+
+\begin{align*}
+    \Tn{}{}:&\quad(E^n, \dot, \subeffect_n, \1_n) \rightarrow [[E^n, \set], [E^n, \set]]\\
+    (\Tn{f}{A})\ev=&\quad \Tz{(f\ev)}{A\ev}\\
+    (\pointn{A})\ev=&\quad\pointz{A\ev}\\
+    (\bindn{f}{g}{A})\ev=&\quad\bindz{(f\ev)}{(g\ev)}{(A\ev)}\\
+    (\tstrengthn{f}{A}{B})\ev=&\quad\tstrengthz{(f\ev)}{(A\ev)}{(B\ev)}
+\end{align*}
+
+Through some mechanical proof and the naturality of the $\Tz{}{}$ strong graded monad, these morphisms are natural in their type parameters and form a strong graded monad in $[E^n, \set]$
+
+    \end{framed}
+    \caption{The definition of the graded monad in the category $[E^n, \set]$.}
+    \label{HowToBuildMonad}
+\end{figure}
+
+
+\begin{figure}
+    \begin{framed}
+        
+        \centering\textbf{Subeffecting}
+
+
+        Given a collection of subeffecting natural transformations in $\set$, $\deno{\e_1\subeffectz \e_2}:\s \Tz{\e_1}{} \rightarrow \Tz{\e_2}{}$, we can form subeffect natural transformations in $[E^n, \set]$:
+        
+        \begin{align*}
+            \deno{f\subeffectn g}:&\quad\Tn{f}{}\rightarrow \Tn{g}{}\\
+            (\deno{f\subeffectn g} A) \ev:&\quad\Tn{f\ev}{(A\ev)}\rightarrow \Tn{g\ev}{(B\ev)}\\
+            =&\quad \deno{f\ev\subeffectz g\ev}(A\ev)
+        \end{align*}
+    \end{framed}
+    \caption{Subeffect natural transformations in the category $[E^n, \set]$.}
+    \label{HowToBuildSubeffecting}
+\end{figure}
+
+\begin{figure}
+    \begin{framed}
+        
+\centering\textbf{Subtyping}
+
+
+Subtyping in $[E^n, \set]$ holds via subtyping in $\set$, so the subtyping relation $A \subtype B$ forms a morphism in $[E^n, \set]$
+
+\begin{align*}
+    \deno{A\subtype_n B}:&\quad A\rightarrow B\\
+    \deno{A\subtype_n B}\ev=&\quad \deno{A\ev\subtype_0 B\ev}
+\end{align*}
+
+
+
+    \end{framed}
+    \caption{Definition of subtyping morphisms in the functor category $[E^n, \set]$.}
+    \label{HowToBuildSubtyping}
+\end{figure}
+
+Now we need to define the required morphisms between fibres. Firstly, for any function $\theta: E^m \rightarrow E^n$ in $\Eff$, there should exist an S-preserving re-indexing functor $\theta\star: [E^n, \set] \rightarrow [E^m, \set]$. A simple instantiation is the pre-composition functor, as seen in Figure \ref{PrecompositionFunctor}. This also obeys the composition law of re-indexing functors( Figure \ref{PrecompositionFunctorComposition}) and is S-preserving (Figure \ref{PrecompositionSClosure}).
+
+
+\begin{figure}
+    \begin{minipage}{0.47\linewidth}
+        \begin{framed}
+            \centering
+            \textbf{The Pre-composition Functor}
+    
+            \begin{align*}
+                A\in&\quad [E^n, \set]\\
+                \theta\star(A) \emv =&\quad  A(\theta(\emv))\\
+                f:&\quad A \rightarrow B\\
+                \theta\star(f) \emv =&\quad f(\theta(\emv)): \theta\star(A) \rightarrow \theta\star(B)
+            \end{align*}
+        \end{framed}
+        \caption{A description of the pre-composition functor.}
+        \label{PrecompositionFunctor}
+    \end{minipage}
+    \quad
+    \begin{minipage}{0.47\linewidth}
+        \begin{framed}
+            \centering
+            \textbf{Composition of Functors}
+    
+            \begin{align*}
+                \theta\star(\phi\star A) \ev & = \phi\star(A)(\theta \ev)\\
+                & = A(\phi(\theta\ev))\\
+                & = A((\phi\after\theta) \ev)\\
+                & = (\phi\after\theta)\star(A) \ev
+            \end{align*}
+        \end{framed}
+    
+        \caption{The pre-composition functor composes in a contravariant fashion.}
+        \label{PrecompositionFunctorComposition}
+    \end{minipage}
+\end{figure}
+
+
+
+
+\begin{figure}
+    
+    \begin{framed}
+        \begin{center}
+            \textbf{Re-Indexing Functors are S-Preserving}    
+        \end{center}
+        
+        \begin{theorem}
+            The re-indexing functors are also S-preserving. That is all the S-category features in $[E^n, \set]$ are preserved by $\theta\star$ in $[E^m, \set]$. For a full list of features and their proofs, please see Appendix \ref{ReindexingFunctorProperties}.
+        \end{theorem}
+        
+        
+        \begin{proof}
+            All of the S-category features are proved pointwise.
+            \\
+            \\
+            \begin{minipage}{0.45\linewidth}
+                \case{Graded Monad Functor}
+            \begin{align*}
+                \\ 
+                (\theta\star\Tn{f}{A})\ev & = \Tn{f}{A}(\theta\ev) \\
+                & = \Tz{(f(\theta\ev))}{(A(\theta\ev))}\\
+                & = (\Tm{(f\after\theta)}{\theta\star A})\ev\\ \\
+            \end{align*}
+            \end{minipage}
+            \quad
+            \begin{minipage}
+                {0.45\linewidth}
+                \case{Terminal Object}
+            
+        \begin{align*}
+            (\theta\star \1)\ev & = \1(\theta\ev)\\
+            & = \1 \\
+            & = \1 \ev\\
+            (\theta\star\term{A})\ev & = \term{A}(\theta\ev)\\
+            & = \term{A(\theta\ev)}\\
+            & = \term{\theta\star A}\ev & \square
+        \end{align*}
+            \end{minipage}
+
+        \end{proof}
+    \end{framed}
+    \caption{The pre-composition re-indexing functor $f\star$ is S-Preserving.}
+    \label{PrecompositionSClosure}
+\end{figure}
+
+Next, the re-indexing functor $\pstar$ should have a right adjoint, $\allEn$. Under the current construction, the only option for such a right adjoint is for $\allEn$ to be defined as a product over the set of effects (Figure \ref{ProductQuantification}). This is possible because types and effects are not impredicative (that is, they do not quantify over themselves), meaning that the set of effects is countable or finite.
+
+\begin{figure}
+    \begin{framed}
+        \centering
+        \textbf{The Quantification Functor}
+
+        \begin{align*}
+            \allEn:& [E^{n+1}, \set] \rightarrow [E^n, \set]\\
+            \allEn(A)\env =&\Pi_{\e\in E}{A(\env, \e)}
+            \\ 
+            \allEn(f)\env =&\Pi_{\e\in E}{f(\env, \e)}
+        \end{align*}
+        
+    \end{framed}
+    \caption{Definition of the quantification functor.}
+    \label{ProductQuantification}
+\end{figure}
+
+
+
+We can now prove that $\pstar \dashv \allEn$. To do this, we need a natural bijection between morphisms in the functor categories $[E^n, \set]$ and $[E^{n+1}, \set]$.
+
+\begin{equation}
+    \bar{(-)}: [E^{n+1}, \set](\pstar A, B) \rightleftharpoons [E^n,\set] (A, \allEn B): \widehat{(-)}
+\end{equation}
+
+The leftwards and rightwards components of this bijection can be derived as follows. The leftwards component maps each morphism to a finite pairing of the morphism over each ground effect. The inverse is simply to project out the appropriate value of $\e$ from the product. These mappings can be seen in Figure \ref{AdjunctionDefinition}. These transformations give rise to the unit and co-unit of the adjunction, which are defined in Figure \ref{UnitCoUnitDefinition}. The unit and co-unit allow us to prove that this construction is an adjunction (figure \ref{AdjunctionProof}).  Finally, we need to prove that the Beck-Chevalley condition given in Section \ref{PECRequirements} holds. The proof of the appropriate theorems are given in Figure \ref{BeckChevalley1}.
+
+
+
+
+\begin{figure}
+    \begin{framed}
+        \centering
+        \textbf{The Adjunction Operations}
+
+        \begin{minipage}{0.45\linewidth}
+            \begin{align*}
+                f:&\quad \pstar A \rightarrow B\\
+                \bar{f}:&\quad A\rightarrow \allEn B\\
+                \bar{f}(\env) =&\quad \finpr{f(\env, \e)}{\e\in E}
+            \end{align*}
+        \end{minipage}
+        \quad
+        \begin{minipage}{0.45\linewidth}
+            
+        \begin{align*}
+            g:&\quad A \rightarrow \allEn B\\
+            \widehat{g}:&\quad \pstar A\rightarrow B\\
+            \widehat{g}(\env, \e_{n+1}) =&\quad\pi_{\e_{n+1}}\after g(\env)
+        \end{align*}
+        \end{minipage}
+    \end{framed}
+
+    \caption{The definition of the adjunction's bijection operations.}
+    \label{AdjunctionDefinition}
+\end{figure}
+
+
+
+\begin{figure}
+    \centering
+    \begin{minipage}{0.47\linewidth}
+      \begin{framed}
+        \centering
+        \textbf{Unit}
+  
+        \scalebox{.9}{\parbox{\linewidth}{%
+          \begin{align*}
+            \unit{A}:&\quad A \rightarrow \allEn\pstar A\\
+            \unit{A}(\env)=&\quad\finpr{\Id{A(\env, \e)}}{\e\in E}
+          \end{align*}
+        }}
+      \end{framed}
+    \end{minipage}
+    \quad
+    \begin{minipage}{0.47\linewidth}
+      \begin{framed}
+        \centering
+        \textbf{Co-Unit}
+  
+        \scalebox{.9}{\parbox{\linewidth}{%
+          \begin{align*}
+            \counit{B} : &\quad \pstar\allEn B \rightarrow B\\
+            \counit{B}(\env, \e') =&\quad \pi_{\e'} : \Pi_{\e\in E}B(\env, \e)\rightarrow B(\env, \e')
+          \end{align*}
+        }}
+      \end{framed}
+    \end{minipage}
+
+\caption{The unit and co-unit of the adjunction.}
+    \label{UnitCoUnitDefinition}
+\end{figure}
+
+
+
+
+\begin{figure}
+    \begin{framed}
+        \centering
+        \textbf{Verifying We Have an Adjunction}
+
+        \centering
+        For any $g: \pstar A \rightarrow B$,
+        
+        \begin{align*}
+            (\counit{B}\after\pstar(\bar{g}))(\env, \e_{n+1}) & = \pi_{\e_{n+1}}\after\finpr{g(\env, \e')}{\e'\in E}\\
+            &= g(\env, \e_{n+1})
+        \end{align*}
+        
+        \centering
+        So $\counit{B}\after\pstar(\bar{g}) = g$.   Similarly, for any $f: A \rightarrow \allEn B$,
+        \begin{align*}
+            ((\allEn(\widehat{f}))\after\unit{A})(\env) & = \Pi_{\e\in E}(\widehat{f}(\env, \e))\after \finpr{\Id{A(\env, \e)}}{\e\in E}\\
+            & = \Pi_{\e\in E}(\pi_\e\after f(\env))\after \finpr{\Id{A(\env, \e)}}{\e\in E}\\
+            & =  \finpr{\pi_\e\after f(\env)}{\e\in E}\\
+            & = \finpr{\pi_\e}{\e\in E}\after f(\env)\\
+            & = f(\env)&\square
+        \end{align*}
+    \end{framed}
+    \caption{Proof that the $\pstar$ and $\allEn$ functors form an adjunction, as required in \ref{PECRequirements}.}
+    \label{AdjunctionProof}
+\end{figure}
+
+
+
+
+\begin{figure}
+    \begin{framed}
+        
+\begin{theorem}
+    [Beck-Chevalley condition, part I]
+    Firstly, the functors $(\theta\star\after\allEn)$ and $(\allEm\after(\theta\times\Id{E})\star)$ are equal. Secondly, the natural transformation $\bar{(\theta\times\Id{E})\star \counit{}}$ is equal to the identity natural transformation.
+\end{theorem}
+
+  \textbf{Proof:}
+  \\
+        \begin{minipage}[t]{0.45\linewidth}
+            Firstly,
+
+            \scalebox{0.9}{\parbox{\linewidth}{%
+            \begin{align*}
+                ((\theta\star\after\allEn)A)\env &= \theta\star(\allEn  A)\env\\
+                    &= (\allEn A)(\theta(\env))\\
+                    &= \Pi_{\e\in E}(A(\theta(\env), \e))\\
+                &= \Pi_{\e\in E}(((\theta\times \Id{E})\star A)(\env,   \e))\\
+                    &= \allEm((\theta\times\Id{E})\star A)\env\\
+                    &= ((\allEm\after(\theta\times\Id{E})\star)A)\env
+                \end{align*}
+            }}
+            
+        \end{minipage}\quad
+        \begin{minipage}[t]{0.45\linewidth}      
+        Secondly,
+
+        \scalebox{0.9}{\parbox{\linewidth}{%
+        \begin{align*}
+            \bar{(\theta\times\Id{E})\star \counit{A}} \ev  & = \finpr{(\theta\times\Id{E})\star\counit{A}(\ev, \e)}{\e\in E}\\
+            & = \finpr{\counit{A}(\theta\ev, \e)}{\e\in E}\\
+            & = \finpr{\pi_\e}{\e\in E}: \Pi_{\e\in E}A(\theta\ev, \e) \rightarrow \Pi_{\e\in E}A(\theta\ev, \e)\\
+            & = \Id{\Pi_{\e\in E}A(\theta\ev, \e)}\\
+            & = \Id{\allEm\after(\theta\times\Id{E})\star A}\ev\\
+            & = \Id{\theta\star\after\allEn} & \square
+        \end{align*}        
+        }}
+    \end{minipage}
+
+    \end{framed}
+    \caption{Proof that the $\pstar \dashv \allEn$ adjunction satisfies the Beck-Chevalley condition.}
+    \label{BeckChevalley1}
+\end{figure}
+
+Hence we have proof that our construction is indeed a valid indexed S-category. Importantly, this shows that reasonable models of the PEC are possible to construct and that our requirements do not overconstrain potential models to the point that they are not useful for doing actual analysis. This contrasts with models for System F, which cannot be \set\s based\cite{PolymorphismIsNotSetTheoretic}.

@@ -1,0 +1,87 @@
+
+\chapter{Introduction}
+
+
+\section{What is an Effect System?}
+
+Programs very rarely stand alone without interacting with their environment in some form. This interaction might be to receive input, such as from sensors or buttons, to write output to a file, or to halt with an error. In functional languages, manipulating mutable state can also be considered interacting with the environment. Language terms that produce these interactions are said to have \textit{effects} as they have some observable effect in the environment other than simply the returning value that executing the term produces. It is important to be able to reason about the effects that a program term may produce, in order to ensure the soundness of compiler transformations and formal verification. An effect system, analogously to a type system, is a formal system of rules which infers abstract information about the side-effects that a program might have. This data may then inform tools such as a compiler of the soundness of code transformations, such as removing redundant code or reordering statements. Languages such as Haskell and the languages introduced later in this dissertation do not allow implicit effects. Instead they require the programmer to explicitly use structures called monads \cite{MoggiMonads} to perform effect analysis using the type of program fragments. This has the useful result of combining the effect system with the type system of the language. For example, a program of type \texttt{Int} cannot interact with its environment to produce its result and hence always yields the same return value. However a program of type \texttt{IO Int} may perform IO operations before returning its result and hence may not always behave in exactly the same fashion.
+
+\section{What is Effect Polymorphism?}
+
+
+Effect polymorphism is when a single function in a language can operate on values of similar types but with different effect signatures. It allows the same piece of code to be used in multiple contexts with different type signature. This manifests in a similar manner to type parameter polymorphism in system-F-based languages. Consider the following Scala-style pseudocode:
+\renewcommand\o[1]{\textcolor{orange}{#1}}
+\newcommand\bl[1]{\textcolor{blue}{#1}}
+\newcommand\gr[1]{\textcolor{DarkGreen}{#1}}
+\newcommand\pl[1]{\textcolor{purple}{#1}}
+\newcommand\cy[1]{\textcolor{cyan}{#1}}
+\newcommand\red[1]{\textcolor{red}{#1}}
+
+\begin{framed}
+    \begin{framed}
+        \begin{alltt}
+\o{def} check[{\gr{E}}: \pl{Effect}](
+    action: \bl{Unit} => (\bl{Unit}; \gr{E})
+): \bl{Unit}; (\gr{IO}, \gr{E}) \{
+    \o{val} ok: \bl{Boolean} = promptBool(
+        \cy{"Are you sure you want to do this?"}
+    )
+    \o{if} (ok) \{
+        action()
+    \} \o{else} \{
+       abort()
+    \}
+\}  
+            \end{alltt}
+    \end{framed}
+
+    \begin{framed}
+        \begin{alltt}
+check[\gr{RealWorld}](FireMissiles)
+check[\gr{Transaction}](SendMoney(\pl{Bob}, \cy{100}, \pl{USD}))
+check[\gr{Exception}](ThrowException(\cy{"Not Aborted"}))
+        \end{alltt}
+    \end{framed}
+\end{framed}
+
+In this example, we are reusing the same “check” function in three different situations with three different effects in a type safe manner. Hence, “check” is polymorphic in the effect parameter it receives. To analyse this language, it would be useful to have an analysis tool that can precisely model these separate, though potentially interdependent, effects. A denotational semantics that can account for the parametric polymorphism over effects would be a step towards verifying and reasoning about such tools. 
+
+A key property of effect polymorphism that distinguishes it from type polymorphism is that effects are not impredicative. That is, types are polymorphic over effects, but effects do not range over themselves. This means that the models used to interpret effect-polymorphic languages can be simpler than the models required to interpret languages with impredicative polymorphism, such as System F, where types can range over themselves \cite{PolymorphismIsNotSetTheoretic}. 
+
+
+\section{An Introduction to Categorical Semantics}
+
+In this dissertation, I describe a denotational semantics using category theory. A denotational semantics for a language is a mapping, the image $\deno{X}$ of which is known as a denotation, of structures in the language, such as types and terms to mathematical objects in a compositional way. This means that the denotation of a term is defined entirely in terms of the denotations of its subterms.
+
+When we specify a denotational semantics of a language in category theory, we look to find a mapping of types and type environments to objects in a specific categorical structure.  That is, there should exist objects $\deno{A}, \deno{\G}$ in the category $\C$ such that:
+
+\begin{align*}
+    A: \type & \mapsto \deno{A} \in \obj \C \\
+    \G & \mapsto  \deno{\G} \in \obj \C
+\end{align*}
+
+Furthermore, assuming the language has a type system with a typing relation of the form $\gtyperelation{v}{A}$, meaning ``in environment $\G$, language term $v$ has type $A$'', instances of the typing relation should be mapped to morphisms between the relevant objects in $\C$.
+
+\begin{framed}
+    \begin{aside}[Syntax highlighting]
+        In this dissertation, I have made use of some simple syntax highlighting in order to make some relations easier to parse by eye. There is not a specific meaning attached to each colour, but as a guide: green indicates an assumption, blue a conclusion, and type annotations within terms are purple. For example: $\typerelation{\texttt{Assumption}}{\lam{x}{A}{\texttt{term}}}{\texttt{Type}}$.
+    \end{aside}
+     
+\end{framed}
+
+\begin{align*}
+    \gtyperelation{v}{A} & \mapsto \C(\deno{\G}, \deno{A}) 
+\end{align*}
+
+This should occur in a sound manner with respect to some equational equivalence over the language. An equational equivalence is a relation of the form $\gtyperelation{v_1 \cong v_2}{A}$, which means ``in environment $\G$, terms $v_1$ and $v_2$ are equivalent under type $A$'', which represents equality up to some particular property. A categorical semantics is \textit{sound} with respect to an equational equivalence $\cong$ if and only if $\gtyperelation{v_1 \cong v_2}{A}$ implies that the denotations $\deno{\gtyperelation{v_1}{A}}$ and $\deno{\gtyperelation{v_2}{A}}$ are equal morphisms in $\C$ from $\deno{\G}$ to $\deno{A}$.
+
+Typically when working with lambda-calculus-based languages, we pick our equational equality to be an extension of $\beta\eta$-equivalence to include other, language-specific, rules for equality under reduction. For example, we might want to include the execution of if-statements or effectful expressions.
+
+An example of an inductive equivalence rule that we might want to be sound with respect to is that of the $\beta$-reduction of lambda terms. It should be the case that the equality defined in Equation \ref{LambdaBeta} below implies that the denotations $\deno{\gtyperelation{\apply{(\lam{x}{A}{v_1})}{v_2}}{B}}$ and $\deno{\gtyperelation{v_1\ssub{x}{v_2}}{B}}$ are equal.
+
+\begin{align}\label{LambdaBeta}
+    \ntreeruleII{Lambda-Beta}{\typerelation{\gax}{v_1}{B}}{\gtyperelation{v_2}{A}}{\gberelation{\apply{(\lam{x}{A}{v_1})}{v_2}}{v_1\ssub{x}{v_2}}{B}}
+\end{align}
+
+
+In this dissertation, I introduce an effect-polymorphic language, describe a semantics for it, then prove that the semantics is sound with respect to a $\beta\eta$-equivalence-based equational equivalence relation. Following this, I demonstrate how build a polymorphic model from a non-polymorphic model and show that a specific model of this form is adequate.

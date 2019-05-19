@@ -1,0 +1,990 @@
+
+\chapter{Background}
+
+
+
+In this chapter I first introduce the required category theory to understand the rest of the dissertation. In addition, I explain briefly how the particular category-theoretic structures can be used to model particular features of various programming languages, such as the simply typed lambda calculus and System F. Following this, I proceed to introduce the monadic, effectful language used in the rest of the dissertation, known from now on as the \textit{Effect Calculus} (EC). In the final section, I extend the EC with polymorphic syntax to yield \textit{Polymorphic Effect Calculus} (PEC).
+
+\section{Required Category Theory}\label{CategoryTheoryRequirements}
+
+
+Before going further, it is necessary to assert a common level of category theory knowledge. This section is not intended as a tutorial but to jog the memory of the reader and briefly introduce some new concepts. For a more detailed treatment of these concepts, please see \cite{maclane:71}.
+
+\subsection{Cartesian Closed Category}\label{CCC}
+A category is \textit{cartesian closed} if it has a terminal object, products for all pairs of objects, and exponentials.
+
+\subsubsection{Terminal Object}
+An object, typically written $\1$, is \textit{terminal} in a category, $\C$, if for all objects $A\in\obj\C$, there exists exactly one morphism from $A$ to $\1$, written $\term{A}: A \rightarrow \1$.
+
+\subsubsection{Products}
+A \textit{binary product} of a pair of objects $A, B\in\obj\C$ consists of an object, written $A \times B$, with morphisms $\p: A\times B\rightarrow A$, $\pp: A\times B \rightarrow B$ such that for any other object $C$ and morphisms, $f: C\rightarrow A$, $g: C\rightarrow B$ there exists a unique morphism $\pr{f}{g}: C \rightarrow (A\times B)$ such Figure \ref{ProductDiagram} commutes.
+A category is said to \textit{have binary products} if for all objects $A, B$, the product $A\times B$ also exists.
+
+\subsubsection{Exponentials}
+An \textit{exponential} for objects $A, C$ is an object $C^A$ with morphism $\app: C^A\times A \rightarrow C$ such that for any object $B$ and morphism $f: B\times A \rightarrow C$, there exists a morphism $\cur{f}: B \rightarrow C^A$ such that Figure \ref{ExponentialDiagram} commutes. A category \textit{has exponentials} if for all pairs of objects $A, C$, it has an exponential $C^A$.
+
+\begin{minipage}{0.47\linewidth}
+    \begin{figure}[H]
+        \begin{framed}
+            \centering
+            \begin{center}
+                \begin{tikzcd}
+                    & \arrow{dl}[swap]{f} C  \arrow[d, "\pr{f}{g}"] \arrow [dr, "g"] & \\
+                    A & \arrow [l, "\p"] (A\times B) \arrow{r}[swap]{\pp} & B
+                \end{tikzcd}
+            \end{center}
+        \end{framed}
+        \caption{The Product Diagram.}
+        \label{ProductDiagram}
+    \end{figure}
+\end{minipage}\quad
+\begin{minipage}{0.47\linewidth}
+    \begin{figure}[H]
+        \begin{framed}
+            \centering
+            \begin{center}
+                \begin{tikzcd}
+                    C^A \times A \arrow{r}{\app}& C\\
+                    B\times A\arrow{u}{\cur{f}\times \Id{B}} \arrow{ur}{f}
+                \end{tikzcd}
+            \end{center}
+        \end{framed}
+        \caption{The Exponential Diagram.}
+        \label{ExponentialDiagram}
+    \end{figure}
+\end{minipage}
+
+
+\subsubsection{Diagonal and Twist Morphisms}
+In the definition of the semantics of the if-expression, it is useful to make use of the twist $\twist{A}{B}: (A\times B) \rightarrow (B\times A) = \pr{\pp}{\p}$ and diagonal $\diag{A}: A \rightarrow (A\times A)  = \pr{\Id{A}}{\Id{A}}$ morphisms.
+
+\subsection{Co-Product}
+A \textit{co-product} is the dual of a product. The is a co-product for objects $A, B$ if there exists an object $A+B$ in $\C$ with morphisms $\inl: A\rightarrow (A+B)$, $inr: B\rightarrow (A+B)$ such that for any other object $C$ with morphisms $f: A\rightarrow C$, $g: B\rightarrow C$, there exists a unique morphism $[f, g]: (A + B)\rightarrow C $ such that Figure \ref{CoproductDiagram} commutes.
+
+\begin{minipage}{0.47\linewidth}
+    \begin{figure}[H]
+        \centering
+        \begin{framed}
+            \begin{tikzcd}
+                &  C   & \\
+                A \arrow{ur}{f} \arrow [r, "\inl"] &  \arrow{u}{[f, g]} (A + B)  & \arrow{l}[swap]{\inr} \arrow{ul}[swap]{g} B
+            \end{tikzcd}
+        \end{framed}
+        \caption{Co-product Diagram.}
+        \label{CoproductDiagram}
+    \end{figure}
+\end{minipage}\quad
+\begin{minipage}{0.47\linewidth}
+    \begin{figure}[H]
+        \centering
+        \begin{framed}
+            \begin{tikzcd}
+                F(A) \arrow{r}{\theta_A} \arrow{d}{F(f)}  & G(A) \arrow{d}{G(f)}\\
+                F(B) \arrow{r}{\theta_B}& G(B)
+            \end{tikzcd}
+        \end{framed}
+        \caption{Naturality of a natural transformation.}
+        \label{Naturality}
+    \end{figure}
+\end{minipage}\quad
+
+\subsection{Functors}
+A \textit{functor} $F: \C \rightarrow \DC$ is a mapping of objects and morphisms in $\C$ to objects and morphisms respectively in $\DC$ that preserves composition and identities.
+
+\begin{align*}
+    A\in\obj\C &\mapsto FA \in \obj\DC\\
+    f: \C(A, B) &\mapsto F(f): \DC(FA, FB)\\
+    F(\Id{A}) & = \Id{FA} \\
+    F(g\after f) & = F(g)\after F(f)
+\end{align*}
+
+\subsection{Natural Transformations}
+
+A \textit{natural transformation} $\theta$ between two functors $F, G: \C \rightarrow \DC$ is a collection of morphisms in $\DC$, indexed by objects in $\C$ with  $\theta_A: F(A) \rightarrow G(A)$ such that diagram in Figure \ref{Naturality} commutes for each $f: A \rightarrow B \in \C$.
+
+
+
+\subsection{Monad}
+A \textit{monad} consists of a functor, $T: \C \rightarrow \C$, from $\C$ onto itself, also known as an \textit{endofunctor}, which represents the collection of effectful values, and a pair of natural transformations. The first is the the \textit{unit} natural transformation $\point{A}: A\rightarrow T(A)$, which is used to treat pure values as an effectful expression. The second is the \textit{join} natural transformation, $\mu_{A}: T(T(A)) \rightarrow T(A)$,  which is used to model the sequential composition of effectful subexpressions. In addition, there is the requirement that the diagrams in Figures \ref{MonadAssociativity}, \ref{MonadUnits} commute.
+
+
+\begin{figure}
+        \centering
+        \begin{minipage}{0.45\linewidth}
+            \centering
+            \begin{framed}
+                \begin{tikzcd}
+                    T(T(T(A)) \arrow{r}{\mu_{T(A)}} \arrow{d}{T(\mu_{A})} & T(T(A)) \arrow{d}{\mu_A} \\
+                    T(T(A)) \arrow{r}{\mu_A} & T(A)    
+                \end{tikzcd}        
+            \end{framed}
+            \caption{Monad Associativity Law.}
+            \label{MonadAssociativity}
+        \end{minipage}\hfill
+        \begin{minipage}{0.45\linewidth}
+            \centering
+            \begin{framed}
+                
+            \begin{tikzcd}
+                T(A) \arrow{r}{\point{T(A)}} \arrow{d}{T(\point{A})} \arrow[equal]{rd} & T(T(A)) \arrow{d}{\mu_A}\\
+                T(T(A)) \arrow{r}{\mu_A} & T(A)
+            \end{tikzcd}
+            \end{framed}
+            \caption{Monad Left- and Right-Unit laws.}
+            \label{MonadUnits}
+        \end{minipage}
+\end{figure}
+
+
+\subsection{Monoid}
+
+Another concept, though not strictly of category theory, is that of a monoidal algebra. A \textit{monoid} is a set, operation, and identity $(M, \dot, \1)$ where $\dot: M\times M \rightarrow M$, is associative ($a\dot(b\dot c) = (a\dot b)\dot c$), and has an identity $a\dot\1 = a = \1\dot a$. In this dissertation, I make use of a monoid with a partial order. This means there is a transitive, reflexive relation $\subeffect$ over the set $M$. In this case, the $\dot$ operator should also be monotone. That is if $a \subeffect a'$ and $b\subeffect b'$ then $a\dot b \subeffect a'\dot b'$ . Such an algebra can be used to describe how effects induced by terms in a program interact with each other. For example, $a \dot b$ is the effect induced by composing a subexpression which produces effect $a$ with a subexpression that produces effect $b$. The partial order is used to develop a notion of \textit{subtyping} over effects.
+
+\subsection{Graded Monad}
+
+
+A \textit{graded monad} is a generalisation of a monad to be indexed by a monoidal algebra $(E,\dot, \1)$. It consists of an endofunctor indexed by elements in the monoid, $\T{}{}: (E, \dot, \1)  \rightarrow [\C, \C]$, and a pair of indexed natural transformations. Firstly, there is the unit natural transformation to the monad functor indexed by the identity $\point{}: \Id{} \rightarrow \T{\1}{}$. The second natural transformation is a generalisation of join which composes nested instances of the indexed functor $\bind{\e_1}{\e_2}{}: \T{\e_1}{\T{\e_2}{}} \rightarrow \T{\e_1 \dot \e_2}{}$. Furthermore there is a requirement that the diagrams in Figures \ref{GradedMonadAssociativity}, \ref{GradedMonadUnits} commute.
+
+
+\begin{figure}
+        \centering
+        \begin{minipage}{0.45\linewidth}
+            \centering
+            \begin{framed}
+                \begin{tikzcd}[ampersand replacement=\&]
+                    \T{\e_1}{\T{\e_2}{\T{\e_3}{A}}} 
+                    \arrow [r, "\bind{\e_1}{\e_2}{\T{\e_3}{A}}"]
+                    \arrow [d, "\T{\e_1}{\bind{\e_2}{\e_3}{A}}"] \& \T{\e_1 \dot \e_2}{\T{\e_3} A} \arrow [d, "\bind{\e_1 \dot \e_2}{\e_3}{A}"] \\
+                    \T{\e_1}{\T{\e_2 \dot \e_3}{A}} \arrow [r, "\bind{\e_1}{\e_2 \dot \e_3}{A}"] \& \T{\e_1 \dot \e_2 \dot \e_3}{A}    
+                \end{tikzcd}
+            \end{framed}
+            \caption{Associativity of a graded monad.}
+            \label{GradedMonadAssociativity}
+        \end{minipage}\hfill
+        \begin{minipage}{0.45\linewidth}
+            \centering
+            \begin{framed}
+                \begin{tikzcd}[ampersand replacement=\&]
+                    \tea
+                     \arrow[equal]{rd} 
+                     \arrow[r, "\T{\e}{\point{A}}"]
+                     \arrow{d}{\point{\tea}}
+                    \& 
+                    \T{\e}{\T{\1}{A}} 
+                        \arrow[d, "\bind{\e}{\1}{A}"] \\
+                        \T{\1}{\T{\e}{A}}
+                             \arrow{r}{\bind{\1}{\e}{A}}
+                    \& 
+                    \tea
+                \end{tikzcd}
+            \end{framed}
+            \caption{Left- and Right- Units of a graded monad.}
+            \label{GradedMonadUnits}
+        \end{minipage}
+\end{figure}
+
+
+\subsection{Tensor Strength}
+A slightly harder concept to motivate is that of tensorial (or tensor) \textit{strength} for a graded monad. Tensor strength consists of a natural transformation: $\strengtht_{A, B}: A \times \T{}{B} \rightarrow \T{}{(A \times B)}$, which is required to have well-defined interactions with the graded monad morphisms and the product-reordering natural transformation $\alpha_{A, B, C} = \pr{\p\after\p}{\pr{\pp\after\p}{\pp}}: ((A \times B) \times C) \rightarrow (A \times (B \times C))$, as seen in Figures \ref{TensorStrengthLeftNaturality}, \ref{TensorStrengthRightNaturality}, \ref{TensorStrengthUnitorLaw}, \ref{TensorStengthJoin}, \ref{TensorStrengthPoint}, \ref{TensorStrengthAlpha}. The reasoning behind this is that the tensor-strength natural transformation allows us to model operations that are invisibly implicit in a programming language but not given by default in category theory, such as in Figure \ref{MonadStrengthRequirement} in Section \ref{LanguageFeatureRequirements}. Tensor strength of a monad can be generalised to tensor strength of a graded monad by indexing by an element of the monoid algebra. A monad (or respectively a graded monad) is called \textit{strong} if it has tensorial strength. 
+
+\begin{figure}
+        \centering
+        \begin{minipage}[t]{0.45\linewidth}
+            \centering
+            \begin{framed}
+                \begin{tikzcd}[ampersand replacement=\&]
+                    A \times \teb  \arrow [r, "f \times \Id{\teb}"] \arrow [d, "\tstrength{\e}{A}{B}"]  \&
+                    A' \times \teb \arrow [d, "\tstrength {\e} {A'}{B}"]\\
+                    \T{\e}{(A \times B)} \arrow [r, "\T{\e}{(f \times \Id{B})}"]\&
+                    \T{\e}{(A' \times B)}
+                    \end{tikzcd}
+            \end{framed}
+            \caption{Left Naturality of Graded Tensor Strength.}
+                \label{TensorStrengthLeftNaturality}
+        \end{minipage}
+        \quad
+        \begin{minipage}[t]{0.45\linewidth}
+            \centering
+            \begin{framed}
+                \begin{tikzcd}[ampersand replacement=\&]
+                    A \times \teb \arrow [r, "\Id{A} \times \T{\e}{f}"] \arrow [d, "\tstrength{\e}{A}{B}"]\&
+                    A \times \T{\e}{B'} \arrow [d, "\tstrength{\e}{A}{B'}"]\\
+                    \T{\e}{(A \times B)} \arrow [r, "\T{e}{(\Id{A} \times f)}"] \&
+                    \T{\e}{(A \times B')}
+                \end{tikzcd}
+            \end{framed}
+            \caption{Right Naturality of Graded Tensor Strength.}
+            \label{TensorStrengthRightNaturality}
+        \end{minipage} 
+
+        \begin{minipage}[t]{0.45\linewidth}
+        \centering
+        \begin{framed}
+            \begin{tikzpicture}[baseline= (a).base]
+                \node[scale=.7] (a) at (0,0){
+                    \begin{tikzcd}[ampersand replacement=\&]
+                        A \times \teb 
+                        \arrow [r, "\tstrength{\e}{A}{B}"]
+                        \arrow [rd, "\pp"]
+                        \& 
+                        \T{\e}{(A \times B)}
+                        \arrow [d, "\T{\e}{\pp}"]
+                        \\
+                        \&
+                        \teb
+                    \end{tikzcd}     
+                };
+            \end{tikzpicture}    
+        \end{framed}
+        \caption{Tensor Strength Unitor Law.}
+        \label{TensorStrengthUnitorLaw}
+        \end{minipage}
+        \quad
+        \begin{minipage}[t]{0.45\linewidth}
+            \centering
+            \begin{framed}
+                \begin{tikzpicture}[baseline= (a).base]
+                    \node[scale=.7] (a) at (0,0){
+                \begin{tikzcd}[ampersand replacement=\&]
+                    A \times \T{\e_1}{\T{\e_2}{B}} 
+                    \arrow [r, "\tstrength{\e_1}{A}{\T{\e_2}{B}}"]
+                    \arrow [dr, "\Id{A} \times \bind{\e_1}{\e_2}{B}"]
+                    \& 
+                    \T{\e_1}{(A \times \T{\e_2}{B})} 
+                    \arrow [r, "\T{\e_1}{\tstrength{\e_2}{A}{B}}"]
+                    \& 
+                    \T{\e_1}{\T{\e_2}{(A \times B)}} 
+                    \arrow [d, "\bind{\e_1}{\e_2}{A \times B}"]
+                    \\
+                    \&
+                    A \times \T{\e_1 \dot \e_2}{B}  
+                    \arrow [r, "\tstrength{\e_1 \dot \e_2}{A}{B}"] 
+                    \&
+                    \T{\e_1 \dot \e_2}({A \times B)}
+                \end{tikzcd}
+                };
+                \end{tikzpicture}        
+            \end{framed}
+            \caption{Tensor Strength Associativity Law.}
+            \label{TensorStengthJoin}
+        \end{minipage}
+
+        \vspace{2em}
+    
+        \begin{minipage}[t]{0.45\linewidth}
+            \begin{framed}
+                \begin{tikzcd}[ampersand replacement=\&]
+                    A \times B
+                    \arrow [r, "\Id{A} \times \point{B}"]
+                    \arrow [rd, "\point{A \times B}"]
+                    \&
+                    A \times \tob 
+                    \arrow [d, "\tstrength{\1}{A}{B}"]
+                    \\
+                    \&
+                    \T{\1}{(A \times B)}
+                \end{tikzcd}
+            \end{framed}
+            \caption{How the tensor-strength natural transformation commutes with the unit natural transformation.}
+            \label{TensorStrengthPoint}
+        \end{minipage}
+        \quad
+        \begin{minipage}[t]{0.45\linewidth}
+            \begin{framed}
+                \begin{align*}
+                    \bar{(-)}: \quad\C(FA, B) &\leftrightarrow \DC(A, GB)   \quad: \widehat{(-)}\\
+                    f & \mapsto G(f)\after\eta_A \\
+                    \epsilon\after F(g) & \mapsfrom g
+                \end{align*}
+            \end{framed}
+            \caption{How to construct the adjunction isomorphism from its unit and co-unit.}
+            \label{Adjunction}
+        \end{minipage}
+\end{figure}
+
+
+
+\begin{figure}
+    \centering
+    \begin{framed}
+        \centering
+            \begin{tikzcd}[ampersand replacement=\&, column sep=huge]
+                (A\times B)\times \T{\e}{C} 
+                \arrow [rr, "\tstrength{\e}{(A\times B)}{C}"]
+                \arrow [d, "\alpha_{A, B, \T{\e}{C}}"]
+                \& \& \T{\e}{((A \times B)\times C)}
+                \arrow [d, "\T{\e}{\alpha_{A, B, C}}"]
+                \\
+                A \times (B \times \T{\e}{C}) 
+                \arrow [r, "\Id{A}\times\tstrength{\e}{B}{C}"]
+                \&
+                A\times\T{\e}{(B \times C)} 
+                \arrow [r, "\tstrength{\e}{A}{(B \times C)}"]
+                \& \T{\e}{(A \times (B \times C))}
+                \\
+            \end{tikzcd}
+    \end{framed}
+    \caption{Tensor strength commutes with the reordering natural transformation.}
+    \label{TensorStrengthAlpha}
+\end{figure}
+
+
+
+
+
+
+\subsection{Adjunction}\label{WhatsAnAdjunction}
+An important concept in category theory is that of an \textit{adjunction}. An adjunction consists of functors $F: C\rightarrow D$, and  $G: D\rightarrow C$ and a pair of natural transformations, known respectively as the unit and co-unit: $\eta_A: A \rightarrow G(F A)$ in $\C$ and $\epsilon_B: F(G B) \rightarrow B$ in $\DC$, such that $\epsilon_{F A}\after F(\eta_A) = \Id{F A}$ and $G(\epsilon_B)\after \eta_{F B} = \Id{G B}$. We can then use $\epsilon$ and $\eta$ to form a natural isomorphism between morphisms in the two categories, as seen in Figure \ref{Adjunction}. This natural isomorphism is called an adjunction.
+
+
+\subsection{Strictly Indexed Category}\label{IndexedCategoryDefinition}
+
+The final piece of category theory required to understand this dissertation is the concept of a \textit{strictly indexed category}. A strictly indexed category is a functor from a \textit{base category} $\C$ into a target (\textit{indexed}) category of categories, where objects are categories and morphisms are functors. Objects, $A$, in the base category are mapped to categories $\C(A)$, known as \textit{fibres} in the indexed category. Morphisms between objects in the base category, $f: B\rightarrow A$, are contravariantly mapped to functors, written $f\star: \C(A)\rightarrow \C(B)$ and known as \textit{re-indexing functors}, between fibres in the indexed category. The ``strictly'' adverb indicates that the indexing in this construction is performed using a functor as opposed to the weaker \textit{pseudofunctor} (weak 2-functor) structure. Since pseudofunctors are not needed to explain anything in this project, I leave out their definition, though an interested reader may wish to research them further\footnote{https://ncatlab.org/nlab/show/pseudofunctor}.  Due to the composition laws for functors, $\theta\star\after\phi\star = (\phi\after\theta)\star$ and $\Id{A}\star(B) = B\in\obj \C(A)$, and $\Id{}\star$ is the identity functor.
+\section{Language Features and Their Requirements}\label{LanguageFeatureRequirements}
+
+
+Different languages require different structures to be present in a category for the category to be able to interpret terms in the language. Using the concepts defined in Section \ref{CategoryTheoryRequirements}, I now give an introduction to which category-theoretic structures are required to interpret different language features. 
+
+One of the simplest, while still interesting, languages to derive a denotational semantics for is the simply typed lambda calculus (STLC)\@. STLC's semantics require a cartesian closed category (CCC, Section \ref{CCC}).
+
+Products in the CCC are used to denote the lists of variable types in the type environments, exponential objects model functions, and the terminal object is used to derive representations of ground terms, such as the unit term, $()$, as well as the empty type environments.
+
+\begin{itemize}
+    \item Products are used to construct type environments. $\deno{\G} = \deno{\nil, x: A, y:B, ... z:C} = \1 \times \deno{A} \times \deno{B} \times ... \times \deno{C}$
+    \item Terminal objects are used in the denotation of constant terms $\deno{\gtyperelation{\const{A}}{A}} = \deno{\const{A}}\after\term{\deno{\G}}$
+    \item Exponentials are used in the denotations of functions. $\deno{\typerelation{\G}{\lam{x}{A}{v}}{\ab}} = \cur{\deno{\typerelation{\gax}{v}{B}}}$
+\end{itemize}
+
+From this, we can specify what structures categories need to have in order to model more complex languages.
+\begin{center}
+    \begin{tabular}{|c|c|}
+        \hline
+        Language Feature & Structure Required \\
+        \hline
+        \hline
+        STLC            & CCC \\
+        \hline
+        If expressions and booleans   & Co-product of the terminal object with itself and subtyping \\
+        \hline
+        Single Effect   & Strong Monad \\
+        \hline
+        Multiple Effects & Strong Graded Monad \\
+        \hline
+        Polymorphism & Indexed Category \\
+        \hline
+    \end{tabular}
+\end{center}
+
+To model if-expressions of the form $\pifthenelse{}{\texttt{condition}}{\texttt{if_true}}{\texttt{if_false,}}$ we need a way to combine morphisms of the form $\deno{\gtyperelation{\texttt{condition}}{\B}}: \G\rightarrow\deno{\B}$, $\deno{\gtyperelation{\texttt{if_true}}{A}}: \G\rightarrow A$, and $\deno{\gtyperelation{\texttt{if_false}}{A}}: \G\rightarrow A$ to form a morphism $\G\rightarrow A$. If we have a co-product $\G + \G$, and a morphism mapping $\B$s to $\G + \G$, we could use the fold morphism $[\deno{\texttt{if_true}}, \deno{\texttt{if_false}}]$ to achieve the required composite morphism. It turns out that using exponentials, as seen in the denotation of the (If) type rule in Figure \ref{TermDenotations}, we can factor out the $\G$ to use a co-product  $\1 + \1$ instead of $\G + \G$. It now a natural choice to use $\1 + \1$ as $\deno{\B}$. Hence we can model the boolean values $\t, \f$ as the co-product constructors $\inl, \inr$.
+
+A single effect can be modelled by adding a strong monad to the category, as shown by Moggi \cite{MoggiMonads}. A language with an explicit monad in its type system requires two operations: \textit{return} and \textit{bind}, the type rules for which can be seen in Equation \ref{MonadTypeRules}. The $\M{}{(-)}$ type constructor represents values which have an instance of the effect associated with their computation. The \textit{return} operator lifts pure values (with no associated effects) into the effectful type constructor. The \textit{bind} operator (often supplemented with some \texttt{do .. in ...} syntax) allows us to compose together expressions which have effects. As shown by Moggi \cite{MoggiMonads}, these two operations can be modelled using the \textit{unit} and \textit{join} natural transformations of a strong graded monad. The monad needs to be strong in order to allow access to variables in the environment from within the monadic expression. An example of this can be seen in Figure \ref{MonadStrengthRequirement}. 
+
+\begin{figure}
+    \begin{framed}
+        \textbf{Motivating the Tensor Strength Requirement}
+        \begin{framed}
+            \begin{lstlisting}[
+                mathescape,
+                columns=fullflexible,
+                basicstyle=\fontfamily{lmvtt}\selectfont,
+              ]
+let $x$ = $5$ in (
+    do $y$ $\texttt{<-}$ readInt in (
+        return $x$ + $y$
+    ) 
+);
+            \end{lstlisting}
+        \end{framed}
+        
+In the \texttt{return} clause, the program makes reference to variables $x$ and $y$ from the environment. Since $x$ is defined inside the monadic \texttt{do} clause, it is not available to clauses in the body of the clause without a means to convert the type $(\G \times \M{}{A)}$ to $\M{}{(\G\times A)}$.
+\end{framed}
+   
+\caption{Program in a monadic effectful language that requires tensor strength of the effect's monad to execute.}
+\label{MonadStrengthRequirement}
+\end{figure}
+
+\begin{eqnarray}\label{MonadTypeRules}
+    \ntreeruleI{\vreturn}{\typerelation{\G}{v}{A}}{\typerelation{\G}{\return{v}}{\M{}{A}}} & \ntreeruleII{\vbind}{\typerelation{\G}{v_1}{\M{}{A}}}{\typerelation{\gax}{v_2}{\M{}{B}}}{\typerelation{\G}{\doin{x}{v_1}{v_2}}{\M{}{B}}}
+\end{eqnarray}
+
+For a more precise analysis of languages with multiple effects, we can look into whether there is an algebra on the effects. For example, we might want to express the composite effect of two sequential expressions with different effects. We could follow an expression that might throw an exception with one that accesses mutable state and a third that carries out IO transactions. We would also want some form of \textit{unit} effect for pure expressions which does nothing when composed with other effects. Finally, to make it systematically possible to analyse branched code, such as \textit{if expressions}, some form of subtyping would be useful. This structure is modelled exactly by an appropriate partially ordered monoidal algebra $(E, \dot, \subeffect, \1)$. The set $E$ gives the various effects that can be produced, $\1$ represents the unit effect for pure values, $\dot$ allows us to associatively compose multiple effects and the partial order  $\subeffect$ gives us a subtyping of effects for an intuitive if-statement programming model.
+
+In order to embed this algebra-based effect analysis in the type system, we can index Moggi's monadic type constructor $\M{}{}$ with the effect $\e$ that is produced when the corresponding expression is evaluated. Furthermore, when we use the \textit{return} operation to lift pure values into the monadic type constructor, the resulting monadic type should have an index of $\1$ indicating that the effect produced is pure. Finally, when we \textit{bind} together effectful expressions, the resulting effect should be the composition of the effects of the subexpressions. Putting together these requirements transforms the type rules in Equation \ref{MonadTypeRules} to the new type rules given in Equation \ref{GradedMonadTypeRules}. By suitably extending the monad laws to account for this new indexing, we find that we require a strong graded monad to model these features using category theory. This construct was first documented in the context of semantics by Katsumata \cite{Katsumata:2014}.
+
+\begin{eqnarray}\label{GradedMonadTypeRules}
+    \ntreeruleI{\vreturn}{\typerelation{\G}{v}{A}}{\typerelation{\G}{\return{v}}{\moa}} & \ntreeruleII{\vbind}{\typerelation{\G}{v_1}{\M{\e_1}{A}}}{\typerelation{\gax}{v_2}{\M{\e_2}{B}}}{\typerelation{\G}{\doin{x}{v_1}{v_2}}{\M{\e_1 \dot \e_2}{B}}}
+\end{eqnarray}
+
+
+When we combine an effect system with if-expressions, we come across another, language-level, issue. When programming using the construct, we might want the true and false branches of the expressions to have different effects. For example, one branch of an expression may perform I/O operations, whilst the other has no side effects. Since effect analysis is done by the type system, this means that the two branches have different types. Hence the typical type rule  for if-expressions, as given in Equation \ref{IfTypeRule}, is not applicable. A solution for this is to introduce a notion of subtyping, using a subtyping relation $\subtype$. If $\gtyperelation{v}{A}$ and $A \subtype B$, then $\gtyperelation{v}{B}$. Using the partial order on effects to generate the subtyping relation, we can now unify compatible, though not equal, effects in an if-expression.
+
+\begin{equation}\label{IfTypeRule}
+    \ntreeruleIII{\vif}{
+        \gtyperelation{\texttt{condition}}{\B}
+    }{
+        \gtyperelation{\texttt{if_true}}{A}
+    }{
+        \gtyperelation{\texttt{if_false}}{A}
+    }{
+        \gtyperelation{
+            \pifthenelse{}{
+                \texttt{condition}
+            }{
+                \texttt{if_true}
+            }{
+                \texttt{if_false}
+            }
+        }{A}
+    }
+\end{equation}
+
+To model subtyping, we need a way to convert morphisms $\deno{\gtyperelation{v}{A}}: \G\rightarrow A$ to $\deno{\gtyperelation{v}{B}}:\G\rightarrow B$ when $A\subtype B$. This can be done if for each instance of $A\subtype B$, we have a there is morphism $\deno{A\subtype B}: A \rightarrow B$. These morphisms should respect the transitivity and reflexivity of the subtyping relation, meaning that $\deno{B\subtype C}\after\deno{A\subtype B} = \deno{A\subtype C}$ and $\deno{A\subtype A} = \Id{A}$.
+
+Polymorphism is a harder concept to explain intuitively. The particular flavour of polymorphism that this dissertation discusses is System-F-style parametric polymorphism. For a given type-system feature $G$, such as types, effects, type constructors, or some other language specific feature, we can add parametric polymorphism over $G$ by allowing $G$ variables to occur in expressions. We also require expression terms to indicate when these $G$ variables are introduced and when they are eliminated. For example, let us look at System F \cite{SystemFIntroduction}. System F has polymorphism over types. This means that we can replace a type expression with a type variable parameter. We also need to be able to syntactically generalise over type parameters and to be able to specify a particular type parameter's value. This requires us to extend the syntax of the simply typed lambda calculus with the appropriate specialisation and generalisation terms as well as parameterised types, as seen in Figure \ref{SystemFTermsTypes}.
+
+\begin{figure}
+    \begin{framed}
+        \centering
+        \textbf{System F}
+
+        Types are extended with type variables and parameterisation.
+        \begin{align*}
+            A \gens ... \mid \a\mid \all{\a}{A}
+        \end{align*}
+
+        Values are extended with generalisation and specialisation terms respectively.
+        \begin{align*}
+            v \gens ... \mid \elam{\a}{t}\mid \eapp{t}{A}
+        \end{align*}
+    \end{framed}
+    \caption{The extensions made to the simply typed lambda calculus which yield System F.}
+    \label{SystemFTermsTypes}
+\end{figure}
+
+To correctly account for these new terms and types in the type system, we need to ensure that all parameterisations are soundly constructed in a similar way to how a closed term in the simply typed lambda calculus has no free variables. To do this, we introduce a new $G$-environment $\P$ to complement the type environments $\G$. A term or type is well formed (written $\wellformedF{\P}{f}$) only if it only contains $G$ variables in $\P$. A $G$ expression, $f$, is also well formed only if it only contains $G$ variables in $\P$. We can now specify type rules for the generalisation (parameterisation of an expression over an $G$-variable) and specialisation (substituting a parameter for a value) of terms, as seen in Equation \ref{PolymorphismTypeRules}.
+
+\begin{eqnarray}\label{PolymorphismTypeRules}
+    \condtreeruleI{\vgen}{\etyperelation{\P, \a}{\G}{v}{A}}{\gpetyperelation{\elam{\a}{v}}{\all{\a}{A}}}{\a\notin\P}& 
+    \ntreeruleII{\vspec}{\gpetyperelation{v}{\all{\a}{A}}}{\wellformedF{\P}{f}}{\gpetyperelation{\eapp{v}{f}}{A\ssub{\a}{f}}}
+\end{eqnarray}
+
+If we can model the language without the polymorphic terms in Equation \ref{PolymorphismTypeRules}, at each specific $G$ environment, then we can instantiate a collection of categories, each of which models the language at a given $G$ environment. This collection of categories (which we call \textit{fibres}) can be indexed by a base category, the structure of which models the $G$ environments and relationships between them. We can hence construct an indexed category, whereby each $G$ environment in the base category is mapped to the fibre modelling the semantics at the specific environment, and morphisms between $G$ environments correspond to functors between the respective fibres. Figure \ref{IndexDiagram} demonstrates this construction. If we model an $G$ environment $\P, \a$ as a product, then the $\p$ morphism represents removing $\a$ from the environment and the $\pstar$ functor conversely increases the size of the environment. As shown later in this dissertation, if $\pstar$ has a right adjoint (see Section \ref{WhatsAnAdjunction}), $\forall$, then this adjunction can be used to model generalisation and specialisation of polymorphic terms. This will be explained in the next chapter. 
+
+How the fibres are derived from objects in the base category depends on the polymorphic properties of the language being modelled. For example, in System F, types are impredicative. That is, types can quantify over any other types, including themselves. This means that there has to be a strong coupling between the base category, which represents type-variable environments and transformations upon them and objects in the fibres, which represent types. This typically manifests in the set of objects  in each fibre being in bijection with the set of morphisms from the appropriate type-variable environment in the base category. Since, in effect-polymorphic languages, types quantify over effects, but effects do not quantify over themselves, we can conceptually decouple the objects in the fibres from the base category, meaning that effect-polymorphic models are simpler to define. 
+
+In this dissertation, I show how these category-theoretic building blocks can be put together to give the class of categories that can model polymorphic effect systems.
+
+\begin{figure}[ht!]
+    \scalebox{0.9}{
+        \begin{tikzpicture}[->,>=stealth']]
+            % Draw the env objects
+            \foreach \y[count=\c,evaluate={\yi=int(\c-1)}] in {3, 4, 5, 6}{
+                \node[fill,circle,inner sep=2pt,label=left:{\small $\P_\yi$}] (d\yi) at (0,\y) {};
+            }
+    
+            % draw the ... above the env objects
+            \foreach \y[count=\c,evaluate={\yi=int(\c-1)}] in {7, 7.5, 8}{
+                \node[fill, circle, inner sep=1pt] (dd\yi) at (0,\y){};
+            }
+            % Draw the index category
+            \node[fit=(d0) (d1) (d2) (d3) (dd0) (dd1) (dd2),ellipse,draw,minimum width=2cm] {};
+    
+            %draw the s-category stack
+            \foreach \y[count=\c,evaluate={\yi=int(\c-1)}] in {2, 4, 6, 8}{
+                \node[circle, draw, inner sep=1pt, fill, label=above:{$\G$}] (g\yi) at (7,\y){};
+                \node[circle, draw, inner sep=1pt, fill, label=above:{$A$}] (a\yi) at (9,\y){};
+                \draw[->](g\yi) to[bend right=5] node[below]{\tiny $\deno{\etyperelation{\P_\yi}{\G}{v}{A}}$} (a\yi);
+                \node[ellipse, draw, minimum width=5cm, minimum height=15mm,label=right:$S_\yi$] (s\yi) at (8,\y){};
+            }
+    
+            % Hidden ellipse to draw functors to
+            \node[ellipse, minimum width=5cm, minimum height=15mm] (s4) at (8,10){};
+    
+            %Draw the ... for the s-category stack
+            \foreach \y[count=\c,evaluate={\yi=int(\c-1)}] in {9.5, 10, 10.5}{
+                \node[fill, circle, inner sep=1pt] (p\yi) at (8, \y){};
+            }
+    
+            % Draw index arrows
+            \foreach \i in {0, 1, 2, 3}{
+                \draw[->, very thick] (d\i) to (s\i);
+            }
+    
+            % draw the re-indexing functors
+    
+            \foreach \source[count=\dest] in {0, 1, 2, 3}{
+                \draw[->, very thick](s\source.north west) to[bend left=10] node[left]{$\pstar$} (s\dest.south west);
+            }
+    
+            % Draw the quantification functors
+            \foreach \dest[count=\source] in {0, 1, 2, 3}{
+                \draw[->, very thick] 
+                (s\source.south east) to[bend left=10] node[right]{$\forall_{\P_\dest}$} (s\dest.north east);
+            }
+    
+            % Draw the internal morphisms in base category
+            \foreach \dest[count=\source] in {0, 1, 2}{
+                \draw[->]
+                (d\source) to[bend right=10] node[right]{$\p$} (d\dest);
+            }
+    
+            %Draw the bracket
+    
+            \draw [decoration={brace,amplitude=8pt},decorate] ($(s3)+(10em,1ex)$) -- ($(s0)+(10em,-1ex)$);
+            \node[text width=20mm] (Label) at (14,5){Fibres for each effect-variable environment};
+        \end{tikzpicture}
+    }
+    
+    \caption{Diagram of the structure of an indexed category for modelling a polymorphic language. Thick arrows between categories represent functors and thinner arrows withing categories represent internal morphisms. The left-hand category is the base category.
+    }
+    \label{IndexDiagram}
+\end{figure}
+
+
+\section{The Effect Calculus}
+\label{ECDefinition}
+The basic effect calculus is an extension of the simply typed lambda calculus to include constants, \texttt{if} expressions, effects, and subtyping. It has terms of the following form:
+
+\begin{align*}
+    v ::= \const{A} \mid x\mid \t \mid\f \mid\u\mid\lam{x}{A}{v}\mid\apply{v_1}{v_2}\mid\return{v}\mid\doin{x}{v_1}{v_2}\mid\pifthenelse{A}{v}{v_1}{v_2} 
+\end{align*}
+
+Here, $\const{A}$ is one of collection of constants, and $A$ ranges over the types:
+
+\begin{align*}
+    A, B, C ::= \g\mid \ab \mid\M{e}{A}
+\end{align*}
+
+Here $\g$ is from a collection of ground types, including $\U, \B$, and $e$ ranges over a partially ordered monoid of effects: $(E, \dot, \subeffect, \1)$.
+
+The calculus has a simple, Haskell-style semantics. Lambda terms when applied to a parameter substitute their bound variable for the parameter expression, (Figure \ref{ECBeta}), if statements pick a branch once their condition is decided to be true or false(Figure \ref{ECIf}), and finally the monadic effects behave in a similar way to Haskell's monad type class. It is difficult to simply formalise an operational $\beta\eta$-reduction semantics for a monadic language without a concrete instantiation of the graded monad. Instead, the monad should obey the equational laws given in Figure \ref{ECMonads}. As an example, by instantiating the language with the appropriate constants, ground effects, and ground types, we can write the programs in Figure \ref{CheckExample}.
+
+
+\begin{figure}
+    \begin{framed}
+        \begin{align*}
+            \apply{(\lam{x}{A}{v_1})}{v_2} & \rightsquigarrow v_1\ssub{x}{v_1}
+        \end{align*}
+    \end{framed}
+    \caption{The $\beta$ reduction lambda terms of lambda terms in the effect calculus.}
+    \label{ECBeta}
+\end{figure}
+
+\begin{figure}
+    \begin{framed}
+        \begin{align*}
+            \pifthenelse{A}{\t}{v_1}{v_2} & \rightsquigarrow v_1\\
+            \pifthenelse{A}{\t}{v_2}{v_2} & \rightsquigarrow v_2\\
+        \end{align*}
+    \end{framed}
+    \caption{The reduction of if expressions in the effect calculus.}
+    \label{ECIf}
+\end{figure}
+
+
+\begin{figure}
+    \begin{framed}
+        \begin{align*}
+            \doin{x}{\return{v_1}}{v_2} & \rightsquigarrow v_2\ssub{x}{v_1}\\
+            \doin{x}{v}{\return{x}} & \rightsquigarrow v\\
+            \doin{x}{v_1}{(\doin{y}{v_2}{v_3})} 
+            & \leftrightsquigarrow\quad  \doin{y}{(\doin{y}{v_1}{v_2})}{v_3}
+        \end{align*}
+    \end{framed}
+    \caption{The monad laws for the effect calculus.}
+    \label{ECMonads}
+\end{figure}
+
+
+
+
+
+\begin{figure}
+    \centering
+    \begin{minipage}{0.45\linewidth}
+        \begin{framed}
+            \begin{lstlisting}[
+                mathescape,
+                columns=fullflexible,
+                basicstyle=\fontfamily{lmvtt}\selectfont,
+              ]
+do $b$ $\texttt{<-}$ Prompt("Are You Sure?") in (
+    if $b$ then
+        FireMissiles
+    else
+        AbortMissiles
+)
+            \end{lstlisting}        
+        \end{framed}
+    \end{minipage}
+    \quad
+    \begin{minipage}{0.45\linewidth}
+        \begin{framed}
+            \begin{lstlisting}[
+                mathescape,
+                columns=fullflexible,
+                basicstyle=\fontfamily{lmvtt}\selectfont,
+              ]
+$\lambda$ $alice$: Agent. (
+    $\lambda$ $bob$: Agent. (
+    do $amount$ $\texttt{<-}$ AwaitPayment($alice$)
+    in SendPayment($bob$, $amount$)
+    )
+)
+              \end{lstlisting}
+        \end{framed}
+    \end{minipage}
+    \caption{A pair of examples of non-polymorphic programs.}
+    \label{CheckExample}
+\end{figure}
+
+
+
+Already, we can see where having effect polymorphism in the language would be useful. We could make the first example in Figure \ref{CheckExample} into a more general procedure that prompts a user to confirm any IO action, as can be seen in the extended example in Figure \ref{PolymorphicCheckExample}.
+
+\begin{figure}
+\begin{framed}
+    \begin{lstlisting}[
+        mathescape,
+        columns=fullflexible,
+        basicstyle=\fontfamily{lmvtt}\selectfont,
+      ]
+$\Lambda$ $\mathit{Action}$: Effect. 
+$\lambda$ $\mathit{ifConfirmed}$: $\mathit{Action}$.
+$\lambda$ $\mathit{ifAborted}$: $\mathit{Action}$.
+do $b$ $\texttt{<-}$ Prompt("Are You Sure?") in (
+    if $b$ then 
+        $\mathit{ifConfirmed}$ 
+    else
+        $\mathit{ifAborted}$
+)
+    \end{lstlisting}        
+\end{framed}
+\caption{A polymorphic version of the checking example.}
+\label{PolymorphicCheckExample}
+\end{figure}
+
+
+\section{Polymorphic Effect Calculus}
+
+
+Next, we consider the Effect Calculus extended with terms to allow System-F-style polymorphism over effects. We call this the Polymorphic Effect Calculus (PEC).
+
+\begin{figure}[H]
+    \centering
+    \begin{framed}
+        
+\[
+    v::=\text{..}\mid\elam{\a}{v}\mid\eapp{v}{\e}
+    \quad\quad
+    A, B, C::=\text{...}\mid \all{\a}{A}\mid\mea
+    \quad\quad
+    \e ::= e \mid \a \mid \e\dot\e
+\]
+    \end{framed}
+    \caption{The extension to the grammar of EC which yields PEC.}
+    \label{PECExtension}
+\end{figure}
+
+\subsection{Type System}
+\label{PECTypeSystem}
+\subsubsection{Environments}
+As mentioned before, expressions can now include effect variables. These are managed in the type system using a well-formed effect-variable environment $\P$, which is a snoc-list.
+
+\begin{align*}
+    \P ::= \nil \mid \P, \a
+\end{align*}
+
+
+
+\subsubsection{Effects}
+The ground effects form the same monotonic, partially ordered monoid $(E, \dot, \1, \subeffect)$ over ground elements $e$ as in EC (Section \ref{ECDefinition}). However, we now want to be able to reason about effects that contain polymorphic variables. As a  result, we need to be able reason about effect expressions in a symbolic fashion. As a result, we construct a new partially ordered monoid over effects with variables in a effect-variable environment $\P$, written $(E_\P, \dotp, \subeffectp, \1)$. To understand this structure, we consider a simple, extensional equational equivalence: $\zpberelation{\e_1}{\e_2}{\effect}$, defined in Figure \ref{EffectEquivalence}. The set $E_\P$ consists of expressions generated, up to equational equivalence, from the grammar given in Figure \ref{PECExtension} where $\a$ ranges over variables in $\P$.
+
+\begin{figure}[H]
+    \centering
+    \begin{framed}
+        \begin{align}
+            \zpberelation{\e_1}{\e_2}{\effect} & \Leftrightarrow \forall \si\in\groundEffects.\s\e_1\ssi = \e_2\ssi
+        \end{align}
+    \end{framed}
+    
+    \caption{Equational equivalence of effects with respect to an effect-variable environment. $\groundEffects$ is defined to be the set of ground-effect substitutions.}
+    \label{EffectEquivalence}
+\end{figure}
+Now we can define the monoid operator (Definition \ref{PolymorphicMonoidDef}). This choice of operator preserves any identity or annihilator elements in ground monoid. To define the $\subeffectp$ relation (Definition \ref{PolymorphicSubeffectDef}), we must again take inspiration from the substitution-based equivalence. This subeffecting relation preserves ground effect structures such as a \textit{top} effect, which has all effects as subeffects. Where it is obvious from the context, I use $\dot$ instead of $\dotp$.
+
+
+\begin{minipage}{0.47\linewidth}
+\begin{framed}
+    \begin{definition}[Polymorphic Effect Monoid]\label{PolymorphicMonoidDef}
+        \begin{align*}
+            \e_1\dotp\e_2 & = \e_3  \Leftrightarrow
+            \\
+            \forall \si \in\groundEffects. & \s (\e_1\ssi \dot \e_2\ssi = \e_3\ssi)
+        \end{align*}
+    \end{definition}
+\end{framed}
+\end{minipage}
+\quad
+\begin{minipage}{0.47\linewidth}
+    \begin{framed}
+        \begin{definition}[Polymorphic Subeffecting]
+            \label{PolymorphicSubeffectDef}
+            \begin{align*}
+                \e_1\subeffectp\e_2\Leftrightarrow \forall\si\in\groundEffects.\s\e_1\ssi\subeffect\e_2\ssi
+                \\
+            \end{align*}
+        \end{definition}
+        \end{framed}
+\end{minipage}
+
+
+
+\subsubsection{Types}
+As stated, types are now generated by the following grammar: $ A, B, C \gens \ground \mid \ab \mid \mea \mid \all{\a}{A}$. Note that $\g$ ranges over the ground types of a particular instantiation of PEC.
+
+
+  
+\subsubsection{Type Environments}
+As is often the case in similar type systems, a type environment is a snoc list of (term-variable, type) pairs, $\G \gens \nil \mid \gax$.
+
+\begin{framed}
+    \begin{definition}[Domain Function on Type Environments]
+        \[
+        \dom{\nil} = \emptyset
+        \quad\quad\quad
+        \dom{\gax} =  \dom{\G}  \cup \left\{x \right\}
+    \]
+    
+    \end{definition}      
+\end{framed}
+
+
+\subsubsection{Well-Formedness Predicates}
+
+
+To formalise properties of the type system, it will be useful to have a collection of predicates ensuring that structures in the language are well behaved with respect to their use of effect variables. We write $\a \in \P$ if $\a$ appears in the list represented by $\P$.
+
+The $\okt$ predicate (Figure \ref{EffectEnvOk}) on effect-variable environments asserts that the effect-variable environment does not contain any duplicated effect variables. Using this, we can define the well-formedness relation on effects, $\wellformedeffect{\P}{\e}$ (Figure \ref{EffectWellformednes}). In short, this relation ensures that effects only reference variables that are in the effect-variable environment. This is equivalent to saying that $\wellformedeffect{\P}{\e}$ means that $\e\in E_\P$.
+
+\begin{figure}[H]
+    \centering
+    \begin{framed}
+        \[
+    \ntreerulez{\pnil}{\ok{\nil}}
+\quad
+    \condtreeruleI{\pextend}{\ok{\P}}{\ok{\P, \a}}{\a\notin \P}
+\]
+    \end{framed}
+    
+    \caption{The \okt\s predicate on effect-variable environments.}
+    \label{EffectEnvOk}
+\end{figure}
+
+
+\begin{figure}[H]
+    \centering
+    \begin{framed}
+        \[
+    \ntreeruleI{\eground}{\ok{\P}}{\wellformedeffect{\P}{e}}
+    \quad
+    \ntreeruleI{\evar}{\ok{\P,\a}}{\wellformedeffect{\P,\a}{\a}}
+    \] 
+    
+    \[
+    \condtreeruleI{\eweaken}{\wellformedeffect{\P}{\a}}{\wellformedeffect{\P,\b}{\a}}{\a\neq\b, \b\notin\P}
+    \quad
+    \ntreeruleII{\ecompose}{\wellformedeffect{\P}{\e_1}}{\wellformedeffect{\P}{\e_2}}{\wellformedeffect{\P}{\e_1\dot\e_2}}
+\]
+    \end{framed}
+    
+    \caption{The well-formedness relation on effects.}
+    \label{EffectWellformednes}
+\end{figure}
+
+
+
+The well-formedness of effects can be used to a similar well-typed-relation on types, $\wellformedtype{\P}{A}$, which asserts that all effects in the type are well formed (Figure \ref{TypeWellformedness}). 
+Finally, we can derive the a well-formedness of type environments,   $\oke{\P}{\G}$, which ensures that all types in the environment are well formed (Figure \ref{TypeEnvWellformedness}).
+
+\begin{figure}[H]
+    \centering
+    \begin{framed}
+        
+\[
+    \ntreeruleI{\tground}{\ok{\P}}{\wellformedtype{\P}{\g}}
+    \quad
+    \ntreeruleII{\tfun}{\wellformedtype{\P}{A}}{\wellformedtype{\P}{B}}{\wellformedtype{\P}{\ab}}
+\] 
+
+\[
+    \ntreeruleII{\teffect}{\wellformedtype{\P}{A}}{\wellformedeffect{\P}{\e}}{\wellformedtype{\P}{\mea}}
+    \quad
+    \ntreeruleI{\tquant}{\wellformedtype{\P,\a}{A}}{\wellformedtype{\P}{\all{\a}{A}}}
+\]
+    \end{framed}    
+    \caption{The well-formedness relation on types.}
+    \label{TypeWellformedness}
+\end{figure}
+
+\begin{figure}[H]
+    \centering
+\begin{framed}
+    \[
+        \ntreerulez{\envnil}{\oke{\P}{\nil}}
+        \quad
+        \condtreeruleI{\envextend}{\oke{\P}{\G}\s\s \wellformedtype{\P}{A}}{\oke{\P}{\gax}}{x\notin\dom{\G}}
+    \]    
+\end{framed}
+    \caption{The well-formedness relation on type environments.}
+    \label{TypeEnvWellformedness}
+\end{figure}
+
+\subsubsection{Subtyping}
+
+We assume that the set of ground types ($\g$) has a subtyping partial order relation $\subtype_{\ground}$. This subtyping relationship could be the trivial partial order, which only includes $A\subtypeg B$ if $A = B$, or could be a more interesting relation. As this relationship is a partial order, it is antisymmetric, transitive and reflexive (Figure \ref{GroundSubtyping}).
+
+\begin{figure}[H]
+    \centering
+\begin{framed}
+    \[
+        \ntreerulez{\sreflexive}{A \subtype_{\ground} A}
+        \quad
+        \ntreeruleII{\stransitive}{A \subtype_{\ground} B}{B \subtype_{\ground} C}{A \subtype_{\ground} C}
+    \]
+\end{framed}
+    \caption{Ground subtyping rules.}
+    \label{GroundSubtyping}
+\end{figure}
+    
+
+Using this ground type relation, we can then construct a subtyping relation between pairs of types $A, B$ with respect to an effect-variable environment $\P$ (Figure \ref{FullSubtypingDefinition}).
+
+\begin{figure}[H]
+    \centering
+
+    \begin{framed}
+    
+\[
+    \scalebox{0.85}{$
+    \ntreeruleI{\sground}{A \subtype_{\ground} B}{A \subtypep B}
+    \quad
+    \ntreeruleII{\sfun}{A \subtypep A'}{B' \subtypep B }{\fntype{A'}{B'} \subtypep \ab}
+    $}
+    \]
+    
+    \[\scalebox{0.85}{$
+    \condtreeruleI{\squant}{A\subtypep A'}{\all{\a}{A}\subtypepa\all{\a}{A'}}{\a\notin\P}
+    \quad
+    \ntreeruleII{\seffect}{A\subtypep B}{ \e_1\subeffectp\e_2}{\M{\e_1}{A}\subtypep\M{\e_2}{B}}
+    $}
+\]      
+    \end{framed}
+  
+
+    \caption{The extension of ground subtyping to the full subtyping relation.}
+    \label{FullSubtypingDefinition}
+\end{figure}
+
+Since the ground subtyping and subeffecting relations are partial orders, it is fairly simple to prove by induction that the new relation is also a partial order. By induction, it is also easy to prove that if $A \subtypep B$ and $\wellformedtype{\P}{A}$ then $\wellformedtype{\P}{B}$. This last property comes about because the subeffecting relation $\subeffectp$ only holds between effects in $E_\P$, which are well formed by definition.
+
+
+\subsubsection{Type Rules}
+We define a fairly standard set of type rules on the language (Figure \ref{TypeRules}).
+
+
+\begin{figure}[H]
+    \centering
+    \begin{framed}
+        
+\[
+    \scalebox{0.85}{$
+    \ntreeruleII{\vconst}{\oke{\P}{\G}}{\wellformedtype{\P}{A}}{\gpetyperelation{\const{A}}{A}} 
+    \quad
+    \ntreeruleI{\vunit}{\oke{\P}{\G}}{\gpetyperelation{\u}{\U}} 
+    \quad
+    \ntreeruleI{\vtrue}{\oke{\P}{\G}}{\gpetyperelation{\t}{\B}}
+    \quad
+    \ntreeruleI{\vfalse}{\oke{\P}{\G}}{\gpetyperelation{\f}{\B}}
+    $}
+\]
+\[
+    \scalebox{0.85}{$
+\ntreeruleI{\vvar}{\oke{\P}{\gax}}{\etyperelation{\P}{\gax}{x}{A}}
+\quad
+\condtreeruleII{\vweaken}{\etyperelation{\P}{\G}{x}{A}}{\wellformedtype{\P}{B}}{\etyperelation{\P}{\gby}{x}{A}}{x \neq y, y\notin\dom{\G}}
+\quad
+\ntreeruleI{\vfun}{\etyperelation{\P}{\gax}{v}{B}}{\etyperelation{\P}{\G}{\lam{x}{A}{v}}{\ab}}
+$}
+\]
+\[
+    \scalebox{0.85}{$
+    \ntreeruleII{\vsubtype}{\etyperelation{\P}{\G}{v}{A}}{A \subtypep B}{\etyperelation{\P}{\G}{v}{B}}
+    \quad
+    \ntreeruleI{\vgen}{\etyperelation{\P,\a}{\G}{v}{A}}{\gpetyperelation{\elam{\a}{v}}{\all{\a}{A}}}
+    \quad
+    \ntreeruleII{\vspec}{\gpetyperelation{v}{\all{\a}A}}{\wellformedeffect{\P}{\e}}{\gpetyperelation{\eapp{v}{\e}}{A\ssub{\a}{\e}}}
+    $}
+\]
+\[
+    \scalebox{0.85}{$
+    \ntreeruleI{\vreturn}{\gpetyperelation{v}{A}}{\gpetyperelation{\return{v}}{\moa}}
+    \quad
+    \ntreeruleII{\vapply}{\gpetyperelation{v_1}{\ab}}{\gpetyperelation{v_2}{A}}{\gpetyperelation{\apply{v_1}{v_2}}{B}}
+    $}
+\]
+\[
+    \scalebox{0.85}{$
+    \ntreeruleIII{\vif}{\gpetyperelation{v}{\B} }{ \gpetyperelation{v_1}{A}}{\gpetyperelation{v_2}{A}}{\gpetyperelation{\pifthenelse{A}{v}{v_1}{v_2}}{A}}
+    \quad
+    \ntreeruleII{\vbind}{\gpetyperelation{v_1}{\M{\e_1}{A}}}{\etyperelation{\P}{\gax}{v_2}{\M{\e_2}{B}}}{\gpetyperelation{\doin{x}{v_1}{v_2}}{\M{\e_1 \dot \e_2}{B}}}
+    $}
+\]        
+    \end{framed}
+    \caption{The type rules for PEC.}
+    \label{TypeRules}
+\end{figure}
+
+\subsubsection{Ok Lemmas}
+
+\begin{framed}
+    
+    \begin{lemma}[Ok Lemma on Type Environments]
+        If $\gpetyperelation{v}{A}$ then $\oke{\P}{\G}$.
+    \end{lemma}
+    \begin{proof}
+        By simple induction using inversion (Aside \ref{InversionPrinciple}). $\square$
+    \end{proof}
+    
+\end{framed}
+
+
+
+\begin{framed}
+    \begin{lemma}[Ok Lemma on Effect-Variable Environments]
+        A second group of lemmas is that each of the judgments  $\wellformedeffect{\P}{\e}$, $\wellformedtype{\P}{A}$, and $\oke{\P}{\G}$ implies $\ok{\P}$.
+    \end{lemma}
+    
+    \begin{proof}
+        Each lemma is proved separately, again using simple induction and inversion. $\square$
+    \end{proof}
+    
+\end{framed}
+
+
+\begin{framed}
+    \begin{aside}[Inversion in Inductive Proofs]\label{InversionPrinciple}
+        
+
+        In proofs involving assumptions with multiple inductive rules, a useful property is that of inversion. This allows us to case split over the inductive rule that generated the assumption and can allow us to infer the structure of the term.
+
+        For example, consider a theorem which assumes $\gpetyperelation{v}{B}$, then we can case split over the type rules. If $\gpetyperelation{v}{B}$ was generated by the (\textit{\vapply}) rule (\ref{InversionExample}), then by inspecting the rule, we can infer that there exist two subterms $\gpetyperelation{v_1}{\ab}$, $\gpetyperelation{v_2}{A}$ such that $v = \apply{v_1}{v_2}$. 
+
+        \begin{equation}\label{InversionExample}
+            \ntreeruleII{\vapply}{\gpetyperelation{v_1}{\ab}}{\gpetyperelation{v_2}{A}}{\gpetyperelation{\apply{v_1}{v_2}}{B}}
+        \end{equation}
+        Then we might use the inferred subexpressions $v_1, v_2$ to prove the theorem in this case.
+    \end{aside}
+        
+    \end{framed}
+

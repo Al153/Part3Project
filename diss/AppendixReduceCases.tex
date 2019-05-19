@@ -1,0 +1,576 @@
+\chapter{Cases of the Reduce Function}
+\label{AppendixReduceFunctionCases}
+
+\begin{theorem}[Reduction Function]
+    There exists a function $reduce$ that maps each typing derivation to a reduced derivation of the same term and type and the same denotation.
+\end{theorem}
+\begin{framed}
+    \begin{proof}
+        
+                \case{Constants}
+                    For the constants $\t, \f, \const{A}$, etc, $\reduce$ simply returns the derivation, as it is already reduced. This trivially preserves the denotation.
+        
+                    $\reduce(\truleconst) = \truleconst$
+        
+                    \case{\vvar}
+                    \begin{equation}
+                        \reduce(\ntreeruleI{\vvar}{\wellformedok{\P}{\G}}{\etyperelation{\P}{\gax}{x}{A}}) =  \ntreeruleI{\vvar}{\wellformedok{\P}{\G}}{\etyperelation{\P}{\gax}{x}{A}}
+                    \end{equation}
+        
+                    Preserves denotation trivially.
+        
+                    \case{\vweaken}
+                    \subparagraph{$\reduce$ definition}
+                    To find:
+                    \begin{equation}
+                        \reduce(\ntreeruleI{\vweaken}{\treeruleI{\D}{\gpetyperelation{x}{A}}}{\etyperelation{\P}{\gby}{x}{A}})
+                    \end{equation}
+        
+                    Let 
+                    \begin{equation}\label{WeakenDeltaReduction}
+                        \ntreeruleII{\vsubtype}{\treeruleI{\D'}{\gpetyperelation{x}{A}}}{ A'\subtypep A}{\gpetyperelation{x}{A}} = \reduce(\D)
+                    \end{equation}
+        
+                    In 
+                    \begin{equation}
+                        \ntreeruleII{\vsubtype}{
+                        \ntreeruleI{\vweaken}{
+                            \treeruleI{\D'}{\gpetyperelation{x}{A'}}
+                        } {
+                            \etyperelation{\P}{\gby}{x}{A'}
+                        }
+                        }{
+                        A' \subtypep A
+                        }{\etyperelation{\P}{\gby}{x}{A}}
+                    \end{equation}
+        
+                    \subparagraph{Preserves Denotation}
+                    Using the construction of denotations, we can find the denotation of the original derivation to be:
+                    \begin{equation}
+                        \deno{\ntreeruleI{\vweaken}{\treeruleI{\D}{\gpetyperelation{x}{A}}}{\etyperelation{\P}{\gby}{x}{A}}} = \D \after \p
+                    \end{equation}
+        
+                    Similarly, the denotation of the reduced denotation is:
+                    \begin{equation}
+                        \deno{\ntreeruleII{\vsubtype}{
+                            \ntreeruleI{\vweaken}{
+                                \treeruleI{\D'}{\gpetyperelation{x}{A'}}
+                            } {
+                                \etyperelation{\P}{\gby}{x}{A'}
+                            }
+                            }{
+                            A' \subtypep A
+                            }{\etyperelation{\P}{\gby}{x}{A}}} = \deno{A'\subtypep A}\after \D' \after \p
+                    \end{equation}
+        
+        
+                    By induction on $\reduce$ preserving denotations and the reduction of $\D$ (\ref{WeakenDeltaReduction}), we have:
+        
+                    \begin{equation}
+                        \D = \deno{A' \subtypep A}\after\D'
+                    \end{equation}
+        
+                    So the denotations of the un-reduced and reduced derivations are equal.
+        
+                    \case{\vfun}
+                    \subparagraph{$\reduce$ definition}
+                        To find:
+                    
+                        \begin{equation}
+                            \reduce(\ntreeruleI{\vfun}{
+                                \treeruleI{\D}{\etyperelation{\P}{\gax}{v}{B}}
+                            }{\gpetyperelation{\lam{x}{A}{v}}{\ab}})
+                        \end{equation}
+        
+                        Let 
+        
+                        \begin{equation}
+                            \ntreeruleII{\vsubtype}{
+                                \treeruleI{\D'}{\etyperelation{\P}{\gax}{v}{B'}}
+                                B' \subtypep B
+                            }{
+                                \etyperelation{\P}{\gax}{v}{\M{\e_2}{B}}
+                            } = \reduce(\D)
+                        \end{equation}
+        
+                        In
+        
+                        \begin{equation}
+                            \ntreeruleII{\vsubtype}{
+                                \ntreeruleI{\vfun}{
+                                    \treeruleI{
+                                        \D'
+                                    }{
+                                        \etyperelation{\P}{\gax}{v}{B'}
+                                    }    
+                                }{
+                                    \gpetyperelation{\lam{x}{A}{v}}{\fntype{A}{B'}}
+                                }
+                                }{
+                                \fntype{A}{B'}\subtypep\fntype{A}{B}
+                            } {
+                                \gpetyperelation{\lam{x}{A}{v}}{\fntype{A}{B}}
+                            }
+                        \end{equation}
+        
+                    \subparagraph{Preserves Denotation}
+                        Let
+                        \begin{align*}
+                            f &= \deno{B'\subtypep B'} \\
+                            \deno{\fntype{A}{B'}\subtypep\fntype{A}{B}} & = f^A = \cur{f\after \app}
+                        \end{align*}
+        
+                        Then
+        
+                        \begin{align*}
+                            before & = \cur{\D} \qt{By definition}\\
+                                    & = \cur{f\after\D'} \qt{By reduction of $\D$} \\
+                                    & = f^A\after\cur{\D'}\qt{By the property of $f^X\after\cur{g} = \cur{f\after g}$} \\
+                                    & = after \qt{By definition}\\
+                        \end{align*}
+        
+                    \case{\vsubtype}
+                    \subparagraph{$\reduce$ definition}
+                    To find:
+                    \begin{equation}
+                        \reduce(\ntreeruleII{\vsubtype}{\treeruleI{\D}{\gpetyperelation{v}{A}}}{ A \subtypep B}{\gpetyperelation{v}{B}})
+                    \end{equation}
+        
+                    Let 
+                    \begin{equation}\label{SubtypeDeltaReduction}
+                        \ntreeruleII{\vsubtype}{\treeruleI{\D'}{\gpetyperelation{x}{A}}}{ A'\subtypep A}{\gpetyperelation{x}{A}} = \reduce(\D)
+                    \end{equation}
+        
+                    In 
+                    \begin{equation}
+                        \ntreeruleII{\vsubtype}{
+                            \treeruleI{\D'}{\gpetyperelation{v}{A'}}
+                        }{
+                        A' \subtypep A \subtypep B
+                        }{\gpetyperelation{v}{B}}
+                    \end{equation}
+        
+                    \subparagraph{Preserves Denotation}
+                        \begin{align*}
+                            before & = \deno{A \subtypep B} \after \D \\
+                            & = \deno{A \subtypep B} \after (\deno{A' \subtypep A} \after \D') \qt{ by Denotation of reduction of $\D$.}\\
+                            & = \deno{A' \subtypep B} \after \D'\qt{Subtyping relations are unique} \\
+                            & = after \\
+                        \end{align*}
+                    \case{\vreturn}
+                    \subparagraph{$\reduce$ definition}
+                    To find:
+                    
+                        \begin{equation}
+                            \reduce(\ntreeruleI{\vreturn}{
+                                \treeruleI{\D}{\gpetyperelation{v}{A}}
+                            }{\gpetyperelation{\return{v}}{\moa}})
+                        \end{equation}
+        
+                        Let 
+        
+                        \begin{equation}
+                            \ntreeruleII{\vsubtype}{
+                                \treeruleI{\D'}{\gpetyperelation{v}{A'}}
+                                }{
+                                A' \subtypep A
+                            }{
+                                \gpetyperelation{v}{A}
+                            } = \reduce(\D)
+                        \end{equation}
+        
+                        In
+        
+                        \begin{equation}
+                            \ntreeruleII{\vsubtype}{
+                                \ntreeruleI{\vreturn}{
+                                    \treeruleI{
+                                    \D'
+                                }{
+                                    \gpetyperelation{v}{A}
+                                }}{\gpetyperelation{\return{v}}{\M{\1}{A'}}}
+                                }{
+                                \subeffecttreep{\1}{A'}{\1}{A}
+                            } {
+                                \gpetyperelation{\return{v}}{\moa}
+                            }
+                        \end{equation}
+        
+                        \subparagraph{Preserves Denotation}
+                        Then
+                        \begin{align*}
+                            before &= \point{A}\after\D\qt{By definition}\qt{By defintion}\\
+                            &{}= \point{A}\after\deno{A'\subtypep A}\after \D'\qt{By reduction of $\D$}\\
+                            &{}=\T{\1}{\deno{A'\subtypep A}}\after \point{A'}\after\D'\qt{By naturality of $\point{}$}\\
+                            &{}=\db{\1\subeffectp\1}_{M, A} \after \T{\1}{\deno{A'\subtypep A}}\after\point{A'}\after\D'\qt{Since $\deno{\1\subeffectp\1}$ is the identity Nat-Trans }\\
+                            &{}=after\qt{By definition}\\
+                        \end{align*}
+                    \case{\vapply}
+                    \subparagraph{$\reduce$ definition}
+                    To find:
+                    \begin{equation}
+                        \reduce(\ntreeruleII{\vapply}{
+                            \treeruleI{\D_1}{
+                                \gpetyperelation{v_1}{\ab}
+                            }
+                            }{
+                            \treeruleI{\D_2}{
+                                \gpetyperelation{v_2}{A}
+                            }
+                        }{
+                            \gpetyperelation{\apply{v_1}{v_2}}{B}
+                        })
+                    \end{equation}
+        
+                    Let
+                    \begin{align*}
+                        \ntreeruleII{\vsubtype}{
+                            \treeruleI{\D'_1}{\gpetyperelation{v_1}{\fntype{A'}{B'}}}
+                            }{
+                            \fntype{A'}{B'}\subtypep\fntype{A}{B}
+                        }{
+                            \gpetyperelation{v_1}{\ab}
+                        } & = \reduce(\D_1)\\
+                        \ntreeruleII{\vsubtype}{
+                            \treeruleI{\D'_2}{\gpetyperelation{v}{A'}}
+                            }{
+                            A'\subtypep A
+                        } {
+                            \gpetyperelation{v_1}{A}
+                        } & = \reduce(\D_2)
+                    \end{align*}
+        
+                    In
+                    \begin{equation}
+                        \scalebox{.9}{$
+                        \ntreeruleII{\vsubtype}{
+                            \ntreeruleII{\vapply}{
+                                \treeruleI{
+                                    \D'_1
+                                }{
+                                    \gpetyperelation{v_1}{\fntype{A'}{B'}}
+                                }
+                            }{
+                                \ntreeruleII{\vsubtype}{
+                                    \treeruleI{\D'_2}{\gpetyperelation{v_2}{A''}}
+                                    }{
+                                    A'' \subtypep A \subtypep A'
+                                } {
+                                    \gpetyperelation{v_2}{A'}
+                                }
+                            }{
+                                \gpetyperelation{\apply{v_1}{v_2}}{B'}
+                            }
+                            }{
+                            B' \subtypep B
+                        }{
+                            \gpetyperelation{\apply{v_1}{v_2}}{B}
+                        }
+                        $}
+                    \end{equation}
+
+                    \subparagraph{Preserves Denotation}
+                        Let
+                        \begin{align*}
+                            f & = \deno{A\subtypep A'}: A\rightarrow A' \\
+                            f' & = \deno{A''\subtypep A}: A'' \rightarrow A \\
+                            g & = \deno{B' \subtypep B}: B' \rightarrow B \\
+                        \end{align*}
+        
+                        Hence 
+                        \begin{align*}
+                            \deno{\fntype{A'}{B'}\subtypep \ab} & = (g)^A \after (B')^f \\
+                            & = \cur{app\after \app}\after\cur{\app\after(\Id{}\times f)}\\
+                            & = \cur {g\after\app\after(\Id{}\times f)}
+                        \end{align*}
+        
+                        Then 
+                        \begin{align*}
+                            before & = \app\after\pr{\D_1}{\D_2}\qt{By definition}\\
+                            & = \app\after\pr{\cur {g\after\app\after(\Id{}\times f)}\after\D'_1}{f'\after\D'_2}\qt{By reductions of $\D_1, \D_2$}\\
+                            & = \app\after(\cur {g\after\app\after(\Id{}\times f)}\times\Id{A})\after\pr{\D'_1}{f'\after\D'_2} \qt{Factoring out}\\
+                            & = g\after\app\after(\Id{}\times f)\after\pr{\D'_1}{f'\after\D'_2}\qt{By the exponential property}\\
+                            & = g\after\app\after\pr{\D'_1}{f\after f'\after \D'_2}\\
+                            & = after\qt{By defintion}
+                        \end{align*}
+                    \case{\vif}
+                   
+                    \subparagraph{$\reduce$ definition}
+                        \begin{align*}
+                            \reduce(&\ntreeruleIII{\vif}{
+                                \treeruleI{\D_1}{\gpetyperelation{v}{\B}}
+                                }{
+                                \treeruleI{\D_2}{\gpetyperelation{v_1}{A}}
+                                }{
+                                \treeruleI{\D_3}{\gpetyperelation{v_2}{A}}
+                            }{
+                                \gpetyperelation{\pifthenelse{A}{v}{v_1}{v_2}}{A}
+                            }) \\
+                            & = \ntreeruleIII{\vif}{
+                                \treeruleI{\reduce(\D_1)}{\gpetyperelation{v}{\B}}
+                                }{
+                                \treeruleI{\reduce(\D_2)}{\gpetyperelation{v_1}{A}}
+                                }{
+                                \treeruleI{\reduce(\D_3)}{\gpetyperelation{v_2}{A}}
+                            }{
+                                \gpetyperelation{\pifthenelse{A}{v}{v_1}{v_2}}{A}
+                            }
+                        \end{align*}
+        
+                    \subparagraph{Preserves Denotation}
+                        Since calling $\reduce{}$ on the Subderivations preserves their denotations, this definition trivially preserves the denotation of the derivation.
+        
+        
+                        \case{\vbind}
+                        \subparagraph{$\reduce$ definition}
+        
+                        To find
+                        \begin{equation}
+                            \reduce(
+                                \ntreeruleII{\vbind}{
+                                    \treeruleI{
+                                        \D_1
+                                    }{
+                                        \gpetyperelation{v_1}{\M{\e_1}{A}}
+                                    }
+                                    }{
+                                    \treeruleI{
+                                        \D_2
+                                    }{
+                                        \etyperelation{\P}{\gax}{v_2}{\M{\e_2}{B}}
+                                    }
+                                } {
+                                    \gpetyperelation{\doin{x}{v_1}{v_2}}{\M{\e_1\dot\e_2}{B}}
+                                }
+                            )
+                        \end{equation}
+        
+        
+                        Let \begin{equation}
+                            \ntreeruleII{\vsubtype}{
+                                \treeruleI{\D'_1}{\gpetyperelation{v_1}{\M{\e'_1}{A'}}}
+                            }{
+                            \subeffecttreep{\e_1'}{A'}{\e_1}{A}
+                            }{
+                                \gpetyperelation{v_1}{\M{\e_1}{A}}
+                            } = \reduce(\D_1)
+                        \end{equation}
+        
+                        Since $\ewrel{\P}{(i,\x)}{(\G, x: A')}{(\gax)}$ if $A' \subtypep A$, and by $\D_2 = \etyperelation{\P}{(\gax)}{v_2}{\M{\e_2}{B}}$, there also exists a derivation $\D_3$ of $\etyperelation{\P}{(\G, x: A')}{v_2}{\M{\e_2}{B}}$. $\D_3$ is derived from $\D_2$ simply by inserting a (Subtype) rule below all instances of the (Var) rule.
+        
+                        Let \begin{equation}
+                            \ntreeruleII{\vsubtype}{
+                                \treeruleI{\D'_3}{\etyperelation{\P}{\G, x: A'}{v_2}{\M{\e'_2}{B'}}}
+                            }{
+                            \subeffecttreep{\e_1'}{B'}{\e_2}{B}
+                            }{
+                                \etyperelation{\P}{\G, x: A'}{v_2}{\M{\e_2}{B}}
+                            } = \reduce(\D_3)
+                        \end{equation}
+                        
+        
+                        Since the effects monoid operation is monotone, if $\e_1\subeffectp\e_1'$ and $\e_2\subeffectp\e_2'$ then $\e_1\dot\e_2 \subeffectp \e_1'\dot\e_2'$
+                        
+        
+        
+                        Then the result of reduction of the whole bind expression is:
+        
+        
+                        \begin{equation}
+                            \scalebox{.9}{$
+                            \ntreeruleII{\vsubtype}{
+                                \ntreeruleII{\vbind}{
+                                    \treeruleI{
+                                        \D'_1
+                                    }{
+                                        \gpetyperelation{v_1}{\M{\e_1'}{A'}}
+                                    }
+                                    }{
+                                    \treeruleI{
+                                        \D'_3
+                                    }{
+                                        \etyperelation{\P}{\G, x: A'}{v_2}{\M{\e_2'}{B'}}
+                                    }
+                                }{
+                                \gpetyperelation{\doin{x}{v_1}{v_2}}{\M{\e_1'\dot\e_2'}{B}}
+                                }
+                                }{
+                                \subeffecttreep{\e_1'\dot\e_2'}{B'}{\e_1\dot\e_2}{B}
+                            }{
+                                \gpetyperelation{\doin{x}{v_1}{v_2}}{\M{\e_1\dot\e_2}{B}}
+                            }
+                            $}
+                        \end{equation}
+                        \subparagraph{Preserves Denotation}
+        
+                        Let \begin{align*}
+                            f & = \deno{A' \subtypep A}: A' \rightarrow A\\
+                            g & = \deno{B' \subtypep B}: B' \rightarrow B\\
+                            h_1 & = \deno{\e_1' \subeffectp \e_1} : \T{\e_1'}{} \rightarrow \T{\e_1}{} \\
+                            h_2 & = \deno{\e_2'\subeffectp \e_2}:\T{\e_2'}{} \rightarrow \T{\e_2}{}\\
+                            h & = \deno{\e_1'\dot\e_2'\subeffectp\e_1\dot\e_2}: \T{\e_1'\dot\e_2'}{}\rightarrow \T{\e_1\dot\e_2}{}
+                        \end{align*}
+        
+                        Due to the denotation of the weakening used to derive $\D_3$ from $\D_2$, we have 
+                        \begin{equation}
+                            \D_3 = \D_2\after(\idg\times f)
+                        \end{equation}
+        
+                        And due to the reduction of $\D_3$,
+                        we have 
+                        \begin{equation}
+                            \D_3 = h_{2, B} \after \T{\e_2'}{g}\after \D_3'
+                        \end{equation}
+        
+                        So:
+        
+                        \scalebox{.85}{\parbox{1.1\linewidth}{
+                        \begin{align*}
+                            before &= \bind{\e_1}{\e_2}{B}\after \T{\e_1}{\D_2}\after\tstrength{\e_1}{\G}{A}\after\pr{\idg}{\D_1}\qt{By definition.}\\
+                            &= \bind{\e_1}{\e_2}{B}\after \T{\e_1}{\D_2}\after\tstrength{\e_1}{\G}{A}\after\pr{\idg}{h_{1, A}\after\T{\e_1'}{f}\after\D_1'}\qt{By reduction of $\D_1$.}\\
+                            &= \bind{\e_1}{\e_2}{B}\after \T{\e_1}{\D_2}\after\tstrength{\e_1}{\G}{A}\after(\idg\times h_{1, A})\after\pr{\idg}{\T{\e_1'}{f}\after\D_1'}\qt{Factor out $h_1$}\\
+                            &= \bind{\e_1}{\e_2}{B}\after \T{\e_1}{\D_2}\after
+                            h_{1, (\G\times A)}\after
+                            \tstrength{\e_1'}{\G}{A}\after\pr{\idg}{\T{\e_1'}{f}\after\D_1'}\qt{Tensor strength and subeffecting $h_1$}\\
+                            &= \bind{\e_1}{\e_2}{B}\after 
+                            h_{1, B}\after\T{\e_1'}{\D_2}\after
+                            \tstrength{\e_1'}{\G}{A}\after\pr{\idg}{\T{\e_1'}{f}\after\D_1'}\qt{Naturality of $h_1$}\\
+                            &= \bind{\e_1}{\e_2}{B}\after 
+                            h_{1, B}\after\T{\e_1'}{\D_2}\after
+                            \tstrength{\e_1'}{\G}{A}\after(\idg\times \T{\e_1'}{f})\after\pr{\idg}{\D_1'}\qt{Factor out pairing again}\\
+                            &= \bind{\e_1}{\e_2}{B}\after 
+                            h_{1, B}\after\T{\e_1'}{(\D_2\after(\idg\times f))}\after
+                            \tstrength{\e_1'}{\G}{A'}\after\pr{\idg}{\D_1'}\qt{Tensorstrength}\\
+                            &= \bind{\e_1}{\e_2}{B}\after 
+                            h_{1, B}\after\T{\e_1'}{(\D_3)}\after
+                            \tstrength{\e_1'}{\G}{A'}\after\pr{\idg}{\D_1'}\qt{By the definition of $\D_3$}\\
+                            &= \bind{\e_1}{\e_2}{B}\after 
+                            h_{1, B}\after\T{\e_1'}{(h_{2, B}\after\T{\e_2'}{g}\after \D_3')}\after
+                            \tstrength{\e_1'}{\G}{A'}\after\pr{\idg}{\D_1'}\qt{By the reduction of $\D_3$}\\
+                            &= \bind{\e_1}{\e_2}{B}\after 
+                            h_{1, B}\after\T{\e_1'}{h_{2, B}}\after\T{\e_1'}{\T{\e_2'}{g}}\after \T{\e_1'}{\D_3'}\after
+                            \tstrength{\e_1'}{\G}{A'}\after\pr{\idg}{\D_1'}\qt{Factor out the functor}\\
+                            &= h_B\after\bind{\e_1'}{\e_2'}{B}\after\T{\e_1'}{\T{\e_2'}{g}}\after \T{\e_1'}{\D_3'}\after
+                            \tstrength{\e_1'}{\G}{A'}\after\pr{\idg}{\D_1'}\qt{By the $\mu$ and Subtype rule }\\
+                            & = h_B\after\T{\e_1'\dot\e_2'}{g}\after\bind{\e_1'}{\e_2'}{B'}\after \T{\e_1'}{\D_3'}\after
+                            \tstrength{\e_1'}{\G}{A'}\after\pr{\idg}{\D_1'}\qt{By naturality of $\bind{}{}{}$ }\\
+                            & = after \qt{By definition}
+                        \end{align*}
+                        }}
+
+                \case{\vgen}
+                \subparagraph{$\reduce$ definition}
+        
+                
+                To find 
+                \begin{equation}
+                    \reduce(\ntreeruleI{\vgen}{\treeruleI{\D_1}{\etyperelation{\P,\a}{\G}{v}{A}}}{\gpetyperelation{\elam{\a}{v}}{\all{\a}{A}}})
+                \end{equation}
+        
+                Let
+                \begin{equation}
+                    \ntreeruleII{\vsubtype}{\treeruleI{\D_1'}{\etyperelation{\P,\a}{\G}{v}{A'}}}{ A'\subtypep A}{\etyperelation{\P,\a}{\G}{v}{A}} = \reduce(\D_1)
+                \end{equation}
+        
+                in 
+        
+                \begin{equation}
+                    \ntreeruleII{\vsubtype}{
+                        \ntreeruleI{\vgen}{
+                            \treeruleI{\D_1'}{\etyperelation{\P,\a}{\G}{v}{A'}}
+                        }{
+                            \gpetyperelation{\elam{\a}{v}}{\all{\a}{A'}}
+                        }
+                    }{ 
+                    \ntreeruleI{\squant}{A' \subtypepa A}{\all{\a}{A'} \subtypep \all{\a}{A}}
+                    }{
+                        \gpetyperelation{\elam{\a}{v}}{\all{\a}{A}}
+                    }
+                \end{equation}
+        
+                \subparagraph{Preserves Denotation}
+        
+                \begin{align*}
+                    before &= \bar{\D_1}\\
+                    & = \bar{\deno{A'\subtypepa A}\after \D_1'}\qt{By induction}\\
+                    & = \allI(\deno{A'\subtypepa A})\after\bar{\D_1'}\\
+                    &= \deno{\all{\a}{A'}\subtypep\all{\a}{A}}\after\bar{\D_1'}\qt{By definition}\\
+                    & = after\qt{By definition}     
+                \end{align*}
+        
+                \case{\vspec}
+                \subparagraph{$\reduce$ definition}
+        
+                
+                To find 
+                \begin{equation}
+                    \reduce(\ntreeruleII{\vspec}{\treeruleI{\D_1}{\gpetyperelation{v}{\all{\a}{A}}}}{\wellformede{\P}{\e}}{\gpetyperelation{\eapp{v}{\e}}{A\ssub{\a}{\e}}})
+                \end{equation}
+        
+                Let
+        
+                \begin{eqnarray}
+                    \ntreeruleII{\vsubtype}{
+                        \treeruleI{\D_1'}{\gpetyperelation{v}{\all{\a}{A'}}}
+                        }{ 
+                        \ntreeruleI{\squant}{A'\subtypepa A}{\all{\a}{A'}\subtypep\all{\a}{A}}
+                    }{
+                        \gpetyperelation{v}{\all{\a}{A}}
+                    }= \reduce(\D_1)
+                \end{eqnarray}
+        
+                In
+        
+                \begin{equation}
+                    \ntreeruleII{\vsubtype}{
+                        \ntreeruleII{\vspec}{
+                            \treeruleI{\D_1'}{\gpetyperelation{v}{\all{\a}{A}}}}{\wellformede{\P}{\e}
+                        }{\gpetyperelation{\eapp{v}{\e}}{A\ssub{\a}{\e}}}
+                    }{
+                    A'\ssub{\a}{\e}\subtypep A\ssub{\a}{\e}
+                    }{
+                        \gpetyperelation{\eapp{v}{\e}}{A\ssub{\a}{\e}}
+                    }
+                \end{equation}
+        
+                \subparagraph{Preserves Denotation}
+                Let
+                \begin{align*}
+                    h &= \deno{\typerelation{\P}{\e}{\effect}}\\
+                    A & = \deno{\typerelation{\P,\b}{A\ssub{\a}{\b}}{\effect}}\\
+                    A' & = \deno{\typerelation{\P,\b}{A'\ssub{\a}{\b}}{\effect}}
+                \end{align*}
+        
+                Note that 
+        
+                \begin{equation}
+                    \pr{\Id{I}}{h}\star(\pstar(f)) = (\p\after\pr{\Id{I}}{h})\star(f) = \Id{I}\star(f) = f
+                \end{equation}
+        
+                And that 
+                \begin{equation}
+                    \pr{\Id{I}}{h} = \deno{\typerelation{\P}{\ssub{\a}{\e}}{\P,\a}}
+                \end{equation}
+        
+                With lemma:
+                \begin{align*}
+                    \deno{\all{\a}{A'}\subtypep{\all{\a}{A}}} & = \allI(\deno{A' \subtypepa A})\\
+                    & = \pr{\Id{I}}{h}\star(\pstar(\allI(\deno{A' \subtypepa A})))
+                \end{align*}
+        
+                In
+        
+                \begin{align*}
+                    before &= \pr{\Id{I}}{h}\star(\e_A)\after\D_1\\
+                    &= \pr{\Id{I}}{h}\star(\e_A)\after\deno{\all{\a}{A'}\subtypep{\all{\a}{A}}}\after\D_1'\qt{By induction}\\
+                    &= \pr{\Id{I}}{h}\star(\e_A)\after\pr{\Id{I}}{h}\star(\pstar(\allI(\deno{A' \subtypepa A})))\after\D_1'\qt{By lemma}\\
+                    &= \pr{\Id{I}}{h}\star(\e_A\after \pstar(\allI(\deno{A' \subtypepa A})))\after\D_1'\qt{By functorality}\\
+                    & = \pr{\Id{I}}{h}\star(\deno{A' \subtypepa A}\after\e_{A'})\after\D_1'\qt{By Naturality}\\
+                    & =  \pr{\Id{I}}{h}\star(\deno{A' \subtypepa A})\after\pr{\Id{I}}{h}\star(\e_{A'})\after\D_1'\\
+                    & =  \deno{A'\ssub{\a}{\e} \subtypepa A\ssub{\a}{\e}}\after\pr{\Id{I}}{h}\star(\e_{A'})\after\D_1'\qt{By substitution of subtyping}\\
+                    & = after
+                \end{align*}
+                
+            $$\square$$   
+    \end{proof}
+\end{framed}
