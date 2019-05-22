@@ -1,0 +1,13 @@
+\begin{frame}
+    \frametitle{What is Categorical Denotational Semantics?}
+    \begin{itemize}
+        \setlength\itemsep{3em}
+        \item A \textit{compositional} mapping $\deno{-}: \text{Language Structure} \rightarrow \text{Categorical Structure}$
+        \item Types and type environments map to objects $\deno{A} \in \obj(\C)$
+        \item Well typed terms map to morphisms (arrows) $\deno{\gtyperelation{t}{A}}: \deno{\G} \rightarrow \deno{A}$
+        \item Needs to be \textit{sound} $t_1 \beequiv t_2 \implies \deno{t_1} = \deno{t_2}$
+        \item And \textit{adequate} $\deno{t_1} = \deno{t_2} \implies t_1 \beequiv t_2$
+    \end{itemize}
+    
+
+\end{frame}
