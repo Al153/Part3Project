@@ -1,0 +1,27 @@
+
+\begin{frame}{Let's Add Polymorphism}
+   
+    \begin{align*}
+        v::=\text{..}\mid\elam{\a}{v}\mid\eapp{v}{\e}
+    \end{align*}
+    
+    \begin{align*}
+        A, B, C::=\text{...}\mid \all{\a}{A}
+    \end{align*}
+    
+    \begin{align*}
+        \e ::= e \mid \a \mid \e\dot\e
+    \end{align*}
+    
+        \[
+            \ntreeruleI{Effect-Gen}{\etyperelation{\P,\a}{\G}{v}{A}}{\gpetyperelation{\elam{\a}{v}}{\all{\a}{A}}}
+            \quad
+            \ntreeruleII{Effect-Spec}{\gpetyperelation{v}{\all{\a}A}}{\wellformed{\P}{\e}}{\gpetyperelation{\eapp{v}{\e}}{A\ssub{\a}{\e}}}    
+        \]
+        \script{
+            - Let's now add some polymorphism syntax to EC.
+            - This gives us the polymorphic effect calculus.
+            - Notice now that in our type rules, we now have an effect-variable environment. Important later
+        }
+    \end{frame}
+    

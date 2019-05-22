@@ -1,0 +1,23 @@
+
+\begin{frame}[fragile]{An Ugly Example}
+\todo{syntax highlight this}
+    \begin{lstlisting}[
+        mathescape,
+        columns=fullflexible,
+        basicstyle=\fontfamily{lmvtt}\selectfont,
+      ]
+let $twiceIO$ = $\lambda$ $action$: $\M{\texttt{IO}}{\U}$. (
+    do $\_$ $\texttt{<-}$ $action$ in $action$
+)
+
+let $twiceState$ = $\lambda$ $action$: $\M{\texttt{State}}{\U}$. (
+    do $\_$ $\texttt{<-}$ $action$ in $action$
+)
+
+do $\_$ $\texttt{<-}$ $twiceState$(increment) in $twiceIO$(writeLog)
+    \end{lstlisting}
+    \script{
+        - Here's a program that's quite ugly with lots of code reuse, since we explicitly state types in the expressions. 
+        - we end up with two instantiations of the same function - more work for the compiler
+    }
+\end{frame}

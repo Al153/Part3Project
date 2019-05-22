@@ -1,0 +1,71 @@
+
+\begin{frame}{Indexed Category}
+
+    \begin{tikzpicture}[->,>=stealth', scale=0.7, every node/.style={scale=0.7}]
+        % Draw the env objects
+        \foreach \y[count=\c,evaluate={\yi=int(\c-1)}] in {3, 4, 5}{
+            \node[fill,circle,inner sep=2pt,label=left:{\small $\P_\yi$}] (d\yi) at (0,\y) {};
+        }
+
+        % draw the ... above the env objects
+        \foreach \y[count=\c,evaluate={\yi=int(\c-1)}] in {5.5, 6, 6.5}{
+            \node[fill, circle, inner sep=1pt] (dd\yi) at (0,\y){};
+        }
+        % Draw the index category
+        \node[fit=(d0) (d1) (d2) (dd0) (dd1) (dd2),ellipse,draw,minimum width=2cm] {};
+
+        %draw the s-category stack
+        \foreach \y[count=\c,evaluate={\yi=int(\c-1)}] in {2, 4, 6}{
+            \node[circle, draw, inner sep=1pt, fill, label=above:{$\G$}] (g\yi) at (7,\y){};
+            \node[circle, draw, inner sep=1pt, fill, label=above:{$A$}] (a\yi) at (9,\y){};
+            \draw[->](g\yi) to[bend right=5] node[below]{\tiny $\deno{\etyperelation{\P_\yi}{\G}{v}{A}}$} (a\yi);
+            \node[ellipse, draw, minimum width=5cm, minimum height=15mm,label=right:$S_\yi$] (s\yi) at (8,\y){};
+        }
+
+        % Hidden ellipse to draw functors to
+        \node[ellipse, minimum width=5cm, minimum height=15mm] (s3) at (8,8){};
+
+        %Draw the ... for the s-category stack
+        \foreach \y[count=\c,evaluate={\yi=int(\c-1)}] in {7, 7.5, 8}{
+            \node[fill, circle, inner sep=1pt] (p\yi) at (8, \y){};
+        }
+
+        % Draw index arrows
+        \foreach \i in {0, 1, 2}{
+            \draw[->, thick] (d\i) to (s\i);
+        }
+
+        % draw the re-indexing functors
+
+        \foreach \source[count=\dest] in {0, 1, 2}{
+            \draw[->, thick](s\source.north west) to[bend left=10] node[left]{$\pstar$} (s\dest.south west);
+        }
+
+        % Draw the quantification functors
+        %\foreach \dest[count=\source] in {0, 1, 2}{
+        %    \draw[->, thick] 
+        %    (s\source.south east) to[bend left=10] node[right]{$\forall_{\P_\dest}$} (s\dest.north east);
+        %}
+
+        % Draw the internal morphisms in base category
+        \foreach \dest[count=\source] in {0, 1}{
+            \draw[->]
+            (d\source) to[bend right=10] node[right]{$\p$} (d\dest);
+        }
+
+        %Draw the bracket
+
+        \draw [decoration={brace,amplitude=8pt},decorate] ($(s2)+(10em,1ex)$) -- ($(s0)+(10em,-1ex)$);
+        \node[text width=20mm] (Label) at (14,5){Fibres for each effect environment};
+    \end{tikzpicture}
+
+
+    \script{
+        - So now we can construct this structure
+        - called an index category
+        - We have a functor mapping each object representing an effect-variable environment to the relevant S-category fibre.
+        - Also contravariantly, meaning the direction of the morphism changes, maps morphisms in the base category to re-indexing functors between the relevant fibres.
+        - So now we can perform substitutions and weakenings on the effect environment and get the right behaviour on the semantics of the EC instantiation
+    }
+    
+\end{frame}

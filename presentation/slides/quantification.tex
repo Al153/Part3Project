@@ -1,0 +1,20 @@
+
+\begin{frame}{Quantification}
+    \begin{itemize}\setlength\itemsep{2em}
+        \item What about effect-generalisation?
+        \item $\ntreeruleI{Effect-Gen}{\etyperelation{\P,\a}{\G}{v}{A}}{\etyperelation{\P}{\G}{\elam{\a}{v}}{\all{\a}{A}}}$
+        \item Need to map $\deno{\etyperelation{\P,\a}{\G}{v}{A}}$ to $\deno{\etyperelation{\P}{\G}{\elam{\a}{v}}{\all{\a}{A}}}$
+        \item For specialisation to work, needs: $\pstar\dashv\allI$
+    \end{itemize}
+
+
+    
+    \script{
+        - We now need to think about the polymorphic terms
+        - For quantification, we need another functor, $\allI$ which maps a type rule with an extra effect variable to one quantified over that variable
+        - In order for specialisation to work, this quantification functor needs to be a right adjoint to the opposite operation of weakening the effect environment
+        - Adjunction of functors is essentially a weaker version of an isomorphism of the categories they're between.
+        - Going out on one functor and coming back on the other isn't quite the same as the identity, but it has a well defined action.
+    }
+
+\end{frame}

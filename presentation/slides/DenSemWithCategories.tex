@@ -1,0 +1,18 @@
+
+\begin{frame}{Denotational Semantics using Category Theory}
+    \begin{itemize}
+        \setlength\itemsep{3em}
+        \item Interested in: Objects, Morphisms, and Functors
+        \item Types and type environments are objects (e.g. sets) $\deno{A}, \deno{\G} \in\obj\C$
+        \item Terms are morphisms ()$\deno{\gtyperelation{t}{A}}: \deno{\G}\rightarrow \deno{A}$
+    \end{itemize}
+
+
+    \script{
+        - In part II, we used domains to handle the semantics of non-termination. Lurking beneath this notion is the idea that we can use category theoretic structure to construct our denotations.
+
+        - Here we map types and type environments to objects in a particular category, and correctly typed terms to morphisms (arrows) in the category.
+
+        - One more structure we need is a functor - a map of objects to objects and morphisms to morphisms that preserves composition of terms.
+    }
+\end{frame}

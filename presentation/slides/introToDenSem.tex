@@ -1,0 +1,16 @@
+
+\begin{frame}{What is a Denotational Semantics? }
+    \begin{itemize}\setlength\itemsep{3em}
+        \item A \textit{compositional} mapping $\deno{-}: \text{Language Structure} \rightarrow \text{Mathematical Structure}$
+        \item In particular want to define $\deno{\gtyperelation{t}{A}}$
+        \item Needs to be \textit{sound} $t_1 \beequiv t_2 \implies \deno{t_1} = \deno{t_2}$
+        \item And \textit{adequate} for our needs $\deno{t_1} = \deno{d_2}\implies t_1 \beequiv t_2$
+    \end{itemize}
+
+    \script{
+        - Denotational semantics is where we create a mapping between program terms and an abstract mathematical structure.
+        - We want this to be compositional - meaning that each term's denotation is defined in terms of its subterms 
+        - It should also be sound, meaning that equivalent program terms up-to, for example, beta-eta reduction, have equal denotations.
+        - we also want it to be adequate - if two terms have equal denotations, then that should mean something useful about the relation of the two terms (e.g. can replace one by the other, etc)
+    }
+\end{frame}

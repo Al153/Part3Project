@@ -1,5 +1,5 @@
 \documentclass{report}
-\input{../proofs/header.tex}
+\input{../../proofs/header.tex}
 
 \begin{document}
 
@@ -145,7 +145,7 @@ We now define a predicate on type environments and effect-variable environments:
     \item $\ntreeruleI{\vgen}{\etyperelation{\P,\a}{\G}{v}{A}}{\gpetyperelation{\elam{\a}{v}}{\all{\a}{A}}}$
     \item $\ntreeruleII{\vspec}{\gpetyperelation{v}{\all{\a}A}}{\wellformede{\P}{\e}}{\gpetyperelation{\eapp{v}{\e}}{A\ssub{\a}{\e}}}$
     \item $\ntreeruleI{\vreturn}{\gpetyperelation{v}{A}}{\gpetyperelation{\return{v}}{\moa}}$
-    \item $\ntreeruleII{\vapply}{\gpetyperelation{v_1}{\aeb}}{\gpetyperelation{v_2}{A}}{\gpetyperelation{\apply{v_1}{v_2}}{\meb}}$
+    \item $\ntreeruleII{\vapply}{\gpetyperelation{v_1}{\ab}}{\gpetyperelation{v_2}{A}}{\gpetyperelation{\apply{v_1}{v_2}}{\B}}$
     \item $\ntreeruleIII{\vif}{\gpetyperelation{v}{\B} }{ \gpetyperelation{v_1}{A}}{\gpetyperelation{v_2}{A}}{\gpetyperelation{\pifthenelse{A}{v}{v_1}{v_2}}{A}}$
     \item $\ntreeruleII{\vbind}{\gpetyperelation{v_1}{\M{\e_1}{A}} }{ \etyperelation{\P}{\gax}{v_2}{\M{\e_2}{B}}}{\gpetyperelation{\doin{x}{v_1}{v_2}}{\M{\e_1 \dot \e_2}{B}}}$
 \end{itemize}

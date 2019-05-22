@@ -1,0 +1,21 @@
+
+\begin{frame}{Language features (1) - Lambda Calculus}
+
+        A cartesian closed category (CCC) consists of:
+        \begin{itemize}
+            \setlength\itemsep{3em}
+            \item Products $A\times B$ - models tuples
+            \item A terminal object $\1$ - models the \U\texttt{  }type
+            \item Exponential objects $B^A$ - models functions as first-class objects
+        \end{itemize}
+
+        \script{
+            Now let's look at what category theoretic structure you need to model different language features.
+            
+            - For lambda calculus style languages, you need at least a cartesian closed category.
+
+            - In terms of the category of sets, this gives you sets of pairs of objects, sets of functions, and the single element set.
+
+            - These are used to model pairs, lambda terms, giving us higher order functions, and the terminal, single element set allows us to interpret the unit type and ground terms.
+        }
+\end{frame}

@@ -1,0 +1,61 @@
+
+\begin{frame}{How do we Model the Semantics of a Polymorphic Language?}
+
+    \begin{itemize}
+        \setlength\itemsep{3em}
+        \item For a fixed effect variable environment $\P$ and terms with no polymorphic sub-terms, we have EC
+        \item Effect-variable environments of length $n$ are isomorphic by $\a$-equivalence
+    \end{itemize}
+    
+    
+
+    \script{
+        - If we fix the effect-variable environment, and disallow polymorphic terms, then PEC terms become EC terms for a particular instantiation.
+        - We already know how to build models for PEC
+        -It's also the case that effect-variable environments can type the same set of relations, upto alpha equivalence.
+        - So there is a countable set of these EC instantiations
+    }
+\end{frame}
+
+\begin{frame}{How do we Model the Semantics of a Polymorphic Language?}
+
+\begin{minipage}{0.45\linewidth}
+    \begin{itemize}
+        \item So we instantiate an S-category for each environment.
+        \item The type rule for quantification requires us to move between categories \todo{Type rule here}.
+        \item Functors are required.
+    \end{itemize}
+\end{minipage}\quad \begin{minipage}{0.45\linewidth}
+    \begin{tikzpicture}[->,>=stealth', scale=0.7, every node/.style={scale=0.7}]
+        %draw the s-category stack
+\foreach \y[count=\c,evaluate={\yi=int(\c-1)}] in {2, 3, 4, 5, 6}{
+    \node[ellipse, draw,fill=yellow, fill opacity=1, minimum width=5cm, minimum height=15mm,label=right:$S_\yi$] (s\yi) at (8,\y){};
+    \node[circle, draw, inner sep=1pt, label=above:{$\G$}] (g\yi) at (7,\y){};
+    \node[circle, draw, inner sep=1pt, fill, label=above:{$A$}] (a\yi) at (9,\y){};
+    \draw[->](g\yi) to[bend right=5] node[below]{\tiny $\deno{\etyperelation{\P_\yi}{\G}{v}{A}}$} (a\yi);
+}
+
+% Hidden ellipse to draw functors to
+\node[ellipse, minimum width=5cm, minimum height=15mm] (s5) at (8,8){};
+
+%Draw the ... for the s-category stack
+\foreach \y[count=\c,evaluate={\yi=int(\c-1)}] in {7, 7.5, 8}{
+    \node[fill, circle, inner sep=1pt] (p\yi) at (8, \y){};
+}
+
+% draw the re-indexing functors
+
+
+%Draw the bracket
+
+\draw [decoration={brace,amplitude=8pt},decorate] ($(s5)+(10em,1ex)$) -- ($(s0)+(10em,-1ex)$);
+\node[text width=20mm] (Label) at (14,5){Fibres for each effect environment};
+\end{tikzpicture}
+
+\end{minipage}
+
+\script{
+    - So we can imagine a stack of these S-Categories, called fibres
+    - In order to model polymorphism, we need to have ways of moving morphisms between these fibres - we need functors
+}
+\end{frame}

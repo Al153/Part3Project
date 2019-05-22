@@ -1,0 +1,32 @@
+
+\begin{frame}[fragile]{Motivating Polymorphic Effect Analysis}    
+
+    \todo{Syntax highlight}
+\begin{verbatim}
+def logAction(
+    action: Unit => String
+): Unit {
+    log.info(action())
+}  
+\end{verbatim}
+
+\begin{verbatim}
+logAction(() => FireMissiles(); "Launched Missiles)
+
+logAction(() => throwError("My Error"))
+
+logAction(() => readEnvironmentVariables)
+\end{verbatim}
+
+    \script{
+        - Imagine you're a compiler trying to analyse the side effects of this \texttt{doAction} function here.
+
+        - You're not having the best of times
+        - it's used three times with three different side effect - one's irrevocable - you can't speculatively execute it, one alters control flow, and the last accesses immutable state so you can do all sorts of optimisations.
+        
+        - Using some simple  analysis, you can create three separate instantiations of the function to analyse, so it's not too difficult in this case.
+        - However in programs with higher order functions, creating these separate instantiations is undecidable in general
+
+        - With a polymorphic effect system, it becomes a bit easier to analyse programs like this. But how do you know that your tools and optimisations are sound?
+    }
+\end{frame}

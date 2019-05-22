@@ -1,0 +1,20 @@
+
+\begin{frame}{Base Category}
+\begin{itemize}
+    \item Need to be able to reason about the effect environment categorically
+    \item Model effects and their environments using category $\Eff$: \begin{itemize}
+        \item Objects are products of the set of ground effects $\{\singleton\} , E, E\times E,... E^n..$
+        \item Morphisms are monotone functions
+    \end{itemize}
+    \item Represent $\P$ as an object $E^n$
+    \item Transformations (e.g. substitutions) between environments become functions
+\end{itemize}
+
+\script{
+    - So we need a way of reasoning about the transformations of effect-variable environments in a category theoretic manner
+    - To do this, we need a base category, containing a terminal object, an object $U$ representing the kind of effects, and finite products on $U$ 
+    - $U^n$ represents the effect-variable environment of length $n$. We'll now use $I$ to indicate this.
+    
+    - Since all the ground effects have morphisms in this category, we can construct morphisms for substitutions and weakenings of the effect environment.
+}
+\end{frame}

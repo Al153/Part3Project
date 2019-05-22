@@ -1,0 +1,115 @@
+    
+\begin{frame}{Instantiating a Model (1)}
+
+        \begin{tikzpicture}[->,>=stealth', scale=0.5, every node/.style={scale=0.5}]
+            % Draw the env objects
+            \foreach \y[count=\c,evaluate={\yi=int(\c-1)}] in {3, 4, 5}{
+                \node[fill,circle,inner sep=2pt,label=left:{\small $\P_\yi$}] (d\yi) at (0,\y) {};
+            }
+    
+            % draw the ... above the env objects
+            \foreach \y[count=\c,evaluate={\yi=int(\c-1)}] in {5.5, 6, 6.5}{
+                \node[fill, circle, inner sep=1pt] (dd\yi) at (0,\y){};
+            }
+            % Draw the index category
+            \node[fit=(d0) (d1) (d2) (dd0) (dd1) (dd2),ellipse,draw,minimum width=2cm] {};
+    
+            %draw the s-category stack
+            \foreach \y[count=\c,evaluate={\yi=int(\c-1)}] in {2, 4, 6}{
+                \node[circle, draw, inner sep=1pt, fill, label=above:{$\G$}] (g\yi) at (7,\y){};
+                \node[circle, draw, inner sep=1pt, fill, label=above:{$A$}] (a\yi) at (9,\y){};
+                \draw[->](g\yi) to[bend right=5] node[below]{\tiny $\deno{\etyperelation{\P_\yi}{\G}{v}{A}}$} (a\yi);
+                \node[ellipse, draw, minimum width=5cm, minimum height=15mm,label=right:$S_\yi$] (s\yi) at (8,\y){};
+            }
+    
+            % Hidden ellipse to draw functors to
+            \node[ellipse, minimum width=5cm, minimum height=15mm] (s3) at (8,8){};
+    
+            %Draw the ... for the s-category stack
+            \foreach \y[count=\c,evaluate={\yi=int(\c-1)}] in {7, 7.5, 8}{
+                \node[fill, circle, inner sep=1pt] (p\yi) at (8, \y){};
+            }
+    
+            % Draw index arrows
+            \foreach \i in {0, 1, 2}{
+                \draw[->, thick] (d\i) to (s\i);
+            }
+    
+            % draw the re-indexing functors
+    
+            \foreach \source[count=\dest] in {0, 1, 2}{
+                \draw[->, thick](s\source.north west) to[bend left=10] node[left]{$\pstar$} (s\dest.south west);
+            }
+    
+            % Draw the quantification functors
+            \foreach \dest[count=\source] in {0, 1, 2}{
+                \draw[->, thick] 
+                (s\source.south east) to[bend left=10] node[right]{$\forall_{\P_\dest}$} (s\dest.north east);
+            }
+    
+            % Draw the internal morphisms in base category
+            \foreach \dest[count=\source] in {0, 1}{
+                \draw[->]
+                (d\source) to[bend right=10] node[right]{$\p$} (d\dest);
+            }
+    
+            %Draw the bracket
+    
+            \draw [decoration={brace,amplitude=8pt},decorate] ($(s2)+(10em,1ex)$) -- ($(s0)+(10em,-1ex)$);
+            \node[text width=20mm] (Label) at (14,5){Fibres for each effect environment};
+        \end{tikzpicture}
+
+    \begin{itemize}
+        \item Can we actually instantiate a category with the required structure? 
+        \item Starting point: a model of EC in $\set$
+    \end{itemize}
+    
+    \script{
+        - So far, we've only said what structures are required to model PEC.
+        - Haven't shown that there actually exists an indexed category with the required properties
+        - so let's do that
+        - It's fairly well known that you can instantiate models of languages with the same features as EC in the category of sets and functions
+        - We want to extend one of these models into one for PEC
+    }
+\end{frame}
+
+\begin{frame}{Instantiating a Model (2) - Fibres}
+    \begin{itemize}\setlength\itemsep{3em}
+        \item The fibre $\C(n)$ is the category of functors $[E^n, \set]$
+        \item I.E. objects are functions that take a vector of ground effects and return a set $\deno{\wellformedt{\P}{A}}: E^n \rightarrow \obj(\set)$.
+        \item Morphisms are dependent functions that return functions in $f: (\ev: E^n)\rightarrow A\ev\rightarrow B\ev$
+        \item These fibres have S-Category features
+    \end{itemize}
+
+    \script{
+        - Now we can think about the fibres
+        - These are functor categories
+        - I.E. their objects are functions returning sets and their morphisms are dependently typed functions
+        - We can construct all the of the S-Category structure  as pointwise
+    }
+\end{frame}
+
+\begin{frame}{Instantiating a Model (4) - Functors and Adjunctions}
+\begin{itemize}
+    \item Re-indexing functors act by pre-composition
+    \begin{align*}
+        A\in&\quad [E^n, \set]\\
+        \theta\star(A) \emv =&\quad  A(\theta(\emv))\\
+        \theta\star(f) \emv =&\quad f(\theta(\emv)): \theta\star(A) \rightarrow \theta\star(B)\\
+    \end{align*}
+    \item The quantification functor takes a product over all ground effects
+    \begin{align*}
+        \allEn(A)\env =&\Pi_{\e\in E}{A(\env, \e)}
+    \end{align*}
+\end{itemize}
+    
+
+
+    
+
+    \script{
+        - Finally, we need to construct the various functors
+        - Reindexing functors are done using precomposition
+        - quantification consists of a product over all ground effects
+    }
+\end{frame}

@@ -1,0 +1,19 @@
+\begin{frame}{Language features (2.B) - Graded Monads}
+    A (strong) graded monad consists of:
+        \begin{itemize}
+            \setlength\itemsep{3em}
+            \item An indexed functor $\T{\e}{}: \C\rightarrow \C$
+            \item Indexed Join and Unit natural transformations
+            \begin{itemize}
+                \item  $\bind{\e_1}{\e_2}{A}: \T{\e_1}{\T{\e_2}{A}}\rightarrow \T{\e_1\dot \e_2}{A}$\
+                \item $\point{A}: A\rightarrow \T{\1}{A}$
+            \end{itemize}
+            \item Tensor strength natural transformation $\tstrength{\e}{A}{B}: A\times\T{\e}{B}\rightarrow \T{\e}{(A\times B)}$
+        \end{itemize}
+
+        \script{
+            - A solution is a graded monad.
+            - We now have one functor, indexed by a monoid of effect symbols. The rules and morphisms stay the same but are now also indexed. 
+
+        }    
+\end{frame}

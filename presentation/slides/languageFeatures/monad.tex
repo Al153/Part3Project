@@ -1,0 +1,27 @@
+
+\begin{frame}{Language features (2.A) - Monads}
+        A (strong) monad consists of:
+        \begin{itemize}
+            \setlength\itemsep{3em}
+            \item A functor $\T{}{}: \C\rightarrow \C$
+            \item Join and Unit natural transformations
+            \begin{itemize}
+                \item  $\bindmu_{A}: \T{}{\T{}{A}}\rightarrow \T{}{A}$
+                \item $\point{A}: A\rightarrow \T{}{A}$
+            \end{itemize}
+            \item Tensor strength natural transformation $\strengtht_{A, B}: A\times\T{}{B}\rightarrow \T{}{(A\times B)}$
+        \end{itemize}
+        
+        \script{
+            - To handle effectful computations in a pure language like haskell, you need to use something called a monad.
+
+            - This actually comes from when Moggi first discovered how to model effectful programs.
+            - You need this structure of a functor from your category to itself, together with some natural transformation operations for creating and composing effectful operations.
+            - If you squint a bit, they even look like the programming language monad definition.
+
+            - An issue with haskell is that each monad only gives you one effect. If you want a program that does IO, contains state, has exceptions, and does non-determinism, you end up with a stack of monads.
+            - This is still imprecise for meaningful analysis
+        }
+
+
+\end{frame}

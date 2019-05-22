@@ -1,0 +1,30 @@
+
+\begin{frame}{Semantics of EC}
+    \begin{itemize}
+        \setlength\itemsep{3em}
+        \item Can build a model of EC when we have
+        \begin{itemize}
+            \item CCC
+            \item Strong Graded Monad
+            \item Co-product and Subtyping (morphisms for if-statements)
+        \end{itemize}
+        \item We'll call this an S-category
+    \end{itemize}
+    
+    \[
+        \scalebox{.8}{$
+        \ntreeruleI{Return}{f = \deno{\gtyperelation{v}{A}}}{\deno{\gtyperelation{\return{v}}{\moa}} = \point{A} \after f}
+        \quad
+        \ntreeruleI{Fn}{f = \deno{\typerelation{\gax}{v}{B}} : \G \times A \rightarrow B}{\deno{\gtyperelation{\lam{x}{A}{v}}{\ab}} = \cur{f} : \G \rightarrow B^A}
+        $}
+    \]
+
+    \script{
+        - As described, all of the language features can be modelled in a cartesian closed category with a graded monad, a coproduct, and subtyping morphisms.
+
+        - Known as an S-Category
+
+        - Here's an example, if we have the denotation of an expression here, we can get the denotation of using it as a pure computation by postcomposing with the unit of the graded monad.
+
+    }
+\end{frame}

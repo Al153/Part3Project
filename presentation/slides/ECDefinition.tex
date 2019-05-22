@@ -1,0 +1,22 @@
+
+\begin{frame}{An Effectful Language}
+    \begin{align*}
+        v ::= & \const{A} \mid x\mid \t \mid\f \mid\u\mid\lam{x}{A}{v}\mid\apply{v_1}{v_2}\mid\return{v}\\
+        & \mid\doin{x}{v_1}{v_2}\mid\pifthenelse{A}{v}{v_1}{v_2} 
+    \end{align*}
+    
+    \begin{align*}
+        A, B, C ::= \g\mid \ab \mid\mea
+    \end{align*}
+
+    \[
+        \ntreeruleI{Return}{\gtyperelation{v}{A}}{\gtyperelation{\return{v}}{\moa}}
+    \quad
+    \ntreeruleII{Apply}{\gtyperelation{v_1}{\ab}}{\gtyperelation{v_2}{A}}{\gtyperelation{\apply{v_1}{v_2}}{B}}
+    \]
+
+    \script{
+        - Let's now describe a simple effectful, lambda-calculus-based, language, EC.
+        - It has an explicit graded monad, subtyping, if-statements
+    }
+\end{frame}
