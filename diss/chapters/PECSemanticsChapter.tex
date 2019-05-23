@@ -2,7 +2,6 @@
 \chapter{The Semantics of PEC in an Strictly Indexed Category}
 In this chapter, I  describe the category structure required to interpret an instance of PEC\@. I then present denotations for features of the language, such as types, effects, terms, substitutions, and environment weakenings. Finally, I provide outlines and interesting cases of the proofs of the lemmas leading up to and including soundness of the semantics with respect to a $\beta\eta$-conversion-based equational equivalence. However, I first give a brief treatment to the semantics of EC.
 
-
 \section{Semantics for EC in an S-Category}\label{SCategoryIntro}
 
 As suggested in Section \ref{LanguageFeatureRequirements}, since EC contains multiple effects, STLC terms, and \texttt{if} expressions, we should be able to interpret its semantics in a cartesian closed category with an appropriate strong graded monad and the co-product $\1 + \1$, which models the type of booleans. With the addition of some extra category structure to handle subtyping, which I explain shortly, it is indeed possible to interpret EC. This section contains a fairly high-level treatment of the semantics. This is because the concepts introduced are a subset of those required for the semantics of PEC, which I explain in more detail in Section \ref{PECDenotations}. Semantics for similar languages to EC have also been given using an S-category-style construct, such as by Katsumata \cite{Katsumata:2014}. 
@@ -355,7 +354,7 @@ Another construction that is important is the denotation of subtyping. For each 
 \end{figure}
 
 
-This finally gives us the ability to express the denotations of well-typed terms in an effect-variable environment, $\P$, as morphisms in the fibre induced by $\P$, $\C(E^n)$.  Writing $\G_{E^n}$ and $A_{E^n}$ for $\deno{\wellformedok{\P}{\G}}$ and $\deno{\typerelation{\P}{A}{\type}}$, we can derive $\deno{\gpetyperelation{v}{A}}$ as a morphism in $\C(E^n)(\G_{E^n}, A_{E^n})$. Since each fibre is an S-category, for each constant, $\const{A}$, there exists $\deno{\const{A}}: \1 \rightarrow A_{E^n}$ in $\C(E^n)$. These denotations can be seen in Figure \ref{TermDenotations}.
+This finally gives us the ability to express the denotations of well-typed terms in an effect-variable environment, $\P$, as morphisms in the fibre induced by $\P$, $\C(E^n)$.  Term denotations are in fact defined inductively with respect to the derivation of the typing relation. Writing $\G_{E^n}$ and $A_{E^n}$ for $\deno{\wellformedok{\P}{\G}}$ and $\deno{\typerelation{\P}{A}{\type}}$, we can derive $\deno{\gpetyperelation{v}{A}}$ as a morphism in $\C(E^n)(\G_{E^n}, A_{E^n})$. Since each fibre is an S-category, for each constant, $\const{A}$, there exists $\deno{\const{A}}: \1 \rightarrow A_{E^n}$ in $\C(E^n)$. These denotations can be seen in Figure \ref{TermDenotations}. We need to be  careful when dealing with denotations of terms; due to subtyping, typing relations on terms may have multiple derivations. As denotations are defined inductively on these derivations, each denotation is implicitly associated with a derivation. In Section \ref{UniqueDenotations}, I prove that all derivations for a given type relation yield equal denotations. However, for the intervening theorems which deal with term denotations, we need to take more care to refer to the specific type derivation. 
 
 \begin{figure}
     \footnotesize
@@ -483,7 +482,7 @@ Substitution considers what happens when we simultaneously replace all variables
 
 As we go on, I define the denotations of specific substitutions and weakenings, upon both the effect-variable and the type environments.
 
-In this dissertation, substitutions and weakenings come in two flavours: weakening and substitution of the effect-variable environment and of the type environment. For each of these, there is a family of theorems defining the effects of the applying a substitution and weakening to the various language structures and their denotations, such as well-formedness and typing relations.
+In this dissertation, substitutions and weakenings each come in two flavours: weakening and substitution of the effect-variable environment and of the type environment. For each of these, there is a family of theorems defining the effects of the applying a substitution and weakening to the various language structures and their denotations, such as well-formedness and typing relations.
 
 \begin{framed}
     \begin{aside}[Weakening Proofs]
@@ -526,7 +525,7 @@ The first family of theorems is that of weakening and substitution of the effect
     \label{EffectWeakeningDenotations}
 \end{figure}
 
-Substitutions are also an inductively defined relation between effect-variable environments. Finite substitutions may be represented as a snoc-list of variable-effect pairs. The substitution relation matches substitutions to the environments it operates between. The relation instance $\typerelation{\P'}{\si}{\P}$ means that $\si$ is a substitution from $\P$ to $\P'$. It is defined inductively using rules in Figure \ref{EffectSubstitutionDefinition}.
+Substitutions are also inductively defined relations between effect-variable environments. Finite substitutions may be represented as a snoc-list of variable-effect pairs. The substitution relation matches substitutions to the environments it operates between. The relation instance $\typerelation{\P'}{\si}{\P}$ means that $\si$ is a substitution from $\P$ to $\P'$. It is defined inductively using rules in Figure \ref{EffectSubstitutionDefinition}.
 
 \begin{figure}[H]
     \centering
@@ -681,7 +680,7 @@ The weakening theorem proceeds similarly.
 
 
 \subsection{Substitution and Weakening on Typing}
-We can now move on to state and prove the weakening and substitution theorems on types, subtyping, and type environments. The general structure of these theorems, as well as the term-based theorems later, is that when we want to quantify the action of a morphism $\theta: E^m \rightarrow E^n$ between objects in the base category on structure in the fibres $\C(E^n)$, we should simply apply the associated re-indexing functor (As defined in Section \ref{PECRequirements}) $\theta\star: \C(E^n) \rightarrow \C(E^m)$ to the structure. The proof of the soundness of this operation is driven by the fact that the re-indexing functor is S-preserving. Specifically, effect substitutions ($\si$) have the actions given in Figure \ref{SubstitutionActionTypesTypeEnvs} on types and type-environments.
+We can now move on to state and prove the weakening and substitution theorems on types, subtyping, and type environments. The general structure of these theorems, as well as the term-based theorems later, is that when we want to quantify the action of a morphism $\theta: E^m \rightarrow E^n$ between objects in the base category on structure in the fibres $\C(E^n)$, we should simply apply the associated re-indexing functor (as defined in Section \ref{PECRequirements}) $\theta\star: \C(E^n) \rightarrow \C(E^m)$ to the structure. The proof of the soundness of this operation is driven by the fact that the re-indexing functor is S-preserving. Specifically, effect substitutions ($\si$) have the actions given in Figure \ref{SubstitutionActionTypesTypeEnvs} on types and type-environments.
 
 \begin{figure}[H]
     
@@ -854,7 +853,7 @@ Now that we have defined the action of effect substitutions on all other compone
     \label{EffectSubstitutionActionTerms}
 \end{figure}
 
-We can now formulate the substitution theorem on terms. We need to be more careful when dealing with denotations of terms; due to subtyping, typing relations on terms may have multiple derivations. As denotations are defined inductively on these derivations, each denotation carries around an implicit derivation. In the next section, I prove that all derivations for a given type relation yield equal denotations. However, for now, we need to take more care to refer to the derivation. In the theorems in this section, I use the symbol $\D$ to indicate both a typing relation derivation and its denotation.
+We can now formulate the substitution theorem on terms. In the theorems in this section, I use the symbol $\D$ to indicate both a typing relation derivation and its denotation.
 
 
 \begin{framed}
@@ -1330,7 +1329,7 @@ The need for reduced typing derivations comes about because of subtyping. The su
 In particular, a reduced typing derivation is one where subtyping rule only occurs in three places. Firstly, the subtyping rule must occur exactly once at the root of the tree in order to coerce the the typing relation to the correct type. Secondly, the subtyping rule must occur at the root of any of subtrees deriving the preconditions of the type-annotated (if) rule. This is to coerce the condition to a boolean type, and each of the branches to the type $A$ in the if-expression itself. Finally, the subtyping rule must occur at the root of the argument subtree of an (apply) rule. This allows us to coerce the argument to the correct type to match the parameter type in a lambda expression. These subtyping rule instances may be the identity subtyping rule, making use of the reflexive relation $A \subtypep A$. These rules have the effect of only introducing subtyping rule uses when it is necessary maintain syntactic correctness of the derivation. 
 
 \begin{aside}[Syntactic Subtyping]
-    If subtyping were a syntactic feature, that is if subtyping were induced by explicit casts, then the rules for the typing relation would be entirely syntax directed, and hence we would not have the ambiguity that these theorems are required in order to solve.
+    If subtyping were a syntactic feature, that is if subtyping were induced by explicit casts, then the rules for the typing relation would be entirely syntax directed. Hence type derivations would be unambiguous and we would not require a proof that denotations are unique.
 \end{aside}
 
 
@@ -1582,7 +1581,7 @@ We can sum up the importance of these theorems in the corollary below.
 
 \section{Soundness}
 \label{SoundnessDefinition}
-We are now at a stage where we can state and prove the most important theorem for a denotational semantics: soundness with respect to an equational equivalence. The desire for soundness follows from the common sense requirement that terms that are equivalent in a given language should also have equivalent denotations. In our case, I introduce a $\beta\eta$-based equational equivalence relation and then prove that equivalent terms have equal denotations.
+We are now at a stage where we can state and prove the most important theorem for a denotational semantics: soundness with respect to an equational equivalence. The desire for soundness follows from the common-sense requirement that equivalent programming language terms should also have equal denotations. In our case, I introduce a $\beta\eta$-based equational equivalence relation and then prove that equivalent terms have equal denotations.
 
 The equational equivalence relation is a rule-based relation with three main flavours of rules. Firstly, as seen in Figure \ref{BetaEtaReductions}, there are the reductions which formalise how we expect the program to execute given an appropriate implementation. We give $\beta\eta$-reductions for each term transition, such as the application of lambda terms or the execution of an \texttt{if} expression, as well as the monad equivalence laws. Secondly, there are congruences, seen in Figure \ref{BetaEtaCongruence}, which formalise how the reduction of subexpressions affects the rest of the expression in a compositional way. Finally, we extend this relation into an equivalence relation by closing it under transitivity, reflexivity and symmetry as seen in Figure \ref{BetaEtaEquivalence}.
 
@@ -1778,4 +1777,4 @@ This completes the proof of soundness for this semantics.
 
 \section{Summary}
 
-In this chapter, I have introduced the indexed S-category structure, given a denotational semantics for PEC with respect to this structure, and proved that these semantics soundly model PEC. However, I have not shown whether it is possible to construct an indexed S-category, or how complex such categories might be. These questions will be addressed in the next chapter.
+In this chapter, I have introduced the notion of an indexed S-category structure, given a denotational semantics for PEC in terms of  this structure, and proved that these semantics soundly model PEC. However, I have not shown whether it is possible to construct an indexed S-category, or how complex such categories might be. These questions will be addressed in the next chapter.
