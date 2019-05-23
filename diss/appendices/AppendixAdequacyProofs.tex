@@ -57,55 +57,57 @@
 
 \section{Logical Relations and Equational Equivalence}
 \label{AdequacyEqEquivProof}
-
-\begin{proof}
+\begin{framed}
+    \begin{proof}
     
-    \case{Unit}
+        \case{Unit}
+        \begin{align*}
+            \inLogRelPE{d}{v_1}{\U} & \Leftrightarrow d = \singleton \wedge \zberelation{v_1}{\u}{\U}
+            \\ &
+            \Leftrightarrow d = \singleton \wedge \zberelation{v_2}{\u}{\U}
+            \\ & 
+            \Leftrightarrow  \inLogRelPE{d}{v_2}{\U}
+        \end{align*}
+    \case{Bool}
+    
     \begin{align*}
-        \inLogRelPE{d}{v_1}{\U} & \Leftrightarrow d = \singleton \wedge \zberelation{v_1}{\u}{\U}
+        \inLogRelPE{d}{v_1}{\B} & \Leftrightarrow (d = \top \wedge \zberelation{v_1}{\t}{\B}) \vee (d = \bot \wedge \zberelation{v_1}{\f}{\B})
         \\ &
-        \Leftrightarrow d = \singleton \wedge \zberelation{v_2}{\u}{\U}
+        \Leftrightarrow (d = \top \wedge \zberelation{v_2}{\t}{\B}) \vee (d = \bot \wedge \zberelation{v_2}{\f}{\B})
         \\ & 
-        \Leftrightarrow  \inLogRelPE{d}{v_2}{\U}
+        \Leftrightarrow  \inLogRelPE{d}{v_2}{\B}
     \end{align*}
-\case{Bool}
+    
+    \case{\tfun}
+    Note that by the (\textit{\eqapply}) congruence, $\zberelation{v_1}{v_2}{\ab}\implies \zberelation{\apply{v_1}{u}}{\apply{v_2}{u}}{B}$.
+    
+    \begin{align*}
+        \inLogRelPE{d}{v_1}{\ab} & \Leftrightarrow \forall e, u. \inLogRelPE{e}{u}{A} \implies \inLogRelPE{d(e)}{\apply{v_1}{u}}{B} \\
+        & \Leftrightarrow  \forall e, u. \inLogRelPE{e}{u}{A} \implies \inLogRelPE{d(e)}{\apply{v_2}{u}}{B} \\
+        & \Leftrightarrow  \inLogRelPE{d}{v_2}{\ab}
+    \end{align*}
+    
+    \case{\teffect}
+    \begin{align*}
+        \inLogRelPE{(n, d)}{v_1}{\M{f}{A}} & \Leftrightarrow \exists v'. \inLogRelPE{d}{v'}{A}
+        \\ & \quad\wedge \zberelation{v_1}{\doin{\_}{\put^n}{\return{v'}}}{(\M{f}{A})\ssub{\av}{\ev}}
+        \\
+        & \Leftrightarrow\exists v'. \inLogRelPE{d}{v'}{A}
+        \\ & \quad\wedge \zberelation{v_2}{\doin{\_}{\put^n}{\return{v'}}}{(\M{f}{A})\ssub{\av}{\ev}} \\
+        & \Leftrightarrow  \inLogRelPE{(n, d)}{v_2}{\M{f}{A}}
+    \end{align*}
+    
+    \case{\tquant}
+    Note that by the (\textit{\eqspec}) congruence rule, $\zberelation{v_1}{v_2}{\all{\a}{A}} \implies \zberelation{\eapp{v_1}{\e}}{\eapp{v_2}{\e}}{A\ssub{\a}{\e}}$.
+    
+    \begin{align*}
+        \inLogRelPE{d}{v_1}{\all{\a}{A}} & \Leftrightarrow \forall \e'. \inLogRelPE{\pi_{\e'}(d)}{\eapp{v_1}{\e'}}{A\ssub{\a}{\e}}
+        \\ & \Leftrightarrow \forall \e'. \inLogRelPE{\pi_{\e'}(d)}{\eapp{v_2}{\e'}}{A\ssub{\a}{\e}}
+        \\ & \Leftrightarrow\inLogRelPE{d}{v_2}{\all{\a}{A}}
+    \end{align*}
+    \end{proof}
+\end{framed}
 
-\begin{align*}
-    \inLogRelPE{d}{v_1}{\B} & \Leftrightarrow (d = \top \wedge \zberelation{v_1}{\t}{\B}) \vee (d = \bot \wedge \zberelation{v_1}{\f}{\B})
-    \\ &
-    \Leftrightarrow (d = \top \wedge \zberelation{v_2}{\t}{\B}) \vee (d = \bot \wedge \zberelation{v_2}{\f}{\B})
-    \\ & 
-    \Leftrightarrow  \inLogRelPE{d}{v_2}{\B}
-\end{align*}
-
-\case{\tfun}
-Note that by the (\textit{\eqapply}) congruence, $\zberelation{v_1}{v_2}{\ab}\implies \zberelation{\apply{v_1}{u}}{\apply{v_2}{u}}{B}$.
-
-\begin{align*}
-    \inLogRelPE{d}{v_1}{\ab} & \Leftrightarrow \forall e, u. \inLogRelPE{e}{u}{A} \implies \inLogRelPE{d(e)}{\apply{v_1}{u}}{B} \\
-    & \Leftrightarrow  \forall e, u. \inLogRelPE{e}{u}{A} \implies \inLogRelPE{d(e)}{\apply{v_2}{u}}{B} \\
-    & \Leftrightarrow  \inLogRelPE{d}{v_2}{\ab}
-\end{align*}
-
-\case{\teffect}
-\begin{align*}
-    \inLogRelPE{(n, d)}{v_1}{\M{f}{A}} & \Leftrightarrow \exists v'. \inLogRelPE{d}{v'}{A}
-    \\ & \quad\wedge \zberelation{v_1}{\doin{\_}{\put^n}{\return{v'}}}{(\M{f}{A})\ssub{\av}{\ev}}
-    \\
-    & \Leftrightarrow\exists v'. \inLogRelPE{d}{v'}{A}
-    \\ & \quad\wedge \zberelation{v_2}{\doin{\_}{\put^n}{\return{v'}}}{(\M{f}{A})\ssub{\av}{\ev}} \\
-    & \Leftrightarrow  \inLogRelPE{(n, d)}{v_2}{\M{f}{A}}
-\end{align*}
-
-\case{\tquant}
-Note that by the (\textit{\eqspec}) congruence rule, $\zberelation{v_1}{v_2}{\all{\a}{A}} \implies \zberelation{\eapp{v_1}{\e}}{\eapp{v_2}{\e}}{A\ssub{\a}{\e}}$.
-
-\begin{align*}
-    \inLogRelPE{d}{v_1}{\all{\a}{A}} & \Leftrightarrow \forall \e'. \inLogRelPE{\pi_{\e'}(d)}{\eapp{v_1}{\e'}}{A\ssub{\a}{\e}}
-    \\ & \Leftrightarrow \forall \e'. \inLogRelPE{\pi_{\e'}(d)}{\eapp{v_2}{\e'}}{A\ssub{\a}{\e}}
-    \\ & \Leftrightarrow\inLogRelPE{d}{v_2}{\all{\a}{A}}
-\end{align*}
-\end{proof}
 
 
 
