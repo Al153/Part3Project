@@ -1,10 +1,10 @@
 
 \chapter{The Semantics of PEC in an Strictly Indexed Category}
-In this chapter, I  describe the category structure required to interpret an instance of PEC\@. I then present denotations for features of the language, such as types, effects, terms, substitutions, and environment weakenings. Finally, I provide outlines and interesting cases of the proofs of the lemmas leading up to and including soundness of the semantics with respect to a $\beta\eta$-conversion-based equational equivalence. However, I first give a brief treatment to the semantics of EC.
+In this chapter, I  describe the category structure required to interpret an instance of PEC\@. I then present denotations for features of the language, such as types, effects, terms, substitutions, and environment weakenings. Finally, I provide outlines and interesting cases of the proofs of the lemmas leading up to and including soundness of the semantics with respect to a $\beta\eta$-conversion-based equational equivalence. However, I first give a brief treatment of the semantics of EC.
 
 \section{Semantics for EC in an S-Category}\label{SCategoryIntro}
 
-As suggested in Section \ref{LanguageFeatureRequirements}, since EC contains multiple effects, STLC terms, and \texttt{if} expressions, we should be able to interpret its semantics in a cartesian closed category with an appropriate strong graded monad and the co-product $\1 + \1$, which models the type of booleans. With the addition of some extra category structure to handle subtyping, which I explain shortly, it is indeed possible to interpret EC. This section contains a fairly high-level treatment of the semantics. This is because the concepts introduced are a subset of those required for the semantics of PEC, which I explain in more detail in Section \ref{PECDenotations}. Semantics for similar languages to EC have also been given using an S-category-style construct, such as by Katsumata \cite{Katsumata:2014}. 
+As suggested in Section \ref{LanguageFeatureRequirements}, since EC contains multiple effects, STLC terms, and \texttt{if} expressions, we should be able to interpret its semantics in a cartesian closed category with an appropriate strong graded monad and the co-product $\1 + \1$, which models the type of booleans. With the addition of some extra category structure to handle subtyping, which I explain shortly, it is indeed possible to interpret EC. This section contains a fairly high-level treatment of the semantics. This is because the concepts introduced are a subset of those required for the semantics of PEC, which I explain in more detail in Section \ref{PECDenotations}. Semantics for similar languages to EC have also been given using such a construct, such as by Katsumata \cite{Katsumata:2014}. 
 
 In order to model a given instantiation of EC, that is an EC with a collection of effects, constants, and ground types, there should be a collection of objects in the category to represent the ground types. There should also be a \textit{point} morphism (a morphism from the terminal object to the appropriate type) for each constant. In addition to the previously stated requirements, we also require the category, $\C$, to be able to model subtyping. If a cartesian closed category has a morphism to represent each instance of  ground subtyping relation $A\subtypeg B$ and a natural transformation to represent each instance of the subeffect relation $\e_1\subeffect \e_2$, then using the cartesian closed structure of the category, all instances of the general subtyping relation can be modelled. This is explained in Section \ref{PECDenotations}.
 
@@ -76,7 +76,7 @@ A full derivation and proof of soundness of the semantics of the Effect Calculus
 
 \section{Required Category Structure}\label{PECRequirements}
 
-In order to model the polymorphism of PEC, we need to now look at an indexed category. This consists of a base category, $\C$, in which we can interpret the possible effect-variable environments in, and a mapping from objects in the base category to S-categories in the category of S-categories. This mapping is denoted from this point onwards as $\C(-)$ and the induced categories $\C(\deno{\P})$ are called \textit{fibres}. To extend our mapping $\C(-)$ to a contravariant functor, as required in Section \ref{IndexedCategoryDefinition}, it needs to map morphisms in the base category $\C$ to functors between fibres. In particular, all functors derived from $\C$ must be \textit{S-preserving} (Definition \ref{SPreservingDefinition}). Thus, each morphism $\theta: \deno{\P'}\rightarrow\deno{\P}$ in $\C$ should induce an S-preserving, re-indexing functor $\theta\star: \C(\deno{\P})\rightarrow\C(\deno{\P'})$ between the fibres.
+In order to model the polymorphism of PEC, we need to now look at an indexed category. This consists of a base category, $\C$, in which we can interpret the possible effect-variable environments, and a mapping from objects in the base category to S-categories in the category of S-categories. This mapping is denoted from this point onwards as $\C(-)$ and the induced categories $\C(\deno{\P})$ are called \textit{fibres}. To extend our mapping $\C(-)$ to a contravariant functor, as required in Section \ref{IndexedCategoryDefinition}, it needs to map morphisms in the base category $\C$ to functors between fibres. In particular, all functors derived from $\C$ must be \textit{S-preserving} (Definition \ref{SPreservingDefinition}). Thus, each morphism $\theta: \deno{\P'}\rightarrow\deno{\P}$ in $\C$ should induce an S-preserving, re-indexing functor $\theta\star: \C(\deno{\P})\rightarrow\C(\deno{\P'})$ between the fibres.
 
 
 \begin{framed}
@@ -87,7 +87,7 @@ In order to model the polymorphism of PEC, we need to now look at an indexed cat
 
 The essential idea from this point on is that we have defined several relations of the form $\wellformed{\texttt{Env}}{\texttt{Conclusion}}$, such as the typing relation $\gpetyperelation{v}{A}$, and the well-formedness relation on effects $\wellformedeffect{\P}{\e}$. Each instance of such a relation has a denotation that is an object or morphism in a category. For example, $\deno{\typerelation{\P}{\e}{\effect}}$ is a morphism in the base category, $\deno{\typerelation{\P}{A}{\type}}$ is an object in the fibre (S-category) induced by $\P$, and $\deno{\gpetyperelation{v}{A}}$ is morphism between the objects which denote $\G$ and $A$ in the fibre induced by $\P$.
 
-To form our base category, we pick the concrete category $\Eff$ (Definition \ref{EffDefinition}) of ground effects and monotone functions. The denotation of an effect variable environment, $\deno{\P}$, is simply $E^n$ where $n$ is the number of variables in $\P$. The denotation of an effect, $\deno{\wellformedeffect{\P}{\e}}$ is a monotone function $E^n\rightarrow E$. For each ground effect $e$, we define $\deno{e}$ to be the constant function $\singleton \mapsto e$.
+To form our base category, we pick the concrete category $\Eff$ (Definition \ref{EffDefinition}) of ground effects and monotone functions. The denotation of an effect-variable environment, $\deno{\P}$, is simply $E^n$ where $n$ is the number of variables in $\P$. The denotation of an effect, $\deno{\wellformedeffect{\P}{\e}}$ is a monotone function $E^n\rightarrow E$. For each ground effect $e$, we define $\deno{e}$ to be the constant function $\singleton \mapsto e$.
 
 
 \begin{framed}
@@ -98,7 +98,7 @@ To form our base category, we pick the concrete category $\Eff$ (Definition \ref
     \end{definition}
 \end{framed}
 
-Next, we define a monoidal operator, $\Mul_n: (E^n \rightarrow E)\times (E^n \rightarrow E) \rightarrow (E^n \rightarrow E)$ (Definition \ref{MulDef}). $\Mul$ has the function $\ev\mapsto \1$ as its identity. Note that this makes the set of functions $(E^n \rightarrow E)$ into a pre-ordered monoid. We could use a more general category structure here; the monoidal, natural $\Mul$ operator is all that is needed. However, this extra generality is not essential and requires some more structure to ensure that the semantics of effects is sound with respect to the effect equational equivalence given in Section \ref{PECExtension}.
+Next, we define a monoidal operator, $\Mul_n: (E^n \rightarrow E)\times (E^n \rightarrow E) \rightarrow (E^n \rightarrow E)$ (Definition \ref{MulDef}). $\Mul$ has the function $\ev\mapsto \1$ as its identity. Note that this makes the set of functions $(E^n \rightarrow E)$ into a partially-ordered monoid. We could use a more general category structure here; the monoidal, natural $\Mul$ operator is all that is needed. However, this extra generality is not essential and requires some more structure to ensure that the semantics of effects is sound with respect to the effect equational equivalence given in Section \ref{PECExtension}.
 
 
 
@@ -116,11 +116,11 @@ Next, we define a monoidal operator, $\Mul_n: (E^n \rightarrow E)\times (E^n \ri
     \end{definition}
 \end{framed}
 
-There is also a requirement that the indexed category can model ground types, and terms. In order to do this,  each fibre should contain an object $\deno{\g}$ for each ground type $\g$. Furthermore, for each constant, $\const{A}$, there should exist a morphism in each fibre: $\deno{\const{A}}: \1 \rightarrow A$. These requirements are satisfied by the fibres all being S-categories.
+There is also a requirement that the indexed category can model ground types and terms. In order to do this,  each fibre should contain an object $\deno{\g}$ for each ground type $\g$. Furthermore, for each constant, $\const{A}$, there should exist a morphism in each fibre: $\deno{\const{A}}: \1 \rightarrow A$. These requirements are satisfied by the fibres all being S-categories.
 
-Our penultimate requirement is that the re-indexing functor induced by $\p: E^n\times E\rightarrow E$ (that is $\pstar: \C(E^n) \rightarrow \C(E^n\times E)$) has a right adjoint, denoted by $\allEn: \C(E^n\times E) \rightarrow \C(E^n)$. As the reader might be able to guess, this functor allows us to interpret quantification over effects. This quantification functor need not be S-preserving.
+Our penultimate requirement is that the re-indexing functor induced by $\p: E^n\times E\rightarrow E^n$ (that is $\pstar: \C(E^n) \rightarrow \C(E^n\times E)$) has a right adjoint, denoted by $\allEn: \C(E^n\times E) \rightarrow \C(E^n)$. As the reader might be able to guess, this functor allows us to interpret quantification over effects. This quantification functor need not be S-preserving.
 
-Finally, the adjunction should satisfy the Beck-Chevalley condition, as seen in Figure \ref{BeckChevalleyDiagram}. That is $\theta\star\after\allEn = \allEm\after(\theta\times\Id{E})\star$, and the natural transformation $\bar{(\theta\times\Id{E})\star(\counit{})}$ between these functors is equal to the identity natural transformation. This allows us to commute the re-indexing functors with the quantification functor.
+Finally, the adjunction should satisfy the Beck-Chevalley condition, as seen in Figure \ref{BeckChevalleyDiagram}. That is, the functors $\theta\star\after\allEn = \allEm\after(\theta\times\Id{E})\star$ are equal, and the natural transformation $\bar{(\theta\times\Id{E})\star(\counit{})}$ between these functors is equal to the identity natural transformation. This allows us to commute the re-indexing functors with the quantification functor.
 
 \begin{figure}
     \begin{framed}
@@ -175,7 +175,7 @@ Using the adjunction property, we have that: $\bar{f\after\pstar(n)} = \bar{f}\a
 In Figure \ref{RoadMap}, one can see a diagram of the collection of theorems that need to be proved to establish the soundness of a semantics for PEC.
 
 
-The first pair of theorems (\ref{EffectSubstitutionOnEffects}, \ref{EffectWeakeningOnEffects}) is made up of the effect substitution and weakening theorem on effects. These theorems show that substitutions of effects have a well-behaved and easily defined action upon the denotations of effects. Using these theorems, we can then move on to characterize the action of effect substitutions and effect-environment weakening on the denotations of types and type environments in Theorems \ref{EffectSubstitutionOnTypes}, \ref{EffectSubstitutionOnTypeEnvs}, and \ref{EffectWeakeningOnTypes}. From this, we can also look at the action of weakening and substituting effect-variable environments on the subtyping relation between types in Theorems \ref{EffectSubstitutionOnSubtyping}, \ref{EffectWeakeningOnSubtyping}.
+The first pair of theorems (\ref{EffectSubstitutionOnEffects}, \ref{EffectWeakeningOnEffects}) is made up of the effect substitution and weakening theorems on effects. These theorems show that substitutions of effects have a well-behaved and easily defined action upon the denotations of effects. Using these theorems, we can then move on to characterize the action of effect substitutions and effect-environment weakening on the denotations of types in Theorems \ref{EffectSubstitutionOnTypes} and \ref{EffectWeakeningOnTypes}. From this, we can also look at the action of weakening and substituting effect-variable environments on the subtyping relation between types in Theorems \ref{EffectSubstitutionOnSubtyping}, \ref{EffectWeakeningOnSubtyping}.
 
 The next step is to use these substitution theorems to formalise the action of substitution and weakening of the effect-variable environments on terms in Theorems \ref{EffectSubstitutionOnTerms}, \ref{EffectWeakeningOnTerms}. This then allows us to find denotations for the weakening of term substitutions and type-environment weakening, which set us up to prove the typical weakening and substitution theorems upon term variables and type environments in Theorems \ref{TermSubstitutionOnTerms}, \ref{TermWeakeningOnTerms}. 
 
@@ -262,13 +262,13 @@ This collection of theorems finally allows us to complete all cases of the equat
 
 
 \section{Denotations}\label{PECDenotations}
-We are now equipped to define the denotations of structures in the language. Firstly, we define the denotation of effect-variable environments. In the base category, with the kind of effects indicated by $E$, the denotation of an effect-variable environment $\P$ is given by a finite product.
+We are now equipped to define the denotations of structures in PEC. Firstly, we define the denotation of effect-variable environments. In the base category, with the kind of effects indicated by $E$, the denotation of an effect-variable environment $\P$ is given by a finite product.
 
 \[
 \deno{\nil} = \1 \quad\quad \deno{\P, \a} = \deno{\P}\times E    
 \]
 
-Hence, the denotation of an  effect-variable environment $\P$ is given by a finite product on $E$ of width $n$ where $n$ is the length of $\P$. As stated in Section \ref{PECRequirements}, the denotation of a well-formed effect is a morphism $\deno{\typerelation{\P}{\e}{\effect}}: E^n \rightarrow E$ in $\Eff$. The denotations for effects are shown in Figure \ref{EffectDenotations}.
+Hence, the denotation of an  effect-variable environment $\P$ is given by a finite product on $E$ of width $n$ where $n$ is the length of $\P$. As stated in Section \ref{PECRequirements}, the denotation of a well-formed effect is a function $\deno{\typerelation{\P}{\e}{\effect}}: E^n \rightarrow E$ in $\Eff$. The denotations for effects are shown in Figure \ref{EffectDenotations}.
 \begin{figure}[H]
     \centering
     \begin{framed}
@@ -287,7 +287,7 @@ Hence, the denotation of an  effect-variable environment $\P$ is given by a fini
 \end{figure}
 
 
-Using these denotations, we are now equipped to define the denotations of types. As stated above, types that are well formed in $\P$ are denoted by objects in the fibre category $\C(E^n)$ given by the denotation of $\P$. These type denotations are given in Figure \ref{TypeDenotations}. Since the fibre category $\C(E^n)$ is an S-category, it has objects for all ground types, a terminal object, graded monad $\T{}{}$, exponentials, products, and co-product over $\1+\1$.
+Using these denotations, we are now equipped to define the denotations of types. As stated above, types that are well formed in $\P$ are denoted by objects in the fibre category $\C(E^n)$ given by the denotation of $\P$. These type denotations are given in Figure \ref{TypeDenotations}. Since the fibre category $\C(E^n)$ is an S-category, it has objects for all ground types, a terminal object, graded monad $\T{}{}$, exponentials, products, and co-product, $\1+\1$.
 
 \begin{figure}[H]
     \centering
@@ -333,7 +333,7 @@ By using the terminal objects and products present in each fibre, we can now der
 \end{figure}
 
 
-Another construction that is important is the denotation of subtyping. For each instance of the subtyping relation in $\P$, $A\subtypep B$, there exists a denotation in the fibre induced by $\P$. $\deno{A\subtypep B} \in\C(E^n)(A, B)$. Since the fibres are S-categories, the ground instances of the subtyping relation exist in each fibre anyway. In addition, for each instance of the subeffect relation $\e_1\subeffectp \e_2$ each fibre contains the natural transformation $\dsep{\e_1}{\e_2}: \T{\e_1}{}\rightarrow \T{\e_2}{}$. Specific subtyping denotations are given in Figure \ref{SubtypingDenotations}.
+Another important construction is the denotation of subtyping. For each instance of the subtyping relation in $\P$, $A\subtypep B$, there exists a denotation in the fibre induced by $\P$. $\deno{A\subtypep B} \in\C(E^n)(A, B)$. Since the fibres are S-categories, the ground instances of the subtyping relation exist in each fibre anyway. In addition, for each instance of the subeffect relation $\e_1\subeffectp \e_2$ each fibre contains the natural transformation $\dsep{\e_1}{\e_2}: \T{\e_1}{}\rightarrow \T{\e_2}{}$. Specific subtyping denotations are given in Figure \ref{SubtypingDenotations}.
 
 \begin{figure}[H]
     \centering
@@ -343,7 +343,7 @@ Another construction that is important is the denotation of subtyping. For each 
             \\
             \deno{\ab \subtypep \fntype{A'}{B'}} &= \deno{B\subtypep B'}^{A'}\after B^{\deno{A'\subtypep A}}
             \\
-            \deno{\M{\e_1}{A}\subtypep\M{\e_2}{B}} &= \deno{\e_1\subeffectp\e_2}\after\T{\e_1}{\deno{A\subtypep B}}
+            \deno{\M{\e_1}{A}\subtypep\M{\e_2}{B}} &= \deno{\e_1\subeffectp\e_2}_B\after\T{\e_1}{\deno{A\subtypep B}}
             \\
             \deno{\all{\a}{A}\subtypep\all{\a}{B}} &= \allEn{\deno{A\subtypepa B}}
         \end{align*}
@@ -354,7 +354,7 @@ Another construction that is important is the denotation of subtyping. For each 
 \end{figure}
 
 
-This finally gives us the ability to express the denotations of well-typed terms in an effect-variable environment, $\P$, as morphisms in the fibre induced by $\P$, $\C(E^n)$.  Term denotations are in fact defined inductively with respect to the derivation of the typing relation. Writing $\G_{E^n}$ and $A_{E^n}$ for $\deno{\wellformedok{\P}{\G}}$ and $\deno{\typerelation{\P}{A}{\type}}$, we can derive $\deno{\gpetyperelation{v}{A}}$ as a morphism in $\C(E^n)(\G_{E^n}, A_{E^n})$. Since each fibre is an S-category, for each constant, $\const{A}$, there exists $\deno{\const{A}}: \1 \rightarrow A_{E^n}$ in $\C(E^n)$. These denotations can be seen in Figure \ref{TermDenotations}. We need to be  careful when dealing with denotations of terms; due to subtyping, typing relations on terms may have multiple derivations. As denotations are defined inductively on these derivations, each denotation is implicitly associated with a derivation. In Section \ref{UniqueDenotations}, I prove that all derivations for a given type relation yield equal denotations. However, for the intervening theorems which deal with term denotations, we need to take more care to refer to the specific type derivation. 
+This finally gives us the ability to express the denotations of well-typed terms in an effect-variable environment, $\P$, as morphisms in the fibre induced by $\P$, $\C(E^n)$.  Term denotations are in fact defined inductively with respect to the derivation of the typing relation. Writing $\G_{E^n}$ and $A_{E^n}$ for $\deno{\wellformedok{\P}{\G}}$ and $\deno{\typerelation{\P}{A}{\type}}$, we can derive $\deno{\gpetyperelation{v}{A}}$ as a morphism in $\C(E^n)(\G_{E^n}, A_{E^n})$. Since each fibre is an S-category, for each constant, $\const{A}$, there exists $\deno{\const{A}}: \1 \rightarrow A_{E^n}$ in $\C(E^n)$. Where is is clear from the context, I shall now drop the $E^n$ subscript. These denotations can be seen in Figure \ref{TermDenotations}. We need to be  careful when dealing with denotations of terms; due to subtyping, typing relations on terms may have multiple derivations. As denotations are defined inductively on these derivations, each denotation is implicitly associated with a derivation. In Section \ref{UniqueDenotations}, I prove that all derivations for a given type relation yield equal denotations. However, for the intervening theorems which deal with term denotations, we need to take more care to refer to the specific type derivation. 
 
 \begin{figure}
     \footnotesize
@@ -525,7 +525,7 @@ The first family of theorems is that of weakening and substitution of the effect
     \label{EffectWeakeningDenotations}
 \end{figure}
 
-Substitutions are also inductively defined relations between effect-variable environments. Finite substitutions may be represented as a snoc-list of variable-effect pairs. The substitution relation matches substitutions to the environments it operates between. The relation instance $\typerelation{\P'}{\si}{\P}$ means that $\si$ is a substitution from $\P$ to $\P'$. It is defined inductively using rules in Figure \ref{EffectSubstitutionDefinition}.
+Substitutions are also inductively defined relations between effect-variable environments. Finite substitutions may be represented as a snoc-list of variable-effect pairs. The substitution relation matches  a substitution to the environments it operates between. The relation instance $\typerelation{\P'}{\si}{\P}$ means that $\si$ is a substitution from $\P$ to $\P'$. It is defined inductively using rules in Figure \ref{EffectSubstitutionDefinition}.
 
 \begin{figure}[H]
     \centering
@@ -674,7 +674,7 @@ The weakening theorem proceeds similarly.
         If $\typerelation{\P'}{\si}{\P}$, and $\a\#\si$, then $\typerelation{(\P', \a)}{(\si, \a\setto\a)}{(\P,\a)}$ with denotation $\deno{\typerelation{(\P', \a)}{(\si, \a\setto\a)}{(\P,\a)}} = (\deno{\typerelation{\P'}{\si}{\P}}\times\Id{E})$
     \end{lemma}
     \begin{proof}
-       This holds by the weakening-theorem on effects, Theorem \ref{EffectWeakeningOnEffects} $\square$.
+       This holds by the weakening-theorem on effects, Theorem \ref{EffectWeakeningOnEffects}. $\square$
     \end{proof}
 \end{framed}
 
@@ -769,10 +769,10 @@ The effect-weakening theorem on types and type environments is formulated analog
 
 \begin{framed}
     \begin{theorem}[Effect Weakening on Types and Type Environments]\label{EffectWeakeningOnTypes}  
-        If $\wrelw{\P'}{\P}$ and $\wellformedtype{\P}{A}$ then:
+        If $\wrelw{\P'}{\P}$ then:
         \begin{enumerate}[label=\roman*.]
-            \item $\wellformedtype{\P'}{A}$ $\deno{\wellformedtype{\P'}{A}} = \w\star\deno{\wellformedtype{\P}{A}}$
-            \item $\wrelw{\P'}{\P}$ and $\wellformedok{\P}{\G}$ imply $\deno{\wellformedok{\P'}{\G}} = \w\star\deno{\wellformedok{\P}{\G}}$
+            \item $\wellformedtype{\P}{A}$ implies $\wellformedtype{\P'}{A}$  and $\deno{\wellformedtype{\P'}{A}} = \w\star\deno{\wellformedtype{\P}{A}}$
+            \item $\wellformedok{\P}{\G}$ implies $\wellformedok{\P'}{\G}$ and $\deno{\wellformedok{\P'}{\G}} = \w\star\deno{\wellformedok{\P}{\G}}$
         \end{enumerate}        
     \end{theorem}
     
@@ -938,7 +938,7 @@ We can now formulate the substitution theorem on terms. In the theorems in this 
         & = \widehat{\bar{(\si\times\Id{E})\star(\widehat{\Id{\allEn(A)}})}}\qt{By bijection}\\
         & = \widehat{\si\star(\bar{\widehat{\Id{\allEn(A)}}})}\qt{By naturality}\\
         & = \widehat{\si\star(\Id{\allEn(A)})}\qt{By bijection}\\
-        & = \widehat{\Id{\allEm(A\after(\si\times\Id{E}))}}\qt{By S-preserving property, naturality}\\
+        & = \widehat{\Id{\allEm((\si\times\Id{E})\star A)}}\qt{By S-preserving property, naturality}\\
         & = \widehat{\Id{\allEm(A\sub{\si,\a\setto\a})}}\qt{By Substitution theorem}\\
         & = \e_{A\ssi}
     \end{align*}
@@ -947,7 +947,7 @@ We can now formulate the substitution theorem on terms. In the theorems in this 
     
     \begin{align*}
         \si\star{\D} & = (\pr{\Id{\G}}{h'})\star(\e_{A\ssi})\after\D_1')\\
-        & = \D' \square
+        & = \D' & \square
     \end{align*}
 
     \end{proof}
@@ -1004,7 +1004,7 @@ The denotation of such a weakening is a morphism within the fibre category deriv
         \begin{align}
             \deno{\pewrel{\i}{\G}{\G}} &= \idg: \G \rightarrow \G \in \C(E^n)
             \\
-            \deno{\pewrel{\w\pi}{\G', ax}{\G}} &= \deno{\pewrel{\w}{\G'}{\G}}\after\p: \G'\times A \rightarrow \G
+            \deno{\pewrel{\w\pi}{\G', x: A}{\G}} &= \deno{\pewrel{\w}{\G'}{\G}}\after\p: \G'\times A \rightarrow \G
             \\
             \deno{\pewrel{\w\x}{\G', x: A}{\G, x: B}} &= \deno{\pewrel{\w}{\G'}{\G}}\times \deno{A\subtypep B}: \G'\times A \rightarrow \G\times B
         \end{align}
@@ -1326,11 +1326,14 @@ To prove that all typing derivations have the same denotation, I first introduce
 
 The need for reduced typing derivations comes about because of subtyping. The subtyping rule can be inserted into different places in a derivation to derive the same typing relation. Hence, the reduction function focuses on only placing subtyping rule instances in specific places. 
 
-In particular, a reduced typing derivation is one where subtyping rule only occurs in three places. Firstly, the subtyping rule must occur exactly once at the root of the tree in order to coerce the the typing relation to the correct type. Secondly, the subtyping rule must occur at the root of any of subtrees deriving the preconditions of the type-annotated (if) rule. This is to coerce the condition to a boolean type, and each of the branches to the type $A$ in the if-expression itself. Finally, the subtyping rule must occur at the root of the argument subtree of an (apply) rule. This allows us to coerce the argument to the correct type to match the parameter type in a lambda expression. These subtyping rule instances may be the identity subtyping rule, making use of the reflexive relation $A \subtypep A$. These rules have the effect of only introducing subtyping rule uses when it is necessary maintain syntactic correctness of the derivation. 
+In particular, a reduced typing derivation is one where subtyping rule only occurs in three places. Firstly, the subtyping rule must occur exactly once at the root of the tree in order to coerce the the typing relation to the correct type. Secondly, the subtyping rule must occur at the root of any of subtrees deriving the preconditions of the type-annotated (\textit{\vif}) rule. This is to coerce the condition to a boolean type, and each of the branches to the type $A$ in the if-expression itself. Finally, the subtyping rule must occur at the root of the argument subtree of an (apply) rule. This allows us to coerce the argument to the correct type to match the parameter type in a lambda expression. These subtyping rule instances may be the identity subtyping rule, making use of the reflexive relation $A \subtypep A$. These rules have the effect of only introducing subtyping rule uses when it is necessary maintain syntactic correctness of the derivation. 
 
-\begin{aside}[Syntactic Subtyping]
-    If subtyping were a syntactic feature, that is if subtyping were induced by explicit casts, then the rules for the typing relation would be entirely syntax directed. Hence type derivations would be unambiguous and we would not require a proof that denotations are unique.
-\end{aside}
+
+\begin{framed}
+    \begin{aside}[Syntactic Subtyping]
+        If subtyping were a syntactic feature, that is if subtyping were induced by explicit casts, then the rules for the typing relation would be entirely syntax directed. Hence type derivations would be unambiguous and we would not require a proof that denotations are unique.
+    \end{aside}
+\end{framed}
 
 
 \begin{framed}
@@ -1341,7 +1344,7 @@ In particular, a reduced typing derivation is one where subtyping rule only occu
     \begin{proof}
         This proof proceeds by induction on the term structure, making use of the unique derivations of the subterms to show that a reduced derivation of the whole term must also be unique. There are no cases for subtyping, as it is not a syntactic feature. 
     
-        \case{\vbind} This case makes use of the weakening theorem on type environment. Let the trees in Equations \ref{UniqueBindOne}, \ref{UniqueBindTwo} be the respective unique reduced type derivations of the subterms. By weakening, $\ewrel{\P}{\i\x}{(\G, x:A)}{(\G, x: A')}$ so if there's a derivation of $\etyperelation{\P}{(\G, x:A')}{v_2}{B}$, there's also one of $\etyperelation{\P}{\gax}{v_2}{B}$ (equation \ref{UniqueBindThree}). 
+        \case{\vbind} This case makes use of the weakening theorem on type environment. Let the trees in Equations \ref{UniqueBindOne}, \ref{UniqueBindTwo} be the respective unique reduced type derivations of the subterms. By weakening, $\ewrel{\P}{\i\x}{(\G, x:A)}{(\G, x: A')}$, so if there is a derivation of $\etyperelation{\P}{(\G, x:A')}{v_2}{B}$, there is also one of $\etyperelation{\P}{\gax}{v_2}{B}$ (equation \ref{UniqueBindThree}). 
     
         \begin{equation}\label{UniqueBindOne}
             \edeltacrule{\G}{v_1}{\e_1}{A}{\e_1'}{A'}
@@ -1405,7 +1408,7 @@ In particular, a reduced typing derivation is one where subtyping rule only occu
     
 \end{framed}
 
-The $\reduce$ function maps each derivation to its reduced equivalent. It does this by pushing subtyping rules from the leaves of the derivation tree down towards the root of the tree. The function case splits on the root of the tree and works up recursively. Some cases of the function are given in Figure \ref{ReduceFunctionCases}. 
+The $\reduce$ function maps each derivation to its reduced equivalent. It does this by pushing subtyping rules from the leaves of the derivation tree down towards the root of the tree. The function case splits on the root of the tree and works recursively. Some cases of the function are given in Figure \ref{ReduceFunctionCases}. 
 
 \begin{figure}[H]
     \begin{framed}
@@ -1512,7 +1515,7 @@ The $\reduce$ function maps each derivation to its reduced equivalent. It does t
             Hence 
             \begin{align*}
                 \deno{\fntype{A'}{B'}\subtypep \ab} & = (g)^A \after (B')^f \\
-                & = \cur{\app\after \app}\after\cur{\app\after(\Id{}\times f)}\\
+                & = \cur{g\after \app}\after\cur{\app\after(\Id{}\times f)}\\
                 & = \cur {g\after\app\after(\Id{}\times f)}
             \end{align*}
     
@@ -1694,7 +1697,7 @@ Now we can state the soundness theorem.
     
         This proof has a lot of cases and each of the reduction cases makes use of many of the requirements we have placed on the indexed S-category.
     
-        I have omitted the congruence cases here as they hold through simple application of the inductive hypothesis on subterms. This occurs because this denotational semantics is compositional, meaning that denotations of terms are defined entirely in terms of the denotations of their subexpression. Similarly, the equivalence relation cases hold simply because equality on morphisms is an equivalence relation by definition. I do however, give a selection of the reduction cases to demonstrate the necessity of the S-category requirements.
+        I have omitted the congruence cases here as they hold through simple application of the inductive hypothesis on subterms. This occurs because this denotational semantics is compositional, meaning that denotations of terms are defined entirely in terms of the denotations of their subexpression. Similarly, the equivalence relation cases hold simply because equality on morphisms is an equivalence relation by definition. I do, however, give a selection of the reduction cases to demonstrate the necessity of the S-category requirements.
     
     \case{\eqrightunit}
     This case makes use of the right-unit monad law. Let $f = \deno{\gpetyperelation{v}{\mea}}$.

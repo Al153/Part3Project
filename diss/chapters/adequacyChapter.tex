@@ -2,7 +2,7 @@
     An important result, though often not proved in presentations of denotational semantics, is that of adequacy. A denotational semantics is adequate when two closed terms of ground type having equal denotations implies that the terms are equationally equivalent. Proving adequacy ensures that a denotational semantics may be used for program analysis. In this chapter, I shall introduce an instantiation of PEC,  $\pecput$ with a suitable denotational semantics, generated using the methods described in Chapter \ref{HowToBuildAModel}. Following this, I shall introduce a set of logical relation between the denotations and closed terms. Using these relations, I shall then prove that closed terms with the same denotations are equivalent under the equational equivalence given in Section \ref{SoundnessDefinition}.
 
     \section{Instantiation of the Polymorphic Effect Calculus}
-    Let us instantiate the polymorphic effect calculus to be a language in which one can write programs which can create an output signal using the statement $\put$. The effect system of EC is then used to count an upper bound on the number of outputs that a program can make. This language shall be called $\pecput$.
+    Let us instantiate the polymorphic effect calculus to be a language in which one can write programs which can create an output signal using the statement $\put$. The effect system of PEC is then used to count an upper bound on the number of outputs that a program can make. This language shall be called $\pecput$.
 
     \subsection{Ground Types}
     We simply use the basic ground types: $\g \gens \B \mid \U$.
@@ -202,7 +202,7 @@ The fundamental property gives us the ability to prove the main theorem of this 
 \begin{framed}
     
     \begin{theorem}[Adequacy]
-        For types $G$ defined as: $ G\gens \B \mid \U \mid \M{n}{G}$, equality of denotations implies equational equality.
+        For types $G$ defined as: $ G\gens \B \mid \U \mid \M{n}{G}$, equality of denotations implies equational equivalence.
         
         \begin{equation}
             \deno{\ztyperelation{v}{G}} = \deno{\ztyperelation{u}{G}} \implies \zberelation{v}{u}{G}

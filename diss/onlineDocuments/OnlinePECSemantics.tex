@@ -3236,7 +3236,7 @@ If $\wrel{\w}{\P'}{\P}$ and $\wellformedok{\P}{\G}$  then $\wellformedok{\P'}{\G
             \end{equation}
             
             \case{\vbind}
-            This case makes use of the weakening theorem on type environments. Let the trees in equations \ref{UniqueBindOne}, \ref{UniqueBindTwo} be the respective unique reduced type derivations of the subterms. By weakening, $\ewrel{\P}{\i\x}{(\G, x:A)}{(\G, x: A')}$ so if there's a derivation of $\etyperelation{\P}{(\G, x:A')}{v_2}{B}$, there's also one of $\etyperelation{\P}{\gax}{v_2}{B}$ (equation \ref{UniqueBindThree}). 
+            This case makes use of the weakening theorem on type environments. Let the trees in equations \ref{UniqueBindOne}, \ref{UniqueBindTwo} be the respective unique reduced type derivations of the subterms. By weakening, $\ewrel{\P}{\i\x}{(\G, x:A)}{(\G, x: A')}$ so if there is a derivation of $\etyperelation{\P}{(\G, x:A')}{v_2}{B}$, there is also one of $\etyperelation{\P}{\gax}{v_2}{B}$ (equation \ref{UniqueBindThree}). 
 
     \begin{equation}\label{UniqueBindOne}
         \edeltacrule{\G}{v_1}{\e_1}{A}{\e_1'}{A'}

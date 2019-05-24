@@ -185,7 +185,7 @@ A \textit{graded monad} is a generalisation of a monad to be indexed by a monoid
 
 
 \subsection{Tensor Strength}
-A slightly harder concept to motivate is that of tensorial (or tensor) \textit{strength} for a graded monad. Tensor strength consists of a natural transformation: $\strengtht_{A, B}: A \times \T{}{B} \rightarrow \T{}{(A \times B)}$, which is required to have well-defined interactions with the graded monad morphisms and the product-reordering natural transformation $\alpha_{A, B, C} = \pr{\p\after\p}{\pr{\pp\after\p}{\pp}}: ((A \times B) \times C) \rightarrow (A \times (B \times C))$, as seen in Figures \ref{TensorStrengthLeftNaturality}, \ref{TensorStrengthRightNaturality}, \ref{TensorStrengthUnitorLaw}, \ref{TensorStengthJoin}, \ref{TensorStrengthPoint}, \ref{TensorStrengthAlpha}. The reasoning behind this is that the tensor-strength natural transformation allows us to model operations that are invisibly implicit in a programming language but not given by default in category theory, such as in Figure \ref{MonadStrengthRequirement} in Section \ref{LanguageFeatureRequirements}. Tensor strength of a monad can be generalised to tensor strength of a graded monad by indexing by an element of the monoid algebra. A monad (or respectively a graded monad) is called \textit{strong} if it has tensorial strength. 
+A slightly harder concept to motivate is that of tensor \textit{strength} for a graded monad. Tensor strength consists of a natural transformation: $\strengtht_{A, B}: A \times \T{}{B} \rightarrow \T{}{(A \times B)}$, which is required to have well-defined interactions with the graded monad morphisms and the product-reordering natural transformation $\alpha_{A, B, C} = \pr{\p\after\p}{\pr{\pp\after\p}{\pp}}: ((A \times B) \times C) \rightarrow (A \times (B \times C))$, as seen in Figures \ref{TensorStrengthLeftNaturality}, \ref{TensorStrengthRightNaturality}, \ref{TensorStrengthUnitorLaw}, \ref{TensorStengthJoin}, \ref{TensorStrengthPoint}, \ref{TensorStrengthAlpha}. The reasoning behind this is that the tensor-strength natural transformation allows us to model operations that are invisibly implicit in a programming language but not given by default in category theory, such as in Figure \ref{MonadStrengthRequirement} in Section \ref{LanguageFeatureRequirements}. Tensor strength of a monad can be generalised to tensor strength of a graded monad by indexing by an element of the monoid algebra. A monad (or respectively a graded monad) is called \textit{strong} if it has tensor strength. 
 
 \begin{figure}
         \centering
@@ -375,7 +375,7 @@ From this, we can specify what structures categories need to have in order to mo
     \end{tabular}
 \end{center}
 
-To model if-expressions of the form $\pifthenelse{}{\texttt{condition}}{\texttt{if_true}}{\texttt{if_false,}}$ we need a way to combine morphisms of the form $\deno{\gtyperelation{\texttt{condition}}{\B}}: \G\rightarrow\deno{\B}$, $\deno{\gtyperelation{\texttt{if_true}}{A}}: \G\rightarrow A$, and $\deno{\gtyperelation{\texttt{if_false}}{A}}: \G\rightarrow A$ to form a morphism $\G\rightarrow A$. If we have a co-product $\G + \G$, and a morphism mapping $\B$s to $\G + \G$, we could use the fold morphism $[\deno{\texttt{if_true}}, \deno{\texttt{if_false}}]$ to achieve the required composite morphism. It turns out that using exponentials, as seen in the denotation of the (If) type rule in Figure \ref{TermDenotations}, we can factor out the $\G$ to use a co-product  $\1 + \1$ instead of $\G + \G$. It now a natural choice to use $\1 + \1$ as $\deno{\B}$. Hence we can model the boolean values $\t, \f$ as the co-product constructors $\inl, \inr$.
+To model if-expressions of the form $\pifthenelse{}{\texttt{condition}}{\texttt{if_true}}{\texttt{if_false,}}$ we need a way to combine morphisms of the form $\deno{\gtyperelation{\texttt{condition}}{\B}}: \G\rightarrow\deno{\B}$, $\deno{\gtyperelation{\texttt{if_true}}{A}}: \G\rightarrow A$, and $\deno{\gtyperelation{\texttt{if_false}}{A}}: \G\rightarrow A$ to form a morphism $\G\rightarrow A$. If we have a co-product $\G + \G$, and a morphism mapping $\B$s to $\G + \G$, we could use the fold morphism $[\deno{\texttt{if_true}}, \deno{\texttt{if_false}}]$ to achieve the required composite morphism. It turns out that, using exponentials, as seen in the denotation of the (If) type rule in Figure \ref{TermDenotations}, we can factor out the $\G$ to use a co-product  $\1 + \1$ instead of $\G + \G$. It now a natural choice to use $\1 + \1$ as $\deno{\B}$. Hence we can model the boolean values $\t, \f$ as the co-product constructors $\inl, \inr$.
 
 A single effect can be modelled by adding a strong monad to the category, as shown by Moggi \cite{MoggiMonads}. A language with an explicit monad in its type system requires two operations: \textit{return} and \textit{bind}, the type rules for which can be seen in Equation \ref{MonadTypeRules}. The $\M{}{(-)}$ type constructor represents values which have an instance of the effect associated with their computation. The \textit{return} operator lifts pure values (with no associated effects) into the effectful type constructor. The \textit{bind} operator (often supplemented with some \texttt{do .. in ...} syntax) allows us to compose together expressions which have effects. As shown by Moggi \cite{MoggiMonads}, these two operations can be modelled using the \textit{unit} and \textit{join} natural transformations of a strong graded monad. The monad needs to be strong in order to allow access to variables in the environment from within the monadic expression. An example of this can be seen in Figure \ref{MonadStrengthRequirement}. 
 
@@ -399,7 +399,7 @@ let $x$ = $5$ in (
 In the \texttt{return} clause, the program makes reference to variables $x$ and $y$ from the environment. Since $x$ is defined inside the monadic \texttt{do} clause, it is not available to clauses in the body of the clause without a means to convert the type $(\G \times \M{}{A)}$ to $\M{}{(\G\times A)}$.
 \end{framed}
    
-\caption{Program in a monadic effectful language that requires tensor strength of the effect's monad to execute.}
+\caption{Program in a monadic, effectful language that requires tensor strength of the effect's monad to execute.}
 \label{MonadStrengthRequirement}
 \end{figure}
 
@@ -461,11 +461,11 @@ Polymorphism is a harder concept to explain intuitively. The particular flavour 
     \label{SystemFTermsTypes}
 \end{figure}
 
-To correctly account for these new terms and types in the type system, we need to ensure that all parameterisations are soundly constructed in a similar way to how a closed term in the simply typed lambda calculus has no free variables. To do this, we introduce a new $G$-environment $\P$ to complement the type environments $\G$. A term or type is well formed (written $\wellformedF{\P}{f}$) only if it only contains $G$ variables in $\P$. A $G$ expression, $f$, is also well formed only if it only contains $G$ variables in $\P$. We can now specify type rules for the generalisation (parameterisation of an expression over an $G$-variable) and specialisation (substituting a parameter for a value) of terms, as seen in Equation \ref{PolymorphismTypeRules}.
+To correctly account for these new terms and types in the type system, we need to ensure that all parameterisations are soundly constructed in a similar way to how a closed term in the simply typed lambda calculus has no free variables. To do this, we introduce a new $G$-environment $\P$ to complement the type environment $\G$. A term or type is well formed (written $\wellformedG{\P}{f}$) only if it only contains $G$ variables in $\P$. A $G$ expression, $f$, is also well formed only if it only contains $G$ variables in $\P$. We can now specify type rules for the generalisation (parameterisation of an expression over an $G$-variable) and specialisation (substituting a parameter for a value) of terms, as seen in Equation \ref{PolymorphismTypeRules}.
 
 \begin{eqnarray}\label{PolymorphismTypeRules}
-    \condtreeruleI{\vgen}{\etyperelation{\P, \a}{\G}{v}{A}}{\gpetyperelation{\elam{\a}{v}}{\all{\a}{A}}}{\a\notin\P}& 
-    \ntreeruleII{\vspec}{\gpetyperelation{v}{\all{\a}{A}}}{\wellformedF{\P}{f}}{\gpetyperelation{\eapp{v}{f}}{A\ssub{\a}{f}}}
+    \condtreeruleI{G-Gen}{\etyperelation{\P, \a}{\G}{v}{A}}{\gpetyperelation{\elam{\a}{v}}{\all{\a}{A}}}{\a\notin\P}& 
+    \ntreeruleII{G-Spec}{\gpetyperelation{v}{\all{\a}{A}}}{\wellformedG{\P}{f}}{\gpetyperelation{\eapp{v}{f}}{A\ssub{\a}{f}}}
 \end{eqnarray}
 
 If we can model the language without the polymorphic terms in Equation \ref{PolymorphismTypeRules}, at each specific $G$ environment, then we can instantiate a collection of categories, each of which models the language at a given $G$ environment. This collection of categories (which we call \textit{fibres}) can be indexed by a base category, the structure of which models the $G$ environments and relationships between them. We can hence construct an indexed category, whereby each $G$ environment in the base category is mapped to the fibre modelling the semantics at the specific environment, and morphisms between $G$ environments correspond to functors between the respective fibres. Figure \ref{IndexDiagram} demonstrates this construction. If we model an $G$ environment $\P, \a$ as a product, then the $\p$ morphism represents removing $\a$ from the environment and the $\pstar$ functor conversely increases the size of the environment. As shown later in this dissertation, if $\pstar$ has a right adjoint (see Section \ref{WhatsAnAdjunction}), $\forall$, then this adjunction can be used to model generalisation and specialisation of polymorphic terms. This will be explained in the next chapter. 
@@ -535,7 +535,7 @@ In this dissertation, I show how these category-theoretic building blocks can be
         \end{tikzpicture}
     }
     
-    \caption{Diagram of the structure of an indexed category for modelling a polymorphic language. Thick arrows between categories represent functors and thinner arrows withing categories represent internal morphisms. The left-hand category is the base category.
+    \caption{Diagram of the structure of an indexed category for modelling a polymorphic language. Thick arrows between categories represent functors and thinner arrows within categories represent internal morphisms. The left-hand category is the base category.
     }
     \label{IndexDiagram}
 \end{figure}
@@ -555,9 +555,9 @@ Here, $\const{A}$ is one of collection of constants, and $A$ ranges over the typ
     A, B, C ::= \g\mid \ab \mid\M{e}{A}
 \end{align*}
 
-Here $\g$ is from a collection of ground types, including $\U, \B$, and $e$ ranges over a partially ordered monoid of effects: $(E, \dot, \subeffect, \1)$.
+Here, $\g$ ranges over a collection of ground types, including $\U, \B$, and $e$ ranges over a partially ordered monoid of effects: $(E, \dot, \subeffect, \1)$.
 
-The calculus has a simple, Haskell-style semantics. Lambda terms when applied to a parameter substitute their bound variable for the parameter expression, (Figure \ref{ECBeta}), if statements pick a branch once their condition is decided to be true or false(Figure \ref{ECIf}), and finally the monadic effects behave in a similar way to Haskell's monad type class. It is difficult to simply formalise an operational $\beta\eta$-reduction semantics for a monadic language without a concrete instantiation of the graded monad. Instead, the monad should obey the equational laws given in Figure \ref{ECMonads}. As an example, by instantiating the language with the appropriate constants, ground effects, and ground types, we can write the programs in Figure \ref{CheckExample}.
+The calculus has a simple, Haskell-style semantics. Lambda terms, when applied to a parameter, substitute their bound variable for the parameter expression, (Figure \ref{ECBeta}), if statements pick a branch once their condition is decided to be $\t$ or $\f$ (Figure \ref{ECIf}), and finally the monadic effects behave in a similar way to Haskell's monad type class. It is difficult to simply formalise an operational $\beta\eta$-reduction semantics for a monadic language without a concrete instantiation of the graded monad. Instead, the monad should obey the equational laws given in Figure \ref{ECMonads}. As an example, by instantiating the language with the appropriate constants, ground effects, and ground types, we can write the programs in Figure \ref{CheckExample}.
 
 
 \begin{figure}
@@ -711,7 +711,7 @@ The ground effects form the same monotonic, partially ordered monoid $(E, \dot, 
     \caption{Equational equivalence of effects with respect to an effect-variable environment. $\groundEffects$ is defined to be the set of ground-effect substitutions.}
     \label{EffectEquivalence}
 \end{figure}
-Now we can define the monoid operator (Definition \ref{PolymorphicMonoidDef}). This choice of operator preserves any identity or annihilator elements in ground monoid. To define the $\subeffectp$ relation (Definition \ref{PolymorphicSubeffectDef}), we must again take inspiration from the substitution-based equivalence. This subeffecting relation preserves ground effect structures such as a \textit{top} effect, which has all effects as subeffects. Where it is obvious from the context, I use $\dot$ instead of $\dotp$.
+Now we can define the monoid operator (Definition \ref{PolymorphicMonoidDef}). This choice of operator preserves any identity or annihilator elements in the ground monoid. To define the $\subeffectp$ relation (Definition \ref{PolymorphicSubeffectDef}), we must again take inspiration from the substitution-based equivalence. This subeffecting relation preserves ground effect structures such as a \textit{top} effect, which has all effects as subeffects. Where it is obvious from the context, I use $\dot$ instead of $\dotp$.
 
 
 \begin{minipage}{0.47\linewidth}

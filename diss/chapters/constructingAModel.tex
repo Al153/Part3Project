@@ -2,9 +2,9 @@
 \chapter{Constructing a Model of PEC}
 \label{HowToBuildAModel}
 
-Now we have proved that an appropriate categorical structure can model PEC, it remains to explicitly construct such an indexed category. There exist $\set$-based models for the semantics of many effectful languages with a graded monad, such as a certain instantiations of the Effect Calculus \cite{Katsumata:2014}. More specifically, it is possible to treat $\set$ as an S-category. Hence, I use a $\set$ based S-category as a starting point. In this section, I  demonstrate how to construct an strictly indexed S-category, which can model the PEC, from such an S-category.
+Now we have proved that an appropriate categorical structure can model PEC, it remains to explicitly construct such an indexed category. There exist $\set$-based models for the semantics of many effectful languages with a graded monad, such as a certain instantiations of the Effect Calculus \cite{Katsumata:2014}. More specifically, it is possible to treat $\set$ as an S-category for an effect algebra with a countable number of elements. Hence, I use a $\set$ based S-category as a starting point. In this section, I  demonstrate how to construct an strictly indexed S-category, which can model PEC, from such an S-category.
 
-Suppose we have an S-category structure derived from $\set$ which models an instance of EC. That is, there is a strong graded monad $\Tz{}{}, \bindmu^0, \pointz{}, \strengtht^0$ on $\set$, and there exist subtyping functions $\deno{A\subtypeg B}: A \rightarrow B$ for each instance of the ground subtyping relation and natural transformations $\deno{\e_1 \subeffectz \e_2}: \Tz{\e_1}{} \rightarrow \Tz{\e_2}{}$ for each instance of the subeffecting relation. Furthermore, $\set$ is cartesian closed and has co-products for all pairs of objects. Since this structure is a model for the EC, it is graded by the partially ordered monoid on ground effects: $(E, \subeffectz, \1, \dot)$. I have marked each of these instances of S-category structure with $0$ to indicate that they occur in the fibre induced by the empty effect-variable environment.
+Suppose we have an S-category structure derived from $\set$ which models an instance of EC. That is, there is a strong graded monad $\Tz{}{}, \bindmu^0, \pointz{}, \strengtht^0$ on $\set$, and there exist subtyping functions $\deno{A\subtypeg B}: A \rightarrow B$ for each instance of the ground subtyping relation and natural transformations $\deno{\e_1 \subeffectz \e_2}: \Tz{\e_1}{} \rightarrow \Tz{\e_2}{}$ for each instance of the subeffecting relation. Furthermore, $\set$ is cartesian closed and has co-products for all pairs of objects. Since this structure is a model for EC, it is graded by the partially ordered monoid on ground effects: $(E, \subeffectz, \1, \dot)$. I have marked each of these instances of S-category structure with $0$ to indicate that they occur in the fibre induced by the empty effect-variable environment.
 
 Using $\a$-equivalence, we can see that all effect-variable environments of the same length are equivalent. For example, the terms in Equation \ref{AlphaEquivalence} are $\a$-equivalent. Hence, we can reduce an effect-variable environment to the natural number $n$ indicating its length.
 
@@ -151,7 +151,7 @@ Subtyping in $[E^n, \set]$ holds via subtyping in $\set$, so the subtyping relat
     \label{HowToBuildSubtyping}
 \end{figure}
 
-Now we need to define the required morphisms between fibres. Firstly, for any function $\theta: E^m \rightarrow E^n$ in $\Eff$, there should exist an S-preserving re-indexing functor $\theta\star: [E^n, \set] \rightarrow [E^m, \set]$. A simple instantiation is the pre-composition functor, as seen in Figure \ref{PrecompositionFunctor}. This also obeys the composition law of re-indexing functors( Figure \ref{PrecompositionFunctorComposition}) and is S-preserving (Figure \ref{PrecompositionSClosure}).
+Now we need to define the required morphisms between fibres. Firstly, for any function $\theta: E^m \rightarrow E^n$ in $\Eff$, there should exist an S-preserving re-indexing functor $\theta\star: [E^n, \set] \rightarrow [E^m, \set]$. A simple instantiation is the pre-composition functor, as seen in Figure \ref{PrecompositionFunctor}. This also obeys the composition law of re-indexing functors (Figure \ref{PrecompositionFunctorComposition}) and is S-preserving (Figure \ref{PrecompositionSClosure}).
 
 
 \begin{figure}
@@ -265,7 +265,7 @@ We can now prove that $\pstar \dashv \allEn$. To do this, we need a natural bije
     \bar{(-)}: [E^{n+1}, \set](\pstar A, B) \rightleftharpoons [E^n,\set] (A, \allEn B): \widehat{(-)}
 \end{equation}
 
-The leftwards and rightwards components of this bijection can be derived as follows. The leftwards component maps each morphism to a finite pairing of the morphism over each ground effect. The inverse is simply to project out the appropriate value of $\e$ from the product. These mappings can be seen in Figure \ref{AdjunctionDefinition}. These transformations give rise to the unit and co-unit of the adjunction, which are defined in Figure \ref{UnitCoUnitDefinition}. The unit and co-unit allow us to prove that this construction is an adjunction (figure \ref{AdjunctionProof}).  Finally, we need to prove that the Beck-Chevalley condition given in Section \ref{PECRequirements} holds. The proof of the appropriate theorems are given in Figure \ref{BeckChevalley1}.
+The leftwards and rightwards components of this bijection can be derived as follows. The leftwards component maps each morphism to a finite pairing of the morphism over each ground effect. The inverse is simply to project out the appropriate value of $\e$ from the product. These mappings can be seen in Figure \ref{AdjunctionDefinition}. These transformations give rise to the unit and co-unit of the adjunction, which are defined in Figure \ref{UnitCoUnitDefinition}. The unit and co-unit allow us to prove that this construction is an adjunction (figure \ref{AdjunctionProof}).  Finally, we need to prove that the Beck-Chevalley condition given in Section \ref{PECRequirements} holds. The proofs of the appropriate theorems are given in Figure \ref{BeckChevalley1}.
 
 
 
@@ -411,4 +411,4 @@ The leftwards and rightwards components of this bijection can be derived as foll
     \label{BeckChevalley1}
 \end{figure}
 
-Hence we have proof that our construction is indeed a valid indexed S-category. Importantly, this shows that reasonable models of the PEC are possible to construct and that our requirements do not overconstrain potential models to the point that they are not useful for doing actual analysis. This contrasts with models for System F, which cannot be \set\s based\cite{PolymorphismIsNotSetTheoretic}.
+Hence we have proof that our construction is indeed a valid indexed S-category. Importantly, this shows that reasonable models of PEC are possible to construct and that our requirements do not overconstrain potential models to the point that they are not useful for doing actual analysis. This contrasts with models for System F, which cannot be \set\s based \cite{PolymorphismIsNotSetTheoretic}.
