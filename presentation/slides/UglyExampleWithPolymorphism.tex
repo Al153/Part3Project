@@ -1,20 +1,14 @@
 
-\begin{frame}[fragile]{An Ugly Example - With a Makeover}
+\begin{frame}{An Ugly Example - With a Makeover}
+    \begin{alltt}
+\o{let} twice = $\Lambda$ \gr{eff}.(\\
+~~~~$\lambda$ action: \bl{$\M{\texttt{\gr{eff}}}{\U}$}. (\\
+~~~~~~~~\o{do} \_ <- action \o{in} action\\
+~~~~)\\
+)\\
 
-    \todo{Syntax highlighting}
-    \begin{lstlisting}[
-        mathescape,
-        columns=fullflexible,
-        basicstyle=\fontfamily{lmvtt}\selectfont,
-      ]
-let $twice$ = $\Lambda$ $eff$.(
-    $\lambda$ $action$: $\M{eff}{\U}$. (
-        do $\_$ $\texttt{<-}$ $action$ in $action$
-    )
-)
-
-do $\_$ $\texttt{<-}$ ($twice$ State increment) in ($twice$ IO writeLog)
-    \end{lstlisting}
+do \_ <- (twice \gr{State} increment) \o{in} (twice \gr{IO} writeLog)
+\end{alltt}
     \script{
         - We've now added polymorphism, which makes our ugly program more concise.
         - We can reuse this function

@@ -16,8 +16,70 @@
 
 \input{slides/ECDefinition}
 
+\begin{frame}{An Effectful Language}
+    \begin{align*}
+        v ::= & \put^{\M{\1}{Unit}} \mid x\mid \t \mid\f \mid\u\mid\lam{x}{A}{v}\mid\apply{v_1}{v_2}\mid\return{v}\\
+        & \mid\doin{x}{v_1}{v_2}\mid\pifthenelse{A}{v}{v_1}{v_2} 
+    \end{align*}
+    
+    \begin{align*}
+        A, B, C ::= \B \mid \U \mid \ab \mid\mna
+    \end{align*}
+
+    \[
+        \ntreeruleI{Return}{\gtyperelation{v}{A}}{\gtyperelation{\return{v}}{\M{0}{A}}}
+    \quad
+    \ntreeruleII{Apply}{\gtyperelation{v_1}{\ab}}{\gtyperelation{v_2}{A}}{\gtyperelation{\apply{v_1}{v_2}}{B}}
+    \]
+
+    \[
+    \M{n}{A} \subtype \M{n+1}{A}    
+    \]
+
+    \script{
+        - Let's now describe a simple effectful, lambda-calculus-based, language, EC.
+        - It has an explicit graded monad, subtyping, if-statements
+    }
+\end{frame}
+
+
 \input{slides/ECSemantics}
 
+
+\begin{frame}{Semantics of EC}
+    \begin{itemize}
+        \setlength\itemsep{3em}
+        \item Can build a model of EC with sets and functions
+        \item Types map to sets   
+        \begin{itemize}
+            \item $\deno{\u} = \{\singleton\}$, $\deno{\B} =  \{ \top, \bot \}$
+            \item $\deno{\ab} = \deno{A} \implies \deno{B}$
+            \item $\deno{\M{n}{A}} = \setcomp{(n', a)}{a\in \deno{A}, n' \leq n}$
+        \end{itemize}
+        \item Well typed terms map to functions \begin{itemize}
+            \item $\deno{\gtyperelation{\t}{\B}} = \rho \mapsto \top$
+            \item $\deno{\gtyperelation{\put}{\M{\1}{\U}}} = \rho \mapsto (1, \singleton)$
+            \item $\begin{aligned}
+                \deno{\gtyperelation{\doin{x}{v_1}{v_2}}} & = \rho \mapsto  \\
+                & \text{let } (n', a) = \deno{\gtyperelation{v_1}{\mna}}(\rho) \\
+                & \text{ and }(m', b) = \deno{\typerelation{\gax}{v_2}{\mmb}})(\rho, a) \\
+                & \text{ in } (m' + n', b)
+            \end{aligned}$
+        \end{itemize}
+    \end{itemize}
+
+
+    \script{
+        - As described, all of the language features can be modelled in a cartesian closed category with a graded monad, a coproduct, and subtyping morphisms.
+
+        - Known as an S-Category
+
+        - Here's an example, if we have the denotation of an expression here, we can get the denotation of using it as a pure computation by postcomposing with the unit of the graded monad.
+
+    }
+\end{frame}
+
+\todo{needs to be indexed by n instead}
 \input{slides/uglyExample}
 
 \input{slides/PECDefinition}

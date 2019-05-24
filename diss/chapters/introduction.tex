@@ -10,12 +10,7 @@ Programs very rarely stand alone without interacting with their environment in s
 
 
 Effect polymorphism is when a single function in a language can operate on values of similar types but with different effect signatures. It allows the same piece of code to be used in multiple contexts with different type signature. This manifests in a similar manner to type parameter polymorphism in system-F-based languages. Consider the following Scala-style pseudocode:
-\renewcommand\o[1]{\textcolor{orange}{#1}}
-\newcommand\bl[1]{\textcolor{blue}{#1}}
-\newcommand\gr[1]{\textcolor{DarkGreen}{#1}}
-\newcommand\pl[1]{\textcolor{purple}{#1}}
-\newcommand\cy[1]{\textcolor{cyan}{#1}}
-\newcommand\red[1]{\textcolor{red}{#1}}
+
 
 \begin{framed}
     \begin{framed}
@@ -51,7 +46,7 @@ A key property of effect polymorphism that distinguishes it from type polymorphi
 
 \section{An Introduction to Categorical Semantics}
 
-In this dissertation, I describe a denotational semantics using category theory. A denotational semantics for a language is a mapping, the image $\deno{X}$ of which is known as a denotation, of structures in the language, such as types and terms to mathematical objects in a compositional way. This means that the denotation of a term is defined entirely in terms of the denotations of its subterms.
+In this dissertation, I describe a denotational semantics using category theory. A denotational semantics for a language is a mapping, the image $\deno{X}$ of which is known as a denotation, of structures in the language, such as types and terms, to mathematical objects in a compositional way. This means that the denotation of a term is defined entirely in terms of the denotations of its subterms.
 
 When we specify a denotational semantics of a language in category theory, we look to find a mapping of types and type environments to objects in a specific categorical structure.  That is, there should exist objects $\deno{A}, \deno{\G}$ in the category $\C$ such that:
 
@@ -73,15 +68,15 @@ Furthermore, assuming the language has a type system with a typing relation of t
     \gtyperelation{v}{A} & \mapsto \C(\deno{\G}, \deno{A}) 
 \end{align*}
 
-This should occur in a sound manner with respect to some equational equivalence over the language. An equational equivalence is a relation of the form $\gtyperelation{v_1 \cong v_2}{A}$, which means ``in environment $\G$, terms $v_1$ and $v_2$ are equivalent under type $A$'', which represents equality up to some particular property. A categorical semantics is \textit{sound} with respect to an equational equivalence $\cong$ if and only if $\gtyperelation{v_1 \cong v_2}{A}$ implies that the denotations $\deno{\gtyperelation{v_1}{A}}$ and $\deno{\gtyperelation{v_2}{A}}$ are equal morphisms in $\C$ from $\deno{\G}$ to $\deno{A}$.
+This should occur in a sound manner with respect to some equational equivalence over the language. An equational equivalence is a relation of the form $\gtyperelation{v_1 \cong v_2}{A}$, which means ``under environment $\G$, $v_1$ and $v_2$ are equivalent terms of type $A$'', which represents equality up to some particular property. A categorical semantics is \textit{sound} with respect to an equational equivalence $\cong$ if and only if $\gtyperelation{v_1 \cong v_2}{A}$ implies that the denotations $\deno{\gtyperelation{v_1}{A}}$ and $\deno{\gtyperelation{v_2}{A}}$ are equal morphisms in $\C$ from $\deno{\G}$ to $\deno{A}$.
 
-Typically when working with lambda-calculus-based languages, we pick our equational equality to be an extension of $\beta\eta$-equivalence to include other, language-specific, rules for equality under reduction. For example, we might want to include the execution of if-statements or effectful expressions.
+Typically when working with lambda-calculus-based languages, we pick our equational equality to be an extension of $\beta\eta$-equivalence which includes other, language-specific, rules for equality under reduction. For example, we might want to include the execution of if-statements or effectful expressions.
 
-An example of an inductive equivalence rule that we might want to be sound with respect to is that of the $\beta$-reduction of lambda terms. It should be the case that the equality defined in Equation \ref{LambdaBeta} below implies that the denotations $\deno{\gtyperelation{\apply{(\lam{x}{A}{v_1})}{v_2}}{B}}$ and $\deno{\gtyperelation{v_1\ssub{x}{v_2}}{B}}$ are equal.
+An example of an inductive equivalence rule, with respect to which we might want soundness, is the $\beta$-reduction of lambda terms. It should be the case that the equality defined in Equation \ref{LambdaBeta} below implies that the denotations $\deno{\gtyperelation{\apply{(\lam{x}{A}{v_1})}{v_2}}{B}}$ and $\deno{\gtyperelation{v_1\ssub{x}{v_2}}{B}}$ are equal.
 
 \begin{align}\label{LambdaBeta}
     \ntreeruleII{Lambda-Beta}{\typerelation{\gax}{v_1}{B}}{\gtyperelation{v_2}{A}}{\gberelation{\apply{(\lam{x}{A}{v_1})}{v_2}}{v_1\ssub{x}{v_2}}{B}}
 \end{align}
 
 
-In this dissertation, I introduce an effect-polymorphic language, describe a semantics for it, then prove that the semantics is sound with respect to a $\beta\eta$-equivalence-based equational equivalence relation. Following this, I demonstrate how build a polymorphic model from a non-polymorphic model and show that a specific model of this form is adequate.
+In this dissertation, I introduce an effect-polymorphic language, describe a semantics for it, then prove that the semantics is sound with respect to a $\beta\eta$-equivalence-based equational equivalence relation. Following this, I demonstrate how to build a polymorphic model from a non-polymorphic model and show that a specific model of this form is adequate.

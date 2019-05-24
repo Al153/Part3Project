@@ -1,23 +1,18 @@
 
-\begin{frame}[fragile]{An Ugly Example}
-\todo{syntax highlight this}
-    \begin{lstlisting}[
-        mathescape,
-        columns=fullflexible,
-        basicstyle=\fontfamily{lmvtt}\selectfont,
-      ]
-let $twiceIO$ = $\lambda$ $action$: $\M{\texttt{IO}}{\U}$. (
-    do $\_$ $\texttt{<-}$ $action$ in $action$
-)
+\begin{frame}{An Ugly Example}
 
-let $twiceState$ = $\lambda$ $action$: $\M{\texttt{State}}{\U}$. (
-    do $\_$ $\texttt{<-}$ $action$ in $action$
-)
+\begin{alltt}
+\o{let} twiceIO = $\lambda$ action: \bl{$\M{\texttt{\gr{IO}}}{\U}$}. ( \\
+~~~~\o{do} \_ <-  action \o{in} action \\
+)\\
 
-do $\_$ $\texttt{<-}$ $twiceState$(increment) in $twiceIO$(writeLog)
-    \end{lstlisting}
+\o{let} twiceState = $\lambda$ action: \bl{$\M{\texttt{\gr{State}}}{\U}$}. (\\
+~~~~\o{do} \_ <- action \o{in} action\\
+)\\
+\o{do} \_ <- twiceState(increment) \o{in} twiceIO(writeLog)\\
+\end{alltt}
     \script{
-        - Here's a program that's quite ugly with lots of code reuse, since we explicitly state types in the expressions. 
+        - Here's a program that's quite ugly with lots of code reuse, since we explicitly state types \o{in} the expressions. 
         - we end up with two instantiations of the same function - more work for the compiler
     }
 \end{frame}

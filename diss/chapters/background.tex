@@ -3,7 +3,7 @@
 
 
 
-In this chapter I first introduce the required category theory to understand the rest of the dissertation. In addition, I explain briefly how the particular category-theoretic structures can be used to model particular features of various programming languages, such as the simply typed lambda calculus and System F. Following this, I proceed to introduce the monadic, effectful language used in the rest of the dissertation, known from now on as the \textit{Effect Calculus} (EC). In the final section, I extend the EC with polymorphic syntax to yield \textit{Polymorphic Effect Calculus} (PEC).
+In this chapter I first introduce the  category theory required to understand the rest of the dissertation. In addition, I explain briefly how the particular category-theoretic structures can be used to model particular features of various programming languages, such as the simply typed lambda calculus and System F. Following this, I proceed to introduce the monadic, effectful language used in the rest of the dissertation, known from now on as the \textit{Effect Calculus} (EC). In the final section, I extend EC with polymorphic syntax to yield \textit{Polymorphic Effect Calculus} (PEC).
 
 \section{Required Category Theory}\label{CategoryTheoryRequirements}
 
@@ -11,17 +11,17 @@ In this chapter I first introduce the required category theory to understand the
 Before going further, it is necessary to assert a common level of category theory knowledge. This section is not intended as a tutorial but to jog the memory of the reader and briefly introduce some new concepts. For a more detailed treatment of these concepts, please see \cite{maclane:71}.
 
 \subsection{Cartesian Closed Category}\label{CCC}
-A category is \textit{cartesian closed} if it has a terminal object, products for all pairs of objects, and exponentials.
+A category is \textit{cartesian closed} if it has a terminal object, and products and exponentials for all pairs of objects.
 
 \subsubsection{Terminal Object}
 An object, typically written $\1$, is \textit{terminal} in a category, $\C$, if for all objects $A\in\obj\C$, there exists exactly one morphism from $A$ to $\1$, written $\term{A}: A \rightarrow \1$.
 
 \subsubsection{Products}
-A \textit{binary product} of a pair of objects $A, B\in\obj\C$ consists of an object, written $A \times B$, with morphisms $\p: A\times B\rightarrow A$, $\pp: A\times B \rightarrow B$ such that for any other object $C$ and morphisms, $f: C\rightarrow A$, $g: C\rightarrow B$ there exists a unique morphism $\pr{f}{g}: C \rightarrow (A\times B)$ such Figure \ref{ProductDiagram} commutes.
+A \textit{binary product} of a pair of objects $A, B\in\obj\C$ consists of an object, written $A \times B$, with morphisms $\p: A\times B\rightarrow A$, $\pp: A\times B \rightarrow B$ such that for any other object $C$ and morphisms, $f: C\rightarrow A$, $g: C\rightarrow B$ there exists a unique morphism $\pr{f}{g}: C \rightarrow (A\times B)$ such that Figure \ref{ProductDiagram} commutes.
 A category is said to \textit{have binary products} if for all objects $A, B$, the product $A\times B$ also exists.
 
 \subsubsection{Exponentials}
-An \textit{exponential} for objects $A, C$ is an object $C^A$ with morphism $\app: C^A\times A \rightarrow C$ such that for any object $B$ and morphism $f: B\times A \rightarrow C$, there exists a morphism $\cur{f}: B \rightarrow C^A$ such that Figure \ref{ExponentialDiagram} commutes. A category \textit{has exponentials} if for all pairs of objects $A, C$, it has an exponential $C^A$.
+An \textit{exponential} for objects $A, C$ is an object $C^A$ with morphism $\app: C^A\times A \rightarrow C$ such that for any object $B$ and morphism $f: B\times A \rightarrow C$, there exists a morphism $\cur{f}: B \rightarrow C^A$ such that Figure \ref{ExponentialDiagram} commutes. A category \textit{has exponentials} if for all pairs of objects $A, C$, it has an exponential ($C^A$, $\app$).
 
 \begin{minipage}{0.47\linewidth}
     \begin{figure}[H]
@@ -56,10 +56,10 @@ An \textit{exponential} for objects $A, C$ is an object $C^A$ with morphism $\ap
 
 
 \subsubsection{Diagonal and Twist Morphisms}
-In the definition of the semantics of the if-expression, it is useful to make use of the twist $\twist{A}{B}: (A\times B) \rightarrow (B\times A) = \pr{\pp}{\p}$ and diagonal $\diag{A}: A \rightarrow (A\times A)  = \pr{\Id{A}}{\Id{A}}$ morphisms.
+In the definition of the semantics of if-expression, it is useful to utilise of the twist $\twist{A}{B}: (A\times B) \rightarrow (B\times A) = \pr{\pp}{\p}$ and diagonal $\diag{A}: A \rightarrow (A\times A)  = \pr{\Id{A}}{\Id{A}}$ morphisms.
 
 \subsection{Co-Product}
-A \textit{co-product} is the dual of a product. The is a co-product for objects $A, B$ if there exists an object $A+B$ in $\C$ with morphisms $\inl: A\rightarrow (A+B)$, $inr: B\rightarrow (A+B)$ such that for any other object $C$ with morphisms $f: A\rightarrow C$, $g: B\rightarrow C$, there exists a unique morphism $[f, g]: (A + B)\rightarrow C $ such that Figure \ref{CoproductDiagram} commutes.
+A \textit{co-product} is the dual of a product. There is a co-product for objects $A, B$ if there exists an object $A+B$ in $\C$ with morphisms $\inl: A\rightarrow (A+B)$, $inr: B\rightarrow (A+B)$ such that for any other object, $C$, with morphisms $f: A\rightarrow C$, $g: B\rightarrow C$, there exists a unique morphism $[f, g]: (A + B)\rightarrow C $ such that Figure \ref{CoproductDiagram} commutes.
 
 \begin{minipage}{0.47\linewidth}
     \begin{figure}[H]
@@ -89,7 +89,7 @@ A \textit{co-product} is the dual of a product. The is a co-product for objects 
 \end{minipage}\quad
 
 \subsection{Functors}
-A \textit{functor} $F: \C \rightarrow \DC$ is a mapping of objects and morphisms in $\C$ to objects and morphisms respectively in $\DC$ that preserves composition and identities.
+A \textit{functor}, $F: \C \rightarrow \DC$, is a mapping of objects and morphisms in $\C$ to objects and morphisms respectively in $\DC$ that preserves composition and identities.
 
 \begin{align*}
     A\in\obj\C &\mapsto FA \in \obj\DC\\
@@ -100,12 +100,12 @@ A \textit{functor} $F: \C \rightarrow \DC$ is a mapping of objects and morphisms
 
 \subsection{Natural Transformations}
 
-A \textit{natural transformation} $\theta$ between two functors $F, G: \C \rightarrow \DC$ is a collection of morphisms in $\DC$, indexed by objects in $\C$ with  $\theta_A: F(A) \rightarrow G(A)$ such that diagram in Figure \ref{Naturality} commutes for each $f: A \rightarrow B \in \C$.
+A \textit{natural transformation}, $\theta$, between two functors, $F, G: \C \rightarrow \DC$, is a collection of morphisms in $\DC$, indexed by objects in $\C$ with  $\theta_A: F(A) \rightarrow G(A)$ such that diagram in Figure \ref{Naturality} commutes for each $f: A \rightarrow B \in \C$.
 
 
 
 \subsection{Monad}
-A \textit{monad} consists of a functor, $T: \C \rightarrow \C$, from $\C$ onto itself, also known as an \textit{endofunctor}, which represents the collection of effectful values, and a pair of natural transformations. The first is the the \textit{unit} natural transformation $\point{A}: A\rightarrow T(A)$, which is used to treat pure values as an effectful expression. The second is the \textit{join} natural transformation, $\mu_{A}: T(T(A)) \rightarrow T(A)$,  which is used to model the sequential composition of effectful subexpressions. In addition, there is the requirement that the diagrams in Figures \ref{MonadAssociativity}, \ref{MonadUnits} commute.
+A \textit{monad} consists of a functor, $T: \C \rightarrow \C$, from $\C$ onto itself, also known as an \textit{endofunctor}, which represents the collection of effectful values, and a pair of natural transformations. The first is the the \textit{unit} natural transformation $\point{A}: A\rightarrow T(A)$, which is used to treat pure values as an effectful expression. The second is the \textit{join} natural transformation, $\mu_{A}: T(T(A)) \rightarrow T(A)$,  which is used to model the sequential composition of effectful subexpressions. In addition, there is a requirement that the diagrams in Figures \ref{MonadAssociativity}, \ref{MonadUnits} commute.
 
 
 \begin{figure}
@@ -138,12 +138,12 @@ A \textit{monad} consists of a functor, $T: \C \rightarrow \C$, from $\C$ onto i
 
 \subsection{Monoid}
 
-Another concept, though not strictly of category theory, is that of a monoidal algebra. A \textit{monoid} is a set, operation, and identity $(M, \dot, \1)$ where $\dot: M\times M \rightarrow M$, is associative ($a\dot(b\dot c) = (a\dot b)\dot c$), and has an identity $a\dot\1 = a = \1\dot a$. In this dissertation, I make use of a monoid with a partial order. This means there is a transitive, reflexive relation $\subeffect$ over the set $M$. In this case, the $\dot$ operator should also be monotone. That is if $a \subeffect a'$ and $b\subeffect b'$ then $a\dot b \subeffect a'\dot b'$ . Such an algebra can be used to describe how effects induced by terms in a program interact with each other. For example, $a \dot b$ is the effect induced by composing a subexpression which produces effect $a$ with a subexpression that produces effect $b$. The partial order is used to develop a notion of \textit{subtyping} over effects.
+Another concept, though not strictly of category theory, is that of a monoidal algebra. A \textit{monoid} is a set, operation, and identity $(M, \dot, \1)$ where $\dot: M\times M \rightarrow M$ is associative ($a\dot(b\dot c) = (a\dot b)\dot c$) and has an identity $a\dot\1 = a = \1\dot a$. In this dissertation, I make use of a monoid with a partial order. This means there is a transitive, reflexive relation $\subeffect$ over the set $M$. In this case, the $\dot$ operator should also be monotone. That is if $a \subeffect a'$ and $b\subeffect b'$ then $a\dot b \subeffect a'\dot b'$ . Such an algebra can be used to describe how effects induced by terms in a program interact with each other. For example, $a \dot b$ is the effect induced by composing a subexpression which produces effect $a$ with a subexpression that produces effect $b$. The partial order is used to develop a notion of \textit{subtyping} over effects.
 
 \subsection{Graded Monad}
 
 
-A \textit{graded monad} is a generalisation of a monad to be indexed by a monoidal algebra $(E,\dot, \1)$. It consists of an endofunctor indexed by elements in the monoid, $\T{}{}: (E, \dot, \1)  \rightarrow [\C, \C]$, and a pair of indexed natural transformations. Firstly, there is the unit natural transformation to the monad functor indexed by the identity $\point{}: \Id{} \rightarrow \T{\1}{}$. The second natural transformation is a generalisation of join which composes nested instances of the indexed functor $\bind{\e_1}{\e_2}{}: \T{\e_1}{\T{\e_2}{}} \rightarrow \T{\e_1 \dot \e_2}{}$. Furthermore there is a requirement that the diagrams in Figures \ref{GradedMonadAssociativity}, \ref{GradedMonadUnits} commute.
+A \textit{graded monad} is a generalisation of a monad to be indexed by a monoidal algebra $(E,\dot, \1)$. It consists of an endofunctor indexed by elements in the monoid, $\T{}{}: (E, \dot, \1)  \rightarrow [\C, \C]$, and a pair of indexed natural transformations. Firstly, there is the unit natural transformation to the monad functor indexed by the identity, $\point{}: \Id{} \rightarrow \T{\1}{}$. The second natural transformation is a generalisation of join which composes nested instances of the indexed functor $\bindmu_{\e_1, \e_2}: \T{\e_1}{\T{\e_2}{}} \rightarrow \T{\e_1 \dot \e_2}{}$. Furthermore there is a requirement that the diagrams in Figures \ref{GradedMonadAssociativity}, \ref{GradedMonadUnits} commute.
 
 
 \begin{figure}

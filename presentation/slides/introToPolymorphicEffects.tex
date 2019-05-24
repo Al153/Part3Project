@@ -1,22 +1,23 @@
 
 \begin{frame}[fragile]{Motivating Polymorphic Effect Analysis}    
 
-    \todo{Syntax highlight}
-\begin{verbatim}
-def logAction(
-    action: Unit => String
-): Unit {
+
+    \begin{alltt}
+\o{def} \gr{logAction}(
+    action: \bl{Unit} => \bl{String}
+): \bl{Unit} \{
     log.info(action())
-}  
-\end{verbatim}
+\}  
 
-\begin{verbatim}
-logAction(() => FireMissiles(); "Launched Missiles)
+\end{alltt}
 
-logAction(() => throwError("My Error"))
+\begin{alltt}
+logAction(() => (FireMissiles(); "\pl{Launched Missiles}"))
+
+logAction(() => throwError(\red{"My Error"}))
 
 logAction(() => readEnvironmentVariables)
-\end{verbatim}
+\end{alltt}
 
     \script{
         - Imagine you're a compiler trying to analyse the side effects of this \texttt{doAction} function here.
