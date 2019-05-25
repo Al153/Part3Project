@@ -215,7 +215,7 @@ The fundamental property gives us the ability to prove the main theorem of this 
         
             \case{Boolean}
 
-            Let $d=\deno{\ztyperelation{v}{\B}}=\deno{\ztyperelation{v}{\B}}\in \{ \top, \bot\}$. By the fundamental property, $\inLogRelPE{d}{v}{\B}$  and $\inLogRelPE{d}{v}{\B}$.
+            Let $d=\deno{\ztyperelation{v}{\B}}=\deno{\ztyperelation{v}{\B}}\in \{ \top, \bot\}$. By the fundamental property, $\inLogRelPS{d}{v}{\B}$  and $\inLogRelPS{d}{v}{\B}$.
         
             \subcase{$d=\top$}
             Then $\zberelation{v\beequiv\t}{u}{\B}$
@@ -226,11 +226,11 @@ The fundamental property gives us the ability to prove the main theorem of this 
         
             \case{Unit}
 
-            Let $\singleton=\deno{\ztyperelation{v}{\U}}=\deno{\ztyperelation{v}{\U}}\in \{\singleton\}$. By the fundamental property, $\inLogRelPE{d}{v}{\U}$  and $\inLogRelPE{d}{v}{\U}$. Hence $\zberelation{v\beequiv\u}{u}{\U}$.
+            Let $\singleton=\deno{\ztyperelation{v}{\U}}=\deno{\ztyperelation{v}{\U}}\in \{\singleton\}$. By the fundamental property, $\inLogRelPS{d}{v}{\U}$  and $\inLogRelPS{d}{v}{\U}$. Hence $\zberelation{v\beequiv\u}{u}{\U}$.
         
             \case{\teffect}
         
-            Let $( n',  d) = \deno{\ztyperelation{v}{\M{n}{G}}} = \deno{\ztyperelation{u}{\M{n}{G}}}$. By the fundamental property, $\inLogRelPE{((n', d))}{v}{\M{n}{G}}$ and $\inLogRelPE{((n', d))}{u}{\M{n}{G}}$. So there exists $u', v'$ such that $\inLogRelPE{d'}{u'}{G}$ and $\inLogRelPE{d'}{u'}{G}$ and:
+            Let $( n',  d) = \deno{\ztyperelation{v}{\M{n}{G}}} = \deno{\ztyperelation{u}{\M{n}{G}}}$. By the fundamental property, $\inLogRelPS{((n', d))}{v}{\M{n}{G}}$ and $\inLogRelPS{((n', d))}{u}{\M{n}{G}}$. So there exists $u', v'$ such that $\inLogRelPS{d'}{u'}{G}$ and $\inLogRelPS{d'}{u'}{G}$ and:
         
             \begin{align*}
                 \zberelation{v&}{\doin{\_}{\put^{n'}}{\return{v'}}}{\M{n}{G}}\\
